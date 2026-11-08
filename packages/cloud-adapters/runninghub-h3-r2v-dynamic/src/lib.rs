@@ -79,7 +79,7 @@ fn schema(id: &str, s: &str) -> Value {
     json!({"id":id,"digest":d,"schemaJson":s})
 }
 
-const WORKFLOW: &str = "2117100865147457537";
+const WORKFLOW: &str = "2119436868289912833";
 const GRAPH: &str = include_str!("workflow-api.json");
 pub fn capabilities() -> Value {
     let i = schema("input", include_str!("../schemas/input.json"));
