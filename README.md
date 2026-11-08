@@ -165,7 +165,8 @@ community/
 | [minimax-m3](./packages/cloud-adapters/minimax-m3) | MiniMax M3 云端文本 | `local.bgx.minimax-m3` | `1.0.2` |
 | [seedream-image](./packages/cloud-adapters/seedream-image) | Seedream 5.0 Pro 独立图片预览 | `local.bgx.seedream-image` | `1.0.5` |
 | [runninghub-h3-dynamic](./packages/cloud-adapters/runninghub-h3-dynamic) | RunningHub H3-r2v-turbo | `local.thirdparty.runninghub-h3-dynamic` | `1.2.6` |
-| [runninghub-h3-r2v-dynamic](./packages/cloud-adapters/runninghub-h3-r2v-dynamic) | RunningHub H3-r2v | `local.thirdparty.runninghub-h3-r2v-dynamic` | `1.0.0` |
+| [runninghub-h3-r2v-dynamic](./packages/cloud-adapters/runninghub-h3-r2v-dynamic) | RunningHub H3-r2v（官方20步） | `local.thirdparty.runninghub-h3-r2v-dynamic` | `1.0.1` |
+| [runninghub-h3-r2v-soundtrack](./packages/cloud-adapters/runninghub-h3-r2v-soundtrack) | RunningHub H3-r2v-原声（官方20步） | `local.thirdparty.runninghub-h3-r2v-soundtrack` | `1.0.0` |
 | [runninghub-h3-spectrum-dynamic](./packages/cloud-adapters/runninghub-h3-spectrum-dynamic) | RunningHub H3-r2v-spectrum | `local.thirdparty.runninghub-h3-spectrum-dynamic` | `1.0.1` |
 | [runninghub-minimax-h3](./packages/cloud-adapters/runninghub-minimax-h3) | RunningHub H3-多参 | `local.example.runninghub-minimax-h3` | `1.0.3` |
 

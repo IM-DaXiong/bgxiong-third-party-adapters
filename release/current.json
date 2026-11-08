@@ -1161,45 +1161,89 @@
     },
     {
       "pluginId": "local.thirdparty.runninghub-h3-r2v-dynamic",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "kind": "installable",
       "validation": "sdk_package_and_install_envelope_validated",
       "sourceManifest": "packages/cloud-adapters/runninghub-h3-r2v-dynamic/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.0/adapter-install.json",
-          "sha256": "d63d47eb152c476fde963b346d9bc70cd8563aab785abae5074653294a3da19c"
+          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.1/adapter-install.json",
+          "sha256": "a8220b4b6856aa610df8b4db4d1b0a8333cf2aba4d94d23f4979aa34981d18f0"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.0/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.1/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.0/package/adapter.wasm",
-          "sha256": "ca5737a23df8695409024b9cb203dfa22e5ac87f4259efe1bd70234c31f68e4f"
+          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.1/package/adapter.wasm",
+          "sha256": "0257990d9ea6a0dc03053d9d4e71aee67743044c0a73417b36fdda69e55e88e5"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.0/package/manifest.json",
-          "sha256": "4bc69e00b55cc50303bb045c42819bcef156fabc79b0f2403398429c0ce8d362"
+          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.1/package/manifest.json",
+          "sha256": "65eea56133211f9ce26268ddfc73e509b39146831056d646cf58300f2a7ae9f9"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.0/package/manifest.sha256",
-          "sha256": "3bb35f765506acfd9ebf2c17c58f2bc8cb83fad091867a055e3e9220fe4e8141"
+          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.1/package/manifest.sha256",
+          "sha256": "7033f7dbe807ccfd6a44e5ae752ca6711c61eaf77e438d99923ab22c594cabec"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.0/README.txt",
-          "sha256": "9a1a1676559315f01cd1a6d210c1e2e1a0403ca22a10c8d70271dffa9079396a"
+          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.1/README.txt",
+          "sha256": "92625830a68de97f49f69f8db625d5a00fefb71aee9264195c36ba974eaadb89"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.0/安装说明.txt",
-          "sha256": "c5a3b20c74fc3bf9910111c9b7e1124656fda0613b816b0ef2632614bc21bc0a"
+          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.1/安装说明.txt",
+          "sha256": "3c263635fcd21b18d3f56ce6675408148114822f50c61ca7e6014c870a233487"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.thirdparty.runninghub-h3-r2v-soundtrack",
+      "version": "1.0.0",
+      "kind": "installable",
+      "validation": "sdk_package_and_install_envelope_validated",
+      "sourceManifest": "packages/cloud-adapters/runninghub-h3-r2v-soundtrack/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.0/adapter-install.json",
+          "sha256": "650e078d227c1d6f79e0f614ba86c562c44a46328d57a97e2da5057d27a03e8d"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.0/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.0/package/adapter.wasm",
+          "sha256": "fcb5d88775f64678c194c1418a1710904885387eb540b598f23c70a64a268d6b"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.0/package/manifest.json",
+          "sha256": "43faa0168e235ac8e52a39e8fb378a6980158195981d6625d99309bb57d69b5e"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.0/package/manifest.sha256",
+          "sha256": "24b75c6b89d8e1ef743aefb6864b876b082ae76495303eff0db12ed789c42c29"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.0/README.txt",
+          "sha256": "716f342e58c5c6b2c19dc72f068297be4799596c0ecbcd76e95380d7b1504e4a"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.0/安装说明.txt",
+          "sha256": "712dd37fe5e03e20d76a33490e0c932d7cd4d4a6e818aa262a20cdbbfc0cef84"
         }
       ]
     }
