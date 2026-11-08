@@ -10,7 +10,6 @@
     "speech": { "bridge": true, "worker": true, "status": "supported" },
     "voiceDesign": { "bridge": true, "worker": true, "status": "supported" },
     "sfx": { "bridge": true, "worker": true, "status": "supported" },
-    "avatar": { "bridge": true, "worker": true, "status": "supported" },
     "lipsync": { "bridge": true, "worker": true, "status": "supported" },
     "videoUpscale": { "bridge": false, "worker": false, "status": "unsupported" },
     "videoFaceRefine": { "bridge": false, "worker": false, "status": "unsupported" },

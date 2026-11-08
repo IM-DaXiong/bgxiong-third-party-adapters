@@ -239,21 +239,6 @@ SDK 类型：`Invocation`。业务字段用 `inv.payload::<T>()` 反序列化。
 
 ---
 
-#### 槽 `avatar`
-
-**submit**
-
-| Wire 字段 | 类型 | 含义 |
-|-----------|------|------|
-| `imagePath` | `string` | 驱动用图像路径（宿主本地路径语义） |
-| `audioPath` | `string?` | 驱动用音频路径 |
-| `prompt` | `string?` | 附加提示 |
-| `extra` | `object?` | 附加上下文 |
-
-**query**：`{ "vendorTaskId": "…" }`
-
----
-
 #### 槽 `lipsync`
 
 **submit**

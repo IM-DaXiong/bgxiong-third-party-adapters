@@ -239,21 +239,6 @@ Image slots **must not** use `resolution.mode=range` (a 1-D scalar cannot drive 
 
 ---
 
-#### Slot `avatar`
-
-**submit**
-
-| Wire field | Type | Meaning |
-|------------|------|---------|
-| `imagePath` | `string` | Driving image path (host local path semantics). |
-| `audioPath` | `string?` | Driving audio path. |
-| `prompt` | `string?` | Extra prompt. |
-| `extra` | `object?` | Extra context. |
-
-**query**: `{ "vendorTaskId": "…" }`
-
----
-
 #### Slot `lipsync`
 
 **submit**

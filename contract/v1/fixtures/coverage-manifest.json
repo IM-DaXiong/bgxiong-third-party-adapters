@@ -10,7 +10,6 @@
     { "id": "06-minimax-h3-video", "surfaces": ["video_minimax_h3"] },
     { "id": "07-seedance-video-av", "surfaces": ["video_seedance_2_0"] },
     { "id": "08-speech-openai", "surfaces": ["speech_openai_compat"] },
-    { "id": "09-avatar-kling", "surfaces": ["avatar/kling"] },
     { "id": "10-lipsync", "surfaces": ["lipsync"] },
     { "id": "11-sfx", "surfaces": ["sfx"] },
     { "id": "12-upscale-refine", "surfaces": ["video_upscale", "video_face_refine", "image_upscale"] },
