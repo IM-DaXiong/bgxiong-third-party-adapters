@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "workflowId",
+    "taskId"
+  ],
+  "properties": {
+    "workflowId": {
+      "const": "2119441622462193666"
+    },
+    "taskId": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

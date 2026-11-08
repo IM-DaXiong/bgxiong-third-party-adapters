@@ -18,7 +18,7 @@
 - 提交：`POST /openapi/v2/run/workflow/{WORKFLOW}`，body 为整图 JSON 字符串 + 空 `nodeInfoList`。
 - 底图来自用户上传的 `video_minimax_h3_r2v.json`：原文旁路存 `workflows/video_minimax_h3_r2v.ui.json`，提交用 API 格式在 `src/workflow-api.json`，两者 20 个功能节点逐一对齐。
 - 官方接口说明（提交、查询、上传、结果字段，以及本包为何多带 `workflow` 整图）：[docs/RUNNINGHUB-WORKFLOW-2119436868289912833.md](docs/RUNNINGHUB-WORKFLOW-2119436868289912833.md)。
-- 不改 Turbo、Spectrum、经典 `H3-多参` 包。
+- 不改 Turbo、Spectrum、经典 `H3-多参` 包。原声成片是独立包 `runninghub-h3-r2v-soundtrack`（工作流 `2119441622462193666`），成片音轨接用户原声，不并进本包。
 
 ## 本地验证
 

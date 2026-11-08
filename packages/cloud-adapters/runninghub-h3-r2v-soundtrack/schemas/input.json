@@ -1,0 +1,159 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "inputMode",
+    "prompt",
+    "referenceImages",
+    "referenceAudios",
+    "durationSeconds",
+    "fps",
+    "seed",
+    "advanced",
+    "aspectRatio",
+    "resolutionValue"
+  ],
+  "properties": {
+    "inputMode": {
+      "const": "multi_image_to_video",
+      "default": "multi_image_to_video",
+      "title": "输入模式",
+      "description": "本操作固定为有序参考图加恰好1段原声；不按图片数量推断其它模式。不支持文生视频/首尾帧/参考视频。",
+      "type": "string"
+    },
+    "prompt": {
+      "type": "string",
+      "minLength": 1,
+      "title": "提示词原文",
+      "description": "用户确认后的完整文字，保留换行与素材引用文本；不截断、不擅自优化。"
+    },
+    "referenceImages": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 9,
+      "title": "有序参考图",
+      "description": "1～9张有序参考图；增减与排序以当前工作台选择为准。",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "mediaId"
+        ],
+        "properties": {
+          "mediaId": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "referenceAudios": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "title": "原声",
+      "description": "恰好1段。同一段同时作为对口型参考，并直接接到成片音轨；不使用模型解码音。",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "mediaId"
+        ],
+        "properties": {
+          "mediaId": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "durationSeconds": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 30,
+      "default": 5,
+      "title": "时长（秒）",
+      "description": "整数秒1～30；本适配包按用户要求将最大目标时长限制为30秒。"
+    },
+    "fps": {
+      "const": 24,
+      "default": 24,
+      "title": "帧率",
+      "description": "H3官方节点原生音视频时间基准24fps；CreateVideo的可调封装帧率不等于生成帧率。",
+      "type": "integer"
+    },
+    "seed": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "default": 20261027,
+      "title": "随机种子",
+      "description": "用户所选整数种子；超范围显式结构错误，不静默截断。"
+    },
+    "advanced": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "audioUsage"
+      ],
+      "default": {
+        "audioUsage": "soundtrack_copy"
+      },
+      "title": "高级选项",
+      "properties": {
+        "audioUsage": {
+          "type": "string",
+          "enum": [
+            "soundtrack_copy"
+          ],
+          "default": "soundtrack_copy",
+          "title": "参考音用途",
+          "description": "仅支持原声成片（soundtrack_copy）。这段音频既是对口型参考，也是成片音轨。"
+        }
+      }
+    },
+    "aspectRatio": {
+      "type": "string",
+      "enum": [
+        "1:1",
+        "2:3",
+        "3:2",
+        "3:4",
+        "4:3",
+        "9:16",
+        "16:9",
+        "21:9"
+      ],
+      "default": "16:9",
+      "title": "画幅",
+      "description": "来自工作流ResolutionSelector官方选项；32像素对齐后的实际宽高比可能略有偏差。"
+    },
+    "resolutionValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "value"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "megapixels"
+        },
+        "value": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 16,
+          "multipleOf": 0.1,
+          "default": 0.4
+        }
+      },
+      "default": {
+        "kind": "megapixels",
+        "value": 0.4
+      },
+      "title": "清晰度（MP）",
+      "description": "官方ResolutionSelector接受0.1～16MP，步长0.1；默认0.4MP；实际运行仍受实例显存约束。"
+    }
+  }
+}
