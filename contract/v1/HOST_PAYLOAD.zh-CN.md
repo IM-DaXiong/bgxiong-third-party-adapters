@@ -372,6 +372,18 @@ SDK：`submit_accepted_with_applied` / `submit_completed_with_applied` + `Applie
 
 ---
 
+### 5.1 视频提示词格式描述（合同 1.3.0）
+
+每个视频或关键帧模型可在已有 capabilities JSON 的模型条目声明 `promptProjection`；没有新增 WIT 调用。字段合同见 `schemas/prompt-projection-capability.schema.json`，SDK 类型为 `PromptProjection`。
+
+- `profileId` 与 `version` 精确指向宿主注册的确定性投影器；宿主不通过插件名、模型展示名或工作流节点推断。
+- `defaultMethodName` 是已安装标准 Skill 包的名称。默认方法缺失、损坏或不兼容时显式不可用，不换包。
+- `inputModes` 非空、无重复，来自协议 `inputModeIds` 闭集；runtime-caps 同时声明 `implementedModeIds` 时必须是其子集。只允许协议 `promptProjectionSlots` 中的 video/keyframe；后处理槽不支持。
+- 模型能力已就绪但未声明专属格式时，使用明确标识的中立 `generic@1` 格式。能力缺失、探测失败或待确认均显式不可用，不能视为 Generic 声明。首次模型调用前，请求模式必须同时属于实际模型的 `implementedModeIds` 与格式的 `inputModes`。未知 profile/version、模式不支持、默认包不可用仍返回结构化失败，不替换已声明格式。SDK 只声明和校验中立字段，平台语法放在独立 adapter。
+
+宿主在首次模型调用前冻结目标快照、格式方法的包 digest/正文hash/资源hash、内容方法与文本模型。默认和自选格式经过同一服务及投影出口；GUI、F1、MCP 使用同一 business request、任务与回执。
+
+
 ## 6. 开发者怎么用
 
 1. 动手前顺序：**本文 → WIT → schema → `sdk/rust` 类型**。

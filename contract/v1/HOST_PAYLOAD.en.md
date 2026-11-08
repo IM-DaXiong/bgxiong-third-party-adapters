@@ -372,6 +372,18 @@ The host only understands this document — never a vendor node graph.
 
 ---
 
+### 5.1 Video prompt projection descriptor (contract 1.3.0)
+
+A video/keyframe model may declare `promptProjection` on its model entry in the existing capabilities JSON. No WIT call is added. See `schemas/prompt-projection-capability.schema.json` and SDK type `PromptProjection`.
+
+- `profileId` and `version` identify an exactly registered deterministic projector. The host never infers them from plugin names, model display names or workflow nodes.
+- `defaultMethodName` names an installed standard Skill package. Missing, corrupt or incompatible defaults are explicitly unavailable; another package is never substituted.
+- `inputModes` is nonempty, unique and uses protocol `inputModeIds`. When runtime caps declare `implementedModeIds`, it must be a subset. Only protocol `promptProjectionSlots` (video/keyframe) may carry the descriptor; post-process slots may not.
+- Ready model capabilities without a format declaration select the explicitly identified neutral `generic@1` format. Missing, failed or unconfirmed capabilities are unavailable, never a reason to assume Generic. Before a model call, the requested mode must belong to both the actual model's `implementedModeIds` and the selected format's `inputModes`. Unknown profiles/versions, unsupported modes and unavailable packages remain structured failures; no declared format is replaced. The SDK declares neutral fields; platform syntax lives in separate adapters.
+
+Before the first model call the host freezes the target, method package digest/body hash/resource hashes, content method and text model. Default and custom methods share the service and projector exit. GUI, F1 and MCP use the same business request, task and receipt.
+
+
 ## 6. How developers should use this
 
 1. Before coding: **this file → WIT → schemas → `sdk/rust` types**.

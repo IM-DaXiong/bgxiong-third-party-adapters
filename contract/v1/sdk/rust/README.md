@@ -17,7 +17,7 @@ payload builders for `submit` / `query`. The WIT world lives in
 crate with `wit-bindgen`; this SDK stays free of `wit-bindgen` so the same code compiles for
 host-side tests and for `bgx-adapter dev`.
 
-Closed sets (`protocolHostMajor`, `operations`, `capabilitySlots`) are read from
+Closed sets (`protocolHostMajor`, `operations`, `capabilitySlots`, `inputModeIds`, `promptProjectionSlots`, `promptProjectionIdMaxChars`) are read from
 crate-local `vendor-adapter-protocol.json` at compile time. This crate does not
 read host `app-contracts`, so you can copy `sdk/rust` out of the repo.
 
@@ -79,3 +79,5 @@ cargo component build --release --target wasm32-wasip2
 bgx-adapter check .
 bgx-adapter pack .
 ```
+
+Contract 1.3.0 adds neutral model-level `PromptProjection` declarations. See [upgrade notes](../../UPGRADE-1.3.0.md) and HOST_PAYLOAD section 5.1. Ready models without a declaration expose generic@1; unknown declarations or unavailable capabilities fail explicitly.

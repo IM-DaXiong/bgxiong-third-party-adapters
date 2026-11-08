@@ -14,6 +14,14 @@
 - contract/、examples/：公开合同与教学材料。
 - 用户分发目录统一名称bgxiong-third-party-adapters；实际新发行落盘和安装验收另记，目录合并不等于全包构建通过。
 
+## 2026-11-08 SDK 合同同步
+
+已同步合同 1.3.0 的平台无关 `PromptProjection` Rust 类型、协议闭集、schema 与中英字段说明，见 [升级说明](contract/v1/UPGRADE-1.3.0.md)。WIT 不变，Rust crate 版本仍为 1.2.0，合同版本与 crate 版本分开记账；同步来源为主程序提交 `c1f894644e51cb9394c1a123ff560a19f72f0cef`。保留公开仓库已有链接及案例独立改动，同时补充 V2 证据根目录说明。
+
+定向验证：`cargo test --manifest-path contract/v1/sdk/rust/Cargo.toml --offline` 的24项测试通过；本批修改Markdown链接、JSON解析和SDK模板镜像一致性检查通过。现有教学案例保留各自固定SDK快照，未批量重发案例包。
+
+本次是 SDK 源码和文档同步；既有第三方安装包、发行锁及下载版本未变，不代表已发布新的适配器安装包或通过真实厂商生成验收。
+
 ## 公开同步台账（2026-11-06）
 
 - 开源远程：`https://github.com/IM-DaXiong/bgxiong-third-party-adapters`（原 `bgxiong-vendor-adapters` 已更名指向同一仓库）。
