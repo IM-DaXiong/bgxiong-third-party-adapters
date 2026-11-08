@@ -173,7 +173,8 @@ impl CapabilityRegistry {
         if i["payloadJson"].as_str().and_then(|s| serde_json::from_str::<Value>(s).ok()).as_ref() != Some(&r) {
             return Err(ContractError::new("INVALID_INPUT", "/payloadJson", "invocation payload differs from frozen input"));
         }
-        crate::image_projection::enable(validate_input(&entry.contract, request)?, &entry.enabled_features)
+        let context = crate::image_projection::enable(validate_input(&entry.contract, request)?, &entry.enabled_features)?;
+        crate::video_speech::enable(context, &entry.enabled_features)
     }
 
     /// A binding replacement explicitly retires its old catalog entries; no fallback.

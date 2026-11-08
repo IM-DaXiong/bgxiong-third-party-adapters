@@ -28,6 +28,16 @@
       "id": "video-target-keyframes-v1",
       "requiredImports": [],
       "semantics": "Multi-keyframe video target correction, directional tracking progress/receipts, opaque mask freeze without analysisId"
+    },
+    {
+      "id": "operation-preflight-v1",
+      "requiredImports": [],
+      "semantics": "Metadata-only operation preflight with frozen operation/schema/configuration identity; no submit, upload, credentials or checkpoints"
+    },
+    {
+      "id": "video-speech-v1",
+      "requiredImports": [],
+      "semantics": "Portrait and driving audio to a new video preserving the selected driving audio; separate from TTS and reference audio"
     }
   ],
   "baseImports": [

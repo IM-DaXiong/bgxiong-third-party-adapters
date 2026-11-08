@@ -397,7 +397,7 @@ async fn dispatch(
         })?;
     policy.check(&payload).map_err(host_error)?;
     let discover = matches!(args.operation.as_str(), "submit" | "upload")
-        || (args.operation == "probe" && payload["kind"] == "connectivity");
+        || (args.operation == "probe" && matches!(payload["kind"].as_str(), Some("connectivity" | "operation_preflight")));
     let mut reference: Option<CapabilityRef> = None;
     if discover {
         let mut discovery = invocation.clone();
@@ -433,7 +433,7 @@ async fn dispatch(
                 "Capability discovery failed; inspect discovery.response.json",
             ));
         }
-        if args.operation != "probe" {
+        if args.operation != "probe" || payload["kind"] == "operation_preflight" {
             let mut matches = host
                 .catalog()
                 .map_err(host_error)?
@@ -463,6 +463,30 @@ async fn dispatch(
                 ));
             }
         }
+    }
+    if args.operation == "probe" && payload["kind"] == "operation_preflight" {
+        // Resolve environmental readiness through the existing explicit probe;
+        // never let the caller certify service/model availability with a bool.
+        let mut connectivity = invocation.clone();
+        connectivity["requestId"] = json!(format!("sdk-preflight-connectivity-{}",
+            hash_bytes(invocation["requestId"].as_str().unwrap().as_bytes())));
+        connectivity["payloadJson"] = json!(json!({"schemaVersion":2,"kind":"connectivity",
+            "configuration":payload["configuration"]}).to_string());
+        let receipt = host.invoke_observed(
+            serde_json::from_value(connectivity.clone()).unwrap(), reference.clone(), None,
+            control(&connectivity)?, None, observer.clone(),
+        ).await.map_err(host_error)?;
+        let response = serde_json::to_value(receipt.response).unwrap();
+        check_response(&policy, &response)?;
+        workspace::atomic_json(workspace, &directory.join("preflight-connectivity.response.json"), &response)?;
+        if response.get("error").is_some() {
+            return Err(workspace::invalid("connectivity", "Operation preflight dependency probe failed"));
+        }
+        let selected = reference.as_ref().ok_or_else(|| workspace::invalid("capability", "Preflight selection is missing"))?;
+        let ready = host.catalog().map_err(host_error)?.iter()
+            .find(|view| view.reference == *selected).is_some_and(|view| view.environment_ready);
+        payload["environmentReady"] = json!(ready);
+        invocation["payloadJson"] = json!(payload.to_string());
     }
     provision_media(host, config, &mut invocation, &mut payload).await?;
     policy.check(&invocation).map_err(host_error)?;

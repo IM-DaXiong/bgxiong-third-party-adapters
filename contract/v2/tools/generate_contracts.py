@@ -13,6 +13,8 @@ import re
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "https://bgxiong.local/vendor-adapter/v2/"
 NAMES = {
+    "video-speech.input": "VideoSpeechInputV1", "video-speech.output": "VideoSpeechOutputV1",
+    "operation-preflight": "OperationPreflightV1",
     "invocation": "Invocation", "response": "Response",
     "capability-contract": "CapabilityContractV2", "media-input": "MediaInputV2",
     "operation-payload": "OperationPayloadV2", "result": "OperationResultV2",
@@ -41,14 +43,20 @@ DEFS = {("operation-payload", "submit"): "OperationSubmitV2",
 # Every other schema must have an explicit wire name; unknown categories fail.
 NON_WIRE_SCHEMAS = {"adoption-evidence"}
 
+def wire_stem(path):
+    stem = path.stem.removesuffix(".schema")
+    return "video-speech." + stem if path.parent.name == "video-speech-v1" else stem
+
+
 def wire_schema_paths():
     paths = sorted((ROOT / "schemas").glob("*.json"))
     paths += sorted((ROOT / "profiles/speech-v1").glob("*.schema.json"))
     paths += sorted((ROOT / "profiles/local-runtime-v1").glob("*.schema.json"))
-    stems = {p.stem.removesuffix(".schema") for p in paths}
+    paths += [ROOT / "profiles/video-speech-v1/input.schema.json", ROOT / "profiles/video-speech-v1/output.schema.json"]
+    stems = {wire_stem(p) for p in paths}
     if not set(NAMES) <= stems or stems - set(NAMES) - NON_WIRE_SCHEMAS:
         raise ValueError("missing wire schema or unclassified public schema")
-    return [p for p in paths if p.stem.removesuffix(".schema") in NAMES]
+    return [p for p in paths if wire_stem(p) in NAMES]
 
 
 def pascal(value):
@@ -65,7 +73,7 @@ def quoted(value):
 
 class Generator:
     def __init__(self):
-        self.schemas = {p.stem.removesuffix(".schema"): json.loads(p.read_text(encoding="utf-8"))
+        self.schemas = {wire_stem(p): json.loads(p.read_text(encoding="utf-8"))
                         for p in wire_schema_paths()}
         self.refs, self.pending, self.rs, self.ts, self.shapes = {}, {}, {}, {}, {}
         for stem, schema in self.schemas.items():

@@ -210,6 +210,7 @@ struct State {
     limits: Limits,
     features: Vec<String>,
     offline: bool,
+    metadata_only: bool,
 }
 pub struct Runtime {
     engine: Engine,
@@ -365,6 +366,9 @@ impl Runtime {
                     .iter()
                     .map(|v| v.as_str().unwrap().to_owned())
                     .collect(),
+                metadata_only: wire["operation"] == "probe"
+                    && serde_json::from_str::<Value>(&request.r#payload_json)
+                        .map_err(|_| RuntimeFault::new("INVALID_INPUT", "Invalid probe JSON"))?["kind"] == "operation_preflight",
                 offline,
             },
         );
@@ -633,7 +637,11 @@ impl Runtime {
                             let args = guest::from_val(&params[0])?;
                             let call = wire_abi::port_arguments_to_wire(&model, &method, &args)
                                 .map_err(|_| wasmtime::format_err!("Invalid managed port arguments"))?;
-                            let response = if network && store.data().offline {
+                            let response = if store.data().metadata_only && method != "host-log.log" {
+                                Err(bgx_adapter_v2_ports::wire::host::invalid_wire(
+                                    "Metadata-only preflight cannot access execution ports",
+                                ))
+                            } else if network && store.data().offline {
                                 Err(bgx_adapter_v2_ports::wire::host::invalid_wire(
                                     "Network is forbidden during capabilities/package validation",
                                 ))

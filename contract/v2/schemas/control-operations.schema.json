@@ -38,89 +38,103 @@
       "additionalProperties": false
     },
     "probeInput": {
-      "type": "object",
-      "properties": {
-        "schemaVersion": {
-          "const": 2
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 2
+            },
+            "kind": {
+              "enum": [
+                "package_validation",
+                "connectivity"
+              ]
+            },
+            "configuration": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "kind",
+            "configuration"
+          ],
+          "additionalProperties": false
         },
-        "kind": {
-          "enum": [
-            "package_validation",
-            "connectivity"
-          ]
-        },
-        "configuration": {
-          "type": "object"
+        {
+          "$ref": "https://bgxiong.local/vendor-adapter/v2/operation-preflight.schema.json#/$defs/request"
         }
-      },
-      "required": [
-        "schemaVersion",
-        "kind",
-        "configuration"
-      ],
-      "additionalProperties": false
+      ]
     },
     "probeResult": {
-      "type": "object",
-      "properties": {
-        "packageValid": {
-          "type": "boolean"
-        },
-        "connection": {
-          "enum": [
-            "not_checked",
-            "ready",
-            "failed"
-          ]
-        },
-        "authentication": {
-          "enum": [
-            "not_checked",
-            "ready",
-            "failed"
-          ]
-        },
-        "resources": {
-          "enum": [
-            "not_checked",
-            "ready",
-            "failed"
-          ]
-        },
-        "issues": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "code": {
-                "enum": [
-                  "INVALID_PACKAGE",
-                  "INVALID_CONFIGURATION",
-                  "CONNECTION_FAILED",
-                  "AUTHENTICATION_FAILED",
-                  "RESOURCE_UNAVAILABLE"
-                ]
-              },
-              "message": {
-                "type": "string"
-              }
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "packageValid": {
+              "type": "boolean"
             },
-            "required": [
-              "code",
-              "message"
-            ],
-            "additionalProperties": false
-          }
+            "connection": {
+              "enum": [
+                "not_checked",
+                "ready",
+                "failed"
+              ]
+            },
+            "authentication": {
+              "enum": [
+                "not_checked",
+                "ready",
+                "failed"
+              ]
+            },
+            "resources": {
+              "enum": [
+                "not_checked",
+                "ready",
+                "failed"
+              ]
+            },
+            "issues": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "enum": [
+                      "INVALID_PACKAGE",
+                      "INVALID_CONFIGURATION",
+                      "CONNECTION_FAILED",
+                      "AUTHENTICATION_FAILED",
+                      "RESOURCE_UNAVAILABLE"
+                    ]
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "code",
+                  "message"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "packageValid",
+            "connection",
+            "authentication",
+            "resources",
+            "issues"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "$ref": "https://bgxiong.local/vendor-adapter/v2/operation-preflight.schema.json#/$defs/result"
         }
-      },
-      "required": [
-        "packageValid",
-        "connection",
-        "authentication",
-        "resources",
-        "issues"
-      ],
-      "additionalProperties": false
+      ]
     },
     "uploadInput": {
       "type": "object",

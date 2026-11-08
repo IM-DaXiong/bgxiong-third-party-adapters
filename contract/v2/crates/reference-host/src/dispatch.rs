@@ -377,7 +377,7 @@ impl ReferenceHost {
         let result=async{
             let inner=self.inner.clone();let selected=reference.clone();let request=invocation.clone();let scope_copy=scope.clone();let c=control.clone();
             let prepared=blocking(move||inner.prepare(&request,selected.as_ref(),checkpoint_request.as_deref(),&scope_copy,&c)).await?;
-            let enabled=!(i["operation"]=="capabilities"||(i["operation"]=="probe"&&serde_json::from_str::<Value>(i["payloadJson"].as_str().unwrap()).map_err(|_|fail("INVALID_INPUT","Invalid probe payload"))?["kind"]=="package_validation"));
+            let enabled=!(i["operation"]=="capabilities"||(i["operation"]=="probe"&&serde_json::from_str::<Value>(i["payloadJson"].as_str().unwrap()).map_err(|_|fail("INVALID_INPUT","Invalid probe payload"))?["kind"].as_str().is_some_and(|kind| matches!(kind, "package_validation" | "operation_preflight"))));
             let network=NetworkPolicy::new(self.inner.package.verified(),scope.clone(),self.inner.config.network.clone(),enabled).map_err(native)?;
             let mut vault=CredentialVault::new().map_err(native)?;
             if enabled {for credential in &self.inner.config.credentials{
@@ -392,7 +392,7 @@ impl ReferenceHost {
             let http = Arc::new(http);
             let inner=self.inner.clone();let owner=scope.clone();let trace=blocking(move||Trace::new(&inner,&owner)).await?;
             trace.emit(json!({"stage":"dispatch","operation":i["operation"],"requestId":scope.request_id}),self.inner.snapshot.clone()).await?;
-            let kernel=Kernel{inner:self.inner.clone(),scope:scope.clone(),http:http.clone(),streams:HttpStreams::new(http,self.inner.package.verified().enabled_features().clone()),publisher:publisher.clone(),context:prepared.context.clone(),session:prepared.session.clone(),root_id:prepared.root_id.clone(),trace:trace.clone()};
+            let kernel=Kernel{metadata_only:i["operation"]=="probe" && serde_json::from_str::<Value>(i["payloadJson"].as_str().unwrap()).map_err(|_|fail("INVALID_INPUT","Invalid probe payload"))?["kind"]=="operation_preflight",inner:self.inner.clone(),scope:scope.clone(),http:http.clone(),streams:HttpStreams::new(http,self.inner.package.verified().enabled_features().clone()),publisher:publisher.clone(),context:prepared.context.clone(),session:prepared.session.clone(),root_id:prepared.root_id.clone(),trace:trace.clone()};
             let identity=serde_json::from_value(encode(self.inner.package.verified().identity())).map_err(|_|fail("INTERNAL_ERROR","Cannot encode verified package identity"))?;
             let worker=async{
                 let local_cancel=if i["operation"]=="cancel"{prepared.context.as_ref().map(|c|c.operation()["execution"]["cancellation"].clone()).filter(|v|v!="remote")}else{None};
@@ -517,6 +517,13 @@ impl Inner {
                 }
             }
             "probe" => {
+                if payload["kind"] == "operation_preflight" {
+                    let selected = reference.ok_or_else(|| fail("INVALID_INPUT", "Operation preflight requires an explicit capability reference"))?;
+                    bgx_adapter_v2_validator::operation_preflight::validate_request(
+                        &*lock(&self.catalog)?, selected, &self.binding,
+                        self.package.verified(), &payload,
+                    ).map_err(cv)?;
+                }
                 if payload["kind"] == "connectivity"
                     && payload["configuration"] != *self.binding.configuration()
                 {
@@ -736,6 +743,9 @@ impl Inner {
                     .map_err(cv)?;
             }
             "probe" => {
+                let payload: Value = serde_json::from_str(i["payloadJson"].as_str().unwrap())
+                    .map_err(|_| fail("INVALID_INPUT", "Invalid probe payload"))?;
+                if payload["kind"] == "operation_preflight" { return Ok(None); }
                 if let Some(reference) = reference {
                     lock(&self.catalog)?
                         .set_readiness(reference, data)
@@ -1035,6 +1045,7 @@ impl ManagedHost for ObservedKernel {
     }
 }
 struct Kernel {
+    metadata_only: bool,
     inner: Arc<Inner>,
     scope: LeaseScope,
     http: Arc<HttpBroker>,
@@ -1054,6 +1065,12 @@ impl ManagedHost for Kernel {
                 .map_err(host_error)?;
             let args = &call["args"];
             let method = call["method"].as_str().unwrap();
+            // Preflight has no media leases, remote jobs or checkpoint authority.
+            // Unknown dependencies must report blocked; content analysis is a
+            // separate explicit operation. Only diagnostic logging is allowed.
+            if self.metadata_only && method != "host-log.log" {
+                return Err(policy::error("UNSUPPORTED_FEATURE", "Metadata-only preflight cannot access execution ports"));
+            }
             let outcome: std::result::Result<Value, HostError> = async {
             let access = self.http.media.clone();
             let a = args.clone();

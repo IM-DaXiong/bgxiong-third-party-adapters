@@ -62,6 +62,7 @@ pub fn validate_task_input(
         ));
     }
     Ok(ValidatedOperationInput {
+        video_speech: original.video_speech,
         image_projection: original.image_projection,
         contract: original.contract.clone(),
         operation: original.operation.clone(),
@@ -254,6 +255,7 @@ pub fn validate_result(
 ) -> Result<(), ContractError> {
     let value = crate::input::as_value(result)?;
     crate::image_projection::validate_result(context, &value)?;
+    crate::video_speech::validate_result(context, &value)?;
     declared_result(
         &context.registry,
         context.operation(),
@@ -338,6 +340,12 @@ pub fn validate_response(
             serde_json::from_str(i["payloadJson"].as_str().unwrap()).map_err(|_| {
                 ContractError::new("INVALID_INPUT", "/payloadJson", "invalid probe payload")
             })?;
+        if request["kind"] == "operation_preflight" {
+            return crate::operation_preflight::validate_result(&request, &data);
+        }
+        if data["kind"] == "operation_preflight" {
+            return Err(ContractError::new("INVALID_INPUT", "/kind", "legacy probe cannot return operation preflight"));
+        }
         if request["kind"] == "package_validation"
             && ["connection", "authentication", "resources"]
                 .iter()

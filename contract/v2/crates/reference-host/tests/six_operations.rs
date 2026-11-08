@@ -89,13 +89,22 @@ fn http(host:&mut dyn Host,config:&Value,path:&str,body:Value)->Value{
 impl Adapter for Guest{fn invoke(request:Invocation,host:&mut dyn Host)->Response{
  let i=serde_json::to_value(&request).unwrap();let op=i["operation"].as_str().unwrap();let p:Value=serde_json::from_str(i["payloadJson"].as_str().unwrap()).unwrap();
  let _:()=host::call(host,"host-log.log",&json!({"level":"info","code":"six.operation","message":op})).unwrap();
- let _:()=host::call(host,"host-state.put",&json!({"key":"last","value":op})).unwrap();let saved:Option<String>=host::call(host,"host-state.get",&json!({"key":"last"})).unwrap();assert_eq!(saved.as_deref(),Some(op));
+ if p["kind"]=="operation_preflight" {
+   let denied:Result<(),_>=host::call(host,"host-state.put",&json!({"key":"last","value":op}));assert!(denied.is_err());
+ }else{
+   let _:()=host::call(host,"host-state.put",&json!({"key":"last","value":op})).unwrap();let saved:Option<String>=host::call(host,"host-state.get",&json!({"key":"last"})).unwrap();assert_eq!(saved.as_deref(),Some(op));
+ }
  let result=match op{
   "capabilities"=>serde_json::from_str(include_str!("capabilities.json")).unwrap(),
   "probe"=>{
     if p["kind"]=="package_validation"{
       let denied:Result<Value,_>=host::call(host,"host-http.execute",&json!({"plan":{"method":"GET","url":"http://127.0.0.1/forbidden","headers":[],"generatedHeaders":[],"body":{"kind":"none"},"sink":{"kind":"buffer","maxBytes":64},"timeoutMs":100},"credential":null}));assert!(denied.is_err());
       json!({"packageValid":true,"connection":"not_checked","authentication":"not_checked","resources":"not_checked","issues":[]})
+    }else if p["kind"]=="operation_preflight"{
+      let denied:Result<Value,_>=host::call(host,"host-http.execute",&json!({"plan":{"method":"GET","url":"http://127.0.0.1/forbidden","headers":[],"generatedHeaders":[],"body":{"kind":"none"},"sink":{"kind":"buffer","maxBytes":64},"timeoutMs":100},"credential":null}));assert!(denied.is_err());
+      let denied:Result<String,_>=host::call(host,"host-media.create",&json!({"kind":"file","mimeHint":"application/octet-stream"}));assert!(denied.is_err());
+      json!({"kind":"operation_preflight","status":"ready","requestDigest":p["requestDigest"],
+          "specification":{"width":512,"height":512,"fps":25,"frameCount":50,"audioDurationMs":2000,"videoDurationMs":2000,"maxTailDifferenceMs":0,"audioPolicy":"preserve_driving_audio"}})
     }else{
       let denied:Result<Value,_>=host::call(host,"host-http.execute",&json!({"plan":{"method":"GET","url":"http://127.0.0.1/forbidden","headers":[],"generatedHeaders":[],"body":{"kind":"none"},"sink":{"kind":"buffer","maxBytes":64},"timeoutMs":100},"credential":null}));assert!(denied.is_err());
       http(host,&p["configuration"],"/probe",json!({"kind":"none"}));
@@ -134,7 +143,7 @@ bgx_adapter_v2_sdk::export_adapter!(Guest);
         build(source.path(),&["generate-lockfile","--offline"]);
         let make=|label:&str|{fs::write(source.path().join("src/lib.rs"),guest.replace("ADAPTER_LABEL",label)).unwrap();build(source.path(),&["build","--release","--locked","--offline","--target","wasm32-wasip2"]);
             let root=tempfile::tempdir().unwrap();let artifact=fs::read(source.path().join("target/wasm32-wasip2/release/six_operation_guest.wasm")).unwrap();fs::write(root.path().join("adapter.wasm"),&artifact).unwrap();
-            let manifest=json!({"schemaVersion":2,"pluginId":"local.six","displayName":label,"version":"1.0.0","protocolRange":{"min":2,"max":2},"requiredFeatures":["stream-events-v1"],"optionalFeatures":[],"language":"rust","entry":"adapter.wasm","artifactSha256":hash_bytes(&artifact),"publisherId":null,"publisherKeyId":null,"requestedCapabilities":{"endpointPolicy":["userConfigurable","allowPrivateNetwork"],"networkHosts":[],"allowPrivateNetwork":true,"auth":["bearer","hmac-sha256"],"mediaSlots":["image","file"],"stateBytes":1024,"embeddedHeaders":[]},"limits":{"memoryBytes":67108864,"fuel":1000000000,"wallMs":5000,"outputBytes":1048576}});let bytes=serde_json::to_vec(&manifest).unwrap();fs::write(root.path().join("manifest.json"),&bytes).unwrap();fs::write(root.path().join("manifest.sha256"),format!("{} adapter.wasm\n{} manifest.json\n",hash_bytes(&artifact),hash_bytes(&bytes))).unwrap();root};
+            let manifest=json!({"schemaVersion":2,"pluginId":"local.six","displayName":label,"version":"1.0.0","protocolRange":{"min":2,"max":2},"requiredFeatures":["stream-events-v1","operation-preflight-v1"],"optionalFeatures":[],"language":"rust","entry":"adapter.wasm","artifactSha256":hash_bytes(&artifact),"publisherId":null,"publisherKeyId":null,"requestedCapabilities":{"endpointPolicy":["userConfigurable","allowPrivateNetwork"],"networkHosts":[],"allowPrivateNetwork":true,"auth":["bearer","hmac-sha256"],"mediaSlots":["image","file"],"stateBytes":1024,"embeddedHeaders":[]},"limits":{"memoryBytes":67108864,"fuel":1000000000,"wallMs":5000,"outputBytes":1048576}});let bytes=serde_json::to_vec(&manifest).unwrap();fs::write(root.path().join("manifest.json"),&bytes).unwrap();fs::write(root.path().join("manifest.sha256"),format!("{} adapter.wasm\n{} manifest.json\n",hash_bytes(&artifact),hash_bytes(&bytes))).unwrap();root};
         let package_a=make("adapter-a");let package_b=make("adapter-b");Fixture{_source:source,package_a,package_b,sdk}
     })
 }
@@ -176,6 +185,7 @@ fn make_host(workspace: DevelopmentWorkspace, origin: &str, path: &Path) -> Refe
     let f = fixture();
     let mut trust = TrustContext::default();
     trust.supported_features.insert("stream-events-v1".into());
+    trust.supported_features.insert("operation-preflight-v1".into());
     let package = LoadedPackage::load(path, &trust).unwrap();
     let binding = Binding::new(
         "binding".into(),
@@ -202,6 +212,29 @@ fn submit(reference: &CapabilityRef, origin: &str) -> Value {
 }
 fn task(reference: &CapabilityRef, origin: &str) -> Value {
     json!({"schemaVersion":2,"modelId":reference.model_id,"capabilityKey":reference.capability_key,"operationId":reference.operation_id,"operationVersion":reference.operation_version,"vendorTaskId":"real-job-one","resumeToken":null,"configuration":{"endpointBaseUrl":origin,"credentialRef":"stable-credential"}})
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn operation_preflight_runs_through_worker_without_network_or_media_side_effects() {
+    let f = fixture();
+    let (origin, calls, server) = server().await;
+    let directory = tempfile::tempdir().unwrap();
+    let workspace = DevelopmentWorkspace::create(directory.path()).unwrap();
+    let host = make_host(workspace, &origin, f.package_a.path());
+    host.invoke(invocation("capabilities", "preflight-caps", json!({}), "generic"), None, None, control(), None).await.unwrap();
+    let reference = host.catalog().unwrap().into_iter().find(|v| v.reference.operation_id == "local.six/async").unwrap().reference;
+    let configuration = json!({"endpointBaseUrl":origin,"credentialRef":"stable-credential"});
+    host.invoke(invocation("probe", "preflight-connect", json!({"schemaVersion":2,"kind":"connectivity","configuration":configuration}), "video"), Some(reference.clone()), None, control(), None).await.unwrap();
+    let before = calls.lock().unwrap().clone();
+    let request = json!({"schemaVersion":2,"kind":"operation_preflight","environmentReady":true,
+        "modelId":reference.model_id,"capabilityKey":reference.capability_key,"operationId":reference.operation_id,
+        "operationVersion":reference.operation_version,"inputSchemaDigest":reference.input_schema_digest,
+        "requestDigest":"a".repeat(64),"configuration":configuration,"input":{"prompt":"preflight","strength":0.5},"mediaMetadata":[]});
+    let result = host.invoke(invocation("probe", "operation-preflight", request, "video"), Some(reference), None, control(), None).await.unwrap();
+    assert_eq!(data(&result.response)["status"], "ready");
+    assert_eq!(*calls.lock().unwrap(), before);
+    host.wait_idle().await.unwrap();
+    server.abort();
 }
 #[derive(Default)]
 struct Sink(Mutex<Vec<Value>>);

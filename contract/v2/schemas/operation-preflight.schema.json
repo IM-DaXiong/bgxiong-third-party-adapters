@@ -1,0 +1,337 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bgxiong.local/vendor-adapter/v2/operation-preflight.schema.json",
+  "title": "OperationPreflightV1",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/request"
+    },
+    {
+      "$ref": "#/$defs/result"
+    }
+  ],
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "interval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "startMs",
+        "endMs"
+      ],
+      "properties": {
+        "startMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "endMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      }
+    },
+    "reason": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "enum": [
+            "INPUT_CONSTRAINT",
+            "PARAMETER_CONSTRAINT",
+            "CONFIGURATION_REQUIRED",
+            "RESOURCE_UNAVAILABLE",
+            "SERVICE_UNAVAILABLE",
+            "STALE_IDENTITY"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "width",
+        "height",
+        "fps",
+        "frameCount",
+        "audioDurationMs",
+        "videoDurationMs",
+        "maxTailDifferenceMs",
+        "audioPolicy"
+      ],
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "fps": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "frameCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "audioDurationMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "videoDurationMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "maxTailDifferenceMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "audioPolicy": {
+          "const": "preserve_driving_audio"
+        }
+      }
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "kind",
+        "modelId",
+        "capabilityKey",
+        "operationId",
+        "operationVersion",
+        "inputSchemaDigest",
+        "requestDigest",
+        "input",
+        "configuration",
+        "mediaMetadata",
+        "environmentReady"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 2
+        },
+        "kind": {
+          "const": "operation_preflight"
+        },
+        "modelId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "capabilityKey": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operationVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "inputSchemaDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "requestDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "input": {
+          "type": "object"
+        },
+        "configuration": {
+          "type": "object"
+        },
+        "mediaMetadata": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/mediaMetadata"
+          }
+        },
+        "environmentReady": {
+          "type": "boolean",
+          "description": "Host-attested readiness from the selected binding connectivity probe, never a UI readiness claim."
+        }
+      }
+    },
+    "result": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "status",
+            "requestDigest",
+            "specification"
+          ],
+          "properties": {
+            "kind": {
+              "const": "operation_preflight"
+            },
+            "status": {
+              "const": "ready"
+            },
+            "requestDigest": {
+              "$ref": "#/$defs/digest"
+            },
+            "specification": {
+              "$ref": "#/$defs/specification"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "status",
+            "requestDigest",
+            "reasons",
+            "candidateIntervals"
+          ],
+          "properties": {
+            "kind": {
+              "const": "operation_preflight"
+            },
+            "status": {
+              "const": "adjustment_required"
+            },
+            "requestDigest": {
+              "$ref": "#/$defs/digest"
+            },
+            "reasons": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/reason"
+              }
+            },
+            "candidateIntervals": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/interval"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "status",
+            "requestDigest",
+            "reasons"
+          ],
+          "properties": {
+            "kind": {
+              "const": "operation_preflight"
+            },
+            "status": {
+              "const": "blocked"
+            },
+            "requestDigest": {
+              "$ref": "#/$defs/digest"
+            },
+            "reasons": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/reason"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "mediaMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mediaId",
+        "kind",
+        "sha256",
+        "mime"
+      ],
+      "properties": {
+        "mediaId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "image",
+            "audio",
+            "video",
+            "file"
+          ]
+        },
+        "sha256": {
+          "$ref": "#/$defs/digest"
+        },
+        "mime": {
+          "type": "string",
+          "minLength": 1
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "durationMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "sampleRateHz": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "channels": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "sourceInterval": {
+          "$ref": "#/$defs/interval"
+        },
+        "sourceDurationMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      }
+    }
+  }
+}

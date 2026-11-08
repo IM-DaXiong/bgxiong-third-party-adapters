@@ -177,6 +177,7 @@ pub fn validate_input(
     )?;
     let contract_digest = hash_bytes(&serde_json::to_vec(&c).unwrap());
     Ok(ValidatedOperationInput {
+        video_speech: false,
         image_projection: false,
         contract: c,
         operation: op,

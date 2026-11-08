@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bgxiong.local/vendor-adapter/v2/profiles/video-speech-v1/output.schema.json",
+  "title": "VideoSpeechV1Output",
+  "description": "SOURCE DRAFT: completed operation payload. Output mediaId resolves through the existing managed output channel. Host independently probes the downloaded file before creating a new version.",
+  "type": "object", "additionalProperties": false,
+  "required": ["schemaVersion", "video", "receipt"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "video": {
+      "type": "object", "additionalProperties": false,
+      "required": ["mediaId", "width", "height", "fps", "frameCount", "hasAudio", "audioDurationMs", "videoDurationMs"],
+      "properties": {
+        "mediaId": {"type": "string", "minLength": 1},
+        "width": {"type": "integer", "minimum": 1, "maximum": 9007199254740991},
+        "height": {"type": "integer", "minimum": 1, "maximum": 9007199254740991},
+        "fps": {"type": "number", "exclusiveMinimum": 0},
+        "frameCount": {"type": "integer", "minimum": 1, "maximum": 9007199254740991},
+        "hasAudio": {"const": true},
+        "audioDurationMs": {"type": "integer", "minimum": 1, "maximum": 9007199254740991},
+        "videoDurationMs": {"type": "integer", "minimum": 1, "maximum": 9007199254740991}
+      }
+    },
+    "receipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["portraitMediaId", "drivingAudioMediaId", "drivingAudioSha256", "drivingAudioDurationMs", "audioPolicy"],
+      "properties": {
+        "portraitMediaId": {"type": "string", "minLength": 1},
+        "drivingAudioMediaId": {"type": "string", "minLength": 1},
+        "drivingAudioSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "drivingAudioDurationMs": {"type": "integer", "minimum": 1, "maximum": 9007199254740991},
+        "audioPolicy": {"const": "preserve_driving_audio"}
+      }
+    }
+  }
+}

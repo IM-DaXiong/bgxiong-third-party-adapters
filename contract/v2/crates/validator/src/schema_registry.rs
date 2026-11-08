@@ -23,6 +23,7 @@ pub(crate) fn public_documents() -> Vec<Value> {
         "response",
         "capability-contract",
         "control-operations",
+        "operation-preflight",
         "operation-payload",
         "result",
         "media-input",
@@ -41,6 +42,8 @@ pub(crate) fn public_documents() -> Vec<Value> {
         "host-channel-v1"
     ];
     for source in [
+        include_str!("../../../profiles/video-speech-v1/input.schema.json"),
+        include_str!("../../../profiles/video-speech-v1/output.schema.json"),
         include_str!("../../../profiles/image-projection-v1/projection.schema.json"),
         include_str!("../../../profiles/image-projection-v1/output.schema.json"),
         include_str!("../../../profiles/image-projection-v1/input.example.schema.json"),

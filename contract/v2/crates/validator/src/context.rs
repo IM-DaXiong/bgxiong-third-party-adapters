@@ -23,6 +23,7 @@ impl std::error::Error for ContractError {}
 
 /// Immutable snapshot; only successful validation can construct one.
 pub struct ValidatedOperationInput {
+    pub(crate) video_speech: bool,
     pub(crate) image_projection: bool,
     pub(crate) contract: Value,
     pub(crate) operation: Value,

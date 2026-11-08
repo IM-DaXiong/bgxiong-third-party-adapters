@@ -1,0 +1,19 @@
+# video-speech-v1 (isolated source draft; not registered)
+
+This is isolated T02 source implementation. Control probe routing, native validation, CLI selection and execution-port restrictions are written but unverified. Generated types are pending. Compilation, tests and model acceptance are NOT_RUN. The ongoing 0.6.1111 packaging must not consume this checkout.
+
+Use capabilityKey `video.speech` and transportSlot `video`. This is separate from TTS `speech-v1`. Operation identity remains in the existing V2 envelope. Input contains one portrait and one prepared driving-audio segment, each using managed mediaId references. Declare roles `portrait` and `driving_audio` at `/portrait` and `/drivingAudio`. Additional references require explicit operation schema and mediaSlots declarations.
+
+The application owns source permissions, source audio interval and destination revision. It prepares the actual selected audio outside database transactions. Adapters receive measured segment metadata and content SHA256, never application database paths or destination authority. Preserve instruction verbatim, including an empty string. Specialize the closed parameters object using only supported fields; unknown fields must fail.
+
+Output contains exactly one managed video with audio and measured metadata plus source receipt. The host independently probes and decodes downloaded bytes before adding a new version. Receipts do not establish audiovisual acceptance. Preserve all selected driving audio; do not silently trim, stretch or pad it.
+
+Preflight accepts metadata only. It must not generate, charge or upload media. An adjustment updates the user's actual interval and requires another preflight. The adapter echoes requestDigest for correlation; only the application issues and revalidates an authorization-bound preflightDigest. Validate interval ordering, source bounds, response/request identity and receipt consistency in the authoritative Rust owner.
+
+The generic public request uses modelId, capabilityKey, operationId, operationVersion, inputSchemaDigest, input, frozen configuration, requestDigest and mediaMetadata. The native owner resolves CapabilityRef against the binding before validating operation input. Metadata contains no handles, URLs or bytes. Source interval and measured source duration must appear together and agree with prepared audio duration.
+
+Both features must be required. The reference host and runtime permit only diagnostic logging during preflight; HTTP, media, credentials, state and checkpoint ports are unavailable. Unknown dependencies must return blocked. Declarative HTTP profiles explicitly reject preflight until a suitable plan is implemented. Preflight results never update connectivity readiness.
+
+The control oneOf branch, semantic feature catalog, native validators, CLI/reference-host routing, runtime restrictions and five behavioral test sources are written. The generator now names the public preflight and speech input/output schemas; it has not run because its entry point includes verification assertions. Generated Rust/TypeScript/templates, SDK versioning, full submit/result profile enforcement, executed coverage and the controlled adapter-repository mirror remain pending. Existing package-validation and connectivity probes retain their closed contracts. Source changes do not establish support in any released host.
+
+Validation update: generated Rust/TypeScript and template mirrors are now produced. Targeted validator tests, tools/runtime compilation and the existing four worker operation regressions passed. Model and GUI acceptance remain NOT_RUN. The host checks environmentReady against the selected binding connectivity receipt; unknown environments cannot return ready. The CLI explicitly probes connectivity before dispatching metadata-only preflight, retains that receipt and injects catalog readiness.

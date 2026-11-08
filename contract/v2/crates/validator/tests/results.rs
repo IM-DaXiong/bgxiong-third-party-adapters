@@ -12,6 +12,54 @@ fn context(slots:Value)->bgx_adapter_v2_validator::ValidatedOperationInput{
 }
 fn completed(outputs:Value)->Value{json!({"kind":"completed","vendorTaskId":null,"appliedParams":null,"outputs":outputs,"data":{"description":"Structured result"},"usage":null})}
 
+fn speech_context() -> bgx_adapter_v2_validator::ValidatedOperationInput {
+    let fixture:Value=serde_json::from_str(include_str!("../../../examples/capabilities.json")).unwrap();
+    let mut c=fixture["capabilities"][0].clone();
+    c["capabilityKey"]=json!("video.speech");
+    c["operations"][0]["mediaSlots"]=json!([
+        {"role":"portrait","inputPointer":"/portrait","mediaKind":"image","minCount":1,"maxCount":1},
+        {"role":"driving_audio","inputPointer":"/drivingAudio","mediaKind":"audio","minCount":1,"maxCount":1}]);
+    c["operations"][0]["outputSlots"]=json!([{"role":"video","kind":"video","minCount":1,"maxCount":1}]);
+    c["operations"][0]["uiSchema"]["controls"]=json!([]);
+    for (name, path) in [("input", "input"), ("output", "output")] {
+        let raw=json!({"$ref":format!("https://bgxiong.local/vendor-adapter/v2/profiles/video-speech-v1/{path}.schema.json")}).to_string();
+        let digest=bgx_adapter_v2_validator::hash_bytes(raw.as_bytes());
+        for resource in c["schemas"].as_array_mut().unwrap() {
+            if resource["id"]==name {resource["schemaJson"]=json!(raw);resource["digest"]=json!(digest);}
+        }
+        c["operations"][0][format!("{name}Schema")]["digest"]=json!(digest);
+    }
+    let mut p:Value=serde_json::from_str::<Value>(include_str!("../../../examples/payloads.json")).unwrap()["validSubmit"].clone();
+    p["capabilityKey"]=json!("video.speech");p["inputSchemaDigest"]=c["operations"][0]["inputSchema"]["digest"].clone();
+    p["input"]=json!({"schemaVersion":1,"portrait":[{"mediaId":"portrait"}],"drivingAudio":[{"mediaId":"drive"}],
+        "audio":{"durationMs":2000,"sampleRateHz":24000,"channels":1,"sha256":"a".repeat(64)},"instruction":"","parameters":{}});
+    p["media"]=json!([
+        {"id":"portrait","kind":"image","handle":"image-lease","mime":"image/png","fileName":"portrait.png","byteLength":"10"},
+        {"id":"drive","kind":"audio","handle":"audio-lease","mime":"audio/wav","fileName":"drive.wav","byteLength":"10"}]);
+    let context=validate_input(&serde_json::from_value(c).unwrap(),&serde_json::from_value(p).unwrap()).unwrap();
+    bgx_adapter_v2_validator::video_speech::enable(context,&std::collections::BTreeSet::from([
+        "video-speech-v1".into(),"operation-preflight-v1".into()])).unwrap()
+}
+
+#[test]
+fn speech_completion_binds_video_and_full_original_audio_receipt() {
+    let context=speech_context();
+    let mut result=completed(json!([{"kind":"media","role":"video","media":{
+        "id":"video-result","kind":"video","handle":"video-lease","mime":"video/mp4","fileName":"speech.mp4","byteLength":"42"}}]));
+    result["data"]=json!({"schemaVersion":1,"video":{"mediaId":"video-result","width":512,"height":512,
+        "fps":25,"frameCount":50,"hasAudio":true,"audioDurationMs":2000,"videoDurationMs":2000},
+        "receipt":{"portraitMediaId":"portrait","drivingAudioMediaId":"drive","drivingAudioSha256":"a".repeat(64),
+            "drivingAudioDurationMs":2000,"audioPolicy":"preserve_driving_audio"}});
+    validate_result(&context,&serde_json::from_value(result.clone()).unwrap()).unwrap();
+    for field in ["audioDurationMs","mediaId","hasAudio"] {
+        let mut bad=result.clone();
+        bad["data"]["video"][field]=match field {"audioDurationMs"=>json!(1500),"mediaId"=>json!("other-video"),_=>json!(false)};
+        assert!(validate_result(&context,&serde_json::from_value(bad).unwrap()).is_err());
+    }
+    let mut bad=result.clone();bad["data"]["receipt"]["drivingAudioSha256"]=json!("b".repeat(64));
+    assert!(validate_result(&context,&serde_json::from_value(bad).unwrap()).is_err());
+}
+
 fn projection_context() -> bgx_adapter_v2_validator::ValidatedOperationInput {
     let fixture:Value=serde_json::from_str(include_str!("../../../examples/capabilities.json")).unwrap();
     let mut c=fixture["capabilities"][0].clone();

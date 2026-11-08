@@ -204,7 +204,8 @@ impl Session {
         if scrub(value(request)) != self.frozen.request {
             return Err(invalid());
         }
-        bgx_adapter_v2_validator::image_projection::enable(validate_input(&self.frozen.contract, request).map_err(|_| invalid())?, &self.features).map_err(|_| invalid())
+        let context = bgx_adapter_v2_validator::image_projection::enable(validate_input(&self.frozen.contract, request).map_err(|_| invalid())?, &self.features).map_err(|_| invalid())?;
+        bgx_adapter_v2_validator::video_speech::enable(context, &self.features).map_err(|_| invalid())
     }
     /// Offline completion adjudication; never grants submission or query authority.
     /// Reuses the ordinary result candidate, including all output/media checks.
@@ -573,6 +574,7 @@ impl Session {
                 serde_json::from_value(request).map_err(|_| invalid())?;
             let original =
                 bgx_adapter_v2_validator::image_projection::enable(validate_input(&self.frozen.contract, &request).map_err(|_| invalid())?, &self.features).map_err(|_| invalid())?;
+            let original = bgx_adapter_v2_validator::video_speech::enable(original, &self.features).map_err(|_| invalid())?;
             let mut host = media.validation_context(scope);
             for proof in &self.frozen.uploads {
                 host.uploads_by_ref.insert(

@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bgxiong.local/vendor-adapter/v2/profiles/video-speech-v1/preflight.schema.json",
+  "description": "Generic control preflight; operation input is validated against the selected package schema. Speech-specific semantics are validated by video_speech.rs.",
+  "$ref": "https://bgxiong.local/vendor-adapter/v2/operation-preflight.schema.json"
+}

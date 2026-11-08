@@ -6,6 +6,51 @@ use serde_json::{json, Value};
 fn package() -> VerifiedPackage {
     negotiated_package(false, false).unwrap()
 }
+
+fn preflight_package() -> VerifiedPackage {
+    let manifest=json!({"schemaVersion":2,"pluginId":"local.catalog","displayName":"Catalog","version":"1.0.0",
+        "protocolRange":{"min":2,"max":2},"requiredFeatures":["operation-preflight-v1"],"optionalFeatures":[],"language":"rust",
+        "entry":"adapter.wasm","artifactSha256":hash_bytes(b"test"),"publisherId":null,"publisherKeyId":null,
+        "requestedCapabilities":{"endpointPolicy":["userConfigurable"],"networkHosts":[],"allowPrivateNetwork":false,
+        "auth":["none"],"mediaSlots":[],"stateBytes":0,"embeddedHeaders":[]},
+        "limits":{"memoryBytes":65536,"fuel":1000,"wallMs":100,"outputBytes":256}});
+    let bytes=serde_json::to_vec(&manifest).unwrap();
+    let files=BTreeMap::from([("manifest.json".into(),hash_bytes(&bytes)),("adapter.wasm".into(),hash_bytes(b"test"))]);
+    let inventory=files.iter().map(|(k,v)|format!("{v} {k}\n")).collect::<String>();
+    let mut trust=TrustContext::default();
+    trust.supported_features.insert("operation-preflight-v1".into());
+    verify_package(&PackageContents{manifest_bytes:&bytes,hash_manifest_bytes:inventory.as_bytes(),signature:None,measured_file_hashes:&files},&trust).unwrap()
+}
+
+#[test]
+fn operation_preflight_binds_catalog_configuration_schema_and_media_summaries() {
+    use bgx_adapter_v2_validator::operation_preflight::validate_request;
+    let package = preflight_package();
+    let configuration=json!({"endpointBaseUrl":"https://example.invalid"});
+    let binding=Binding::new("preflight".into(),&package,1,configuration.clone()).unwrap();
+    let mut catalog=CapabilityRegistry::default();
+    let contracts=contracts();
+    let references=catalog.register(&package,&binding,&contracts).unwrap();
+    let reference=references.iter().find(|r| r.capability_key == "video.generate").unwrap();
+    let request=json!({"schemaVersion":2,"kind":"operation_preflight","environmentReady":false,"modelId":reference.model_id,
+        "capabilityKey":reference.capability_key,"operationId":reference.operation_id,"operationVersion":reference.operation_version,
+        "inputSchemaDigest":reference.input_schema_digest,"requestDigest":"a".repeat(64),
+        "input":{"prompt":"Keep user text","strength":0.5},"configuration":configuration,"mediaMetadata":[]});
+    validate_request(&catalog,reference,&binding,&package,&request).unwrap();
+    let mut forged=request.clone(); forged["environmentReady"]=json!(true);
+    assert!(validate_request(&catalog,reference,&binding,&package,&forged).is_err());
+    let stale=Binding::new("preflight".into(),&package,2,configuration).unwrap();
+    assert!(validate_request(&catalog,reference,&stale,&package,&request).is_err());
+    let mut wrong=request.clone(); wrong["inputSchemaDigest"]=json!("b".repeat(64));
+    assert!(validate_request(&catalog,reference,&binding,&package,&wrong).is_err());
+    let mut wrong=request.clone(); wrong["input"]["unadvertised"]=json!(true);
+    assert!(validate_request(&catalog,reference,&binding,&package,&wrong).is_err());
+    let mut wrong=request.clone(); wrong["configuration"]=json!({});
+    assert!(validate_request(&catalog,reference,&binding,&package,&wrong).is_err());
+    let mut wrong=request.clone(); wrong["mediaMetadata"]=json!([
+        {"mediaId":"unrelated","kind":"image","sha256":"c".repeat(64),"mime":"image/png"}]);
+    assert!(validate_request(&catalog,reference,&binding,&package,&wrong).is_err());
+}
 fn negotiated_package(required: bool, supported: bool) -> Result<VerifiedPackage,bgx_adapter_v2_validator::ContractError> {
     let mut manifest=json!({"schemaVersion":2,"pluginId":"local.catalog","displayName":"Catalog","version":"1.0.0",
         "protocolRange":{"min":2,"max":2},"requiredFeatures":[],"optionalFeatures":[],"language":"rust",

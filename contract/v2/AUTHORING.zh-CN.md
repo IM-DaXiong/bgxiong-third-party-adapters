@@ -220,3 +220,7 @@ command/exitCode 是证据声明，conform 不代替你执行所写命令；EVID
 `mediaSlots.inputPointer` 指向 `input` 内由该操作 inputSchema 声明的字段：可为媒体 ID 字符串、单键 `{ "mediaId": "..." }` 对象，或上述引用的数组。例如 `/source/mediaId` 指向字符串，`/referenceMediaIds` 指向字符串数组；旧 `/source` 指向单键对象仍有效。必须由 inputSchema 声明实际形状，不会自动转换输入或补造引用。
 
 所有形状执行同一 `minCount/maxCount`、槽内重复 ID、request.media ID 闭集及 mediaKind 校验；对象不允许额外键。媒体句柄仍经broker验证活动租约、包/绑定/请求归属及真实文件事实，字符串不是路径或URL，不赋予额外文件访问权限。缺失/null只在声明的最小数量及inputSchema允许时合法。
+
+## 操作预检源码实施（未发行）
+
+隔离语音驱动任务新增 `probe.kind=operation_preflight`。必须要求 `operation-preflight-v1`；语音驱动视频还必须要求 `video-speech-v1`。选择已发现操作的模型/操作/schema身份，传入包schema允许的input、冻结configuration和媒体摘要。运行时只允许诊断日志，服务/模型就绪未知必须阻断；不授权上传、生成或checkpoint写入。详见[语音驱动profile](profiles/video-speech-v1/README.zh-CN.md)。本批未编译未测试，生成类型和公开SDK发行尚待后续。

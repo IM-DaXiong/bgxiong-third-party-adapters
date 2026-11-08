@@ -725,6 +725,10 @@ impl Profile {
                 control,
             );
         }
+        if transport == "probe" && payload["kind"] == "operation_preflight" {
+            return error_response(invocation, "UNSUPPORTED_FEATURE",
+                "This declarative profile has no metadata-only operation preflight plan", None);
+        }
         let key = if transport == "probe" {
             self.probe.as_ref()
         } else {
