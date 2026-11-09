@@ -35,7 +35,9 @@ if ($LASTEXITCODE -ne 0) { throw 'Standard SDK pack failed.' }
 & $Cli check --sdk $Sdk --worker $Worker --project $PackageDirectory
 if ($LASTEXITCODE -ne 0) { throw 'Runtime package validation failed.' }
 $Installation.manifestSha256 = (Get-FileHash -LiteralPath (Join-Path $PackageDirectory 'manifest.json') -Algorithm SHA256).Hash.ToLowerInvariant()
-$Installation | ConvertTo-Json -Depth 32 | Set-Content -LiteralPath (Join-Path $OutputDirectory 'adapter-install.json') -Encoding utf8NoBOM
+$Json = $Installation | ConvertTo-Json -Depth 32
+$Utf8 = New-Object System.Text.UTF8Encoding $false
+[System.IO.File]::WriteAllText((Join-Path $OutputDirectory 'adapter-install.json'), $Json, $Utf8)
 $Saved = Get-Content -LiteralPath (Join-Path $OutputDirectory 'adapter-install.json') -Raw | ConvertFrom-Json
 if ($Saved.manifestSha256 -ne (Get-FileHash -LiteralPath (Join-Path $PackageDirectory 'manifest.json') -Algorithm SHA256).Hash.ToLowerInvariant()) { throw 'Installation manifest digest mismatch.' }
 Copy-Item -LiteralPath (Join-Path $Project '../../../LICENSE') -Destination $OutputDirectory

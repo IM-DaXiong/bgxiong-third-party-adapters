@@ -279,13 +279,13 @@ struct Workflow {
 }
 const TEXT: Workflow = Workflow {
     name: "text-to-image",
-    label: "RunningHub Qwen Image 2.1 文生图",
+    label: "千问 Image 2.1 文生图",
     id: "2119749068753825793",
     edit: false,
 };
 const EDIT: Workflow = Workflow {
     name: "image-edit",
-    label: "RunningHub Qwen Image 2.1 多参考图编辑",
+    label: "千问 Image 2.1 多参考图编辑",
     id: "2119750262788284418",
     edit: true,
 };
