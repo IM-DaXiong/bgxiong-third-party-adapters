@@ -7,4 +7,4 @@
 *.wit text eol=lf
 
 # Frozen release files must reproduce the checked-in SHA256 bytes on every platform.
-artifacts/releases/** -text
+artifacts/releases/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

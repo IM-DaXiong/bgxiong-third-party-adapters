@@ -27,7 +27,7 @@ try {
     $previousDigest = ($manifestText | ConvertFrom-Json).artifactSha256
     $artifactDigest = (Get-FileHash -LiteralPath (Join-Path $speechProject 'adapter.wasm') -Algorithm SHA256).Hash.ToLowerInvariant()
     if ($previousDigest -notmatch '^[0-9a-f]{64}$') { throw 'Invalid manifest artifact digest' }
-    [IO.File]::WriteAllText($speechManifest, $manifestText.Replace($previousDigest, $artifactDigest), [Text.UTF8Encoding]::new($false))
+    [IO.File]::WriteAllText($speechManifest, $manifestText.Replace($previousDigest, $artifactDigest).Replace("`r`n", "`n"), [Text.UTF8Encoding]::new($false))
     $speechManifestHash = (Get-FileHash -LiteralPath $speechManifest -Algorithm SHA256).Hash.ToLowerInvariant()
     $speechInventory = $artifactDigest + " adapter.wasm`n" + $speechManifestHash + " manifest.json`n"
     [IO.File]::WriteAllText((Join-Path $speechProject 'manifest.sha256'), $speechInventory, [Text.UTF8Encoding]::new($false))

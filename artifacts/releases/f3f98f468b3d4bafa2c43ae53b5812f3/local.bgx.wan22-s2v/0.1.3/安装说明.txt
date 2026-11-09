@@ -1,0 +1,7 @@
+在软件设置 → 第三方适配器 → 安装适配包中导入。
+有 adapter-install.json 时选择本目录；否则选择 package 并按作者声明填写安装配置。
+需要账号的包由用户在软件中绑定账号/填写密钥，不要将密钥保存到本目录。
+安装包校验不代表真实生成通过。
+pluginId=local.bgx.wan22-s2v
+version=0.1.3
+archiveStatus=sdk_package_validated
