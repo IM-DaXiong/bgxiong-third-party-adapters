@@ -1,6 +1,6 @@
 {
-  "artifactSha256": "f4349ea50158076e06871632918121a933980daef3a2fdcc33aed086029af1db",
-  "displayName": "Wan S2V 语音驱动",
+  "artifactSha256": "e8ee9c3f21c52e84acdb1f4fe34add20d09cfdde4895ea83b602f666cb8b260e",
+  "displayName": "Wan S2V 标准语音驱动",
   "entry": "adapter.wasm",
   "language": "rust",
   "limits": {
@@ -41,5 +41,5 @@
     "operation-preflight-v1"
   ],
   "schemaVersion": 2,
-  "version": "0.1.0"
+  "version": "0.1.1"
 }

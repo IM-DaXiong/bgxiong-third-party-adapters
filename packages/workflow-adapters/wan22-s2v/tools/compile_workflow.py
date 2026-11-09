@@ -7,6 +7,7 @@ from pathlib import Path
 import hashlib
 import json
 import urllib.request
+import argparse
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'workflows/source.json'
@@ -79,7 +80,11 @@ def compile_graph(source, declarations, terminal=113):
         def incoming(port):
             link = port.get('link')
             return resolve(scope, *edge_map[link], prefix, external) if link is not None else None
-        if node.get('mode') == 4:
+        # The original UI disables the entire standard branch as one group.
+        # Explicit terminal 168 selects that branch; its optional third
+        # continuation (174) stays bypassed, retaining the original 3 chunks.
+        selected_standard = terminal == 168 and prefix == '' and node_id >= 147 and node_id != 174
+        if node.get('mode') == 4 and not selected_standard:
             target_type = node['outputs'][slot]['type']
             ports = [p for p in node['inputs'] if p['type'] == target_type and p.get('link') is not None]
             if len(ports) != 1:
@@ -125,6 +130,9 @@ def compile_graph(source, declarations, terminal=113):
     return output, provenance
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--terminal', type=int, choices=[113,168], default=168)
+    args = parser.parse_args()
     raw = SOURCE.read_bytes()
     if hashlib.sha256(raw).hexdigest() != EXPECTED:
         raise ValueError('frozen certified source changed')
@@ -144,10 +152,10 @@ def main():
                 raise ValueError(f'node is unavailable: {kind}')
             declarations[kind] = info[kind]
         snapshot.write_text(json.dumps(declarations, ensure_ascii=False, indent=2)+'\n', encoding='utf-8', newline='\n')
-    graph, mapping = compile_graph(source, json.loads(snapshot.read_text(encoding='utf-8')))
+    graph, mapping = compile_graph(source, json.loads(snapshot.read_text(encoding='utf-8')), args.terminal)
     for filename, value in [('api.json', graph), ('node-map.json', mapping)]:
         (ROOT / 'workflows' / filename).write_text(json.dumps(value, ensure_ascii=False, indent=2)+'\n', encoding='utf-8', newline='\n')
-    print(f'Compiled terminal 113: {len(graph)} reachable native nodes; no generation submitted')
+    print(f'Compiled terminal {args.terminal}: {len(graph)} reachable native nodes; no generation submitted')
 
 if __name__ == '__main__':
     main()

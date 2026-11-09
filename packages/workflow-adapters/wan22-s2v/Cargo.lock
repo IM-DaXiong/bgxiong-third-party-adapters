@@ -20,7 +20,7 @@ dependencies = [
 
 [[package]]
 name = "bgx-wan22-s2v"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "bgx-adapter-v2-sdk",
  "serde_json",

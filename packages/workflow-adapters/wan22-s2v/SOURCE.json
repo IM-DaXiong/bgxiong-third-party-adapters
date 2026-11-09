@@ -2,11 +2,11 @@
   "status": "ISOLATED_CANDIDATE_NOT_RELEASED",
   "sourceWorkflow": "角色替换/video_wan2_2_14B_s2v.json",
   "sourceSha256": "9b017cde7f0564968cc7d2d2d3d044741a991e6662674b3913d5d77f92e9af71",
-  "terminalNode": "113",
-  "compiledNativeNodes": 25,
+  "terminalNode": "168",
+  "compiledNativeNodes": 24,
   "nodeMap": "workflows/node-map.json",
   "objectInfoSnapshotSha256": "c859b22c3432464cd03c802a692cdc494e59b5b8e20a93b20b5574c696ecf312",
-  "apiSha256": "d91f1a5d125c5deec3b282c8f96f573d19205a4faae44f8b0f8b653159ca580e",
+  "apiSha256": "9e05439cb134877b045bf23ffd84361c1ebc8ac066751a321c71569a07bc6f2f",
   "platformLogicOwner": "this package",
   "httpHelperSource": "packages/workflow-adapters/seedvr2-image/src/comfy.rs",
   "modelsIncluded": false,
@@ -14,18 +14,23 @@
   "acceptance": {
     "nativeTests": 3,
     "wasmBuild": "PASS",
-    "sdkPack": "PASS",
-    "sdkCapabilities": "PASS",
-    "operationPreflight": "PASS",
-    "realVideo": "PASS_TOOL_CHAIN_ONLY",
+    "realVideo": "PASS_STANDARD_SDK_CHAIN",
+    "mouthQuality": "MINIMAL_VISUAL_MOUTH_MOTION_OBSERVED_PHONEME_ALIGNMENT_NOT_VALIDATED",
     "applicationUserPath": "NOT_RUN",
-    "firstRealPrompt": "80acc4d7-6ff6-44ff-b65d-d8ccab26ec31",
-    "firstRealOutcome": "FAILED_AT_SAVE_VIDEO_DYNAMIC_COMBO_ENCODING",
-    "targetedCorrection": "Serialize dynamic combo prompt fields as dotted paths; preserve all generation nodes and original audio connection",
-    "speakingPrompt": "80b44092-ac3f-4991-babf-35855b5790d7",
-    "mouthQuality": "NOT_ACCEPTED_WEAK_MOUTH_MOTION",
-    "speakingVideoSha256": "7fd9234d1a48e15a69d8419765159ff87a5ca74337e0471baabe2b9784389e08",
-    "audioWaveformCorrelation": 0.9999786500298475
+    "outputSha256": "8f10f2143a64e54d498ebfa77588975f76660b4270cf76217b983607bf14cf5a",
+    "video": {
+      "width": 512,
+      "height": 512,
+      "frames": 34,
+      "fps": 16,
+      "durationMs": 2125,
+      "audioDurationMs": 2000,
+      "fullDecode": "PASS",
+      "originalAudioCorrelation": 0.9999786500298475
+    }
   },
-  "sdkSourceCommit": "9f957d08581341ac88e82f756638889c75e33d47"
+  "sdkSourceCommit": "9f957d08581341ac88e82f756638889c75e33d47",
+  "version": "0.1.1",
+  "priorFastCandidateCommit": "70260d6182ce774a88ecc7ba6fc046b047de60d1",
+  "branchSelection": "Explicitly activate original standard branch except optional fourth chunk 174; 20 steps, CFG6, no T2V acceleration LoRA"
 }

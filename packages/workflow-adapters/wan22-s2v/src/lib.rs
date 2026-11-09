@@ -8,7 +8,7 @@ use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
 
 const PLUGIN: &str = "local.bgx.wan22-s2v";
-const OPERATION: &str = "local.bgx.wan22-s2v/speak";
+const OPERATION: &str = "local.bgx.wan22-s2v/speak-standard";
 const INPUT: &str = include_str!("../schemas/input.schema.json");
 const OUTPUT: &str = include_str!("../schemas/output.schema.json");
 const CONFIG: &str = include_str!("../schemas/config.schema.json");
@@ -28,7 +28,7 @@ pub fn capabilities() -> Value {
     let c=schema("config",CONFIG); let r=schema("resume",RESUME);
     json!({"schemaVersion":2,"pluginId":PLUGIN,"pluginVersion":env!("CARGO_PKG_VERSION"),"capabilityContracts":[{
         "schemaVersion":2,"localId":"driving-audio","capabilityKey":"video.speech","transportSlot":"video",
-        "modelIds":["wan22-s2v-14b-4step"],"configurationSchema":{"id":"config","digest":c["digest"]},
+        "modelIds":["wan22-s2v-14b-standard"],"configurationSchema":{"id":"config","digest":c["digest"]},
         "operations":[{"id":OPERATION,"version":1,"label":"语音驱动",
             "inputSchema":{"id":"input","digest":i["digest"]},"outputSchema":{"id":"output","digest":o["digest"]},
             "resumeSchema":{"id":"resume","digest":r["digest"]},
@@ -44,7 +44,7 @@ pub fn capabilities() -> Value {
         "schemas":[i,o,c,r]}]})
 }
 
-/// Certified terminal 113 contains three equal latent chunks, a reference-latent
+/// Certified terminal 168 contains three equal latent chunks, a reference-latent
 /// prefix, and ImageFromBatch removing three decoded frames: 12*N - 2 frames.
 /// Audio is never cut, stretched or padded. The preflight declares the video tail.
 pub fn timing(duration_ms: u64) -> Result<(u64,u64,u64),Failure> {
@@ -68,13 +68,13 @@ pub fn graph(input: &Value, image: &str, audio: &str) -> Result<Value,Failure> {
     let mut g:Value=serde_json::from_str(include_str!("../workflows/api.json")).expect("frozen graph");
     for key in ["width","height"] {
         let value=params[key].as_u64().filter(|v| (256..=640).contains(v) && v%64==0).ok_or_else(||invalid("Dimensions must be multiples of 64 between 256 and 640"))?;
-        g["93"]["inputs"][key]=json!(value);
+        g["153"]["inputs"][key]=json!(value);
     }
-    for node in ["93","79:76","85:76"] { g[node]["inputs"]["length"]=json!(length); }
-    for (node, offset) in [("3",0),("79:77",1),("85:77",250)] { g[node]["inputs"]["seed"]=json!(seed+offset); }
-    g["52"]["inputs"]["image"]=json!(image); g["58"]["inputs"]["audio"]=json!(audio);
-    g["6"]["inputs"]["text"]=input["instruction"].clone();
-    g["113"]["inputs"]["filename_prefix"]=json!("video/wan22-s2v");
+    for node in ["153","172:76","165:76"] { g[node]["inputs"]["length"]=json!(length); }
+    for (node, offset) in [("152",0),("172:77",1),("165:77",250)] { g[node]["inputs"]["seed"]=json!(seed+offset); }
+    g["160"]["inputs"]["image"]=json!(image); g["162"]["inputs"]["audio"]=json!(audio);
+    g["159"]["inputs"]["text"]=input["instruction"].clone();
+    g["168"]["inputs"]["filename_prefix"]=json!("video/wan22-s2v");
     Ok(g)
 }
 fn preflight(p:&Value)->Result<Value,Failure> {
@@ -126,7 +126,7 @@ fn query(host:&mut dyn Host,request:&Invocation,p:&Value)->Result<Value,Failure>
     let id=comfy::text(p,"vendorTaskId")?;
     if p["resumeToken"]["promptId"]!=id { return Err(invalid("Resume token must name the original prompt")); }
     let ctx=context(request,p);
-    let (status,outputs,data,failure)=match comfy::status(host,&ctx,id,"113")? {
+    let (status,outputs,data,failure)=match comfy::status(host,&ctx,id,"168")? {
         comfy::Remote::Queued=>("queued",json!([]),Value::Null,Value::Null),
         comfy::Remote::Running=>("running",json!([]),Value::Null,Value::Null),
         comfy::Remote::Succeeded(files)=>{
@@ -196,10 +196,10 @@ mod tests {
     fn certified_three_chunk_graph_retains_original_audio_and_all_continuation_edges() {
         let input=json!({"instruction":"","audio":{"durationMs":2000},"parameters":{"width":512,"height":512,"seed":20}});
         let g=graph(&input,"portrait.png","drive.wav").unwrap();
-        assert_eq!(g["82"]["inputs"]["audio"],json!(["58",0]));
-        assert_eq!(g["58"]["inputs"]["audio"],"drive.wav");
-        assert_eq!(g["93"]["inputs"]["length"],9);assert_eq!(g["85:76"]["inputs"]["length"],9);
-        assert_eq!(g["85:76"]["inputs"]["video_latent"],json!(["79:78",0]));
-        assert_eq!(g["82"]["inputs"]["fps"],16);
+        assert_eq!(g["167"]["inputs"]["audio"],json!(["162",0]));
+        assert_eq!(g["162"]["inputs"]["audio"],"drive.wav");
+        assert_eq!(g["153"]["inputs"]["length"],9);assert_eq!(g["165:76"]["inputs"]["length"],9);
+        assert_eq!(g["165:76"]["inputs"]["video_latent"],json!(["172:78",0]));
+        assert_eq!(g["167"]["inputs"]["fps"],16);
     }
 }
