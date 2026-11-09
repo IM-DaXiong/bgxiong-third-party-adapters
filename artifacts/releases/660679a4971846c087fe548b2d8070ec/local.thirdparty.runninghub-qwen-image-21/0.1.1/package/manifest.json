@@ -1,0 +1,40 @@
+{
+  "artifactSha256": "8bfffa426ad1459d00366ef0dc11ae9238036bfdeadc1f0db604e8bd52ec0af7",
+  "displayName": "RunningHub Qwen Image 2.1",
+  "entry": "adapter.wasm",
+  "language": "rust",
+  "limits": {
+    "fuel": 20000000000,
+    "memoryBytes": 67108864,
+    "outputBytes": 1048576,
+    "wallMs": 540000
+  },
+  "optionalFeatures": [],
+  "pluginId": "local.thirdparty.runninghub-qwen-image-21",
+  "protocolRange": {
+    "max": 2,
+    "min": 2
+  },
+  "publisherId": null,
+  "publisherKeyId": null,
+  "requestedCapabilities": {
+    "allowPrivateNetwork": false,
+    "auth": [
+      "bearer"
+    ],
+    "embeddedHeaders": [],
+    "endpointPolicy": [
+      "userConfigurable"
+    ],
+    "mediaSlots": [
+      "image"
+    ],
+    "networkHosts": [],
+    "stateBytes": 0
+  },
+  "requiredFeatures": [
+    "submission-rejection-v1"
+  ],
+  "schemaVersion": 2,
+  "version": "0.1.1"
+}
