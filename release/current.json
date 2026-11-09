@@ -1300,6 +1300,50 @@
           "sha256": "7a93893fe5c37bda5594416cdce1e1605de066d192bc978858b1edf77cd693cf"
         }
       ]
+    },
+    {
+      "pluginId": "local.bgx.wan22-s2v",
+      "version": "0.1.2",
+      "kind": "installable",
+      "validation": "sdk_package_validated",
+      "sourceManifest": "packages/workflow-adapters/wan22-s2v/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/0dd3e9f3e2ea49068c88877da882a1ef/local.bgx.wan22-s2v/0.1.2/adapter-install.json",
+          "sha256": "fd995f65e917a5f7047fdbed8d23158df7843b3be7ea500b90de555a9cbeb04f"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/0dd3e9f3e2ea49068c88877da882a1ef/local.bgx.wan22-s2v/0.1.2/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/0dd3e9f3e2ea49068c88877da882a1ef/local.bgx.wan22-s2v/0.1.2/package/adapter.wasm",
+          "sha256": "bab31fab84ab368754ed35c629f9fac24a9087115e8b555ef542566911746761"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/0dd3e9f3e2ea49068c88877da882a1ef/local.bgx.wan22-s2v/0.1.2/package/manifest.json",
+          "sha256": "4073b5b0a47fbbaf15bcf829dc17656574f49b4c6d20f49bb207628d272ac26f"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/0dd3e9f3e2ea49068c88877da882a1ef/local.bgx.wan22-s2v/0.1.2/package/manifest.sha256",
+          "sha256": "ddc336c081417c311a5e1e6f3717b2e89f013d28242db8cbc1ec409501d489ad"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/0dd3e9f3e2ea49068c88877da882a1ef/local.bgx.wan22-s2v/0.1.2/README.txt",
+          "sha256": "454ff569a0fb6a2a07be41290cb6b9bed45e5d2e55f41e564d7709be2648d8fc"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/0dd3e9f3e2ea49068c88877da882a1ef/local.bgx.wan22-s2v/0.1.2/安装说明.txt",
+          "sha256": "cd02dfc39b5b80263b4582ccaa27f7ddc0a77172a75dd20ac764204e893f4c0e"
+        }
+      ]
     }
   ],
   "unpublishable": [
