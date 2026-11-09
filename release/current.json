@@ -1246,6 +1246,60 @@
           "sha256": "712dd37fe5e03e20d76a33490e0c932d7cd4d4a6e818aa262a20cdbbfc0cef84"
         }
       ]
+    },
+    {
+      "pluginId": "local.thirdparty.runninghub-qwen-image-21",
+      "version": "0.1.1",
+      "kind": "installable",
+      "validation": "sdk_package_and_install_envelope_validated",
+      "sourceManifest": "packages/cloud-adapters/runninghub-qwen-image-21/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/660679a4971846c087fe548b2d8070ec/local.thirdparty.runninghub-qwen-image-21/0.1.1/adapter-install.json",
+          "sha256": "084c1fb309cd93d10dcde7e39a08cf7b46a433b4ad6fd2b49d53bd05c1a726d7"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/660679a4971846c087fe548b2d8070ec/local.thirdparty.runninghub-qwen-image-21/0.1.1/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/660679a4971846c087fe548b2d8070ec/local.thirdparty.runninghub-qwen-image-21/0.1.1/package/adapter.wasm",
+          "sha256": "8bfffa426ad1459d00366ef0dc11ae9238036bfdeadc1f0db604e8bd52ec0af7"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/660679a4971846c087fe548b2d8070ec/local.thirdparty.runninghub-qwen-image-21/0.1.1/package/manifest.json",
+          "sha256": "8a173d93af44bcc022276281d67ab11a61e8d82d4e32eab220d0df8d9fe0e26a"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/660679a4971846c087fe548b2d8070ec/local.thirdparty.runninghub-qwen-image-21/0.1.1/package/manifest.sha256",
+          "sha256": "d6b3ec5da340664ef051006f27c13257f8122498bff7791b9787bfc9e6c23ac9"
+        },
+        {
+          "path": "README.md",
+          "source": "artifacts/releases/660679a4971846c087fe548b2d8070ec/local.thirdparty.runninghub-qwen-image-21/0.1.1/README.md",
+          "sha256": "8ff279aa579e8681298f8e8ec10775da0234845f117e36605e1ee1697e3635bd"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/660679a4971846c087fe548b2d8070ec/local.thirdparty.runninghub-qwen-image-21/0.1.1/README.txt",
+          "sha256": "5fe311cf0aefff3b61b5e8f3d92d7f0a42c73c9b1a4a4095678165b89db9940f"
+        },
+        {
+          "path": "SHA256SUMS",
+          "source": "artifacts/releases/660679a4971846c087fe548b2d8070ec/local.thirdparty.runninghub-qwen-image-21/0.1.1/SHA256SUMS",
+          "sha256": "fdabaa75e9d493565188e5c85b82c9e77f4990b37da6ac760282577519ea74f1"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/660679a4971846c087fe548b2d8070ec/local.thirdparty.runninghub-qwen-image-21/0.1.1/安装说明.txt",
+          "sha256": "7a93893fe5c37bda5594416cdce1e1605de066d192bc978858b1edf77cd693cf"
+        }
+      ]
     }
   ],
   "unpublishable": [

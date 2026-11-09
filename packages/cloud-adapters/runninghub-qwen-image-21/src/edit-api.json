@@ -1,0 +1,11 @@
+{
+  "451": {"class_type":"UNETLoader","inputs":{"unet_name":"qwen_image_2.1_int8_convrot.safetensors","weight_dtype":"default"}},
+  "453": {"class_type":"CLIPLoader","inputs":{"clip_name":"qwen3vl_8b_int8_convrot.safetensors","device":"default","type":"qwen_image"}},
+  "454": {"class_type":"VAELoader","inputs":{"vae_name":"qwen_image_2.1_vae_bf16.safetensors"}},
+  "456": {"class_type":"EmptyLatentImage","inputs":{"batch_size":1,"width":1024,"height":1024}},
+  "457": {"class_type":"VAEDecode","inputs":{"samples":["458",0],"vae":["454",0]}},
+  "458": {"class_type":"KSampler","inputs":{"cfg":1,"denoise":1,"latent_image":["456",0],"model":["469",0],"negative":["474",1],"positive":["474",0],"sampler_name":"euler","scheduler":"simple","seed":0,"steps":25}},
+  "469": {"class_type":"QwenImage21Cache","inputs":{"device":"auto","dtype":"default","model":["451",0]}},
+  "474": {"class_type":"TextEncodeQwenImage21","inputs":{"clip":["453",0],"negative_prompt":"","prompt":"","resolution":0,"vae":["454",0]}},
+  "9000": {"class_type":"SaveImage","inputs":{"filename_prefix":"Qwen_image_2.1","images":["457",0]}}
+}

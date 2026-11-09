@@ -11,6 +11,12 @@
 - packages/：已合并主线包源码；Wan22合并时以0.2.12及原未提交修改为基线，当前版本见下表及release/current.json，其他包从原sources/main/packages合入。
 - projects/：独立工程及其唯一 owner（清单见 `projects/README.md`）。
 - artifacts/：发行产物；records/：保全与核查证据；这两类本机资料不自动发布。
+
+## 本机安装测试
+
+打开适配器仓的 `artifacts/current/`，按 `<pluginId>/<version>/` 找当前可导入的包。软件中进入 **设置 → 第三方适配器 → 安装适配包**。有 `adapter-install.json` 时选择版本目录，否则按包说明选其中的 `package/`。
+
+发行准备会依据 `release/current.json` 自动刷新此目录。已有发行文件时，也可在同级主仓运行 `python scripts/stage-third-party-release.py --local-current`。`index.json` 列出每个包的当前版本及验证状态。新机器需要先取得锁定的发行文件。
 - contract/、examples/：公开合同与教学材料。
 - 用户分发目录统一名称bgxiong-third-party-adapters；实际新发行落盘和安装验收另记，目录合并不等于全包构建通过。
 
@@ -169,6 +175,7 @@ community/
 | [runninghub-h3-r2v-soundtrack](./packages/cloud-adapters/runninghub-h3-r2v-soundtrack) | RunningHub H3-r2v-原声（官方20步） | `local.thirdparty.runninghub-h3-r2v-soundtrack` | `1.0.0` |
 | [runninghub-h3-spectrum-dynamic](./packages/cloud-adapters/runninghub-h3-spectrum-dynamic) | RunningHub H3-r2v-spectrum | `local.thirdparty.runninghub-h3-spectrum-dynamic` | `1.0.1` |
 | [runninghub-minimax-h3](./packages/cloud-adapters/runninghub-minimax-h3) | RunningHub H3-多参 | `local.example.runninghub-minimax-h3` | `1.0.3` |
+| [runninghub-qwen-image-21](./packages/cloud-adapters/runninghub-qwen-image-21) | RunningHub Qwen Image 2.1 文生图 / 1～10 张参考图编辑 | `local.thirdparty.runninghub-qwen-image-21` | `0.1.1` 候选 |
 
 #### 本地工作流
 
