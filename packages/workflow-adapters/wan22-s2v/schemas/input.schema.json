@@ -45,8 +45,8 @@
       "properties": {
         "durationMs": {
           "type": "integer",
-          "minimum": 1000,
-          "maximum": 10000
+          "minimum": 1,
+          "maximum": 255875
         },
         "sampleRateHz": {
           "type": "integer",
@@ -78,16 +78,16 @@
       "properties": {
         "width": {
           "type": "integer",
-          "minimum": 256,
-          "maximum": 640,
-          "multipleOf": 64,
+          "minimum": 16,
+          "maximum": 1280,
+          "multipleOf": 16,
           "default": 512
         },
         "height": {
           "type": "integer",
-          "minimum": 256,
-          "maximum": 640,
-          "multipleOf": 64,
+          "minimum": 16,
+          "maximum": 1280,
+          "multipleOf": 16,
           "default": 512
         },
         "seed": {
