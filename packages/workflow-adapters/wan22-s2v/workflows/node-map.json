@@ -1,0 +1,127 @@
+{
+  "37": {
+    "scope": "",
+    "sourceNodeId": 37,
+    "classType": "UNETLoader"
+  },
+  "107": {
+    "scope": "",
+    "sourceNodeId": 107,
+    "classType": "LoraLoaderModelOnly"
+  },
+  "54": {
+    "scope": "",
+    "sourceNodeId": 54,
+    "classType": "ModelSamplingSD3"
+  },
+  "38": {
+    "scope": "",
+    "sourceNodeId": 38,
+    "classType": "CLIPLoader"
+  },
+  "6": {
+    "scope": "",
+    "sourceNodeId": 6,
+    "classType": "CLIPTextEncode"
+  },
+  "7": {
+    "scope": "",
+    "sourceNodeId": 7,
+    "classType": "CLIPTextEncode"
+  },
+  "39": {
+    "scope": "",
+    "sourceNodeId": 39,
+    "classType": "VAELoader"
+  },
+  "57": {
+    "scope": "",
+    "sourceNodeId": 57,
+    "classType": "AudioEncoderLoader"
+  },
+  "58": {
+    "scope": "",
+    "sourceNodeId": 58,
+    "classType": "LoadAudio"
+  },
+  "56": {
+    "scope": "",
+    "sourceNodeId": 56,
+    "classType": "AudioEncoderEncode"
+  },
+  "52": {
+    "scope": "",
+    "sourceNodeId": 52,
+    "classType": "LoadImage"
+  },
+  "93": {
+    "scope": "",
+    "sourceNodeId": 93,
+    "classType": "WanSoundImageToVideo"
+  },
+  "3": {
+    "scope": "",
+    "sourceNodeId": 3,
+    "classType": "KSampler"
+  },
+  "79:76": {
+    "scope": "79:",
+    "sourceNodeId": 76,
+    "classType": "WanSoundImageToVideoExtend"
+  },
+  "79:77": {
+    "scope": "79:",
+    "sourceNodeId": 77,
+    "classType": "KSampler"
+  },
+  "79:78": {
+    "scope": "79:",
+    "sourceNodeId": 78,
+    "classType": "LatentConcat"
+  },
+  "85:76": {
+    "scope": "85:",
+    "sourceNodeId": 76,
+    "classType": "WanSoundImageToVideoExtend"
+  },
+  "85:77": {
+    "scope": "85:",
+    "sourceNodeId": 77,
+    "classType": "KSampler"
+  },
+  "85:78": {
+    "scope": "85:",
+    "sourceNodeId": 78,
+    "classType": "LatentConcat"
+  },
+  "94": {
+    "scope": "",
+    "sourceNodeId": 94,
+    "classType": "LatentCut"
+  },
+  "95": {
+    "scope": "",
+    "sourceNodeId": 95,
+    "classType": "LatentConcat"
+  },
+  "80": {
+    "scope": "",
+    "sourceNodeId": 80,
+    "classType": "VAEDecode"
+  },
+  "96": {
+    "scope": "",
+    "sourceNodeId": 96,
+    "classType": "ImageFromBatch"
+  },
+  "82": {
+    "scope": "",
+    "sourceNodeId": 82,
+    "classType": "CreateVideo"
+  },
+  "113": {
+    "scope": "",
+    "sourceNodeId": 113,
+    "classType": "SaveVideo"
+  }
+}

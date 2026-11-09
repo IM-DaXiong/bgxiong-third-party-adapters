@@ -6,7 +6,7 @@ Use capabilityKey `video.speech` and transportSlot `video`. This is separate fro
 
 The application owns source permissions, source audio interval and destination revision. It prepares the actual selected audio outside database transactions. Adapters receive measured segment metadata and content SHA256, never application database paths or destination authority. Preserve instruction verbatim, including an empty string. Specialize the closed parameters object using only supported fields; unknown fields must fail.
 
-Output contains exactly one managed video with audio and measured metadata plus source receipt. The host independently probes and decodes downloaded bytes before adding a new version. Receipts do not establish audiovisual acceptance. Preserve all selected driving audio; do not silently trim, stretch or pad it.
+The package returns exactly one managed video identity and the frozen input receipt. The application finish owner probes and decodes downloaded bytes to verify audio presence, dimensions, fps, frame count and both stream durations before adding a new version. Expected preflight values must never impersonate these measured facts. Receipts do not establish audiovisual acceptance. Preserve all selected driving audio; do not silently trim, stretch or pad it.
 
 Preflight accepts metadata only. It must not generate, charge or upload media. An adjustment updates the user's actual interval and requires another preflight. The adapter echoes requestDigest for correlation; only the application issues and revalidates an authorization-bound preflightDigest. Validate interval ordering, source bounds, response/request identity and receipt consistency in the authoritative Rust owner.
 

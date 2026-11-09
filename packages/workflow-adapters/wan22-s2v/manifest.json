@@ -1,0 +1,45 @@
+{
+  "artifactSha256": "f4349ea50158076e06871632918121a933980daef3a2fdcc33aed086029af1db",
+  "displayName": "Wan S2V 语音驱动",
+  "entry": "adapter.wasm",
+  "language": "rust",
+  "limits": {
+    "fuel": 20000000000,
+    "memoryBytes": 268435456,
+    "outputBytes": 1048576,
+    "wallMs": 180000
+  },
+  "optionalFeatures": [],
+  "pluginId": "local.bgx.wan22-s2v",
+  "protocolRange": {
+    "max": 2,
+    "min": 2
+  },
+  "publisherId": null,
+  "publisherKeyId": null,
+  "requestedCapabilities": {
+    "allowPrivateNetwork": true,
+    "auth": [
+      "none",
+      "bearer"
+    ],
+    "embeddedHeaders": [],
+    "endpointPolicy": [
+      "userConfigurable",
+      "allowPrivateNetwork"
+    ],
+    "mediaSlots": [
+      "image",
+      "audio",
+      "video"
+    ],
+    "networkHosts": [],
+    "stateBytes": 0
+  },
+  "requiredFeatures": [
+    "video-speech-v1",
+    "operation-preflight-v1"
+  ],
+  "schemaVersion": 2,
+  "version": "0.1.0"
+}

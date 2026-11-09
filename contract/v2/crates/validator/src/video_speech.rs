@@ -36,7 +36,7 @@ pub fn validate_result(context: &crate::ValidatedOperationInput, result: &Value)
         || receipt["drivingAudioMediaId"] != input["drivingAudio"][0]["mediaId"]
         || receipt["drivingAudioSha256"] != input["audio"]["sha256"]
         || receipt["drivingAudioDurationMs"] != input["audio"]["durationMs"]
-        || data["video"]["audioDurationMs"] != input["audio"]["durationMs"] {
+ {
         return Err(invalid("completed video receipt differs from the frozen driving input"));
     }
     let outputs = result["outputs"].as_array().ok_or_else(|| invalid("completed video output is missing"))?;

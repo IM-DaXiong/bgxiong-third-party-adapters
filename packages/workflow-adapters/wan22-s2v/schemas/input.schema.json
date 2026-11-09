@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bgxiong.local/wan22-s2v/input.schema.json",
+  "title": "VideoSpeechV1Input",
+  "description": "One portrait and an actual prepared driving-audio segment; no voice cloning or soundtrack substitution.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "portrait",
+    "drivingAudio",
+    "audio",
+    "instruction",
+    "parameters"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "portrait": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "$ref": "#/$defs/mediaRef"
+      }
+    },
+    "drivingAudio": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "$ref": "#/$defs/mediaRef"
+      }
+    },
+    "audio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "durationMs",
+        "sampleRateHz",
+        "channels",
+        "sha256"
+      ],
+      "properties": {
+        "durationMs": {
+          "type": "integer",
+          "minimum": 1000,
+          "maximum": 10000
+        },
+        "sampleRateHz": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "channels": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "instruction": {
+      "type": "string"
+    },
+    "parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "width",
+        "height",
+        "seed"
+      ],
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 256,
+          "maximum": 640,
+          "multipleOf": 64,
+          "default": 512
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 256,
+          "maximum": 640,
+          "multipleOf": 64,
+          "default": 512
+        },
+        "seed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967045,
+          "default": 20
+        }
+      }
+    }
+  },
+  "$defs": {
+    "mediaRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mediaId"
+      ],
+      "properties": {
+        "mediaId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[^\\u0000]+$"
+        }
+      }
+    }
+  }
+}

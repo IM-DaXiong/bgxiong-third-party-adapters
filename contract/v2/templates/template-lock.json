@@ -15,10 +15,10 @@
       "sources": [
         {
           "path": "sdk/rust/src/generated.rs",
-          "sha256": "28ed7ab6a614687480b45c930b8290e5bc483a7050d6c440c9b22125670db7ba"
+          "sha256": "fc0f25e689d269ac0569ab977057b6bd40603939100a60595d590054796aa325"
         }
       ],
-      "sha256": "28ed7ab6a614687480b45c930b8290e5bc483a7050d6c440c9b22125670db7ba",
+      "sha256": "fc0f25e689d269ac0569ab977057b6bd40603939100a60595d590054796aa325",
       "transform": "byte-copy"
     },
     {

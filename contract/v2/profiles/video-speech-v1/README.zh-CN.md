@@ -6,7 +6,7 @@ capabilityKey 为 `video.speech`，transportSlot 为 `video`，与 TTS `speech-v
 
 应用层持有原音频身份与 startMs/endMs，在事务外准备实际选段。包只接收选段的真实时长、采样率、声道和 SHA256，不接收 projectId、目标节点或数据库路径。instruction 保留用户完整原文，允许空字符串。基线 parameters 是闭集空对象；包按支持面声明属性、默认值与范围。普通参考音、音色参考和 soundtrack_copy 不构成口型驱动能力。
 
-完成结果只有一个受管视频引用，必须含音轨。包报告实测元数据和来源回执，宿主仍须独立 ffprobe/解码并完整试听；回执不是验收证明。结果固定新增视频版本，不覆盖源图、原音或旧视频。原声重编码允许，静默裁音、变速、补静音不允许。
+包完成结果只有一个受管视频引用和冻结输入来源回执，不把预计帧数/音轨时长冒充实测。应用finish owner必须在下载后独立ffprobe/解码，核实音轨、尺寸、fps、帧数、音/视频各自时长并完整试听，才能形成应用完整结果；缺音轨不得报成功，来源回执不是验收证明。结果固定新增视频版本，不覆盖源图、原音或旧视频。原声重编码允许，静默裁音、变速、补静音不允许。
 
 预检合同见 `preflight.schema.json` 引用的公共 `schemas/operation-preflight.schema.json`。请求使用 modelId/capabilityKey/operationId/operationVersion/inputSchemaDigest、包操作 input、冻结 configuration、requestDigest 和 mediaMetadata；不重复发明选择身份。原生 owner 以 CapabilityRef 和 Binding 核包版本、配置 revision/digest，再用包 schema 校验 input。metadata 中 durationMs 是实际准备后的音频时长；sourceInterval 和 sourceDurationMs 是原音频选段边界，两者一起出现且必须匹配准备后的时长。预检不接媒体句柄、URL、凭据或原始字节。
 

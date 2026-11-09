@@ -1,0 +1,7 @@
+/target/
+/build/
+/adapter.wasm
+/manifest.sha256
+/.bgx-sdk/
+
+/tools/__pycache__/

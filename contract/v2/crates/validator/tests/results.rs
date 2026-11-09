@@ -46,8 +46,7 @@ fn speech_completion_binds_video_and_full_original_audio_receipt() {
     let context=speech_context();
     let mut result=completed(json!([{"kind":"media","role":"video","media":{
         "id":"video-result","kind":"video","handle":"video-lease","mime":"video/mp4","fileName":"speech.mp4","byteLength":"42"}}]));
-    result["data"]=json!({"schemaVersion":1,"video":{"mediaId":"video-result","width":512,"height":512,
-        "fps":25,"frameCount":50,"hasAudio":true,"audioDurationMs":2000,"videoDurationMs":2000},
+    result["data"]=json!({"schemaVersion":1,"video":{"mediaId":"video-result"},
         "receipt":{"portraitMediaId":"portrait","drivingAudioMediaId":"drive","drivingAudioSha256":"a".repeat(64),
             "drivingAudioDurationMs":2000,"audioPolicy":"preserve_driving_audio"}});
     validate_result(&context,&serde_json::from_value(result.clone()).unwrap()).unwrap();

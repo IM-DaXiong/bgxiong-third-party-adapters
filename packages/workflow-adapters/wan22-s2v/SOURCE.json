@@ -1,0 +1,31 @@
+{
+  "status": "ISOLATED_CANDIDATE_NOT_RELEASED",
+  "sourceWorkflow": "角色替换/video_wan2_2_14B_s2v.json",
+  "sourceSha256": "9b017cde7f0564968cc7d2d2d3d044741a991e6662674b3913d5d77f92e9af71",
+  "terminalNode": "113",
+  "compiledNativeNodes": 25,
+  "nodeMap": "workflows/node-map.json",
+  "objectInfoSnapshotSha256": "c859b22c3432464cd03c802a692cdc494e59b5b8e20a93b20b5574c696ecf312",
+  "apiSha256": "d91f1a5d125c5deec3b282c8f96f573d19205a4faae44f8b0f8b653159ca580e",
+  "platformLogicOwner": "this package",
+  "httpHelperSource": "packages/workflow-adapters/seedvr2-image/src/comfy.rs",
+  "modelsIncluded": false,
+  "companionRequired": false,
+  "acceptance": {
+    "nativeTests": 3,
+    "wasmBuild": "PASS",
+    "sdkPack": "PASS",
+    "sdkCapabilities": "PASS",
+    "operationPreflight": "PASS",
+    "realVideo": "PASS_TOOL_CHAIN_ONLY",
+    "applicationUserPath": "NOT_RUN",
+    "firstRealPrompt": "80acc4d7-6ff6-44ff-b65d-d8ccab26ec31",
+    "firstRealOutcome": "FAILED_AT_SAVE_VIDEO_DYNAMIC_COMBO_ENCODING",
+    "targetedCorrection": "Serialize dynamic combo prompt fields as dotted paths; preserve all generation nodes and original audio connection",
+    "speakingPrompt": "80b44092-ac3f-4991-babf-35855b5790d7",
+    "mouthQuality": "NOT_ACCEPTED_WEAK_MOUTH_MOTION",
+    "speakingVideoSha256": "7fd9234d1a48e15a69d8419765159ff87a5ca74337e0471baabe2b9784389e08",
+    "audioWaveformCorrelation": 0.9999786500298475
+  },
+  "sdkSourceCommit": "9f957d08581341ac88e82f756638889c75e33d47"
+}

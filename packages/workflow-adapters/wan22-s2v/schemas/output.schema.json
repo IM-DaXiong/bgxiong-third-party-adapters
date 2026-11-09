@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bgxiong.local/wan22-s2v/output.schema.json",
+  "title": "VideoSpeechV1Output",
+  "description": "Package completion payload: one managed video identity and frozen input receipt. Decoded dimensions, frame rate/count, audio presence and stream durations are measured by the application finish owner from the downloaded bytes, never invented by the adapter.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "video",
+    "receipt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "video": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mediaId"
+      ],
+      "properties": {
+        "mediaId": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "portraitMediaId",
+        "drivingAudioMediaId",
+        "drivingAudioSha256",
+        "drivingAudioDurationMs",
+        "audioPolicy"
+      ],
+      "properties": {
+        "portraitMediaId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "drivingAudioMediaId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "drivingAudioSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "drivingAudioDurationMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "audioPolicy": {
+          "const": "preserve_driving_audio"
+        }
+      }
+    }
+  }
+}
