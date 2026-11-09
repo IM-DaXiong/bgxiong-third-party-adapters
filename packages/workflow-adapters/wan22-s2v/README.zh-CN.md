@@ -12,7 +12,7 @@
 
 ## 认证来源
 
-`workflows/source.json` 是原始 `角色替换/video_wan2_2_14B_s2v.json` 的逐字节副本，SHA256 `9b017cde7f0564968cc7d2d2d3d044741a991e6662674b3913d5d77f92e9af71`。完整保留两个分支。`tools/compile_workflow.py` 从加速分支SaveVideo 168反向展开可达节点，解析原子图输入/输出、primitive与显式bypass，产物24个原生执行节点；未用简化测试图替代。原图负向文本存在编码损坏，当前原样保留，未暗中换提示词。
+`workflows/source.json` 是原始 `角色替换/video_wan2_2_14B_s2v.json` 的逐字节副本，SHA256 `9b017cde7f0564968cc7d2d2d3d044741a991e6662674b3913d5d77f92e9af71`。完整保留两个分支。`tools/compile_workflow.py` 从标准分支SaveVideo 168反向展开可达节点，解析原子图输入/输出、primitive与显式bypass，产物24个原生执行节点；未用简化测试图替代。原图负向文本存在编码损坏，当前原样保留，未暗中换提示词。
 
 `workflows/node-map.json` 保存每个展开节点的原图作用域和节点ID。`object-info.json` 保存编译时显式依赖声明快照。当前SaveVideo的COMFY_DYNAMICCOMBO_V3由原auto/auto值编码为format="auto"和format.codec="auto"点路径，交由服务执行层重建正式嵌套结构；不是换视频算法或换模型。
 
@@ -26,3 +26,5 @@
 
 
 标准分支在原UI中整体关闭；明确选择终端168时启用该组，但保留可选第四段174的旁路，维持原三段拓扑。此前0.1.0加速候选的工具链通过，但明确人声样本口型未签通过，源码及实物保全，不用标准分支的结果替它签通过。
+
+标准候选已通过标准 SDK 工具实跑：两秒明确人声生成 512×512、34 帧、16 fps 的视频，视频 2.125 秒、原声音轨 2.000 秒，完整解码通过。抽帧可见嘴部开合；逐音素同步和应用工作台未验收。产物摘要与实测数据见 `SOURCE.json`。
