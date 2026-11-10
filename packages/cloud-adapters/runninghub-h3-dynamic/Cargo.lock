@@ -202,7 +202,7 @@ dependencies = [
 
 [[package]]
 name = "runninghub-h3-dynamic-adapter"
-version = "1.2.6"
+version = "1.2.7"
 dependencies = [
  "bgx-adapter-v2-sdk",
  "serde_json",

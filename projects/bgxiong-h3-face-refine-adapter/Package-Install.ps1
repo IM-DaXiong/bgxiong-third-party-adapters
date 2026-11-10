@@ -11,10 +11,8 @@ if (-not (Test-Path -LiteralPath $wasm)) { throw 'Build/check with the public SD
 $manifestPath = Join-Path $root 'manifest.json'
 $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
 if ($manifest.version -ne $version -or $manifest.artifactSha256 -ne (Get-FileHash -LiteralPath $wasm -Algorithm SHA256).Hash.ToLowerInvariant()) { throw 'Validated manifest, source version and WASM differ.' }
-$manifest.version = $version
-$manifest.artifactSha256 = (Get-FileHash -LiteralPath $wasm -Algorithm SHA256).Hash.ToLowerInvariant()
 $utf8 = [Text.UTF8Encoding]::new($false)
-[IO.File]::WriteAllText($manifestPath, ($manifest | ConvertTo-Json -Depth 40) + "`n", $utf8)
+# Preserve the SDK-validated manifest bytes; reserialization changes its identity.
 if ([IO.Path]::GetFullPath($wasm) -ne [IO.Path]::GetFullPath((Join-Path $root 'adapter.wasm'))) { Copy-Item -LiteralPath $wasm -Destination (Join-Path $root 'adapter.wasm') }
 $manifestHash = (Get-FileHash -LiteralPath $manifestPath -Algorithm SHA256).Hash.ToLowerInvariant()
 $inventory = "$manifestHash manifest.json`n$($manifest.artifactSha256) adapter.wasm`n"
@@ -22,7 +20,7 @@ $inventory = "$manifestHash manifest.json`n$($manifest.artifactSha256) adapter.w
 $sourcePath = Join-Path $root 'SOURCE.json'
 $sourceRecord = Get-Content -LiteralPath $sourcePath -Raw | ConvertFrom-Json
 $sourceRecord.version = $version
-[IO.File]::WriteAllText($sourcePath, ($sourceRecord | ConvertTo-Json -Depth 40) + "`n", $utf8)
+[IO.File]::WriteAllText($sourcePath, (($sourceRecord | ConvertTo-Json -Depth 40).Replace("`r`n", "`n")) + "`n", $utf8)
 New-Item -ItemType Directory -Path (Join-Path $out 'package') -Force | Out-Null
 foreach ($name in @('manifest.json','manifest.sha256','adapter.wasm')) { Copy-Item -LiteralPath (Join-Path $root $name) -Destination (Join-Path $out 'package') }
 $code = [Collections.Generic.List[object]]::new()
@@ -51,5 +49,5 @@ $descriptor = @{
         budgetMs=@{capabilities=60000; probe=60000; submit=600000; query=600000; cancel=60000}; probe=$null
     }
 }
-[IO.File]::WriteAllText((Join-Path $out 'adapter-install.json'), ($descriptor | ConvertTo-Json -Depth 40) + "`n", $utf8)
+[IO.File]::WriteAllText((Join-Path $out 'adapter-install.json'), (($descriptor | ConvertTo-Json -Depth 40).Replace("`r`n", "`n")) + "`n", $utf8)
 Write-Output "INSTALL_PACKAGE=$out NODE_FILES=$($code.Count) VERSION=$version"

@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "6d3e0072f3df478c9edd80e676ec4b77dd9ca80aa0870c6b96ebcb876deb05c7",
+  "artifactSha256": "4c4afaa562f928ea668ba4202a76be8d0f85fa060cd62034c06de2e4fccf1bf6",
   "displayName": "Seedream 5.0 Pro 独立图片预览",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -38,5 +38,5 @@
     "stream-events-v1"
   ],
   "schemaVersion": 2,
-  "version": "1.0.5"
+  "version": "1.0.6"
 }

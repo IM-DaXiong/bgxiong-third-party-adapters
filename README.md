@@ -1,5 +1,9 @@
 # bgxiong-third-party-adapters / 比格熊第三方适配器
 
+2026-11-11 当前 SDK 重建的 12 个新版本包与跨机冻结资源：[完整 ZIP、配套文件和 SHA256](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/sdk-completion-20261111)。78 项原生测试和 SDK 构建/检查/封包通过；逐包实际安装、云端生成与安装器状态见 [本批记录](release/sdk-completion-20261111.json)，未验项不计为通过。
+
+开发机同步主仓与本仓后，下载 `third-party-frozen-resources-20261111.zip`，在主仓显式执行 `python scripts/restore-third-party-release.py --archive <下载ZIP的绝对路径>`，再执行 `python scripts/stage-third-party-release.py --local-current`。恢复只接受 [当前资源回执](release/current-artifact.json) 对应的锁和摘要，不覆盖不同字节。SDK 独立源码与运行工具从同级 SDK 仓及其发布页获取；Breeze 托管运行时仍使用原来的独立资源 owner。
+
 本仓库是比格熊第三方适配器的独立开源真源，与主程序仓 `bgxiong-ai-story` 分开维护。适配器的源码与分发以本仓库为准，协议和 SDK 由独立 bgxiong-adapter-sdk 维护；主程序只按契约导入并运行插件。不要把适配器开发写回主程序仓库。
 
 现名 `bgxiong-third-party-adapters`；公开地址 https://github.com/IM-DaXiong/bgxiong-third-party-adapters 。旧名 `bgxiong-vendor-adapters` 已更名并指向本仓库，不要再当成另一份产品。

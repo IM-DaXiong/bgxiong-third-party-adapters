@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "fcb5d88775f64678c194c1418a1710904885387eb540b598f23c70a64a268d6b",
+  "artifactSha256": "19b7d1269db2d94bad17350f2571050a465c9cf1e310161b6c63ec8ca1679c0b",
   "displayName": "H3-r2v-原声",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -36,5 +36,5 @@
   },
   "requiredFeatures": [],
   "schemaVersion": 2,
-  "version": "1.0.0"
+  "version": "1.0.1"
 }

@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "40f21fff265f6eb50200477145961f2f141ec92adc14001ea8afefd87a7be98e",
+  "artifactSha256": "5027dc5729c241b9774fd3110d42d9e5c498d86c7489de70ead898e7350090ea",
   "displayName": "Independent FLUX.2 ordered reference author package",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -33,5 +33,5 @@
   },
   "requiredFeatures": [],
   "schemaVersion": 2,
-  "version": "1.0.1"
+  "version": "1.0.2"
 }

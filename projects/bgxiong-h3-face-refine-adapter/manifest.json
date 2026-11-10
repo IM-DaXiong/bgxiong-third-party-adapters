@@ -1,49 +1,43 @@
 {
-    "artifactSha256":  "bad56e5d232efc2f926232a79e3436a0f6f70493bd17356d4bafaf957d4137a1",
-    "displayName":  "H3-face-refine",
-    "entry":  "adapter.wasm",
-    "language":  "rust",
-    "limits":  {
-                   "fuel":  20000000000,
-                   "memoryBytes":  67108864,
-                   "outputBytes":  4194304,
-                   "wallMs":  600000
-               },
-    "optionalFeatures":  [
-
-                         ],
-    "pluginId":  "local.thirdparty.h3-face-refine",
-    "protocolRange":  {
-                          "max":  2,
-                          "min":  2
-                      },
-    "publisherId":  null,
-    "publisherKeyId":  null,
-    "requestedCapabilities":  {
-                                  "allowPrivateNetwork":  true,
-                                  "auth":  [
-                                               "bearer"
-                                           ],
-                                  "embeddedHeaders":  [
-
-                                                      ],
-                                  "endpointPolicy":  [
-                                                         "userConfigurable",
-                                                         "allowPrivateNetwork"
-                                                     ],
-                                  "mediaSlots":  [
-                                                     "video",
-                                                     "image"
-                                                 ],
-                                  "networkHosts":  [
-
-                                                   ],
-                                  "stateBytes":  65536
-                              },
-    "requiredFeatures":  [
-                             "media-target-selection-v1",
-                             "submission-rejection-v1"
-                         ],
-    "schemaVersion":  2,
-    "version":  "1.0.0-a30"
+  "artifactSha256": "05ac530bf265d6709504523a694985fad652a22fa933ff989987c74cd1489611",
+  "displayName": "H3-face-refine",
+  "entry": "adapter.wasm",
+  "language": "rust",
+  "limits": {
+    "fuel": 20000000000,
+    "memoryBytes": 67108864,
+    "outputBytes": 4194304,
+    "wallMs": 600000
+  },
+  "optionalFeatures": [],
+  "pluginId": "local.thirdparty.h3-face-refine",
+  "protocolRange": {
+    "max": 2,
+    "min": 2
+  },
+  "publisherId": null,
+  "publisherKeyId": null,
+  "requestedCapabilities": {
+    "allowPrivateNetwork": true,
+    "auth": [
+      "bearer"
+    ],
+    "embeddedHeaders": [],
+    "endpointPolicy": [
+      "userConfigurable",
+      "allowPrivateNetwork"
+    ],
+    "mediaSlots": [
+      "video",
+      "image"
+    ],
+    "networkHosts": [],
+    "stateBytes": 65536
+  },
+  "requiredFeatures": [
+    "media-target-selection-v1",
+    "submission-rejection-v1"
+  ],
+  "schemaVersion": 2,
+  "version": "1.0.0-a31"
 }

@@ -48,99 +48,99 @@
     },
     {
       "pluginId": "local.bgx.seedvr2-image",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "kind": "installable",
-      "validation": "sdk_package_validated",
+      "validation": "sdk_package_and_install_envelope_validated",
       "sourceManifest": "packages/workflow-adapters/seedvr2-image/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.seedvr2-image/1.0.2/adapter-install.json",
-          "sha256": "f67f380ad2ca4ae2101992102ed8c606db5b446196cf4ed953c075f15c289c6b"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedvr2-image/1.0.3/adapter-install.json",
+          "sha256": "45be916fed7b58b63ea50c6edf87f5eb3ec4ffcf3bc65676c0b96501e666b9f3"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.seedvr2-image/1.0.2/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedvr2-image/1.0.3/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.seedvr2-image/1.0.2/package/adapter.wasm",
-          "sha256": "91f98648107ba67618103913de343a8fabf9edb6393d7bac9fa922fbd7588d73"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedvr2-image/1.0.3/package/adapter.wasm",
+          "sha256": "eed53a0b087e5370a380325304de146489577ace479334740a1f8dd6809a2fc4"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.seedvr2-image/1.0.2/package/manifest.json",
-          "sha256": "709d9e0800b3f2e9b16246d7484953d1451acd61772da8a3d52d15f2ac677c36"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedvr2-image/1.0.3/package/manifest.json",
+          "sha256": "21ed0574a44ad78a6a909f37a6707a6bfb1a7dc9d48c9dde78c7ed42f5f9d029"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.seedvr2-image/1.0.2/package/manifest.sha256",
-          "sha256": "471e701c00e979f29a560cb8536ec56ca84f40bf69e70d40858d802939c8e983"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedvr2-image/1.0.3/package/manifest.sha256",
+          "sha256": "189b0d846a0266cef13b9c48bd16a7b485c238efeb9ea74a844ad37f0c74630a"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.seedvr2-image/1.0.2/README.txt",
-          "sha256": "3a109b9f543312476526ed4bbf175fdb24b9f9298545b911b557cd22efc3e4f5"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedvr2-image/1.0.3/README.txt",
+          "sha256": "b9666df8a64edac4acdf60beeb7933a00708084db9d3e6521eaf18529b2162f7"
         },
         {
           "path": "workflow-templates.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.seedvr2-image/1.0.2/workflow-templates.json",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedvr2-image/1.0.3/workflow-templates.json",
           "sha256": "a3599998720e84656b947bc225941211cc4d112f7dc7602cff6a67b48beaa404"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.seedvr2-image/1.0.2/安装说明.txt",
-          "sha256": "c009cd72ebc9dc2b18b284c86cbfbf1a189d5f59903300249146ea20deacbd5d"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedvr2-image/1.0.3/安装说明.txt",
+          "sha256": "6b667852dac8f7d10290776f2ccc7ddcd7a5cab57fdf9974c53c5862602c82f5"
         }
       ]
     },
     {
       "pluginId": "local.bgx.wan-animate2",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "kind": "installable",
-      "validation": "sdk_package_validated",
+      "validation": "sdk_package_and_install_envelope_validated",
       "sourceManifest": "packages/workflow-adapters/wan-animate2/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.wan-animate2/0.1.1/adapter-install.json",
-          "sha256": "8a07f797f79acab3cd515f2a1a41d1b9005ffc9631b86db8e01314e338b116e4"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.wan-animate2/0.1.2/adapter-install.json",
+          "sha256": "f0f77bb2d885f1c7f694ef6c111dd7c467c05fe2f8bbe4e18e2354ddddb07bab"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.wan-animate2/0.1.1/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.wan-animate2/0.1.2/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.wan-animate2/0.1.1/package/adapter.wasm",
-          "sha256": "f3cf83b6bb5c47203b98f13e6d854fdfd4a2bea1beda32716b9b5f8d0ab67ef4"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.wan-animate2/0.1.2/package/adapter.wasm",
+          "sha256": "08b07b7acbbf03d93628890a97de4aa58d7b81daf8b08961ef1b6ef4257d378e"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.wan-animate2/0.1.1/package/manifest.json",
-          "sha256": "7e5cf2ec636df7ddd00248a605254b726fc903c43ffb98ae037f5050942525a2"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.wan-animate2/0.1.2/package/manifest.json",
+          "sha256": "7a571d6172898381d36f4c8109f0aab86387a6e65f350a0165b972d9a69cdf91"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.wan-animate2/0.1.1/package/manifest.sha256",
-          "sha256": "309d3617c516d64d4ac8c3a5018234cecfec5933d394517ca8658460d7034d14"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.wan-animate2/0.1.2/package/manifest.sha256",
+          "sha256": "d08d5016f65e25a25c13c2377ab700aaf2e18fdd1cb40862015165f51a8c8d65"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.wan-animate2/0.1.1/README.txt",
-          "sha256": "bf3df53380b986180f75f141a690aabbfa12d0da603bca2085bdeba13f18a882"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.wan-animate2/0.1.2/README.txt",
+          "sha256": "c4dc71151936ef305363645b779a54977aa4c718aeef83b9dedcad1f3991069e"
         },
         {
           "path": "workflow-templates.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.wan-animate2/0.1.1/workflow-templates.json",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.wan-animate2/0.1.2/workflow-templates.json",
           "sha256": "b13be2dc6e20194a56be70cb6c8fc737084cfc6ea78a73a52ec46bc11479a237"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.wan-animate2/0.1.1/安装说明.txt",
-          "sha256": "ee9106c761d9a95c73afaa446a5583d8f469ee38fb80d781dbfe8a6ca49b9fe3"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.wan-animate2/0.1.2/安装说明.txt",
+          "sha256": "35b7e3b0bcde310ed899d5274cd377cb95b0ca4e624ddd1a342ab997b72b94a9"
         }
       ]
     },
@@ -220,133 +220,133 @@
     },
     {
       "pluginId": "local.bgx.deepseek-text",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "kind": "installable",
-      "validation": "sdk_package_validated",
+      "validation": "sdk_package_and_install_envelope_validated",
       "sourceManifest": "packages/cloud-adapters/deepseek-text/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.deepseek-text/1.0.0/adapter-install.json",
-          "sha256": "15a5fb73370eb453a82cf57244218ce78efaeee0c218f17a91e6ca1afdaf0a2c"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.deepseek-text/1.0.1/adapter-install.json",
+          "sha256": "c31769e31dd20e4252b3170c3d22ff72ce3ffe10bce6ddead1483e39bee8af2b"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.deepseek-text/1.0.0/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.deepseek-text/1.0.1/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.deepseek-text/1.0.0/package/adapter.wasm",
-          "sha256": "755ab5dde314315cceff45bc0388018cbdaeae30f8ba0f37bb783610df3bf3e4"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.deepseek-text/1.0.1/package/adapter.wasm",
+          "sha256": "40cb8a3ea2d0872e043cd667500d97648e2c491b0b89cf58c487ef466659573d"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.deepseek-text/1.0.0/package/manifest.json",
-          "sha256": "bf3c7b6c37867f410b1df8deddac5c8c853c863d2f6a3b8e2a2d4b8f4177aa1f"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.deepseek-text/1.0.1/package/manifest.json",
+          "sha256": "a3cede0abceecd68a19debfd288260295c61ecd0d98fa74acaeb3fd37a55e103"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.deepseek-text/1.0.0/package/manifest.sha256",
-          "sha256": "832b92a86bbbb03a1f18b3056275a66e45aaef1d1389ded858ecd231ec687c1a"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.deepseek-text/1.0.1/package/manifest.sha256",
+          "sha256": "c132aed926e47041b4dd5ab965e834e3797c9a2a761b6821c7ce04077c182a85"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.deepseek-text/1.0.0/README.txt",
-          "sha256": "c46e5782cc46b0bf6c76380479ac857689a8708d00b58d69e4433dd99f41e15b"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.deepseek-text/1.0.1/README.txt",
+          "sha256": "ffdf0aca75cb286fd8f1ea149fed97d041d6b0741b769ef4e6da8eb1df49acd0"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.deepseek-text/1.0.0/安装说明.txt",
-          "sha256": "93b829ae56c30bd527949ab619fd02021220506f453082aa9bbb4574f40dd55a"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.deepseek-text/1.0.1/安装说明.txt",
+          "sha256": "c1eb553bc423f45cbcc853e0a29de3d2bac3746923246f6e0db51da148336e11"
         }
       ]
     },
     {
       "pluginId": "local.bgx.minimax-m3",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "kind": "installable",
-      "validation": "sdk_package_validated",
+      "validation": "sdk_package_and_install_envelope_validated",
       "sourceManifest": "packages/cloud-adapters/minimax-m3/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.minimax-m3/1.0.2/adapter-install.json",
-          "sha256": "15e4125deed3c9843bc21d378cfbd085a2ddbe8a9848271268d9bf5ac3e7c19b"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.minimax-m3/1.0.3/adapter-install.json",
+          "sha256": "803a9529afd82628cb6225be4871d6b17089cbe12f94d044b5b901c9142327a6"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.minimax-m3/1.0.2/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.minimax-m3/1.0.3/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.minimax-m3/1.0.2/package/adapter.wasm",
-          "sha256": "f4f0ac7d6747b794f54a91df6a2c3e3f9017665d4c280bd2dc83abee6414ac09"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.minimax-m3/1.0.3/package/adapter.wasm",
+          "sha256": "0808dc1bb8ad259c4202b3b3ffcf28e0dc9b12cd83fb21147ce5116b23debfed"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.minimax-m3/1.0.2/package/manifest.json",
-          "sha256": "e5a133948c807d1ee76998f07cf7f28b3b7a5598031b8445a0a7c8410d6a5e76"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.minimax-m3/1.0.3/package/manifest.json",
+          "sha256": "2b9aba94d4df69ec846c9d37a5ba12004aa89f6a1b625777cddd09d81c2a6bee"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.minimax-m3/1.0.2/package/manifest.sha256",
-          "sha256": "7bef81009a49c935dc93f85c3cf809b29917af8235030fd9f4b6bfe6ef252a2c"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.minimax-m3/1.0.3/package/manifest.sha256",
+          "sha256": "b47c7cdf4a57f5724b8c848808a4a1ad9703daf133c01b205809ebb90d642da4"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.minimax-m3/1.0.2/README.txt",
-          "sha256": "f728d0749c8446f73f1e40caf1e81ffb87ec886086fce127c126ca82077cde2d"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.minimax-m3/1.0.3/README.txt",
+          "sha256": "7e04afd1bc18bf4ac51bee3123651d5bd08a549e49a16d6f8a9a547f649d6084"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.minimax-m3/1.0.2/安装说明.txt",
-          "sha256": "757eb6a014c9859e6f756ea4071775cd8556ebc2e8822dfe67922fde33437cfa"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.minimax-m3/1.0.3/安装说明.txt",
+          "sha256": "1b3b915f728d30d833281c9c4d1cb3ce256bdbd3c891463ee217df6682aeac28"
         }
       ]
     },
     {
       "pluginId": "local.thirdparty.runninghub-h3-dynamic",
-      "version": "1.2.6",
+      "version": "1.2.7",
       "kind": "installable",
-      "validation": "sdk_package_validated",
+      "validation": "sdk_package_and_install_envelope_validated",
       "sourceManifest": "packages/cloud-adapters/runninghub-h3-dynamic/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.runninghub-h3-dynamic/1.2.6/adapter-install.json",
-          "sha256": "fe7dae80007c2683cc33fa3fdb01b1e256b1fc27dbd3c5d549a52938a79177dc"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-dynamic/1.2.7/adapter-install.json",
+          "sha256": "76c7593e7ba7605176bbbe28ba81b1c8ebca1e2f459f904f78cebc5e4cb3ae1e"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.runninghub-h3-dynamic/1.2.6/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-dynamic/1.2.7/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.runninghub-h3-dynamic/1.2.6/package/adapter.wasm",
-          "sha256": "a4e7546513391c07f8c798ff61c786aed58c8e439dcc0eef1a25dcdad41e8cc9"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-dynamic/1.2.7/package/adapter.wasm",
+          "sha256": "f5604c1243c6c784de7cbeb00cc95c56672abde04b8902a37973311118c1ff45"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.runninghub-h3-dynamic/1.2.6/package/manifest.json",
-          "sha256": "075290650d15b12e9af547f290695ea1d5384feee981d089dfb3c66cd3ded90f"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-dynamic/1.2.7/package/manifest.json",
+          "sha256": "d47ea38a21a05ade09db785732f8a69d7e34fd32597011932156fa0240678e2c"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.runninghub-h3-dynamic/1.2.6/package/manifest.sha256",
-          "sha256": "b79ec95860bcaf59be22deb624a5ae6331edd59e50d088f9219444d6714b173a"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-dynamic/1.2.7/package/manifest.sha256",
+          "sha256": "96c1e8c9766f5fb20c6d24333e48fdec3776ed26e48615dfd9f6e5cc107b7d2d"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.runninghub-h3-dynamic/1.2.6/README.txt",
-          "sha256": "dbbf087eb8c254f0c022e6c8b0e48e4d6008093610bfb938c25c591b60862a76"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-dynamic/1.2.7/README.txt",
+          "sha256": "4e7d084f8adb386ce012f349bee65f6f63d7eb5de2748aba93bad1f430501fc2"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.runninghub-h3-dynamic/1.2.6/安装说明.txt",
-          "sha256": "68154e82931b1a232d0630d609e04e87b24813183b26af27457c8b40e8c43156"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-dynamic/1.2.7/安装说明.txt",
+          "sha256": "4e0827b5d8ff58af8680bffe8eff16c25f48828433e2dcfd87bf6aebb56c164f"
         }
       ]
     },
@@ -396,89 +396,89 @@
     },
     {
       "pluginId": "local.thirdparty.runninghub-h3-spectrum-dynamic",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "kind": "installable",
-      "validation": "sdk_package_validated",
+      "validation": "sdk_package_and_install_envelope_validated",
       "sourceManifest": "packages/cloud-adapters/runninghub-h3-spectrum-dynamic/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.runninghub-h3-spectrum-dynamic/1.0.1/adapter-install.json",
-          "sha256": "e0cdd6ea404491e8190d2a43cf16ff79dc316e133a23ef82458c2dacb5394578"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-spectrum-dynamic/1.0.2/adapter-install.json",
+          "sha256": "9761187a6f679e7099d1d9948c2bee16b30feae029309896b984a869935b9599"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.runninghub-h3-spectrum-dynamic/1.0.1/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-spectrum-dynamic/1.0.2/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.runninghub-h3-spectrum-dynamic/1.0.1/package/adapter.wasm",
-          "sha256": "96e4a844d180c91896d454a8611e1d5a69103f18ac7aa6b7609bbce13f1b0ef9"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-spectrum-dynamic/1.0.2/package/adapter.wasm",
+          "sha256": "f884c0d7983d69865130aae09b2f2106de27b3b0cbba90879bca4e7bd52718c4"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.runninghub-h3-spectrum-dynamic/1.0.1/package/manifest.json",
-          "sha256": "2a538f2c36f0630d3f701fa9082bca926924553c2c3b51b953f7aca8c894c101"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-spectrum-dynamic/1.0.2/package/manifest.json",
+          "sha256": "40316f1528cbe87285fb35544671960bf6b2396df9b1dda62434b0bd1c15719a"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.runninghub-h3-spectrum-dynamic/1.0.1/package/manifest.sha256",
-          "sha256": "0e2a8f4f4324a9828f5b59398c3bdb74180083d802d9dc5f5daf8f76cbe66c81"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-spectrum-dynamic/1.0.2/package/manifest.sha256",
+          "sha256": "d0f2a1628f99a55f7a0751c1d585ec7821e3aa764d58c68bab39744bcdbc4f3a"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.runninghub-h3-spectrum-dynamic/1.0.1/README.txt",
-          "sha256": "0c8ea97c65f09ea1c015f69f4e2b51ac42d285a93d51c9d6b0f51f7a1d8d9e13"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-spectrum-dynamic/1.0.2/README.txt",
+          "sha256": "018413eb3ebbe09060a0153394d9b6e834fb668c0af52011086489123dc65ba4"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.runninghub-h3-spectrum-dynamic/1.0.1/安装说明.txt",
-          "sha256": "0ba398b17b7fa3ff13c3cd5b9ce21e43081cf6ed8cba04ba762d968d56af828d"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-spectrum-dynamic/1.0.2/安装说明.txt",
+          "sha256": "770601b7d2e39249178b0e927867b3e388c46b65282a1c5d7a1f496a5bddae92"
         }
       ]
     },
     {
       "pluginId": "local.bgx.seedream-image",
-      "version": "1.0.5",
+      "version": "1.0.6",
       "kind": "installable",
-      "validation": "sdk_package_validated",
+      "validation": "sdk_package_and_install_envelope_validated",
       "sourceManifest": "packages/cloud-adapters/seedream-image/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.seedream-image/1.0.5/adapter-install.json",
-          "sha256": "18e19362d176656ce979bcb40392afd6290ebf175121c258a2fb8e3b3862743b"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedream-image/1.0.6/adapter-install.json",
+          "sha256": "b700efef9a8d51bcae30c35bfaabc37e221773b2e23ffa918ae785dd0c97e23e"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.seedream-image/1.0.5/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedream-image/1.0.6/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.seedream-image/1.0.5/package/adapter.wasm",
-          "sha256": "6d3e0072f3df478c9edd80e676ec4b77dd9ca80aa0870c6b96ebcb876deb05c7"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedream-image/1.0.6/package/adapter.wasm",
+          "sha256": "4c4afaa562f928ea668ba4202a76be8d0f85fa060cd62034c06de2e4fccf1bf6"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.seedream-image/1.0.5/package/manifest.json",
-          "sha256": "32ffe9bdb27074e342b40e478f8b66fb971a1ab05a57d05db25158414bd06331"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedream-image/1.0.6/package/manifest.json",
+          "sha256": "502310eb0e0544b0171226570ca0d74c273a3459fe038296362d6e5dc61540b9"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.seedream-image/1.0.5/package/manifest.sha256",
-          "sha256": "e18b9aa2678c95b0e9e32f229e9edd02547ed352366b159af3bb7377ea6da883"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedream-image/1.0.6/package/manifest.sha256",
+          "sha256": "5ef809810d0e8887c6c332c73072249746b1e89027c7d2cc28bf5940bec8c210"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.seedream-image/1.0.5/README.txt",
-          "sha256": "1d5ad09530a818acd034a31f7929043ceece09d9ba892aefd36eecd10df5b3d8"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedream-image/1.0.6/README.txt",
+          "sha256": "43877f81f009d4f08651f4045258b8cf9faf71d2bd4aeedbb57fc573f520c6dd"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.bgx.seedream-image/1.0.5/安装说明.txt",
-          "sha256": "cbfe31ce7f3ab6c141c03e7c60a6d2c04a761308e3706996e23470c3b0a7d047"
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedream-image/1.0.6/安装说明.txt",
+          "sha256": "a3ec518e0a6173b7a081ef08a2dc2f876ca13223988ed830370e79f406574fe8"
         }
       ]
     },
@@ -487,7 +487,7 @@
       "version": "1.0.0-d",
       "kind": "speechManaged",
       "validation": "frozen_speech_owner_validated",
-      "sourceManifest": "packages/tts-adapters/breeze/dist-pack-d/manifest.json",
+      "sourceManifest": "records/release-sources/breeze/1.0.0-d/manifest.json",
       "files": [
         {
           "path": "LICENSE",
@@ -513,184 +513,189 @@
     },
     {
       "pluginId": "local.thirdparty.h3-face-refine",
-      "version": "1.0.0-a30",
+      "version": "1.0.0-a31",
       "kind": "installable",
       "validation": "sdk_package_and_install_envelope_validated",
       "sourceManifest": "projects/bgxiong-h3-face-refine-adapter/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/adapter-install.json",
-          "sha256": "a16185bfcdcad47868dbe3f35a51e85ebd2ea368b5a21536222a881c0b036a8f"
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/adapter-install.json",
+          "sha256": "3c3eec94b93103024c123fdefd7892d6c49a5ab5d43ec39ddc57e13299ecaada"
         },
         {
           "path": "comfy-nodes/BGXFaceRefineContract/__init__.py",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/comfy-nodes/BGXFaceRefineContract/__init__.py",
-          "sha256": "2568e7189a1816a2602748c55735021642bdbc81a55b577b363f1bfd6bee34f2"
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/BGXFaceRefineContract/__init__.py",
+          "sha256": "d0d86f0111177b0e46e8445f1ef505d6910cfe07701b5d16bb3ba2b4deb484d0"
         },
         {
           "path": "comfy-nodes/BGXFaceRefineContract/session_api.py",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/comfy-nodes/BGXFaceRefineContract/session_api.py",
-          "sha256": "5098054d330df135b961a1e792ea33f4df5b281216fa586fa800c263baecbf13"
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/BGXFaceRefineContract/session_api.py",
+          "sha256": "36f7ad463440df3deba007e9098bed57aeb3fb6466e71421dd6cf9a41aec3b96"
         },
         {
           "path": "comfy-nodes/BGXFaceRefineContract/sessions.py",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/comfy-nodes/BGXFaceRefineContract/sessions.py",
-          "sha256": "d1d9e20d00c8f4c44feec1145270512ce560f816829817f3f885a3a669c79368"
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/BGXFaceRefineContract/sessions.py",
+          "sha256": "fd1b6f2f478ceffbc625dfa8b2d102ff6e2d3e8ef847760d0fda10802a9cdc15"
         },
         {
           "path": "comfy-nodes/BGXFaceRefineContract/tracking.py",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/comfy-nodes/BGXFaceRefineContract/tracking.py",
-          "sha256": "0531c1b5be787056d4908f792902a4336dfee93976e3fde06e52399fee41aa67"
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/BGXFaceRefineContract/tracking.py",
+          "sha256": "d6cb97606fee7a0e0b8c2d5cf50d0ded21f4b416913c7b54757e0ffc34a8573a"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/bug_report.yml",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/bug_report.yml",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/bug_report.yml",
           "sha256": "890bbb41a0df4e6519c012148c9e6204b05fb7833f1a340d1133c5622f57ac58"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/config.yml",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/config.yml",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/config.yml",
           "sha256": "7cca53eddc3d54dcbe80b600f9295a49d1c6d93fff0ca85ad57620eb8447d759"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/.github/workflows/publish.yml",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/comfy-nodes/ComfyUI-H3-FaceRefine/.github/workflows/publish.yml",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/.github/workflows/publish.yml",
           "sha256": "0888358066113715b575e29cb6613bb01845df967bb6c153578867613de3d835"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/.gitignore",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/comfy-nodes/ComfyUI-H3-FaceRefine/.gitignore",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/.gitignore",
           "sha256": "5b7e52bd0188656a2c97a3d511231d03f507d4b974ae90517ad7b1a610a11b80"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/__init__.py",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/comfy-nodes/ComfyUI-H3-FaceRefine/__init__.py",
-          "sha256": "d1fe46d4e9bb622d0e342f25305a41a0af401ad048c4da88dc64403e03ba2a90"
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/__init__.py",
+          "sha256": "66327d684adb8768b4be2db8527c45844c72d008a88ccc8c849fb049835a2d92"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Auto_Select.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Auto_Select.json",
-          "sha256": "5f715e8f56cb69300b29d1d41c2d5c4883a5661c9088a0d900d59642010ace23"
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Auto_Select.json",
+          "sha256": "b75ca7e9c52b41994b0242c742c151ae069b184654169ff765f9923b5366c4d3"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Manual_Select.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Manual_Select.json",
-          "sha256": "bea1ea57808edfc949cfd6dd2757d1e78b5db37cbdf136aadac585a9ece6c575"
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Manual_Select.json",
+          "sha256": "233c70e8e570566eee53d63126bde734777c1e1e2e20599197ae78b859a73151"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/comfy-nodes/ComfyUI-H3-FaceRefine/LICENSE",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/LICENSE",
           "sha256": "b03d4e31e6bb15940bfa88d3e270653e0925ea01d9828842d2ee22b3ea620bb9"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/nodes.py",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/comfy-nodes/ComfyUI-H3-FaceRefine/nodes.py",
-          "sha256": "87730c017f5868c3f4bb09d1af162ae553afe4208c6205558936c660f8874ec1"
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/nodes.py",
+          "sha256": "643d186d8471347cba40891a8a0c5ad60a4e0186058373a83c95ee0cf9edd7c7"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/picker_api.py",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/comfy-nodes/ComfyUI-H3-FaceRefine/picker_api.py",
-          "sha256": "d6dff892596f5959c659198e12b10dfdfc8a80c5121d808631ec756a21d490bc"
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/picker_api.py",
+          "sha256": "dc70bbe4964bc97566eea58c0794e08651573459897d4423d7213ac7ce1ae635"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/pyproject.toml",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/comfy-nodes/ComfyUI-H3-FaceRefine/pyproject.toml",
-          "sha256": "14af2f6980ebe2713d6b45dab81832febb3de052dafac7f620073e24b49c5c8c"
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/pyproject.toml",
+          "sha256": "b7d944341ef75e73c5a28cd6eba441a90ddb237b35f03e70a9b0b71e637c96e9"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/README.md",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/comfy-nodes/ComfyUI-H3-FaceRefine/README.md",
-          "sha256": "38326d9726e0894ed3654bc14bc3eb4dc471a6336bfb858d0e86e97e60fb346d"
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/README.md",
+          "sha256": "0685f78860b9e72f6abf6db24b37e9ab8def452d1a6c806c88d2f2ac7d704516"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/requirements.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/comfy-nodes/ComfyUI-H3-FaceRefine/requirements.txt",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/requirements.txt",
           "sha256": "44a8f6759579c36dea25aca606b3d48b774e96d88271d1e6c36efda779328489"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/web/h3_face_select.js",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/comfy-nodes/ComfyUI-H3-FaceRefine/web/h3_face_select.js",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/web/h3_face_select.js",
           "sha256": "b82e637c3c3149921896dcb3cd9ec48e5910b0fa656e4f1f9714dbe83b0e239e"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "LICENSE-NOTES.md",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/LICENSE-NOTES.md",
+          "sha256": "216df9a5fbd67bc6e3049ceaca6e0bc5cd524fdbdc9ef8a6f75d778e4602cfa1"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/package/adapter.wasm",
-          "sha256": "bad56e5d232efc2f926232a79e3436a0f6f70493bd17356d4bafaf957d4137a1"
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/package/adapter.wasm",
+          "sha256": "05ac530bf265d6709504523a694985fad652a22fa933ff989987c74cd1489611"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/package/manifest.json",
-          "sha256": "a84c77a78f9bc2da95a02b4e600ad0ce09bde1ee0f3b50f029caf4bff5843c02"
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/package/manifest.json",
+          "sha256": "f70e0babedd87881fdc2660b9825fd01361fa56e254a12b8baefd564e4c1e3f3"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/package/manifest.sha256",
-          "sha256": "19296d12cf7c0dc00183445de54d626da9167479c7d8ca4e3e92ccd0b99f712a"
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/package/manifest.sha256",
+          "sha256": "a3ec9885c8dd18a20effedd87f6cd89be35686694a8a41e2809b1421dd169e55"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/README.txt",
-          "sha256": "bb845aceba99fc34fa4f6f28bc36cf44ba2e6ab6493bf22ac4fff2160f872785"
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/README.txt",
+          "sha256": "c2bff20022644154136ee06a5115aedbd07aeb43b989061a32ee47bfeec2fa3e"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.h3-face-refine/1.0.0-a30/安装说明.txt",
-          "sha256": "7e8b4e6a6d25d0a41c33bb644b947d24296f8b1a6e00a3d1c0b03f3b536490f7"
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/安装说明.txt",
+          "sha256": "c45308047d94e5033f3a1bd353a892663a621b4ba9298bcdb8a6fdfd66d520ed"
         }
       ]
     },
     {
       "pluginId": "local.independent.flux2-ordered-reference",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "kind": "installable",
       "validation": "sdk_package_validated",
       "sourceManifest": "packages/comfy-workflow-adapter/v2/flux2-multi-ref-independent/flux2-author/manifest.json",
       "files": [
         {
           "path": "host-config.example.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.independent.flux2-ordered-reference/1.0.1/host-config.example.json",
-          "sha256": "5d71d0865789cc381d89d137c9dd93e6141af0855263de62de2383fa8c449379"
+          "source": "artifacts/releases/sdk-completion-20261111/local.independent.flux2-ordered-reference/1.0.2/host-config.example.json",
+          "sha256": "e164d632cdb98eab1a6b776a18b90bfc72eb7f4591072b12e07f4dd25c51db63"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.independent.flux2-ordered-reference/1.0.1/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+          "source": "artifacts/releases/sdk-completion-20261111/local.independent.flux2-ordered-reference/1.0.2/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.independent.flux2-ordered-reference/1.0.1/package/adapter.wasm",
-          "sha256": "40f21fff265f6eb50200477145961f2f141ec92adc14001ea8afefd87a7be98e"
+          "source": "artifacts/releases/sdk-completion-20261111/local.independent.flux2-ordered-reference/1.0.2/package/adapter.wasm",
+          "sha256": "5027dc5729c241b9774fd3110d42d9e5c498d86c7489de70ead898e7350090ea"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.independent.flux2-ordered-reference/1.0.1/package/manifest.json",
-          "sha256": "0fc6e4338ae7c07f0c79a75478ae894c28e8b909fb2e901e4fe928795ce23c54"
+          "source": "artifacts/releases/sdk-completion-20261111/local.independent.flux2-ordered-reference/1.0.2/package/manifest.json",
+          "sha256": "89a173ec829d20c4e63422c459d961f03512892033a3a738e1cfe57806f926ef"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.independent.flux2-ordered-reference/1.0.1/package/manifest.sha256",
-          "sha256": "68776a47742321d449fc76df56b06bec92e8bf8cadb3db9edfa4128d301e9e00"
+          "source": "artifacts/releases/sdk-completion-20261111/local.independent.flux2-ordered-reference/1.0.2/package/manifest.sha256",
+          "sha256": "63d494ff32c3c453eef819f03905b20f701acbc0d5d2a743f2fd84eb9b1642b4"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.independent.flux2-ordered-reference/1.0.1/README.txt",
-          "sha256": "48ab18ef5587f682ec754a6c804d660dc77fcc52e5925195c7c7e037e331b5f4"
+          "source": "artifacts/releases/sdk-completion-20261111/local.independent.flux2-ordered-reference/1.0.2/README.txt",
+          "sha256": "c8851b351c8e620c3beb1d636f5412cd00526a160d7a13436dec189ba75b7994"
         },
         {
           "path": "workflow-templates.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.independent.flux2-ordered-reference/1.0.1/workflow-templates.json",
-          "sha256": "471d9829f3896b5e8d5806387784370788a050b9f6a4c401bedb79bc3afbd376"
+          "source": "artifacts/releases/sdk-completion-20261111/local.independent.flux2-ordered-reference/1.0.2/workflow-templates.json",
+          "sha256": "29623f29f4d909509e1ca6e140fcb6ce0eaeec8cd6d8f7069399b9f9c644d832"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.independent.flux2-ordered-reference/1.0.1/安装说明.txt",
-          "sha256": "fd880702b207f592fc507300fa64eeefee6b5db9cd56681bc65f87299da04434"
+          "source": "artifacts/releases/sdk-completion-20261111/local.independent.flux2-ordered-reference/1.0.2/安装说明.txt",
+          "sha256": "eeb726e0b5cc5dea8d3672816a087b09e8ae434ebe4789cabf233fa34577913e"
         }
       ]
     },
@@ -1031,133 +1036,133 @@
     },
     {
       "pluginId": "local.zeroauthor.comfy-zimage-turbo",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "kind": "installable",
       "validation": "sdk_package_validated",
       "sourceManifest": "packages/comfy-workflow-adapter/v2/zimage-zero-independent/author/manifest.json",
       "files": [
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.zeroauthor.comfy-zimage-turbo/1.0.2/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+          "source": "artifacts/releases/sdk-completion-20261111/local.zeroauthor.comfy-zimage-turbo/1.0.3/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.zeroauthor.comfy-zimage-turbo/1.0.2/package/adapter.wasm",
-          "sha256": "fe71bebcbd2892d819b1af2d6dfd8e32839ca544183607e2b4fa7a39339451e0"
+          "source": "artifacts/releases/sdk-completion-20261111/local.zeroauthor.comfy-zimage-turbo/1.0.3/package/adapter.wasm",
+          "sha256": "6694ee3ecc686db8147884484c1fbd176615bc11d35ea38bb238a76440c456c5"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.zeroauthor.comfy-zimage-turbo/1.0.2/package/manifest.json",
-          "sha256": "10e1018da0cc5646b37cbaa6b73248f811cd6d44a0adc7445f0e1321ae47df5e"
+          "source": "artifacts/releases/sdk-completion-20261111/local.zeroauthor.comfy-zimage-turbo/1.0.3/package/manifest.json",
+          "sha256": "7f54e465d8f6044dc0060430d7d0e1abd33f59c146b718c6528e26c3050e03f4"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.zeroauthor.comfy-zimage-turbo/1.0.2/package/manifest.sha256",
-          "sha256": "486f6da90c02022c5e4802a571014de70a9537048f8b4ddc05c9ce808262d083"
+          "source": "artifacts/releases/sdk-completion-20261111/local.zeroauthor.comfy-zimage-turbo/1.0.3/package/manifest.sha256",
+          "sha256": "afc85b5c1aac969cb9336b245165e20e7d1aebd11608f33437a444ead1067112"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.zeroauthor.comfy-zimage-turbo/1.0.2/README.txt",
-          "sha256": "4080cf156ddfb2acd3e45ce4a0392a6335747b188d29d0fbe5ab5e9318920141"
+          "source": "artifacts/releases/sdk-completion-20261111/local.zeroauthor.comfy-zimage-turbo/1.0.3/README.txt",
+          "sha256": "21f7155ef54040ef9027ea26ac060c6d17e49fe9192cfdddf50672cae1170f10"
         },
         {
           "path": "workflow-templates.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.zeroauthor.comfy-zimage-turbo/1.0.2/workflow-templates.json",
-          "sha256": "fb307a48e631fd2b0ed072e49ecc5686d262820eed556be7da22b1f0975a3c23"
+          "source": "artifacts/releases/sdk-completion-20261111/local.zeroauthor.comfy-zimage-turbo/1.0.3/workflow-templates.json",
+          "sha256": "4dca73d7bdb36b406b5e5946c08b0e32f2e40bf0cdbd8fe6212a820173db487e"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.zeroauthor.comfy-zimage-turbo/1.0.2/安装说明.txt",
-          "sha256": "3a5adae6b3af4c9ccb4d50256d2a33e884154227c4455ab3718566917c562ac8"
+          "source": "artifacts/releases/sdk-completion-20261111/local.zeroauthor.comfy-zimage-turbo/1.0.3/安装说明.txt",
+          "sha256": "a8dd4a83afbf0681f0d12f185be61cd6894b17d11482510d65c4f1520fdfaacc"
         }
       ]
     },
     {
       "pluginId": "local.thirdparty.runninghub-h3-r2v-dynamic",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "kind": "installable",
       "validation": "sdk_package_and_install_envelope_validated",
       "sourceManifest": "packages/cloud-adapters/runninghub-h3-r2v-dynamic/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",
-          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.1/adapter-install.json",
-          "sha256": "a8220b4b6856aa610df8b4db4d1b0a8333cf2aba4d94d23f4979aa34981d18f0"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.2/adapter-install.json",
+          "sha256": "0c071cee036d52f53a1c0df8ff341900a39ed9c81e06f8db4ab8af92d013024c"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.1/LICENSE",
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.2/LICENSE",
           "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.1/package/adapter.wasm",
-          "sha256": "0257990d9ea6a0dc03053d9d4e71aee67743044c0a73417b36fdda69e55e88e5"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.2/package/adapter.wasm",
+          "sha256": "e3ae89399fd07883d7bf101db4524a36cf148e9b2d960b585b3831cc64d4c9d2"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.1/package/manifest.json",
-          "sha256": "65eea56133211f9ce26268ddfc73e509b39146831056d646cf58300f2a7ae9f9"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.2/package/manifest.json",
+          "sha256": "51773e6d911f01e85dae917052059d57ae809e5d049d587044e8b5323b3318a6"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.1/package/manifest.sha256",
-          "sha256": "7033f7dbe807ccfd6a44e5ae752ca6711c61eaf77e438d99923ab22c594cabec"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.2/package/manifest.sha256",
+          "sha256": "fdfa2db3efc7cf0e6525fe3043f5a69dcb9510b67e369249428ae5a168a58d5f"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.1/README.txt",
-          "sha256": "92625830a68de97f49f69f8db625d5a00fefb71aee9264195c36ba974eaadb89"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.2/README.txt",
+          "sha256": "b1474c0d3de7ee1b6818892554832e0c69cb71dae240c84c30c8d2185d84d65b"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.1/安装说明.txt",
-          "sha256": "3c263635fcd21b18d3f56ce6675408148114822f50c61ca7e6014c870a233487"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.2/安装说明.txt",
+          "sha256": "89824c7fe0a72f17ea87181213c3bc6cf80d4e68c99a12b8bd443a937d65182e"
         }
       ]
     },
     {
       "pluginId": "local.thirdparty.runninghub-h3-r2v-soundtrack",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "kind": "installable",
       "validation": "sdk_package_and_install_envelope_validated",
       "sourceManifest": "packages/cloud-adapters/runninghub-h3-r2v-soundtrack/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",
-          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.0/adapter-install.json",
-          "sha256": "650e078d227c1d6f79e0f614ba86c562c44a46328d57a97e2da5057d27a03e8d"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.1/adapter-install.json",
+          "sha256": "14c243a9b6fee2d15ea3c3069c2cc2afd0027fc4626db6611d62e36ff4600fce"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.0/LICENSE",
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.1/LICENSE",
           "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.0/package/adapter.wasm",
-          "sha256": "fcb5d88775f64678c194c1418a1710904885387eb540b598f23c70a64a268d6b"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.1/package/adapter.wasm",
+          "sha256": "19b7d1269db2d94bad17350f2571050a465c9cf1e310161b6c63ec8ca1679c0b"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.0/package/manifest.json",
-          "sha256": "43faa0168e235ac8e52a39e8fb378a6980158195981d6625d99309bb57d69b5e"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.1/package/manifest.json",
+          "sha256": "360a0b82dbe54f17ce7ba6ce4243ccfedbfd70e0d1d4fbf6f5c0596549a8582a"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.0/package/manifest.sha256",
-          "sha256": "24b75c6b89d8e1ef743aefb6864b876b082ae76495303eff0db12ed789c42c29"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.1/package/manifest.sha256",
+          "sha256": "6af87a0c21feef3a43d3b6cafb5cd6c696388c6f889797f4b5ddb9fc55818c35"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.0/README.txt",
-          "sha256": "716f342e58c5c6b2c19dc72f068297be4799596c0ecbcd76e95380d7b1504e4a"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.1/README.txt",
+          "sha256": "ea64e560fbbd7f946ee5533f7d9ca85718b9880acc5eea74c2e89d05c47e2c5f"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/releases/4241a5d386ac45aca8d208bcb0d4feda/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.0/安装说明.txt",
-          "sha256": "712dd37fe5e03e20d76a33490e0c932d7cd4d4a6e818aa262a20cdbbfc0cef84"
+          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.1/安装说明.txt",
+          "sha256": "1972e29dcb7d77be380a28154ed9c7ce730e45fad0480793febc30c2d18d535b"
         }
       ]
     },
@@ -1220,7 +1225,7 @@
       "version": "0.1.3",
       "kind": "installable",
       "validation": "sdk_package_validated",
-      "sourceManifest": "packages/workflow-adapters/wan22-s2v/manifest.json",
+      "sourceManifest": "records/release-sources/wan22-s2v/0.1.3/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",

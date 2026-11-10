@@ -27,7 +27,7 @@ fn max_buffer() -> u64 {
 }
 fn policy_limit(key: &str) -> u64 {
     let p: Value = serde_json::from_str(include_str!(
-        "../../../../contract/v2/protocol/schema-policy.json"
+        "../protocol/schema-policy.json"
     ))
     .expect("published SDK policy");
     p["limits"][key].as_u64().expect("published SDK budget")

@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "96e4a844d180c91896d454a8611e1d5a69103f18ac7aa6b7609bbce13f1b0ef9",
+  "artifactSha256": "f884c0d7983d69865130aae09b2f2106de27b3b0cbba90879bca4e7bd52718c4",
   "displayName": "H3-r2v-spectrum",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -36,5 +36,5 @@
   },
   "requiredFeatures": [],
   "schemaVersion": 2,
-  "version": "1.0.1"
+  "version": "1.0.2"
 }

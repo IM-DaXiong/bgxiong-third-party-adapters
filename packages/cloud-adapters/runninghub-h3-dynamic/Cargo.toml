@@ -4,7 +4,7 @@ exclude = ["vendor-sdk/sdk/rust"]
 
 [package]
 name = "runninghub-h3-dynamic-adapter"
-version = "1.2.6"
+version = "1.2.7"
 edition = "2021"
 license = "LicenseRef-Proprietary"
 publish = false

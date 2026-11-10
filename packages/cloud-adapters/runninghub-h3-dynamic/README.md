@@ -3,7 +3,7 @@
 
 
 > Spectrum 质量优先孪生包：`../runninghub-h3-spectrum-dynamic`（modelId `runninghub-h3-r2v-spectrum-dynamic`，workflowId `2116576147646533634`）。本 Turbo 包 workflowId `2100758868111486978` 保持冻结。
-当前权威源码：**1.2.6**；公开 SDK：**V2 2.0.0**。本目录与 `packages/cloud-adapters/` 内其他厂商包同级，具有自己的 Cargo workspace，不加入宿主或 SDK workspace，不参与主程序编译。厂商工作流、HTTP 组装及响应解释只在本目录实现。
+当前权威源码：**1.2.7**；公开 SDK：**V2 2.0.0**。本目录与 `packages/cloud-adapters/` 内其他厂商包同级，具有自己的 Cargo workspace，不加入宿主或 SDK workspace，不参与主程序编译。厂商工作流、HTTP 组装及响应解释只在本目录实现。
 
 ## 其他智能体从哪里开始
 
@@ -59,6 +59,6 @@ cargo test --manifest-path ./Cargo.toml --locked --offline --target-dir ./.bgx-s
 
 本次修复：schemaJson与摘要生成前统一LF；新版本不得覆盖已安装旧版本。生成的SDK镜像由当前公开CLI init恢复，不手改镜像或锁；包检查通过仍须安装与工作台提交验收。
 
-## 1.2.6 上传与失败提示
+## 1.2.7 上传与失败提示
 
 整组素材上传和生成提交共用9分钟（原3分钟），查询/取回同为9分钟。单次上传最多3分钟；上传失败通过公开 submission-rejection-v1 写明生成尚未提交，保留用户素材及提示词。生成提交后丢失回执仍须先核对第三方任务，禁止自动重提。

@@ -1,6 +1,6 @@
 # RunningHub H3 原声动态多参独立适配器
 
-当前权威源码：**1.0.0**；公开 SDK：**V2 2.1.1**（模板合同仍为 2.0.0）。本目录与 `packages/cloud-adapters/` 内其他厂商包同级，具有自己的 Cargo workspace，不加入宿主或 SDK workspace，不参与主程序编译。厂商工作流、HTTP 组装及响应解释只在本目录实现。
+当前权威源码：**1.0.1**；公开 SDK：**V2 2.1.1**（模板合同仍为 2.0.0）。本目录与 `packages/cloud-adapters/` 内其他厂商包同级，具有自己的 Cargo workspace，不加入宿主或 SDK workspace，不参与主程序编译。厂商工作流、HTTP 组装及响应解释只在本目录实现。
 
 本包是官方基础 `MiniMax H3 Reference to Video` 的原声成片包。采样链与 `runninghub-h3-r2v-dynamic` 相同（无 Turbo、无 Spectrum，BasicScheduler 20 步，UNET `127`）。差别只在成片音轨：上传的那一段音频同时接到节点 136 的 `ref_audio_0` 和 `CreateVideo` 130，不再使用 `VAEDecodeAudio` 121 的解码音。
 
@@ -30,6 +30,6 @@ cargo test --manifest-path packages/cloud-adapters/runninghub-h3-r2v-soundtrack/
 
 可导入目录：
 
-`L:\00Dev\bgxiong-third-party-adapters\artifacts\runninghub-h3-r2v-soundtrack\1.0.0`
+`L:\00Dev\bgxiong-third-party-adapters\artifacts\runninghub-h3-r2v-soundtrack\1.0.1`
 
 导入后进「RunningHub」一级，短名是 `H3-r2v-原声`。本轮没有写入正在使用的应用数据库，也没有云端真实生成。

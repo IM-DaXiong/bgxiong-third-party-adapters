@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "755ab5dde314315cceff45bc0388018cbdaeae30f8ba0f37bb783610df3bf3e4",
+  "artifactSha256": "40cb8a3ea2d0872e043cd667500d97648e2c491b0b89cf58c487ef466659573d",
   "displayName": "DeepSeek 云端文本",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -33,5 +33,5 @@
   },
   "requiredFeatures": [],
   "schemaVersion": 2,
-  "version": "1.0.0"
+  "version": "1.0.1"
 }

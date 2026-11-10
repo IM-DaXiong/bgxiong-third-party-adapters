@@ -4,6 +4,7 @@
 *.rs text eol=lf
 *.toml text eol=lf
 *.lock text eol=lf
+*.sha256 text eol=lf
 *.wit text eol=lf
 
 # Frozen release files must reproduce the checked-in SHA256 bytes on every platform.
