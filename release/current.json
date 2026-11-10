@@ -352,40 +352,45 @@
     },
     {
       "pluginId": "local.example.runninghub-minimax-h3",
-      "version": "1.0.3",
+      "version": "1.0.4",
       "kind": "installable",
-      "validation": "sdk_package_validated",
+      "validation": "sdk_package_and_install_envelope_validated",
       "sourceManifest": "packages/cloud-adapters/runninghub-minimax-h3/manifest.json",
       "files": [
         {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/h3-current-sdk-20261111/local.example.runninghub-minimax-h3/1.0.4/adapter-install.json",
+          "sha256": "f9827f6f8d9069d8fc1d6f5742c9b819095706663cc74a6fc9065deab16edfac"
+        },
+        {
           "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.runninghub-minimax-h3/1.0.3/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+          "source": "artifacts/releases/h3-current-sdk-20261111/local.example.runninghub-minimax-h3/1.0.4/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.runninghub-minimax-h3/1.0.3/package/adapter.wasm",
-          "sha256": "312ccb88dfcb5b4eeddbe8e58151ec16280064217dc77f213e28bf4cf8618171"
+          "source": "artifacts/releases/h3-current-sdk-20261111/local.example.runninghub-minimax-h3/1.0.4/package/adapter.wasm",
+          "sha256": "b2a32543fc044f21b6337e367dd4d5e8e701cdc2a3a8485ecb227f4625af9807"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.runninghub-minimax-h3/1.0.3/package/manifest.json",
-          "sha256": "af23617c489d29c34028b1cf27090e8f6718c594c4a7c23cc2c4b554467ffcf0"
+          "source": "artifacts/releases/h3-current-sdk-20261111/local.example.runninghub-minimax-h3/1.0.4/package/manifest.json",
+          "sha256": "757ba4d4997e6dda920d2788ad6a6206c9adf0636fe4eaee4fabf824b5a1651b"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.runninghub-minimax-h3/1.0.3/package/manifest.sha256",
-          "sha256": "5c47dcd3c00feea19b89c36690f2e966878d8f0230c0d3fdc3a39e7e0b6da2f1"
+          "source": "artifacts/releases/h3-current-sdk-20261111/local.example.runninghub-minimax-h3/1.0.4/package/manifest.sha256",
+          "sha256": "a9484666de145e88d9f9cb1adc136bd118dde3565a92e5e167f951754a490b9c"
         },
         {
-          "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.runninghub-minimax-h3/1.0.3/README.txt",
-          "sha256": "04504e3a7fa9e37c8e2f71d7ec715b579b8b59edc4e6ba13ec0fd192bcab71a4"
+          "path": "README.md",
+          "source": "artifacts/releases/h3-current-sdk-20261111/local.example.runninghub-minimax-h3/1.0.4/README.md",
+          "sha256": "b80b160284856b84c5cd41f547262f421b4cee9d6868643a4cff26c165dc558e"
         },
         {
-          "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.runninghub-minimax-h3/1.0.3/安装说明.txt",
-          "sha256": "ef1ea219d1f0ffa1b12ffec996bfd6f0de3f435490bc240cb9b4c2aafada0f03"
+          "path": "SHA256SUMS.txt",
+          "source": "artifacts/releases/h3-current-sdk-20261111/local.example.runninghub-minimax-h3/1.0.4/SHA256SUMS.txt",
+          "sha256": "97858d04c2815740e56d1ad4babaccbec48f8d19166da84083ca89ba8378d649"
         }
       ]
     },

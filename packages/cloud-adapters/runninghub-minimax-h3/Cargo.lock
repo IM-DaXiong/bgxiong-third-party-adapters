@@ -202,7 +202,7 @@ dependencies = [
 
 [[package]]
 name = "runninghub-minimax-h3-adapter"
-version = "1.0.3"
+version = "1.0.4"
 dependencies = [
  "bgx-adapter-v2-sdk",
  "serde_json",

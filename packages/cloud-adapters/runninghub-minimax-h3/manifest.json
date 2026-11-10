@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "312ccb88dfcb5b4eeddbe8e58151ec16280064217dc77f213e28bf4cf8618171",
+  "artifactSha256": "b2a32543fc044f21b6337e367dd4d5e8e701cdc2a3a8485ecb227f4625af9807",
   "displayName": "H3-多参",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -36,5 +36,5 @@
   },
   "requiredFeatures": [],
   "schemaVersion": 2,
-  "version": "1.0.3"
+  "version": "1.0.4"
 }

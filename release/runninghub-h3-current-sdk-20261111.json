@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "pluginId": "local.example.runninghub-minimax-h3",
+  "version": "1.0.4",
+  "sdkCommit": "cee2023a196c838eb3ef9feffbaedb658caa937f",
+  "nativeTestsPassed": 7,
+  "sdkPackageValidated": true,
+  "actualApplicationEnvelopeInstalled": true,
+  "managedMediaProbeVerified": true,
+  "paidGenerationOnThisVersion": false,
+  "priorSamePlatformImplementation": {
+    "version": "1.0.3",
+    "cloudGenerated": true,
+    "downloadedAndSavedToHistory": true,
+    "recoveryObservationRace": "Host fix pending final EXE verification; original task retained."
+  },
+  "installation": "Import full adapter-install.json envelope and select your own account; do not import a raw runtime folder."
+}

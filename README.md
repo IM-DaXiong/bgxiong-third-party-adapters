@@ -12,6 +12,8 @@
 - projects/：独立工程及其唯一 owner（清单见 `projects/README.md`）。
 - artifacts/：发行产物；records/：保全与核查证据；这两类本机资料不自动发布。
 
+六个当前视频包的完整安装信封、WASM、配套文件和 SHA256：[2026-11-11 下载与实际验收](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/sdk-video-explicit-modes-20261111)。版本与摘要见 [下载清单](release/video-explicit-modes-20261111.json)。
+
 ## 本机安装测试
 
 打开适配器仓的 `artifacts/current/`，按 `<pluginId>/<version>/` 找当前可导入的包。软件中进入 **设置 → 第三方适配器 → 安装适配包**。有 `adapter-install.json` 时选择版本目录，否则按包说明选其中的 `package/`。
@@ -63,7 +65,7 @@
 | [runninghub-h3-r2v-dynamic](./packages/cloud-adapters/runninghub-h3-r2v-dynamic) | RunningHub H3-r2v（官方20步） | `local.thirdparty.runninghub-h3-r2v-dynamic` | `1.0.1` |
 | [runninghub-h3-r2v-soundtrack](./packages/cloud-adapters/runninghub-h3-r2v-soundtrack) | RunningHub H3-r2v-原声（官方20步） | `local.thirdparty.runninghub-h3-r2v-soundtrack` | `1.0.0` |
 | [runninghub-h3-spectrum-dynamic](./packages/cloud-adapters/runninghub-h3-spectrum-dynamic) | RunningHub H3-r2v-spectrum | `local.thirdparty.runninghub-h3-spectrum-dynamic` | `1.0.1` |
-| [runninghub-minimax-h3](./packages/cloud-adapters/runninghub-minimax-h3) | RunningHub H3-多参 | `local.example.runninghub-minimax-h3` | `1.0.3` |
+| [runninghub-minimax-h3](./packages/cloud-adapters/runninghub-minimax-h3) | RunningHub H3-多参 | `local.example.runninghub-minimax-h3` | `1.0.4` |
 | [runninghub-qwen-image-21](./packages/cloud-adapters/runninghub-qwen-image-21) | RunningHub Qwen Image 2.1 文生图 / 1～10 张参考图编辑 | `local.thirdparty.runninghub-qwen-image-21` | `0.1.2` 候选 |
 
 #### 本地工作流
