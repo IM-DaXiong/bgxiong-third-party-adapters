@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "fb891c48422c25e1469d76789902276743c58f2f",
+  "sdkCommit": "cee2023a196c838eb3ef9feffbaedb658caa937f",
+  "releaseUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/sdk-video-explicit-modes-20261111",
+  "validation": {
+    "nativeBehaviorTestsPassed": 22,
+    "sdkPackagesChecked": 6,
+    "actualApplicationInstallationsPassed": 6,
+    "realComfyGenerationsAndDownloadsPassed": 6,
+    "perPackageGuiNodeGenerationVerified": false
+  },
+  "packages": [
+    {
+      "pluginId": "local.example.comfy-h3-t2v",
+      "version": "1.0.1",
+      "kind": "sourceExample",
+      "url": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/sdk-video-explicit-modes-20261111/h3-t2v-1.0.1.zip",
+      "sha256": "79ef87a73e9fe115ca58a838ffa880811271cd3ff842f71d214d1cea333e3ba5",
+      "size": 213892
+    },
+    {
+      "pluginId": "local.example.comfy-h3-r2v",
+      "version": "1.0.1",
+      "kind": "sourceExample",
+      "url": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/sdk-video-explicit-modes-20261111/h3-r2v-1.0.1.zip",
+      "sha256": "ba143b82c87825369db6b4a700effc88f5d364f03c60ca74bb295aee7a395ae1",
+      "size": 216178
+    },
+    {
+      "pluginId": "local.example.comfy-h3-r2v-audio",
+      "version": "1.0.1",
+      "kind": "sourceExample",
+      "url": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/sdk-video-explicit-modes-20261111/h3-r2v-audio-1.0.1.zip",
+      "sha256": "d4052d7208ed97ab3e92b283d29f9612ad2c81a8a4dc2d0907a5f3f2c9d2cd85",
+      "size": 219607
+    },
+    {
+      "pluginId": "local.example.comfy-ltx25-i2v",
+      "version": "1.0.1",
+      "kind": "sourceExample",
+      "url": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/sdk-video-explicit-modes-20261111/ltx25-i2v-1.0.1.zip",
+      "sha256": "530d4ffae0c41d8444d32123d50eaf838e536455d11bb6704eb97520119dc815",
+      "size": 225352
+    },
+    {
+      "pluginId": "local.example.comfy-ltx23-ia2v",
+      "version": "1.0.1",
+      "kind": "sourceExample",
+      "url": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/sdk-video-explicit-modes-20261111/ltx23-ia2v-1.0.1.zip",
+      "sha256": "6e67fa442e3e6aba2f6ae94581446a7726a2fadcc0cb11c3061307462a7cb241",
+      "size": 216602
+    },
+    {
+      "pluginId": "local.independent.comfy-h3-continuum",
+      "version": "1.0.3",
+      "kind": "installable",
+      "url": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/sdk-video-explicit-modes-20261111/h3-continuum-independent-1.0.3.zip",
+      "sha256": "1c1e2e3280ef3d0f4f34b6a692383da148cd6cd3db6e04143f7aa9923fea42ec",
+      "size": 235499
+    }
+  ]
+}
