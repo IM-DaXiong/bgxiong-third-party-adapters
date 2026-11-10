@@ -8,5 +8,6 @@
   "advanced": {
     "steps": 20
   },
-  "aspectRatio": "16:9"
+  "aspectRatio": "16:9",
+  "inputMode": "text_to_video"
 }

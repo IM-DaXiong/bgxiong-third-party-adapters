@@ -22,5 +22,6 @@
   },
   "fps": 24,
   "width": 512,
-  "seed": 2026102313
+  "seed": 2026102313,
+  "inputMode": "image_to_video"
 }

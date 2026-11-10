@@ -2,6 +2,10 @@
   "type": "object",
   "description": "Exactly two ordered images, one8second original WAV from0, text; audio conditions generation and is reused as native soundtrack. Fixed864x480/24fps/192frames.",
   "properties": {
+    "inputMode": {
+      "type": "string",
+      "const": "multi_image_to_video"
+    },
     "prompt": {
       "type": "string",
       "minLength": 1,
@@ -122,6 +126,7 @@
     }
   },
   "required": [
+    "inputMode",
     "prompt",
     "seed",
     "advanced",

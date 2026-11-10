@@ -116,7 +116,8 @@ fn probe(h: &mut dyn Host, p: &Value, budget: u64) -> Outcome<Value> {
 /// Validates all mapped inputs before any network effect.
 fn build_graph(input: &Value, references: &[&str], audio: &str) -> Outcome<Value> {
     let obj=input.as_object().ok_or_else(||fail("INVALID_INPUT","input must be object"))?;
-    if obj.keys().any(|k| !["prompt","seed","width","height","durationSeconds","fps","advanced","aspectRatio","referenceImages","referenceAudios"].contains(&k.as_str())) {return Err(fail("INVALID_INPUT","unknown video input"));}
+    if obj.keys().any(|k| !["inputMode","prompt","seed","width","height","durationSeconds","fps","advanced","aspectRatio","referenceImages","referenceAudios"].contains(&k.as_str())) {return Err(fail("INVALID_INPUT","unknown video input"));}
+    if input["inputMode"] != "image_to_video" { return Err(fail("INVALID_INPUT", "inputMode must be image_to_video")); }
     let prompt=text(input,"prompt")?;
     if prompt.trim().is_empty() || prompt.chars().count()>MAX_PROMPT {return Err(fail("INVALID_INPUT","prompt must be1..8000 characters"));}
     let seed=number(input,"seed")?;if seed>MAX_SEED{return Err(fail("INVALID_INPUT","seed exceeds2^53-1"));}
@@ -345,7 +346,7 @@ mod tests {
   assert_eq!(g["340:312"]["inputs"]["audio"],json!(["340:303",0]));assert_eq!(g["340:327"]["inputs"]["mask"],json!(["340:333",0]));assert_eq!(193%8,1);
  }
  #[test] fn absent_extra_media_and_invalid_usage_or_profile_fail_before_network(){
-  for (k,v) in [("referenceImages",json!([])),("referenceImages",json!([{"mediaId":"a"},{"mediaId":"b"}])),("referenceAudios",json!([])),("referenceAudios",json!([{"mediaId":"a"},{"mediaId":"b"}])),("durationSeconds",json!(7)),("fps",json!(25)),("width",json!(864)),("prompt",json!("")),("seed",json!(-1)),("advanced",json!({"strength":0.7,"audioUsage":"soundtrack_copy"})),("advanced",json!({"strength":1.1,"audioUsage":"voice_timbre"})),("advanced",json!({"strength":0.7,"audioUsage":"voice_timbre","hidden":1}))] {let mut x=input();x[k]=v;assert!(build_graph(&x,&["image.png"],"audio.wav").is_err(),"{k}");}
+  for (k,v) in [("inputMode",json!(null)),("inputMode",json!("unsupported")),("referenceImages",json!([])),("referenceImages",json!([{"mediaId":"a"},{"mediaId":"b"}])),("referenceAudios",json!([])),("referenceAudios",json!([{"mediaId":"a"},{"mediaId":"b"}])),("durationSeconds",json!(7)),("fps",json!(25)),("width",json!(864)),("prompt",json!("")),("seed",json!(-1)),("advanced",json!({"strength":0.7,"audioUsage":"soundtrack_copy"})),("advanced",json!({"strength":1.1,"audioUsage":"voice_timbre"})),("advanced",json!({"strength":0.7,"audioUsage":"voice_timbre","hidden":1}))] {let mut x=input();x[k]=v;assert!(build_graph(&x,&["image.png"],"audio.wav").is_err(),"{k}");}
   assert!(build_graph(&input(),&[],"audio.wav").is_err());assert!(build_graph(&input(),&["image.png"],"").is_err());
  }
  #[test] fn catalog_and_actual_request_share_single_image_audio_and_profile(){

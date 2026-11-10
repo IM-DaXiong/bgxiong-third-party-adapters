@@ -1,4 +1,5 @@
 {
+  "inputMode": "multi_image_to_video",
   "prompt": "Use <Picture 1> as the red panda identity and <Picture 2> as the paper robot identity. Both sit together at a sunny library table. The red panda gently turns a page of its blue book while the tiny paper robot waves. Slow camera push in. Audio: soft paper rustling and quiet room ambience.",
   "seed": 20261023,
   "width": 864,

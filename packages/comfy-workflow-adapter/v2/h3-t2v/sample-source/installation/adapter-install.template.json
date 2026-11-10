@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "packageDirectory": "package",
+  "manifestSha256": "BUILD_GENERATED_MANIFEST_SHA256",
+  "hostConfig": {
+    "configuration": {
+      "endpointBaseUrl": "http://127.0.0.1:8188"
+    },
+    "network": {
+      "origins": [
+        "http://127.0.0.1:8188",
+        "http://localhost:8188"
+      ],
+      "deniedHosts": [],
+      "allowEmbeddedAuthorization": false,
+      "deniedNetworks": [],
+      "allowPrivate": true
+    },
+    "bindingRevision": 1,
+    "credentials": [],
+    "mediaTtlMs": 3600000,
+    "budgetMs": {
+      "query": 120000,
+      "cancel": 60000,
+      "probe": 60000,
+      "capabilities": 60000,
+      "submit": 120000
+    },
+    "trust": {
+      "publishers": [],
+      "revokedVersions": [],
+      "supportedFeatures": [],
+      "denylistedHosts": [],
+      "isFresh": false,
+      "revokedKeys": [],
+      "revokedPlugins": []
+    },
+    "configurationRef": "comfy-h3-author-v1",
+    "transport": {
+      "writeTimeoutMs": 60000,
+      "handshakeTimeoutMs": 10000,
+      "cancelGraceMs": 100,
+      "shutdownTimeoutMs": 10000
+    },
+    "bindingId": "comfy-h3-author-example",
+    "probe": null
+  },
+  "authentication": {
+    "source": "none"
+  },
+  "managedMediaProbe": true
+}

@@ -1,4 +1,5 @@
 {
+  "inputMode": "image_to_video",
   "referenceImages": [
     {
       "mediaId": "image-input-1"

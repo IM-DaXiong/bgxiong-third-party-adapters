@@ -19,5 +19,6 @@
     {
       "mediaId": "audio-input-1"
     }
-  ]
+  ],
+  "inputMode": "image_to_video"
 }

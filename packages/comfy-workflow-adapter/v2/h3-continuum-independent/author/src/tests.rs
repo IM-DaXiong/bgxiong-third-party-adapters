@@ -50,7 +50,7 @@ fn full_text_and_explicit_parameters_reach_the_graph_without_rewrite() {
 }
 #[test]
 fn unsupported_inputs_and_purposes_are_rejected_before_building_a_request() {
-    for (key,value) in [("durationSeconds",json!(6)),("width",json!(480)),("fps",json!(25)),("prompt",json!("")),("hidden",json!(1)),("referenceImages",json!([])),("referenceImages",json!([{"mediaId":"a"},{"mediaId":"b"}])),("referenceAudios",json!([])),("seed",json!(9007199254740992u64))] {
+    for (key,value) in [("inputMode",json!(null)),("inputMode",json!("unsupported")),("durationSeconds",json!(6)),("width",json!(480)),("fps",json!(25)),("prompt",json!("")),("hidden",json!(1)),("referenceImages",json!([])),("referenceImages",json!([{"mediaId":"a"},{"mediaId":"b"}])),("referenceAudios",json!([])),("seed",json!(9007199254740992u64))] {
         let mut i=input();i[key]=value;assert!(build_graph(&i,&["one"],"full").is_err(),"{key}");
     }
     for (key,value) in [("chunks",json!(2)),("chunkSeconds",json!(6)),("steps",json!(7)),("runName",json!("")),("audioUsage",json!("voice_timbre")),("hidden",json!(false))] {

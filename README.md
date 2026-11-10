@@ -86,16 +86,16 @@
 
 | 路径 | 说明 | pluginId | 当前版本 |
 |------|------|----------|----------|
-| [`h3-r2v`](./packages/comfy-workflow-adapter/v2/h3-r2v) | ComfyUI H3 双参考视频 | `local.example.comfy-h3-r2v` | `1.0.0` |
-| [`h3-r2v-audio`](./packages/comfy-workflow-adapter/v2/h3-r2v-audio) | ComfyUI H3 双参考 + 音频 | `local.example.comfy-h3-r2v-audio` | `1.0.0` |
-| [`h3-t2v`](./packages/comfy-workflow-adapter/v2/h3-t2v) | ComfyUI H3 文生视频 | `local.example.comfy-h3-t2v` | `1.0.0` |
-| [`ltx23-ia2v`](./packages/comfy-workflow-adapter/v2/ltx23-ia2v) | ComfyUI LTX2.3 图 + 参考音频 | `local.example.comfy-ltx23-ia2v` | `1.0.0` |
-| [`ltx25-i2v`](./packages/comfy-workflow-adapter/v2/ltx25-i2v) | ComfyUI LTX2.5 图生视频 | `local.example.comfy-ltx25-i2v` | `1.0.0` |
+| [`h3-r2v`](./packages/comfy-workflow-adapter/v2/h3-r2v) | ComfyUI H3 双参考视频 | `local.example.comfy-h3-r2v` | `1.0.1` |
+| [`h3-r2v-audio`](./packages/comfy-workflow-adapter/v2/h3-r2v-audio) | ComfyUI H3 双参考 + 音频 | `local.example.comfy-h3-r2v-audio` | `1.0.1` |
+| [`h3-t2v`](./packages/comfy-workflow-adapter/v2/h3-t2v) | ComfyUI H3 文生视频 | `local.example.comfy-h3-t2v` | `1.0.1` |
+| [`ltx23-ia2v`](./packages/comfy-workflow-adapter/v2/ltx23-ia2v) | ComfyUI LTX2.3 图 + 参考音频 | `local.example.comfy-ltx23-ia2v` | `1.0.1` |
+| [`ltx25-i2v`](./packages/comfy-workflow-adapter/v2/ltx25-i2v) | ComfyUI LTX2.5 图生视频 | `local.example.comfy-ltx25-i2v` | `1.0.1` |
 | [`qwen-t2i`](./packages/comfy-workflow-adapter/v2/qwen-t2i) | ComfyUI Qwen Image 2.1 文生图 | `local.example.comfy-qwen-t2i` | `1.0.0` |
 | [`qwen-i2i`](./packages/comfy-workflow-adapter/v2/qwen-i2i) | ComfyUI Qwen Image 2.1 图生图 | `local.example.comfy-qwen-i2i` | `1.0.0` |
 | [`qwen-multi-ref`](./packages/comfy-workflow-adapter/v2/qwen-multi-ref) | ComfyUI Qwen Image 2.1 多参考 | `local.example.comfy-qwen-multi-ref` | `1.0.0` |
 | [`qwen-two-output`](./packages/comfy-workflow-adapter/v2/qwen-two-output) | ComfyUI Qwen Image 2.1 双输出 | `local.example.comfy-qwen-two-output` | `1.0.0` |
-| [`h3-continuum-independent`](./packages/comfy-workflow-adapter/v2/h3-continuum-independent) | H3 Continuum 独立驱动音频 | `local.independent.comfy-h3-continuum` | `1.0.2` |
+| [`h3-continuum-independent`](./packages/comfy-workflow-adapter/v2/h3-continuum-independent) | H3 Continuum 独立驱动音频 | `local.independent.comfy-h3-continuum` | `1.0.3` |
 | [`flux2-multi-ref-independent`](./packages/comfy-workflow-adapter/v2/flux2-multi-ref-independent) | FLUX.2 有序参考 | `local.independent.flux2-ordered-reference` | `1.0.1` |
 | [`zimage-zero-independent`](./packages/comfy-workflow-adapter/v2/zimage-zero-independent) | Z Image Turbo | `local.zeroauthor.comfy-zimage-turbo` | `1.0.2` |
 
