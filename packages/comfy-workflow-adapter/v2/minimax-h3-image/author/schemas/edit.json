@@ -1,0 +1,56 @@
+{
+  "type": "object",
+  "properties": {
+    "prompt": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8000
+    },
+    "width": {
+      "type": "integer",
+      "minimum": 2048,
+      "maximum": 2048,
+      "multipleOf": 32,
+      "default": 2048
+    },
+    "height": {
+      "type": "integer",
+      "minimum": 2048,
+      "maximum": 2048,
+      "multipleOf": 32,
+      "default": 2048
+    },
+    "seed": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "default": 0
+    },
+    "referenceImages": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "properties": {
+          "mediaId": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "mediaId"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "prompt",
+    "width",
+    "height",
+    "seed",
+    "referenceImages"
+  ],
+  "additionalProperties": false
+}
