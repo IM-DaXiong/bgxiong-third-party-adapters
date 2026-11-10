@@ -1,6 +1,6 @@
 # bgxiong-third-party-adapters / 比格熊第三方适配器
 
-本仓库是比格熊第三方适配器的独立开源真源，与主程序仓 `bgxiong-ai-story` 分开维护。适配器的文档、SDK、合同、模板、案例和更新以本仓库为准；主程序只按契约导入并运行插件。不要把适配器开发写回主程序仓库。
+本仓库是比格熊第三方适配器的独立开源真源，与主程序仓 `bgxiong-ai-story` 分开维护。适配器的源码与分发以本仓库为准，协议和 SDK 由独立 bgxiong-adapter-sdk 维护；主程序只按契约导入并运行插件。不要把适配器开发写回主程序仓库。
 
 现名 `bgxiong-third-party-adapters`；公开地址 https://github.com/IM-DaXiong/bgxiong-third-party-adapters 。旧名 `bgxiong-vendor-adapters` 已更名并指向本仓库，不要再当成另一份产品。
 
@@ -17,16 +17,8 @@
 打开适配器仓的 `artifacts/current/`，按 `<pluginId>/<version>/` 找当前可导入的包。软件中进入 **设置 → 第三方适配器 → 安装适配包**。有 `adapter-install.json` 时选择版本目录，否则按包说明选其中的 `package/`。
 
 发行准备会依据 `release/current.json` 自动刷新此目录。已有发行文件时，也可在同级主仓运行 `python scripts/stage-third-party-release.py --local-current`。`index.json` 列出每个包的当前版本及验证状态。新机器需要先取得锁定的发行文件。
-- contract/、examples/：公开合同与教学材料。
+- contract/v2/：现役包的受控 SDK 消费资料。
 - 用户分发目录统一名称bgxiong-third-party-adapters；实际新发行落盘和安装验收另记，目录合并不等于全包构建通过。
-
-## 2026-11-08 SDK 合同同步
-
-已同步合同 1.3.0 的平台无关 `PromptProjection` Rust 类型、协议闭集、schema 与中英字段说明，见 [升级说明](contract/v1/UPGRADE-1.3.0.md)。WIT 不变，Rust crate 版本仍为 1.2.0，合同版本与 crate 版本分开记账；同步来源为主程序提交 `c1f894644e51cb9394c1a123ff560a19f72f0cef`。保留公开仓库已有链接及案例独立改动，同时补充 V2 证据根目录说明。
-
-定向验证：`cargo test --manifest-path contract/v1/sdk/rust/Cargo.toml --offline` 的24项测试通过；本批修改Markdown链接、JSON解析和SDK模板镜像一致性检查通过。现有教学案例保留各自固定SDK快照，未批量重发案例包。
-
-本次是 SDK 源码和文档同步；既有第三方安装包、发行锁及下载版本未变，不代表已发布新的适配器安装包或通过真实厂商生成验收。
 
 ## 公开同步台账（2026-11-06）
 
@@ -35,123 +27,20 @@
 - 纳入 RunningHub H3 作者材料、seed 接线冒烟工程，以及 AutoDL 作者占位规范；本机安装验收目录与 AutoDL 参考 API 副本仍不入库。
 - 发行产物与核查证据仍在本机 `artifacts/`、`records/`，不随公开同步。
 
-## 原公开仓说明（名称已统一）
+## 开发与使用
 
-# 开发与使用说明
-
-开源的 **第三方算力平台适配器** 开发文档、SDK、模板与脱敏案例。  
-服务 [**比格熊数字导演工作站 / BGXiong**](https://www.bgxiong.com)：把本仓库交给智能体，再提供目标平台的 API 说明（与密钥），智能体即可按契约开发可导入的适配器插件。
-
-> 与产品仓 `bgxiong-ai-story` **完全独立**：不包含 Host / UI / Rust 运行时；**禁止回写**产品私有实现。产品仓里的契约目录不在本仓库；本仓对外副本是 [README.md](./contract/README.md)。
-
----
-
-## 智能体怎么用（核心场景）
-
-1. 打开本仓库，先读 [`AGENT.md`](./AGENT.md) 与 [HOST_PAYLOAD.zh-CN.md](./contract/v1/HOST_PAYLOAD.zh-CN.md)（或 [英文](./contract/v1/HOST_PAYLOAD.en.md)）。
-2. 用户补充：**第三方平台 API 文档**（鉴权、创建任务、查询、下载结果）+ 测试用密钥。
-3. 智能体按 [rust](./contract/v1/templates/rust) 与 [vendor-adapter.wit](./contract/v1/wit/vendor-adapter.wit) 实现 guest 适配器。
-4. 填写 `manifest.json`（对照 [manifest.schema.json](./contract/v1/schemas/manifest.schema.json)）。
-5. 对照 [examples](./examples/) 与 [fixtures](./contract/v1/fixtures/) 自检；用 [validate-example.py](./scripts/validate-example.py) 做基础校验。
-6. 在比格熊客户端中导入生成的适配器包并联调。SDK V2 仍是开发者预览，入口见下方文档，不要把它当成已经封存的稳定接口。
-
----
-
-## 人类开发者怎么用
-
-1. 官网安装 BGXiong：[https://www.bgxiong.com](https://www.bgxiong.com)
-2. 阅读 [USAGE.zh-CN.md](./docs/USAGE.zh-CN.md) 与 [DEVELOPING.md](./docs/DEVELOPING.md)
-3. 从 [rust](./contract/v1/templates/rust) 复制模板，或参考 [examples](./examples/)
-4. 构建 wasm32-wasip2 适配器后，在客户端「第三方适配器」入口导入（以实际 UI 为准）
-
----
-
-## 文档入口
-
-下面这些链接都指向本仓库已有文件。V1 Rust SDK 是目前带库代码、状态为 supported 的语言 SDK。Python、TypeScript、TinyGo 的页面写明暂不支持。SDK V2 是开发者预览：[release-lock.json](./contract/v2/release-lock.json) 中 `sdkReady` 为 false，预览样例不是已封存发行。
-
-### 使用、开发与适配器
-
-| 入口 | 说明 |
-|------|------|
-| [USAGE.zh-CN.md](./docs/USAGE.zh-CN.md) | 中文用法 |
-| [USAGE.en.md](./docs/USAGE.en.md) | English usage |
-| [DEVELOPING.md](./docs/DEVELOPING.md) | 开发步骤 |
-| [`AGENT.md`](./AGENT.md) | 交给智能体的手册 |
-| [README.zh-CN.md](./packages/README.zh-CN.md) | 产品级适配器清单 |
-| [README.md](./projects/README.md) | 独立工程清单 |
-| [examples](./examples/) | 教学标本 |
-
-### 契约与 SDK V1
-
-| 入口 | 说明 |
-|------|------|
-| [README.md](./contract/README.md) | 契约总入口 |
-| [`HOST_PAYLOAD.zh-CN.md`](./contract/v1/HOST_PAYLOAD.zh-CN.md) | 中文字段辞典 |
-| [`HOST_PAYLOAD.en.md`](./contract/v1/HOST_PAYLOAD.en.md) | English field dictionary |
-| [`vendor-adapter.wit`](./contract/v1/wit/vendor-adapter.wit) | WIT |
-| [schemas](./contract/v1/schemas) | JSON Schema |
-| [README.md](./contract/v1/sdk/rust/README.md) | Rust SDK，supported |
-| [README.md](./contract/v1/sdk/python/README.md) | Python SDK，暂不支持 |
-| [README.md](./contract/v1/sdk/typescript/README.md) | TypeScript SDK，暂不支持 |
-| [README.md](./contract/v1/sdk/tinygo/README.md) | TinyGo SDK，暂不支持 |
-| [rust](./contract/v1/templates/rust) | 可复制的 Rust 模板 |
-
-### SDK V2（开发者预览）
-
-| 入口 | 说明 |
-|------|------|
-| [README.md](./contract/v2/README.md) | SDK V2 说明 |
-| [`DEVELOPER-PREVIEW.zh-CN.md`](./contract/v2/DEVELOPER-PREVIEW.zh-CN.md) | 预览边界 |
-| [`OPEN-STANDARD.zh-CN.md`](./contract/v2/OPEN-STANDARD.zh-CN.md) | 开放标准 |
-| [`SDK-CONTRACT.zh-CN.md`](./contract/v2/SDK-CONTRACT.zh-CN.md) | 接口规范 |
-| [`AUTHORING.zh-CN.md`](./contract/v2/AUTHORING.zh-CN.md) | 作者指南 |
-| [`CONFORMANCE.zh-CN.md`](./contract/v2/CONFORMANCE.zh-CN.md) | 什么证据才算符合 |
-
-## 目录
-
-```text
-AGENT.md                 智能体开发手册（优先读）
-contract/                契约发行树（源自 vendor-adapter-contract）
-  README.md
-  v1/
-    HOST_PAYLOAD.*.md    Host ↔ Adapter 字段词典
-    wit/                 WIT 接口
-    schemas/             JSON Schema
-    sdk/                 rust / python / typescript / tinygo
-    templates/rust/      可复制模板
-    fixtures/            能力样例 JSON（脱敏）
-    examples/            随包案例源树
-examples/                顶层案例快捷入口（与 contract/v1/examples 同步）
-docs/                    USAGE / DEVELOPING
-scripts/validate-example.py
-community/
-```
-
----
+- 使用者按[安装说明](docs/USAGE.zh-CN.md)安装完整的构建产物。
+- 作者从随软件提供的 `user-examples/vendor-adapter-v2/` 取得 SDK，按[开发指南](docs/DEVELOPING.md)构建、校验和打包。
+- 把目标厂商的官方 API 文档和所需能力交给编程智能体，并让它先读 [AGENT.md](AGENT.md)。
+- 现役包清单见 [packages/README.zh-CN.md](packages/README.zh-CN.md)，独立工程见 [projects/README.md](projects/README.md)。
 
 ## 案例与适配器目录
 
-仓库首页若只看下面原来的 6 行，会误以为第三方适配器只有这些。那 6 个是 `examples/` 里的**教学标本**，不是全部已做适配器。
+- [ComfyUI 工作流作者包](packages/comfy-workflow-adapter/v2/)。
+- [产品级适配器](packages/)。
+- [独立工程](projects/)。
 
-- 教学标本：[examples](./examples/)
-- 产品级适配器：[packages](./packages/)（清单见 [README.zh-CN.md](./packages/README.zh-CN.md)）
-- 独立工程（含 H3 人脸精修）：[projects](./projects/)（清单见 [README.md](./projects/README.md)）
-
-版本以各包 `manifest.json` 为准；人脸精修同时见该工程的 `SOURCE.json`。
-
-### 教学标本（`examples/`）
-
-| 路径 | 说明 |
-|------|------|
-| [comfyui-lan-minimax-h3](./examples/comfyui-lan-minimax-h3) | 局域网 ComfyUI + MiniMax H3 标本 |
-| [comfyui-lan-z-image-turbo](./examples/comfyui-lan-z-image-turbo) | 局域网 ComfyUI + Z-Image Turbo 标本 |
-| [lan-openai-compat-text](./examples/lan-openai-compat-text) | 局域网 OpenAI 兼容文本标本 |
-| [runninghub-minimax-h3-r2v](./examples/runninghub-minimax-h3-r2v) | RunningHub + MiniMax H3 R2V 视频标本 |
-| [runninghub-workflow](./examples/runninghub-workflow) | RunningHub 工作流类适配标本 |
-| [video-reference-media-probe](./examples/video-reference-media-probe) | 视频参考媒体探活标本 |
-
-标本仅供对照，**不是**标准本身；标准以 `HOST_PAYLOAD` + `wit` + `schemas` 为准。
+版本以各包当前 `manifest.json` 为准。
 
 ### 独立工程：H3 人脸精修
 
