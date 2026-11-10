@@ -71,31 +71,25 @@ impl Host for RecordedHost {
                     };
                     return Ok(buffered(json!({"system":{"comfyui_version":version}})));
                 }
-                if url.ends_with("/object_info") {
-                    let mut definitions = json!({});
-                    for name in [
-                        "FixturePrompt",
-                        "FixtureSampler",
-                        "FixtureLatent",
-                        "FixtureModel",
-                        "FixtureSave",
-                        "FixtureLoad",
-                    ] {
-                        definitions[name] = json!({"input":{"required":{}}});
+                if url.contains("/object_info/") {
+                    let class = url.rsplit('/').next().unwrap();
+                    let mut definition = json!({"input":{"required":{}}});
+                    for node in workflow(true).unwrap().as_object().unwrap().values() {
+                        if node["class_type"] == class {
+                            for (key, value) in node["inputs"].as_object().unwrap() {
+                                if key.ends_with("_name") {
+                                    definition["input"]["required"][key] = json!([[value]]);
+                                }
+                            }
+                        }
                     }
-                    definitions["FixtureModel"]["input"]["required"]["model_name"] =
-                        json!([["fixture-model.safetensors"]]);
-                    if self.fault == "missing-model" {
-                        definitions["FixtureModel"]["input"]["required"]["model_name"] =
-                            json!([[]]);
+                    if self.fault == "missing-model" && class == "UNETLoader" {
+                        definition["input"]["required"]["unet_name"] = json!([[]]);
                     }
-                    if self.fault == "missing-node" {
-                        definitions
-                            .as_object_mut()
-                            .unwrap()
-                            .remove("FixtureSampler");
+                    if self.fault == "missing-node" && class == "KSampler" {
+                        return Ok(buffered(json!({})));
                     }
-                    return Ok(buffered(definitions));
+                    return Ok(buffered(json!({class:definition})));
                 }
                 if url.ends_with("/upload/image") {
                     let handle = plan["body"]["parts"][0]["handle"].as_str().unwrap();
@@ -229,12 +223,12 @@ fn text_single_and_double_reference_submit_checkpoint_and_resume() {
             serde_json::from_value(calls[0]["args"]["plan"]["body"]["bytes"].clone()).unwrap();
         let submitted: Value = serde_json::from_slice(&bytes).unwrap();
         assert_eq!(
-            submitted["prompt"]["prompt"]["inputs"]["text"],
+            submitted["prompt"]["4"]["inputs"]["prompt"],
             p["input"]["prompt"]
         );
-        assert_eq!(submitted["prompt"]["sampler"]["inputs"]["steps"], 6);
-        assert_eq!(submitted["prompt"]["sampler"]["inputs"]["cfg"], 1);
-        assert_eq!(submitted["prompt"].get("reference2").is_some(), count == 2);
+        assert_eq!(submitted["prompt"]["6"]["inputs"]["steps"], 6);
+        assert_eq!(submitted["prompt"]["6"]["inputs"]["cfg"], 1);
+        assert_eq!(submitted["prompt"].get("10").is_some(), count == 2);
         // A fresh host instance simulates process restart, using the persisted receipt only.
         let mut resumed = RecordedHost::default();
         let query = json!({"operationId":p["operationId"],"configuration":p["configuration"],"vendorTaskId":host.checkpoint["vendorTaskId"],"resumeToken":host.checkpoint["resumeToken"]});
@@ -260,11 +254,11 @@ fn upload_order_follows_input_and_returned_names() {
         serde_json::from_value(calls[0]["args"]["plan"]["body"]["bytes"].clone()).unwrap();
     let submitted: Value = serde_json::from_slice(&bytes).unwrap();
     assert_eq!(
-        submitted["prompt"]["reference1"]["inputs"]["image"],
+        submitted["prompt"]["9"]["inputs"]["image"],
         "uploaded/lease-b.png"
     );
     assert_eq!(
-        submitted["prompt"]["reference2"]["inputs"]["image"],
+        submitted["prompt"]["10"]["inputs"]["image"],
         "uploaded/lease-a.png"
     );
 }
