@@ -1,6 +1,6 @@
 # MiniMax H3-Image ComfyUI candidate
 
-Version `1.0.0-dev.1`, plugin `local.bgx.minimax-h3-image-comfy`. Two image.generate contracts expose separate text-to-image and reference-edit models. Editing accepts one or two ordered image leases. Candidate dimensions are fixed at 2048 x 2048. Prompt and seed pass through unchanged. Fixtures use six steps and CFG 1. GPU verification is pending.
+Version `1.0.0-dev.2`, plugin `local.bgx.minimax-h3-image-comfy`. Two image.generate contracts expose separate text-to-image and reference-edit models. Editing accepts one or two ordered image leases. Candidate dimensions are fixed at 2048 x 2048. Prompt and seed pass through unchanged. Fixtures use six steps and CFG 1. GPU verification is pending.
 
 ## Build and verify
 
@@ -14,7 +14,7 @@ bgx-adapter-v2 pack --sdk SDK_ROOT --project AUTHOR_ROOT --out NEW_CANDIDATE_DIR
 
 The SDK-generated author kit is pinned in template-lock.json. Ordered uploads, checkpoints, query and download reuse the existing independent FLUX.2 adapter implementation. No SDK or application source changes are required for this stage.
 
-Native tests invoke the real Adapter entry point through a recording implementation of the public Host ports. That host serves synthetic HTTP responses, media metadata and checkpoint storage, with no external connection. Seven behavior tests cover capability projection, 0/1/2 references, order, missing leases/files, invalid inputs, service/node/model preflight, one submission, uncertain acceptance, checkpoint failures, fresh-host recovery, queue states, output nodes and PNG dimensions. A separate integration test verifies the normal build rejects submission before effects while workflows are pending. PNG validation checks the signature and IHDR dimensions. Full decoding belongs to integration acceptance.
+Native tests invoke the real Adapter entry point through a recording implementation of the public Host ports. That host serves synthetic HTTP responses, media metadata and checkpoint storage, with no external connection. Eight behavior tests cover LF-stable schema digests, capability projection, 0/1/2 references, order, missing leases/files, invalid inputs, service/node/model preflight, one submission, uncertain acceptance, checkpoint failures, fresh-host recovery, queue states, output nodes and PNG dimensions. A separate integration test verifies the normal build rejects submission before effects while workflows are pending. PNG validation checks the signature and IHDR dimensions. Full decoding belongs to integration acceptance.
 
 ## Resource-host handoff
 

@@ -75,6 +75,7 @@ fn port(h: &mut dyn Host, method: &str, args: Value) -> Outcome<Value> {
     })
 }
 fn schema(id: &str, source: &str) -> Value {
+    let source = source.replace("\r\n", "\n");
     let digest: String = Sha256::digest(source.as_bytes())
         .iter()
         .map(|b| format!("{b:02x}"))

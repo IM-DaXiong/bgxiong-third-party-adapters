@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "4271403651fbc0fbd9dbee74b3e50cbd8b7da323300e9322cb333c04c05a05e9",
+  "artifactSha256": "06fccc088f8bd7e7ce58b59eee5fc04ec87d77b0f11a22d1abb6390f7b12702a",
   "displayName": "MiniMax H3-Image ComfyUI",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -33,5 +33,5 @@
   },
   "requiredFeatures": [],
   "schemaVersion": 2,
-  "version": "1.0.0-dev.1"
+  "version": "1.0.0-dev.2"
 }
