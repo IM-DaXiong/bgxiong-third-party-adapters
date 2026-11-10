@@ -1,0 +1,33 @@
+{
+  "prompt": {
+    "class_type": "FixturePrompt",
+    "inputs": {
+      "text": ""
+    }
+  },
+  "sampler": {
+    "class_type": "FixtureSampler",
+    "inputs": {
+      "seed": 0,
+      "steps": 6,
+      "cfg": 1
+    }
+  },
+  "latent": {
+    "class_type": "FixtureLatent",
+    "inputs": {
+      "width": 2048,
+      "height": 2048
+    }
+  },
+  "model": {
+    "class_type": "FixtureModel",
+    "inputs": {
+      "model_name": "fixture-model.safetensors"
+    }
+  },
+  "output": {
+    "class_type": "FixtureSave",
+    "inputs": {}
+  }
+}

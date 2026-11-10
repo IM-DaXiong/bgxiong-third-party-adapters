@@ -1,0 +1,24 @@
+{
+  "status": "candidate-mock-only",
+  "sdkCommit": "cee2023a196c838eb3ef9feffbaedb658caa937f",
+  "upstream": "https://github.com/MiniMax-AI/MiniMax-H3-Image",
+  "operations": {
+    "text-to-image": {
+      "workflow": null,
+      "sha256": null
+    },
+    "reference-edit": {
+      "workflow": null,
+      "sha256": null
+    }
+  },
+  "modelDependencies": null,
+  "gpuVerifiedInputs": [],
+  "pending": [
+    "two verified API graphs and node mappings",
+    "ComfyUI commit and node definitions",
+    "three model filenames and SHA256",
+    "verified sizes and reference counts"
+  ],
+  "fixturePolicy": "tests/fixtures only, cfg(test); production submit returns RESOURCE_UNAVAILABLE"
+}
