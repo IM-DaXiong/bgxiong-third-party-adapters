@@ -2,6 +2,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)][ValidateSet('caps','probe','submit','query')][string]$Action,
+    [Parameter(Mandatory)][string]$Sdk,
     [Parameter(Mandatory)][string]$Runtime,
     [Parameter(Mandatory)][string]$Workspace,
     [Parameter(Mandatory)][string]$Endpoint,
@@ -9,11 +10,15 @@ param(
     [string]$SubmitRequestId
 )
 $ErrorActionPreference = 'Stop'
-$sdk = 'E:/CodexWork/comfy-zero-author-20261024/public-kit/user-examples/comfy-workflow-authoring-v2/qwen-t2i/vendor-adapter-v2'
-$cli = Join-Path $sdk 'bin/bgx-adapter-v2.exe'
-$worker = Join-Path $sdk 'bin/bgx-adapter-v2-worker.exe'
-foreach ($path in @($Runtime,$Workspace)) {
-    if (-not [IO.Path]::IsPathFullyQualified($path)) { throw 'Runtime and Workspace must be absolute.' }
+foreach ($path in @($Sdk,$Runtime,$Workspace)) {
+    if (-not [IO.Path]::IsPathFullyQualified($path)) { throw 'Sdk, Runtime and Workspace must be absolute.' }
+}
+$Sdk = (Resolve-Path -LiteralPath $Sdk).Path
+$Runtime = (Resolve-Path -LiteralPath $Runtime).Path
+$cli = Join-Path $Sdk 'bin/bgx-adapter-v2.exe'
+$worker = Join-Path $Sdk 'bin/bgx-adapter-v2-worker.exe'
+foreach ($path in @($cli,$worker,(Join-Path $Runtime 'manifest.json'))) {
+    if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Required SDK or package file missing: $path" }
 }
 $uri = [uri]$Endpoint
 if (-not $uri.IsAbsoluteUri -or $uri.Scheme -notin @('http','https') -or $uri.Query -or $uri.Fragment -or $uri.UserInfo) {
