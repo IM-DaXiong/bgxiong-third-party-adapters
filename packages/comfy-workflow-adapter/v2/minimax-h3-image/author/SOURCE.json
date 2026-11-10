@@ -1,24 +1,62 @@
 {
-  "status": "candidate-mock-only",
+  "status": "real-workflow-integration-candidate",
   "sdkCommit": "cee2023a196c838eb3ef9feffbaedb658caa937f",
   "upstream": "https://github.com/MiniMax-AI/MiniMax-H3-Image",
   "operations": {
     "text-to-image": {
-      "workflow": null,
-      "sha256": null
+      "workflow": "workflows/minimax_h3_image_t2i.json",
+      "sha256": "14a080b28ee539e215d110991a5f6bed023e8d6e7c45daaf3510cc0f2e435bf2",
+      "sourceCommit": "bfe99105b",
+      "sourcePath": "ComfyUI-API/minimax-h3-image/minimax_h3_image_t2i.json"
     },
     "reference-edit": {
-      "workflow": null,
-      "sha256": null
+      "workflow": "workflows/minimax_h3_image_edit.json",
+      "sha256": "8e75e3287123d9b49d2e3d937147b239b9698aeda1191531923dbc08e293dc2c",
+      "sourceCommit": "bfe99105b",
+      "sourcePath": "ComfyUI-API/minimax-h3-image/minimax_h3_image_edit.json"
     }
   },
-  "modelDependencies": null,
-  "gpuVerifiedInputs": [],
-  "pending": [
-    "two verified API graphs and node mappings",
-    "ComfyUI commit and node definitions",
-    "three model filenames and SHA256",
-    "verified sizes and reference counts"
+  "modelDependencies": [
+    {
+      "filename": "minimax_h3_image_pruned_int8_convrot.safetensors",
+      "sha256": "83eb140f1ff95c068f8a6886e6d3f3d0d4ab2e07bb2fe6d2ef992a51146ee622"
+    },
+    {
+      "filename": "minimax_h3_image_vae_fp16.safetensors",
+      "sha256": "d80e9c2e5cfc9844869961ff5a58c9a9e52182df6bfb30b26018dd7f348721af"
+    },
+    {
+      "filename": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+      "sha256": "35a88d51044231fe332301d7a62aa81e3f2cba62febeb446e2c1e3e0ef76f2c6"
+    }
   ],
-  "fixturePolicy": "tests/fixtures only, cfg(test); production submit returns RESOURCE_UNAVAILABLE"
+  "gpuVerifiedInputs": [
+    "resource-host direct workflow: 2048/4096 square text generation",
+    "resource-host direct workflow: 2048 square single/two-reference edit"
+  ],
+  "pending": [
+    "application integration and release acceptance"
+  ],
+  "comfyCommit": "989d93d0",
+  "sdkLiveAcceptance": {
+    "date": "2026-11-11",
+    "version": "1.0.0-dev.3",
+    "sizes": [
+      [
+        2048,
+        2048
+      ]
+    ],
+    "referenceCounts": [
+      0,
+      1,
+      2
+    ],
+    "promptIds": [
+      "5b9a384f-a720-4a26-b816-f1409c0f7976",
+      "f5c0f656-0e75-408b-96c8-f86c3316dcf1",
+      "8549f76f-4ba7-449b-aeab-899ea9b1724b"
+    ],
+    "result": "SDK submit, checkpoint, fresh-process query, download and full PNG decode succeeded"
+  }
 }

@@ -1,6 +1,6 @@
 #![cfg_attr(target_arch = "wasm32", no_std)]
-//! MiniMax H3-Image candidate. Verified workflows are pending resource-host handoff.
-//! Test workflow fixtures are compiled only under cfg(test). See SOURCE.json.
+//! MiniMax H3-Image adapter with resource-host verified native workflows.
+//! Workflow commits, model dependencies and digests are recorded in SOURCE.json.
 //! Platform/node/HTTP semantics stay inside this package. No application source is required.
 extern crate alloc;
 use alloc::{
@@ -18,8 +18,8 @@ const TEXT_OPERATION: &str = "local.bgx.minimax-h3-image-comfy/text-to-image";
 const EDIT_OPERATION: &str = "local.bgx.minimax-h3-image-comfy/reference-edit";
 const TEXT_MODEL: &str = "minimax-h3-image-text-to-image";
 const EDIT_MODEL: &str = "minimax-h3-image-reference-edit";
-const OUTPUT_NODE: &str = "output";
-const REFERENCE_NODES: [&str; 2] = ["reference1", "reference2"];
+const OUTPUT_NODE: &str = "8";
+const REFERENCE_NODES: [&str; 2] = ["9", "10"];
 const MAX_PROMPT: usize = 8000;
 const MAX_SEED: u64 = 9007199254740991;
 const TEXT_SCHEMA: &str = include_str!("../schemas/text.json");
@@ -116,21 +116,11 @@ fn is_edit(operation: &str) -> Outcome<bool> {
         _ => Err(fail("INVALID_INPUT", "Unknown operation")),
     }
 }
-// Resource-host handoff replaces this boundary with digest-locked real graphs and node mapping.
-// No synthetic workflow is embedded in a distributable component.
-#[cfg(not(test))]
-fn workflow(_edit: bool) -> Outcome<Value> {
-    Err(fail(
-        "RESOURCE_UNAVAILABLE",
-        "Verified H3-Image workflows are pending resource-host handoff",
-    ))
-}
-#[cfg(test)]
 fn workflow(edit: bool) -> Outcome<Value> {
     let source = if edit {
-        include_str!("../tests/fixtures/edit.json")
+        include_str!("../workflows/minimax_h3_image_edit.json")
     } else {
-        include_str!("../tests/fixtures/text.json")
+        include_str!("../workflows/minimax_h3_image_t2i.json")
     };
     serde_json::from_str(source).map_err(|_| malformed())
 }
@@ -233,7 +223,7 @@ fn validate_input(input: &Value, edit: bool) -> Outcome<()> {
     if input["width"].as_u64() != Some(2048) || input["height"].as_u64() != Some(2048) {
         return Err(fail(
             "INVALID_INPUT",
-            "Candidate dimensions are 2048 by 2048; GPU validation is pending",
+            "This adapter supports verified 2048 by 2048 inputs",
         ));
     }
     if edit {
@@ -244,11 +234,15 @@ fn validate_input(input: &Value, edit: bool) -> Outcome<()> {
 fn build_graph(input: &Value, edit: bool) -> Outcome<Value> {
     validate_input(input, edit)?;
     let mut graph = workflow(edit)?;
-    graph["prompt"]["inputs"]["text"] = input["prompt"].clone();
-    graph["sampler"]["inputs"]["seed"] = input["seed"].clone();
-    graph["latent"]["inputs"]["width"] = input["width"].clone();
-    graph["latent"]["inputs"]["height"] = input["height"].clone();
+    graph["4"]["inputs"]["prompt"] = input["prompt"].clone();
+    graph["6"]["inputs"]["seed"] = input["seed"].clone();
+    graph["4"]["inputs"]["width"] = input["width"].clone();
+    graph["4"]["inputs"]["height"] = input["height"].clone();
     if edit && reference_ids(input)?.len() == 1 {
+        graph["4"]["inputs"]
+            .as_object_mut()
+            .ok_or_else(malformed)?
+            .remove("images.image_2");
         graph
             .as_object_mut()
             .ok_or_else(malformed)?
@@ -272,9 +266,9 @@ fn preflight(h: &mut dyn Host, configuration: &Value, graph: &Value, budget: u64
             "ComfyUI 0.45.0 or newer is required",
         ));
     }
-    let definitions = get_json(h, format!("{endpoint}/object_info"), budget)?;
     for node in graph.as_object().ok_or_else(malformed)?.values() {
         let class = text(node, "class_type")?;
+        let definitions = get_json(h, format!("{endpoint}/object_info/{}", pct(class)), budget)?;
         let definition = definitions
             .get(class)
             .filter(|d| d.is_object())

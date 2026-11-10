@@ -22,7 +22,7 @@ dependencies = [
 
 [[package]]
 name = "bgx-minimax-h3-image"
-version = "1.0.0-dev.2"
+version = "1.0.0-dev.3"
 dependencies = [
  "bgx-adapter-v2-sdk",
  "serde_json",
