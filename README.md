@@ -142,3 +142,5 @@ git clone https://github.com/IM-DaXiong/bgxiong-third-party-adapters.git <实际
 ## Wan 2.2 Animate 0.2.13 候选下载
 
 [完整安装包与校验信息](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/wan22-animate-v0.2.13)。修复参数拒绝凭证缺少能力声明，明确窗口/重叠帧数字段错误。37项包测试、标准包校验及真实CLI拒绝回放通过，完整应用GUI/GPU成片验收待完成，按prerelease候选提供。解压后在应用“设置→第三方适配器”导入包含adapter-install.json的目录。
+
+RunningHub H3 当前 SDK 完整包：[1.0.4 下载与 SHA256](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/runninghub-h3-v1.0.4)。实际验证范围见 [分项记录](release/runninghub-h3-current-sdk-20261111.json)。
