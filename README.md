@@ -175,7 +175,7 @@ community/
 | [runninghub-h3-r2v-soundtrack](./packages/cloud-adapters/runninghub-h3-r2v-soundtrack) | RunningHub H3-r2v-原声（官方20步） | `local.thirdparty.runninghub-h3-r2v-soundtrack` | `1.0.0` |
 | [runninghub-h3-spectrum-dynamic](./packages/cloud-adapters/runninghub-h3-spectrum-dynamic) | RunningHub H3-r2v-spectrum | `local.thirdparty.runninghub-h3-spectrum-dynamic` | `1.0.1` |
 | [runninghub-minimax-h3](./packages/cloud-adapters/runninghub-minimax-h3) | RunningHub H3-多参 | `local.example.runninghub-minimax-h3` | `1.0.3` |
-| [runninghub-qwen-image-21](./packages/cloud-adapters/runninghub-qwen-image-21) | RunningHub Qwen Image 2.1 文生图 / 1～10 张参考图编辑 | `local.thirdparty.runninghub-qwen-image-21` | `0.1.1` 候选 |
+| [runninghub-qwen-image-21](./packages/cloud-adapters/runninghub-qwen-image-21) | RunningHub Qwen Image 2.1 文生图 / 1～10 张参考图编辑 | `local.thirdparty.runninghub-qwen-image-21` | `0.1.2` 候选 |
 
 #### 本地工作流
 

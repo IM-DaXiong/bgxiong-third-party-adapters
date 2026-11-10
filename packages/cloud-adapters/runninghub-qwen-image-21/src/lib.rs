@@ -258,6 +258,8 @@ const API: &str = "https://www.runninghub.cn";
 const EDIT_GRAPH: &str = include_str!("edit-api.json");
 const MAX_PROMPT_BYTES: usize = 32768;
 const MAX_SEED: u64 = 9007199254740991;
+const MIN_MEGAPIXELS: f64 = 0.1;
+const MAX_MEGAPIXELS: f64 = 16.0;
 
 const RATIOS: [(&str, &str, u64, u64); 8] = [
     ("1:1", "1:1 (Square)", 1, 1),
@@ -307,7 +309,7 @@ impl Workflow {
                 "prompt":{"type":"string","minLength":1,"maxLength":MAX_PROMPT_BYTES},
                 "negativePrompt":{"type":"string","maxLength":MAX_PROMPT_BYTES,"default":""},
                 "aspectRatio":{"type":"string","enum":ratios,"default":"1:1"},
-                "megapixels":{"type":"number","minimum":0.1,"maximum":4.0,"default":1.0},
+                "megapixels":{"type":"number","minimum":MIN_MEGAPIXELS,"maximum":MAX_MEGAPIXELS,"default":1.0},
                 "seed":{"type":"integer","minimum":-1,"maximum":MAX_SEED,"default":-1}
             }
         });
@@ -344,7 +346,7 @@ impl Workflow {
                 "megapixels",
                 "number",
                 "像素量（MP）",
-                "范围 0.1～4，默认 1",
+                "范围 0.1～16，默认 1",
             ),
             ("seed", "number", "随机种子", "-1 由平台随机分配"),
         ]
@@ -427,8 +429,8 @@ impl<'a> Input<'a> {
         let megapixels = v
             .get("megapixels")
             .map_or(Some(1.0), Value::as_f64)
-            .filter(|n| (0.1..=4.0).contains(n))
-            .ok_or_else(|| invalid("像素量须在 0.1～4 MP"))?;
+            .filter(|n| (MIN_MEGAPIXELS..=MAX_MEGAPIXELS).contains(n))
+            .ok_or_else(|| invalid(&format!("像素量须在 {MIN_MEGAPIXELS}～{MAX_MEGAPIXELS} MP")))?;
         let seed = match v.get("seed") {
             None => None,
             Some(n) if n.as_i64() == Some(-1) => None,
@@ -887,10 +889,35 @@ mod tests {
         for input in [
             json!({"prompt":" "}),
             json!({"prompt":"edit","aspectRatio":"any"}),
-            json!({"prompt":"edit","megapixels":4.1}),
+            json!({"prompt":"edit","megapixels":16.1}),
             json!({"prompt":"edit","seed":9007199254740992_u64}),
         ] {
             assert!(Input::parse(&input).is_err());
+        }
+    }
+
+    #[test]
+    fn both_workflows_accept_and_submit_4k_pixel_budgets() {
+        for workflow in [TEXT, EDIT] {
+            let schema = workflow.input_schema();
+            let input_schema: Value =
+                serde_json::from_str(schema["schemaJson"].as_str().unwrap()).unwrap();
+            assert_eq!(input_schema["properties"]["megapixels"]["maximum"], 16.0);
+        }
+
+        for (ratio, mp, width, height) in [("1:1", 16.0, 4096, 4096), ("16:9", 8.0, 3872, 2176)] {
+            let parameters = json!({"prompt":"4K", "aspectRatio":ratio, "megapixels":mp});
+            let input = Input::parse(&parameters).unwrap();
+            let text_request = text_body(&input);
+            assert_eq!(
+                text_request["nodeInfoList"][4],
+                node("13", "megapixels", &mp.to_string())
+            );
+            let edit_request = edit_body(&input, &["openapi/ref.png".to_string()]);
+            let graph: Value =
+                serde_json::from_str(edit_request["workflow"].as_str().unwrap()).unwrap();
+            assert_eq!(graph["456"]["inputs"]["width"], width);
+            assert_eq!(graph["456"]["inputs"]["height"], height);
         }
     }
 }

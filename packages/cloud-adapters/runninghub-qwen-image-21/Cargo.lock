@@ -202,7 +202,7 @@ dependencies = [
 
 [[package]]
 name = "runninghub-qwen-image-21-adapter"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "bgx-adapter-v2-sdk",
  "serde_json",
