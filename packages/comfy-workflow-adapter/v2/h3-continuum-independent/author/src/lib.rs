@@ -119,7 +119,8 @@ fn probe(h: &mut dyn Host, p: &Value, budget: u64) -> Outcome<Value> {
 /// Validates all mapped inputs before any network effect.
 fn build_graph(input: &Value, references: &[&str], audio: &str) -> Outcome<Value> {
     let obj=input.as_object().ok_or_else(||fail("INVALID_INPUT","input must be object"))?;
-    if obj.keys().any(|k| !["prompt","seed","width","height","durationSeconds","fps","advanced","aspectRatio","referenceImages","referenceAudios"].contains(&k.as_str())) {return Err(fail("INVALID_INPUT","unknown video input"));}
+    if obj.keys().any(|k| !["inputMode","prompt","seed","width","height","durationSeconds","fps","advanced","aspectRatio","referenceImages","referenceAudios"].contains(&k.as_str())) {return Err(fail("INVALID_INPUT","unknown video input"));}
+    if input["inputMode"] != "image_to_video" { return Err(fail("INVALID_INPUT", "inputMode must be image_to_video")); }
     let prompt=text(input,"prompt")?;
     if prompt.trim().is_empty() || prompt.chars().count()>MAX_PROMPT {return Err(fail("INVALID_INPUT","prompt must be1..8000 characters"));}
     let seed=number(input,"seed")?;if seed>MAX_SEED{return Err(fail("INVALID_INPUT","seed exceeds2^53-1"));}

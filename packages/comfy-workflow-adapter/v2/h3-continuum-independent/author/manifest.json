@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "02516e990d479e67aa27849376e60f125a2d165bb1506be13f32215f98dd3e86",
+  "artifactSha256": "897f152b3eb63f22bdbd892ef3d7b892f238e58d4188a60645dfeb61671b77d2",
   "displayName": "H3 Continuum independent driving-audio adapter",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -35,5 +35,5 @@
   },
   "requiredFeatures": [],
   "schemaVersion": 2,
-  "version": "1.0.2"
+  "version": "1.0.3"
 }

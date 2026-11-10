@@ -1,4 +1,5 @@
 {
+  "inputMode": "image_to_video",
   "prompt": "A red panda reads a blue book beside a sunny library window. The panda gently turns a page and moves naturally with the supplied reference audio. Warm sunlight, subtle motion, slow camera push in.",
   "seed": 20261026,
   "width": 768,

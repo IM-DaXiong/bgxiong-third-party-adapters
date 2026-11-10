@@ -116,7 +116,8 @@ fn probe(h: &mut dyn Host, p: &Value, budget: u64) -> Outcome<Value> {
 /// Validates all mapped inputs before any network effect.
 fn build_graph(input: &Value, references: &[&str], audio: &str) -> Outcome<Value> {
     let obj=input.as_object().ok_or_else(||fail("INVALID_INPUT","input must be object"))?;
-    if obj.keys().any(|k| !["prompt","seed","width","height","durationSeconds","fps","advanced","aspectRatio","referenceImages","referenceAudios"].contains(&k.as_str())) {return Err(fail("INVALID_INPUT","unknown video input"));}
+    if obj.keys().any(|k| !["inputMode","prompt","seed","width","height","durationSeconds","fps","advanced","aspectRatio","referenceImages","referenceAudios"].contains(&k.as_str())) {return Err(fail("INVALID_INPUT","unknown video input"));}
+    if input["inputMode"] != "multi_image_to_video" { return Err(fail("INVALID_INPUT", "inputMode must be multi_image_to_video")); }
     let prompt=text(input,"prompt")?;
     if prompt.trim().is_empty() || prompt.chars().count()>MAX_PROMPT {return Err(fail("INVALID_INPUT","prompt must be1..8000 characters"));}
     let seed=number(input,"seed")?;if seed>MAX_SEED{return Err(fail("INVALID_INPUT","seed exceeds2^53-1"));}
@@ -336,7 +337,7 @@ bgx_adapter_v2_sdk::export_adapter!(ComfyH3R2vAudioAudio);
 #[cfg(test)]
 mod tests {
  use super::*;
- fn input()->Value{json!({"prompt":"Use<Picture1>and<Picture2> as ordered references.","seed":20261023,"width":864,"height":480,"durationSeconds":8,"fps":24,"aspectRatio":"16:9","advanced":{"steps":20,"audioUsage":"soundtrack_copy"},"referenceAudios":[{"mediaId":"audio"}],"referenceImages":[{"mediaId":"first"},{"mediaId":"second"}]})}
+ fn input()->Value{json!({"inputMode":"multi_image_to_video","prompt":"Use<Picture1>and<Picture2> as ordered references.","seed":20261023,"width":864,"height":480,"durationSeconds":8,"fps":24,"aspectRatio":"16:9","advanced":{"steps":20,"audioUsage":"soundtrack_copy"},"referenceAudios":[{"mediaId":"audio"}],"referenceImages":[{"mediaId":"first"},{"mediaId":"second"}]})}
  #[test] fn ordered_references_and_native_av_timing_are_preserved(){
   let g=build_graph(&input(),&["one.png","two.png"],"soundtrack.wav").ok().unwrap();let original:Value=serde_json::from_str(GRAPH).unwrap();
   assert_eq!(g["137"]["inputs"]["image"],"one.png");assert_eq!(g["139"]["inputs"]["image"],"two.png");
@@ -349,7 +350,7 @@ mod tests {
  #[test] fn reorder_and_invalid_counts_are_explicit(){
   let g=build_graph(&input(),&["two.png","one.png"],"soundtrack.wav").ok().unwrap();assert_eq!(g["137"]["inputs"]["image"],"two.png");assert_eq!(g["139"]["inputs"]["image"],"one.png");
   for refs in [json!([]),json!([{"mediaId":"one"}]),json!([{"mediaId":"one"},{"mediaId":"two"},{"mediaId":"three"}])]{let mut i=input();i["referenceImages"]=refs;assert!(build_graph(&i,&["a","b"],"soundtrack.wav").is_err());}
-  for (k,v) in [("durationSeconds",json!(5)),("fps",json!(25)),("width",json!(768)),("prompt",json!("")),("advanced",json!({"steps":20,"hidden":1})),("referenceAudio",json!("wrong"))]{let mut i=input();i[k]=v;assert!(build_graph(&i,&["a","b"],"soundtrack.wav").is_err());}
+  for (k,v) in [("inputMode",json!(null)),("inputMode",json!("unsupported")),("durationSeconds",json!(5)),("fps",json!(25)),("width",json!(768)),("prompt",json!("")),("advanced",json!({"steps":20,"hidden":1})),("referenceAudio",json!("wrong"))]{let mut i=input();i[k]=v;assert!(build_graph(&i,&["a","b"],"soundtrack.wav").is_err());}
  }
  #[test] fn catalog_schema_and_reference_roles_agree(){
   let c=capabilities();let op=&c["capabilityContracts"][0]["operations"][0];assert_eq!(op["mediaSlots"],json!([{"role":"referenceImages","inputPointer":"/referenceImages","mediaKind":"image","minCount":2,"maxCount":2},{"role":"referenceAudios","inputPointer":"/referenceAudios","mediaKind":"audio","minCount":1,"maxCount":1}]));

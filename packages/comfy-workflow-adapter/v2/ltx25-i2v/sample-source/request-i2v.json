@@ -1,4 +1,5 @@
 {
+  "inputMode": "image_to_video",
   "prompt": "The blue book slowly opens on the wooden desk. Gentle camera push in, warm sunlight. Audio: soft paper rustling and quiet room ambience.",
   "seed": 20261023,
   "width": 768,

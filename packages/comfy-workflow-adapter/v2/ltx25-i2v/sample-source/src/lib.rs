@@ -114,7 +114,8 @@ fn probe(h: &mut dyn Host, p: &Value, budget: u64) -> Outcome<Value> {
 /// Validates all mapped inputs before any network effect.
 fn build_graph(input: &Value, reference_name: &str) -> Outcome<Value> {
     let obj=input.as_object().ok_or_else(||fail("INVALID_INPUT","input must be object"))?;
-    if obj.keys().any(|k| !["prompt","seed","width","height","durationSeconds","fps","advanced","aspectRatio","referenceImages"].contains(&k.as_str())) {return Err(fail("INVALID_INPUT","unknown video input"));}
+    if obj.keys().any(|k| !["inputMode","prompt","seed","width","height","durationSeconds","fps","advanced","aspectRatio","referenceImages"].contains(&k.as_str())) {return Err(fail("INVALID_INPUT","unknown video input"));}
+    if input["inputMode"] != "image_to_video" { return Err(fail("INVALID_INPUT", "inputMode must be image_to_video")); }
     let prompt=text(input,"prompt")?;
     if prompt.trim().is_empty() || prompt.chars().count()>MAX_PROMPT {return Err(fail("INVALID_INPUT","prompt must be 1..8000 characters"));}
     let seed=number(input,"seed")?; if seed>MAX_SEED {return Err(fail("INVALID_INPUT","seed exceeds 2^53-1"));}
@@ -332,7 +333,7 @@ mod tests {
  }
  #[test]
  fn missing_extra_image_and_illegal_profile_rejected_before_network(){
-  for (k,v) in [("referenceImages",json!([])),("referenceImages",json!([{"mediaId":"a"},{"mediaId":"b"}])),("durationSeconds",json!(5)),("fps",json!(25)),("width",json!(864)),("prompt",json!("")),("seed",json!(-1)),("advanced",json!({"strength":1.1})),("advanced",json!({"strength":0.7,"hidden":1}))] {let mut x=input();x[k]=v;assert!(build_graph(&x,"x").is_err(),"{k}");}
+  for (k,v) in [("inputMode",json!(null)),("inputMode",json!("unsupported")),("referenceImages",json!([])),("referenceImages",json!([{"mediaId":"a"},{"mediaId":"b"}])),("durationSeconds",json!(5)),("fps",json!(25)),("width",json!(864)),("prompt",json!("")),("seed",json!(-1)),("advanced",json!({"strength":1.1})),("advanced",json!({"strength":0.7,"hidden":1}))] {let mut x=input();x[k]=v;assert!(build_graph(&x,"x").is_err(),"{k}");}
  }
  #[test]
  fn declared_catalog_matches_original_slot_and_profile(){let c=capabilities();let op=&c["capabilityContracts"][0]["operations"][0];assert_eq!(op["mediaSlots"][0]["minCount"],1);assert_eq!(op["mediaSlots"][0]["maxCount"],1);let s:Value=serde_json::from_str(INPUT_SCHEMA).unwrap();for k in ["width","height","durationSeconds","fps"] {assert_eq!(s["properties"][k]["default"],input()[k]);}}

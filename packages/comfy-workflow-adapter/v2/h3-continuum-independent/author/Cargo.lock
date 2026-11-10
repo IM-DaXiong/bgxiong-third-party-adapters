@@ -22,7 +22,7 @@ dependencies = [
 
 [[package]]
 name = "bgx-independent-h3-continuum"
-version = "1.0.2"
+version = "1.0.3"
 dependencies = [
  "bgx-adapter-v2-sdk",
  "serde_json",

@@ -2,6 +2,10 @@
   "type": "object",
   "description": "Exactly two ordered image references plus text, native H3 ref2va,864x480/24fps/8s/192frames, generated audio; no input audio/video or first/last roles.",
   "properties": {
+    "inputMode": {
+      "type": "string",
+      "const": "multi_image_to_video"
+    },
     "prompt": {
       "type": "string",
       "minLength": 1,
@@ -95,6 +99,7 @@
     }
   },
   "required": [
+    "inputMode",
     "prompt",
     "seed",
     "advanced",

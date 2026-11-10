@@ -2,6 +2,10 @@
   "type": "object",
   "description": "One original image, one complete8second WAV from0, text; native audio latent condition and decoded output.768x768/24fps/193frames.",
   "properties": {
+    "inputMode": {
+      "type": "string",
+      "const": "image_to_video"
+    },
     "prompt": {
       "type": "string",
       "minLength": 1,
@@ -123,6 +127,7 @@
     }
   },
   "required": [
+    "inputMode",
     "prompt",
     "seed",
     "advanced",

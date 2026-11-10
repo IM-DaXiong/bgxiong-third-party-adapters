@@ -2,6 +2,10 @@
   "type": "object",
   "description": "One original image as first frame and identity reference, complete5second WAV as Driving Audio and soundtrack. Fixed512x512/24fps/one5second chunk,6steps. No lip-sync claim.",
   "properties": {
+    "inputMode": {
+      "type": "string",
+      "const": "image_to_video"
+    },
     "prompt": {
       "type": "string",
       "minLength": 1,
@@ -158,6 +162,7 @@
     }
   },
   "required": [
+    "inputMode",
     "prompt",
     "seed",
     "advanced",

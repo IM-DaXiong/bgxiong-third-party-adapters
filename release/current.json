@@ -691,195 +691,220 @@
     },
     {
       "pluginId": "local.independent.comfy-h3-continuum",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "kind": "installable",
-      "validation": "sdk_package_validated",
+      "validation": "sdk_package_and_install_envelope_validated",
       "sourceManifest": "packages/comfy-workflow-adapter/v2/h3-continuum-independent/author/manifest.json",
       "files": [
         {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/adapter-install.json",
+          "sha256": "d10971ec0a1098c6249437b501e6ed89e8462c6eeecff086b4af1af5f6ae9935"
+        },
+        {
           "path": "host-config.example.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.independent.comfy-h3-continuum/1.0.2/host-config.example.json",
-          "sha256": "3f959535fd006ebf37050562746802e135c98b90eda466947e8bdd39273f53a8"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/host-config.example.json",
+          "sha256": "15aa9562d2a90832f733103fba3c944fe98b649aa0fac7223ca062c4403e60cc"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.independent.comfy-h3-continuum/1.0.2/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.independent.comfy-h3-continuum/1.0.2/package/adapter.wasm",
-          "sha256": "02516e990d479e67aa27849376e60f125a2d165bb1506be13f32215f98dd3e86"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/package/adapter.wasm",
+          "sha256": "897f152b3eb63f22bdbd892ef3d7b892f238e58d4188a60645dfeb61671b77d2"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.independent.comfy-h3-continuum/1.0.2/package/manifest.json",
-          "sha256": "d7fae2dd0e7d2b7036fb29ccba490cdbb49109eb4cc249abe23c70b3e064313a"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/package/manifest.json",
+          "sha256": "dbeeb5194ad28f059fb7d168dcee5a82899aecf763b116d090ba5c3ee1da1602"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.independent.comfy-h3-continuum/1.0.2/package/manifest.sha256",
-          "sha256": "5c76ea459b7c32d563f59babfabc2a4c406f3fb1cbeac3973d41569bf01e8619"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/package/manifest.sha256",
+          "sha256": "3b224a6f9deff6867264eb7ecbb88fb81337b400cfc4830f7bb09673c0bc3b95"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.independent.comfy-h3-continuum/1.0.2/README.txt",
-          "sha256": "74798bb2e1395d38fa52d9e1f90a8965c4d700830517ebb974e5a8c876dc6db7"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/README.txt",
+          "sha256": "218834d863c4650f30eb451131087609d3f77d33715fa0a37fb99578de91b1a5"
+        },
+        {
+          "path": "request-continuum.json",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/request-continuum.json",
+          "sha256": "0bce54cc4ba0f04c9d121bec159eb586988e6899249ac5ad9bf1643f57f54e1b"
+        },
+        {
+          "path": "SHA256SUMS",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/SHA256SUMS",
+          "sha256": "f4afbb5944e6d0ab4676555239e82930d2e3278fbde0f760821699eebe846bea"
+        },
+        {
+          "path": "workflow/native-api.original.json",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/workflow/native-api.original.json",
+          "sha256": "8abd8f129d53161a52a622342066d473e52540a0512b5e3fb64955d3572e77ca"
+        },
+        {
+          "path": "workflow/source.json",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/workflow/source.json",
+          "sha256": "79013e52c63efd4cd11e497615f751e54ecb25572d431203ed6e4c1843438b12"
+        },
+        {
+          "path": "workflow/target-node-definitions.json",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/workflow/target-node-definitions.json",
+          "sha256": "d60147e13fd9a60e220834aac29f67866c91a951cb790893db48d56a60b9981b"
         },
         {
           "path": "workflow-templates.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.independent.comfy-h3-continuum/1.0.2/workflow-templates.json",
-          "sha256": "2212931ba83956ad6fe3b78aee52af0363b4c164d03aabe65bc27121710f4c67"
-        },
-        {
-          "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.independent.comfy-h3-continuum/1.0.2/安装说明.txt",
-          "sha256": "665c4d0664d1144e99277c002f9322609f0f65b22ed724781206373bc3afb2bf"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/workflow-templates.json",
+          "sha256": "eb7e7f83023258831ff4f1d8ece801dd0cbdf8fdbcd6314211acb4f05996ba10"
         }
       ]
     },
     {
       "pluginId": "local.example.comfy-h3-r2v",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "kind": "sourceExample",
       "validation": "source_example_version_checked",
       "sourceManifest": "packages/comfy-workflow-adapter/v2/h3-r2v/sample-source/manifest.json",
       "files": [
         {
           "path": "example.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-h3-r2v/1.0.0/example.json",
-          "sha256": "15f42b29aee42e191f424b8e7f3eae8bd29d39365698d238b01cbc6c85c1c341"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-r2v/1.0.1/example.json",
+          "sha256": "f770b2b4d8bebe66e232cb30901201a51c615582ccec2a79f35c6415c30afd0c"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-h3-r2v/1.0.0/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-r2v/1.0.1/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-h3-r2v/1.0.0/README.txt",
-          "sha256": "45fd1ba6d34e4a7a7188e653202b5f277bd346bbf57660343bb7f3f8f24c6e54"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-r2v/1.0.1/README.txt",
+          "sha256": "2bad046a197b3275427ac6ba92d3ba90169a20933c298ddb30777f592d9045c8"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-h3-r2v/1.0.0/安装说明.txt",
-          "sha256": "b494617b1a8247be3d5255085ba71feeb72d11b966e56c6aac04f723b236518f"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-r2v/1.0.1/安装说明.txt",
+          "sha256": "2a9e25c95ed0738cd0d103ae7c4d7b69a8eaf6a0cb61d4ec892d007ec9fb02a2"
         }
       ]
     },
     {
       "pluginId": "local.example.comfy-h3-r2v-audio",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "kind": "sourceExample",
       "validation": "source_example_version_checked",
       "sourceManifest": "packages/comfy-workflow-adapter/v2/h3-r2v-audio/sample-source/manifest.json",
       "files": [
         {
           "path": "example.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-h3-r2v-audio/1.0.0/example.json",
-          "sha256": "0f7f721e1d6788c01838188de12e6460c3e927f477ad424a4639839d20a8228a"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-r2v-audio/1.0.1/example.json",
+          "sha256": "de4fa01a9cd71dae095eb4e3bbf661ac5ee1a58cd4ed4451ea0fc2e72d2b8dbc"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-h3-r2v-audio/1.0.0/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-r2v-audio/1.0.1/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-h3-r2v-audio/1.0.0/README.txt",
-          "sha256": "30603164bd7fc3eb34f2f8affaf77bc04230fbab8de7980bcfcdec9fc00437ba"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-r2v-audio/1.0.1/README.txt",
+          "sha256": "80bf0eb74e4b7880b4b28fdef14e0f91acea407fcf152eb4ca6c2fbb9bf605e2"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-h3-r2v-audio/1.0.0/安装说明.txt",
-          "sha256": "e9a8b603b3524139b9b2dd72b0dd28b37d3c26d346074a86c1713921937ac62d"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-r2v-audio/1.0.1/安装说明.txt",
+          "sha256": "cf8ec054115ca40c8a2681cbaf03365bb0499ebf7e24bfdb97eb106ef8bf80c5"
         }
       ]
     },
     {
       "pluginId": "local.example.comfy-h3-t2v",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "kind": "sourceExample",
       "validation": "source_example_version_checked",
       "sourceManifest": "packages/comfy-workflow-adapter/v2/h3-t2v/sample-source/manifest.json",
       "files": [
         {
           "path": "example.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-h3-t2v/1.0.0/example.json",
-          "sha256": "e2cfcebbcb82085afafe1f07bfa76f04897d3b4727ced754d839f089dc915bb1"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-t2v/1.0.1/example.json",
+          "sha256": "93d4f2d9fd82afe94d8b80b9e264d79a388ae030dc11a4f082b7d70711b11981"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-h3-t2v/1.0.0/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-t2v/1.0.1/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-h3-t2v/1.0.0/README.txt",
-          "sha256": "8f10a865f827fad3fb78333461ca0bce6a5e0d7939c1f0a004b24ced7abe92fa"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-t2v/1.0.1/README.txt",
+          "sha256": "9d9ab1d3cf5b23fbea84e5bc5be7e93998cc1eb8c39cd008561fa932c73629c5"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-h3-t2v/1.0.0/安装说明.txt",
-          "sha256": "45e8215bd137bd951cdfa4b9dafdf66b94daecd548216d0ff2a63b03748404ab"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-t2v/1.0.1/安装说明.txt",
+          "sha256": "14c5714de6f6e219cca05ba7654042770957ff7363ebc2898af590d853f92fdd"
         }
       ]
     },
     {
       "pluginId": "local.example.comfy-ltx23-ia2v",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "kind": "sourceExample",
       "validation": "source_example_version_checked",
       "sourceManifest": "packages/comfy-workflow-adapter/v2/ltx23-ia2v/sample-source/manifest.json",
       "files": [
         {
           "path": "example.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-ltx23-ia2v/1.0.0/example.json",
-          "sha256": "19595cfb8ce73678bd5b9ac99de4569f2603e461dfc8864fd6641c6511f82599"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-ltx23-ia2v/1.0.1/example.json",
+          "sha256": "7639ce54b9bc045272c22ceeabd31fcdf617a8cc40118a1e6f93ab1ebe200ed9"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-ltx23-ia2v/1.0.0/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-ltx23-ia2v/1.0.1/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-ltx23-ia2v/1.0.0/README.txt",
-          "sha256": "13492499c005424bdeac9912c0413c19f87144dba4e75525031fbc9f6507a899"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-ltx23-ia2v/1.0.1/README.txt",
+          "sha256": "ea141dd309018263ec042778e3dd04738a610e2ab47cded703e85480368b6c52"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-ltx23-ia2v/1.0.0/安装说明.txt",
-          "sha256": "c2e288770cebc196fb32f6589a5077b36c7bf4168d592a8b338155df4b6aeb48"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-ltx23-ia2v/1.0.1/安装说明.txt",
+          "sha256": "e4619763e99a87191b95779e8455689289998adc36a836ec4df896ea32e5435e"
         }
       ]
     },
     {
       "pluginId": "local.example.comfy-ltx25-i2v",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "kind": "sourceExample",
       "validation": "source_example_version_checked",
       "sourceManifest": "packages/comfy-workflow-adapter/v2/ltx25-i2v/sample-source/manifest.json",
       "files": [
         {
           "path": "example.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-ltx25-i2v/1.0.0/example.json",
-          "sha256": "7bc2d62636ad583297c2bac310140d1a97e7274ed712dafac85adcc060079c7a"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-ltx25-i2v/1.0.1/example.json",
+          "sha256": "6ffedfd6d2297e56db882c027cf017173ac73afb0d90cf5061f5d566c75ce3c8"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-ltx25-i2v/1.0.0/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-ltx25-i2v/1.0.1/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-ltx25-i2v/1.0.0/README.txt",
-          "sha256": "76592bf05a0465f19b5a2eb0166d0a402cf3882d58d30f7d2cc3f4fb327a61e2"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-ltx25-i2v/1.0.1/README.txt",
+          "sha256": "f952690924e591b04019c18f5765ac36345eeed8ad273ef8ecf5d0a422318e60"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-ltx25-i2v/1.0.0/安装说明.txt",
-          "sha256": "346f44f59fa5dc96c7a43af399f47027ae359d9118d4d1bf8f834351c682c687"
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-ltx25-i2v/1.0.1/安装说明.txt",
+          "sha256": "30a73a89538b910a233d38fb5ec9fe6b7a6dfb5b0c14dd8f36e24d18c671db76"
         }
       ]
     },
@@ -1044,122 +1069,6 @@
       ]
     },
     {
-      "pluginId": "local.example.comfyui-lan-h3",
-      "version": "0.3.1",
-      "kind": "sourceExample",
-      "validation": "source_example_version_checked",
-      "sourceManifest": "examples/comfyui-lan-minimax-h3/manifest.json",
-      "files": [
-        {
-          "path": "example.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfyui-lan-h3/0.3.1/example.json",
-          "sha256": "51614082248faa1f4658e8356e2e359d3c045f554859700ca2ecfdb3f1f421da"
-        },
-        {
-          "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfyui-lan-h3/0.3.1/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
-        },
-        {
-          "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfyui-lan-h3/0.3.1/README.txt",
-          "sha256": "13a91a138230d97189c7c2d7b77ca26b8b313be962749225d903c64b5083ed7a"
-        },
-        {
-          "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfyui-lan-h3/0.3.1/安装说明.txt",
-          "sha256": "213e74b63e2618cd69f2cb798229c21a7e5f65bc01fe034ee483d488ffb780e1"
-        }
-      ]
-    },
-    {
-      "pluginId": "local.example.comfyui-lan-z-image",
-      "version": "0.3.1",
-      "kind": "sourceExample",
-      "validation": "source_example_version_checked",
-      "sourceManifest": "examples/comfyui-lan-z-image-turbo/manifest.json",
-      "files": [
-        {
-          "path": "example.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfyui-lan-z-image/0.3.1/example.json",
-          "sha256": "bd5812f4357692db1023bdce6aa7be651b3124c9c3628e5c2173bf91137cf10c"
-        },
-        {
-          "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfyui-lan-z-image/0.3.1/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
-        },
-        {
-          "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfyui-lan-z-image/0.3.1/README.txt",
-          "sha256": "95cb20436332ae86aa4bbefab36a0f60e5926a2b36964f08461ad9889e9d8001"
-        },
-        {
-          "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfyui-lan-z-image/0.3.1/安装说明.txt",
-          "sha256": "d27163fbe22bf3df64d8728ed48b0c754f2b368678f2edf715a1227cb026583d"
-        }
-      ]
-    },
-    {
-      "pluginId": "local.example.lan-openai-compat-text",
-      "version": "0.1.0",
-      "kind": "sourceExample",
-      "validation": "source_example_version_checked",
-      "sourceManifest": "examples/lan-openai-compat-text/manifest.json",
-      "files": [
-        {
-          "path": "example.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.lan-openai-compat-text/0.1.0/example.json",
-          "sha256": "2aab19fb6f17b2d1fa2a8c7ee2e520c619a8564baef2528431cd373a7b3fa3c2"
-        },
-        {
-          "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.lan-openai-compat-text/0.1.0/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
-        },
-        {
-          "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.lan-openai-compat-text/0.1.0/README.txt",
-          "sha256": "29fa502029add4b711f76d02b1acc27ba72a8055b0bc9c6cdf98ed1351f88c19"
-        },
-        {
-          "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.lan-openai-compat-text/0.1.0/安装说明.txt",
-          "sha256": "3bed620426fb6f61b4561067cbcd064041dcc89abed52a4b3cb9213eb77190cd"
-        }
-      ]
-    },
-    {
-      "pluginId": "local.example.video-reference-media-probe",
-      "version": "0.2.0",
-      "kind": "sourceExample",
-      "validation": "source_example_version_checked",
-      "sourceManifest": "examples/video-reference-media-probe/manifest.json",
-      "files": [
-        {
-          "path": "example.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.video-reference-media-probe/0.2.0/example.json",
-          "sha256": "e6664837eeb4589d8fbdbefe2725d1aa4b8f42dfbb2b79e9447464522e552c33"
-        },
-        {
-          "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.video-reference-media-probe/0.2.0/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
-        },
-        {
-          "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.video-reference-media-probe/0.2.0/README.txt",
-          "sha256": "b9e4d523ae8425eff6eed8095d9e88d02cdc68910c5950bd97bc63b7c3a36f46"
-        },
-        {
-          "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.video-reference-media-probe/0.2.0/安装说明.txt",
-          "sha256": "dcaff6feda0be96d2d9ea58dd03c754005b8cb13abcb88e6ea4a5a1755c1dd68"
-        }
-      ]
-    },
-    {
       "pluginId": "local.thirdparty.runninghub-h3-r2v-dynamic",
       "version": "1.0.1",
       "kind": "installable",
@@ -1252,7 +1161,7 @@
       "version": "0.1.1",
       "kind": "installable",
       "validation": "sdk_package_and_install_envelope_validated",
-      "sourceManifest": "packages/cloud-adapters/runninghub-qwen-image-21/manifest.json",
+      "sourceManifest": "records/release-source/local.thirdparty.runninghub-qwen-image-21/0.1.1/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",

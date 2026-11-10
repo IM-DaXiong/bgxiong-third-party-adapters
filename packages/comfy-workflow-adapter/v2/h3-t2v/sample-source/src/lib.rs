@@ -113,7 +113,8 @@ fn probe(h: &mut dyn Host, p: &Value, budget: u64) -> Outcome<Value> {
 /// Validates all mapped inputs before any network effect.
 fn build_graph(input: &Value) -> Outcome<Value> {
     let obj = input.as_object().ok_or_else(|| fail("INVALID_INPUT", "input must be an object"))?;
-    if obj.keys().any(|k| !["prompt","seed","width","height","durationSeconds","fps","advanced","aspectRatio"].contains(&k.as_str())) { return Err(fail("INVALID_INPUT", "unknown video input")); }
+    if obj.keys().any(|k| !["inputMode","prompt","seed","width","height","durationSeconds","fps","advanced","aspectRatio"].contains(&k.as_str())) { return Err(fail("INVALID_INPUT", "unknown video input")); }
+    if input["inputMode"] != "text_to_video" { return Err(fail("INVALID_INPUT", "inputMode must be text_to_video")); }
     let prompt = text(input,"prompt").map_err(|_|fail("INVALID_INPUT","prompt is required"))?;
     if prompt.trim().is_empty() || prompt.chars().count()>MAX_PROMPT { return Err(fail("INVALID_INPUT","prompt must be 1..8000 characters")); }
     let seed=number(input,"seed").map_err(|_|fail("INVALID_INPUT","seed is required"))?;
@@ -263,7 +264,7 @@ bgx_adapter_v2_sdk::export_adapter!(ComfyH3T2v);
 #[cfg(test)]
 mod tests {
     use super::*;
-    fn input()->Value {json!({"prompt":"A blue paper boat gently floating on a sunlit pond. Audio: quiet water ripples and soft birdsong.","seed":20261023,"width":864,"height":480,"durationSeconds":8,"fps":24,"aspectRatio":"16:9","advanced":{"steps":20}})}
+    fn input()->Value {json!({"inputMode":"text_to_video","prompt":"A blue paper boat gently floating on a sunlit pond. Audio: quiet water ripples and soft birdsong.","seed":20261023,"width":864,"height":480,"durationSeconds":8,"fps":24,"aspectRatio":"16:9","advanced":{"steps":20}})}
     #[test]
     fn maps_profile_without_changing_models_audio_or_timing_links(){
         let original:Value=serde_json::from_str(GRAPH).unwrap();let g=build_graph(&input()).ok().unwrap();
@@ -274,7 +275,7 @@ mod tests {
     }
     #[test]
     fn undeclared_duration_dimensions_and_media_fail_before_network(){
-        for (key,v) in [("durationSeconds",json!(5)),("fps",json!(25)),("width",json!(768)),("height",json!(512)),("prompt",json!("")),("seed",json!(-1)),("referenceImages",json!([])),("advanced",json!({"steps":20,"hidden":1}))] {let mut x=input();x[key]=v;assert!(build_graph(&x).is_err(),"{key}");}
+        for (key,v) in [("inputMode",json!(null)),("inputMode",json!("unsupported")),("durationSeconds",json!(5)),("fps",json!(25)),("width",json!(768)),("height",json!(512)),("prompt",json!("")),("seed",json!(-1)),("referenceImages",json!([])),("advanced",json!({"steps":20,"hidden":1}))] {let mut x=input();x[key]=v;assert!(build_graph(&x).is_err(),"{key}");}
     }
     #[test]
     fn declared_catalog_profile_and_native_graph_agree(){

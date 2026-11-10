@@ -16,5 +16,6 @@
     {
       "mediaId": "image-input-2"
     }
-  ]
+  ],
+  "inputMode": "multi_image_to_video"
 }

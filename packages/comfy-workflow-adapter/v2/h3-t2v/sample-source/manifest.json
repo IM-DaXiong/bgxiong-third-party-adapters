@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "artifactSha256": "8e70ceffc86051dba6eed53c4c89d5bc0d69791f7e28bd4aaeff96639e246cf4",
   "displayName": "ComfyUI H3 text to video author example",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -33,5 +33,5 @@
   },
   "requiredFeatures": [],
   "schemaVersion": 2,
-  "version": "1.0.0"
+  "version": "1.0.1"
 }
