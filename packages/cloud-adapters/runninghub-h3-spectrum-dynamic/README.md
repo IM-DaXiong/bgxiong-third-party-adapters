@@ -1,6 +1,6 @@
 # RunningHub H3 Spectrum 动态多参独立适配器
 
-当前权威源码：**1.0.1**；公开 SDK：**V2 2.0.0**（开发者预览，见 [SDK V2 文档](../../../contract/v2/README.md)）。本目录与 `packages/cloud-adapters/` 内其他厂商包同级，具有自己的 Cargo workspace，不加入宿主或 SDK workspace，不参与主程序编译。厂商工作流、HTTP 组装及响应解释只在本目录实现。
+当前权威源码：**1.0.2**；公开 SDK：**V2 2.0.0**（开发者预览，见 [SDK V2 文档](../../../contract/v2/README.md)）。本目录与 `packages/cloud-adapters/` 内其他厂商包同级，具有自己的 Cargo workspace，不加入宿主或 SDK workspace，不参与主程序编译。厂商工作流、HTTP 组装及响应解释只在本目录实现。
 
 本包是 Turbo 动态包 `runninghub-h3-dynamic` 的 **Spectrum 质量优先** 孪生：同一套 `build_graph`（删 LoadImage/LoadAudio、注入 1000+/2000+、接线 136、SaveVideo 92→9000），底图与 workflowId 换成 Spectrum。
 

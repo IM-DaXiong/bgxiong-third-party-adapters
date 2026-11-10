@@ -1,0 +1,40 @@
+{
+  "artifactSha256": "07b18217f4f5cf03fd18668cc80944cc108534f7f55eecf4e8496d636e053d08",
+  "displayName": "Breeze TTS 2 D-pack (plain / voice_design / reference_clone)",
+  "entry": "adapter.wasm",
+  "language": "rust",
+  "limits": {
+    "fuel": 100000000,
+    "memoryBytes": 33554432,
+    "outputBytes": 33554432,
+    "wallMs": 600000
+  },
+  "optionalFeatures": [],
+  "pluginId": "local.tts.breeze",
+  "protocolRange": {
+    "max": 2,
+    "min": 2
+  },
+  "publisherId": null,
+  "publisherKeyId": null,
+  "requestedCapabilities": {
+    "allowPrivateNetwork": true,
+    "auth": [
+      "bearer",
+      "none"
+    ],
+    "embeddedHeaders": [],
+    "endpointPolicy": [
+      "userConfigurable",
+      "allowPrivateNetwork"
+    ],
+    "mediaSlots": [
+      "audio"
+    ],
+    "networkHosts": [],
+    "stateBytes": 0
+  },
+  "requiredFeatures": [],
+  "schemaVersion": 2,
+  "version": "1.0.0-d"
+}

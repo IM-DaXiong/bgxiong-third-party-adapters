@@ -1,4 +1,4 @@
-Zero Author Z Image Turbo 1.0.2
+Zero Author Z Image Turbo 1.0.3
 
 版本以同目录 `manifest.json` 为准。下文保留 0.6.1028 / 1.0.1 归档时的验收范围，不把版本号变化写成新的出图验收。
 

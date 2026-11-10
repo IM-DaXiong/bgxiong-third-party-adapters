@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "f3cf83b6bb5c47203b98f13e6d854fdfd4a2bea1beda32716b9b5f8d0ab67ef4",
+  "artifactSha256": "08b07b7acbbf03d93628890a97de4aa58d7b81daf8b08961ef1b6ef4257d378e",
   "displayName": "Wan Animate 2 角色动画（ComfyUI）",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -36,5 +36,5 @@
   },
   "requiredFeatures": [],
   "schemaVersion": 2,
-  "version": "0.1.1"
+  "version": "0.1.2"
 }

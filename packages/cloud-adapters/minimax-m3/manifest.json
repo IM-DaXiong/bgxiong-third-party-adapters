@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "f4f0ac7d6747b794f54a91df6a2c3e3f9017665d4c280bd2dc83abee6414ac09",
+  "artifactSha256": "0808dc1bb8ad259c4202b3b3ffcf28e0dc9b12cd83fb21147ce5116b23debfed",
   "displayName": "MiniMax M3 云端文本",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -33,5 +33,5 @@
   },
   "requiredFeatures": [],
   "schemaVersion": 2,
-  "version": "1.0.2"
+  "version": "1.0.3"
 }

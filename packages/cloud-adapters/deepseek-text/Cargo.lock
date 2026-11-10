@@ -20,7 +20,7 @@ dependencies = [
 
 [[package]]
 name = "bgx-deepseek-text"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "bgx-adapter-v2-sdk",
  "serde_json",
