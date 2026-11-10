@@ -2,16 +2,19 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)][string]$OutputDirectory,
-    [Parameter(Mandatory)][string]$Cli,
-    [Parameter(Mandatory)][string]$Worker
+    [string]$Cli,
+    [string]$Worker,
+    [string]$HostRoot,
+    [string]$SdkRoot,
+    [string]$ArtifactRoot
 )
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot '../../../scripts/resolve-development-roots.ps1')
-$roots = Get-AdapterDevelopmentRoots $PSScriptRoot
-$repo = $roots.HostRoot
-$sdk = Join-Path $repo 'packages/vendor-adapter-contract/v2'
+$roots = Get-AdapterDevelopmentRoots -FromDirectory $PSScriptRoot -HostRoot $HostRoot -SdkRoot $SdkRoot -ArtifactRoot $ArtifactRoot -Cli $Cli -Worker $Worker
+$Cli = $roots.Cli
+$Worker = $roots.Worker
 $source = Join-Path $roots.AdapterRoot 'packages/workflow-adapters/wan22-animate'
-$workflow = Join-Path $repo 'ComfyUI-API/wan2.2/video_wan2_2_14B_animate.json'
+$workflow = Join-Path $roots.HostRoot 'ComfyUI-API/wan2.2/video_wan2_2_14B_animate.json'
 $out = [IO.Path]::GetFullPath($OutputDirectory)
 if (-not [IO.Path]::IsPathFullyQualified($OutputDirectory)) { throw 'OutputDirectory must be absolute.' }
 if (Test-Path -LiteralPath $out) { throw 'OutputDirectory must not exist; existing artifacts are preserved.' }
@@ -20,17 +23,13 @@ foreach ($file in @($Cli, $Worker, $workflow)) {
 }
 New-Item -ItemType Directory -Path $out | Out-Null
 $sdkOut = Join-Path $out 'vendor-adapter-v2'
-& robocopy $sdk $sdkOut /E /XJ /XD target node_modules .git .bgx-sdk __pycache__ /NFL /NDL /NJH /NJS /NP | Out-Null
-if ($LASTEXITCODE -ge 8) { throw "Public SDK copy failed: $LASTEXITCODE" }
-New-Item -ItemType Directory -Path (Join-Path $sdkOut 'bin') | Out-Null
-Copy-Item -LiteralPath $Cli -Destination (Join-Path $sdkOut 'bin/bgx-adapter-v2.exe')
-Copy-Item -LiteralPath $Worker -Destination (Join-Path $sdkOut 'bin/bgx-adapter-v2-worker.exe')
+Copy-AdapterAuthorSdk $roots $sdkOut
 $seed = Join-Path $out 'sample-source'
 New-Item -ItemType Directory -Path $seed | Out-Null
 Copy-Item -LiteralPath (Join-Path $source 'src'),(Join-Path $source 'schemas') -Destination $seed -Recurse
 New-Item -ItemType Directory -Path (Join-Path $seed 'examples'),(Join-Path $seed 'workflow'),(Join-Path $seed 'protocol') | Out-Null
 Copy-Item -LiteralPath $workflow -Destination (Join-Path $seed 'workflow/source.json')
-Copy-Item -LiteralPath (Join-Path $sdk 'protocol/schema-policy.json') -Destination (Join-Path $seed 'protocol/schema-policy.json')
+Copy-Item -LiteralPath (Join-Path $roots.SdkRoot 'protocol/schema-policy.json') -Destination (Join-Path $seed 'protocol/schema-policy.json')
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'resources/inspect.rs') -Destination (Join-Path $seed 'examples/inspect.rs')
 $utf8 = [Text.UTF8Encoding]::new($false)
 function Save([string]$Path, [string]$Text) { [IO.File]::WriteAllText($Path, $Text, $utf8) }
@@ -61,9 +60,17 @@ foreach ($name in @('README.zh-CN.md','AGENT-TASK.zh-CN.md','DEPENDENCIES.zh-CN.
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot $name) -Destination $out
 }
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'resources/request-move.json') -Destination (Join-Path $out 'request-move.json')
-$head = (& git -C $repo rev-parse HEAD).Trim()
-if ($LASTEXITCODE -ne 0) { throw 'Cannot record the source revision.' }
-$inputs = @($Cli, $Worker, $workflow, (Join-Path $sdk 'protocol/schema-policy.json')) + @(Get-ChildItem -LiteralPath (Join-Path $source 'src'),(Join-Path $source 'schemas') -File -Recurse | ForEach-Object FullName)
-$files = @($inputs | ForEach-Object { @{file=[IO.Path]::GetRelativePath($repo,$_).Replace('\','/');sha256=(Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash.ToLowerInvariant()} })
-Save (Join-Path $out 'SOURCE.json') (@{schemaVersion=1;revision=$head;sourcePackage='packages/workflow-adapters/wan22-animate';examplePluginId=$newId;workflowSha256=$digest;files=$files;status='OFFLINE_CANDIDATE_LIVE_NOT_RUN'} | ConvertTo-Json -Depth 8)
+$files = @(
+    @{owner='host'; file=[IO.Path]::GetRelativePath($roots.HostRoot, $workflow).Replace('\','/'); sha256=(Get-FileHash -LiteralPath $workflow).Hash.ToLowerInvariant()}
+)
+$files += @(Get-ChildItem -LiteralPath (Join-Path $source 'src'),(Join-Path $source 'schemas') -File -Recurse | ForEach-Object {
+    @{owner='adapter'; file=[IO.Path]::GetRelativePath($roots.AdapterRoot, $_.FullName).Replace('\','/'); sha256=(Get-FileHash -LiteralPath $_.FullName).Hash.ToLowerInvariant()}
+})
+Write-AdapterExportSource $roots $out @{
+    sourcePackage='packages/workflow-adapters/wan22-animate'
+    examplePluginId=$newId
+    workflowSha256=$digest
+    files=$files
+    status='OFFLINE_CANDIDATE_LIVE_NOT_RUN'
+}
 Write-Output "Author kit: $out"

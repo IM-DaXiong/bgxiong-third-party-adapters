@@ -1,6 +1,6 @@
 # 比格熊第三方适配器统一规范
 
-- **三仓平级唯一治理规范（用户2026-11-07）**：先定位同级主仓 `../bgxiong-ai-story`；主程序、`../bgxiong-content-skills`、`../bgxiong-third-party-adapters` 各为唯一源码 owner，禁止另建真源或在主仓消费副本维护 Skill。全部产品 Skill（含 H3）只在内容仓治理，提交推送后按锁同步主仓。任务开始必读[唯一规范正文](../bgxiong-ai-story/docs/dev/guides/20261107-GUIDE-三仓平级与创作Skill唯一治理目录.md)；缺主仓时先恢复同级定位，不另抄一份规范。
+- **四仓平级与 SDK（用户2026-11-10）**：先从同级主仓 `../bgxiong-ai-story` 定位同一开发根。四个 checkout 固定为 bgxiong-ai-story、bgxiong-third-party-adapters、bgxiong-adapter-sdk、bgxiong-content-skills。SDK 远程是 `https://github.com/IM-DaXiong/bgxiong-adapter-sdk.git`，主程序需求驱动更新，消费和导出使用该批最新已核定的 SDK 回执。缺仓从登记远程恢复，禁止创建替代真源。创作 Skill（含 H3）仍只在内容仓维护。见[四仓规范](../bgxiong-ai-story/docs/dev/guides/20261107-GUIDE-三仓平级与创作Skill唯一治理目录.md)。
 
 用户2026-11-05明确：唯一工程名、开发目录、Git仓名及用户可见分发总目录名均为bgxiong-third-party-adapters；中文名比格熊第三方适配器。
 
