@@ -71,24 +71,26 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "width",
-        "height",
+        "resolution",
+        "fps",
         "seed"
       ],
       "properties": {
-        "width": {
-          "type": "integer",
-          "minimum": 16,
-          "maximum": 1280,
-          "multipleOf": 16,
-          "default": 512
+        "resolution": {
+          "type": "string",
+          "enum": ["832x480", "480x832", "1280x720", "720x1280"],
+          "oneOf": [
+            {"const": "832x480", "title": "480p · 832 × 480"},
+            {"const": "480x832", "title": "480p · 480 × 832"},
+            {"const": "1280x720", "title": "720p · 1280 × 720"},
+            {"const": "720x1280", "title": "720p · 720 × 1280"}
+          ],
+          "default": "832x480"
         },
-        "height": {
+        "fps": {
           "type": "integer",
-          "minimum": 16,
-          "maximum": 1280,
-          "multipleOf": 16,
-          "default": 512
+          "enum": [16],
+          "default": 16
         },
         "seed": {
           "type": "integer",
