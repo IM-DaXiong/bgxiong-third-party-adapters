@@ -12,7 +12,10 @@
     "version": "1.0.3",
     "cloudGenerated": true,
     "downloadedAndSavedToHistory": true,
-    "recoveryObservationRace": "Host fix pending final EXE verification; original task retained."
+    "recoveryObservationRace": "Fixed and verified on host 693d9e97c; original remote task and saved version reused."
   },
-  "installation": "Import full adapter-install.json envelope and select your own account; do not import a raw runtime folder."
+  "installation": "Import full adapter-install.json envelope and select your own account; do not import a raw runtime folder.",
+  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/runninghub-h3-v1.0.4",
+  "zipSha256": "28f8eed43221bc2d1ff8708a4a1e06204219d5c2256a8e759c8a5897af9f7e72",
+  "publicDownloadVerified": true
 }
