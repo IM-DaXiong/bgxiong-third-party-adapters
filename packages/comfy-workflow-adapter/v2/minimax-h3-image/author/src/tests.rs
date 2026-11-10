@@ -1,6 +1,11 @@
 use super::*;
 use bgx_adapter_v2_sdk::{host::HostError, HostPortCallV2};
 
+#[test]
+fn schema_digest_is_stable_across_checkout_line_endings() {
+    assert_eq!(schema("input", "{\r\n}\r\n"), schema("input", "{\n}\n"));
+}
+
 #[derive(Default)]
 struct RecordedHost {
     calls: Vec<Value>,
