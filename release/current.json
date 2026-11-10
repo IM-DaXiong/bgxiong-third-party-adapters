@@ -1136,7 +1136,7 @@
       "version": "0.1.1",
       "kind": "installable",
       "validation": "sdk_package_and_install_envelope_validated",
-      "sourceManifest": "packages/cloud-adapters/runninghub-qwen-image-21/manifest.json",
+      "sourceManifest": "records/release-source/local.thirdparty.runninghub-qwen-image-21/0.1.1/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",
