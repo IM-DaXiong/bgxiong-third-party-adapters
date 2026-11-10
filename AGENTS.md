@@ -1,6 +1,8 @@
 # 比格熊第三方适配器统一规范
 
-- **三仓平级唯一治理规范（用户2026-11-07）**：先定位同级主仓 `../bgxiong-ai-story`；主程序、`../bgxiong-content-skills`、`../bgxiong-third-party-adapters` 各为唯一源码 owner，禁止另建真源或在主仓消费副本维护 Skill。全部产品 Skill（含 H3）只在内容仓治理，提交推送后按锁同步主仓。任务开始必读[唯一规范正文](../bgxiong-ai-story/docs/dev/guides/20261107-GUIDE-三仓平级与创作Skill唯一治理目录.md)；缺主仓时先恢复同级定位，不另抄一份规范。
+- **SDK 联动开发（用户2026-11-10）**：主程序提出需求后在同级 SDK 仓改公共协议/内核，主程序默认同步最新 SDK 并联合验证。依赖锁记录本批实际提交与产物，不是长期固定旧版的门槛；同步/构建失败不得静默回退。既有已发布适配包的源码、版本、字节和冻结任务身份不随 SDK 更新被覆盖；确需修改包仍按原升版与发行合同。
+
+- **四仓平级唯一治理规范（用户2026-11-10）**：先定位同级主仓 `../bgxiong-ai-story` 的实际 Git 根 H，以 `parent(H)` 为准，四个目录固定为 `bgxiong-ai-story`、`bgxiong-third-party-adapters`、`bgxiong-adapter-sdk`、`bgxiong-content-skills`，不写死盘符、不嵌套或另设真源。缺仓从 `https://github.com/IM-DaXiong/` 下对应 Git 仓 clone 到准确同级目录；主仓远程名为 `bgxiong-ai-story-dev.git`，另三仓远程名与目录名相同。目标占用或远程不可达时保留现场报阻断，不建空目录冒充；SDK 远程在本轮尚未确认可达，迁移待实施。先读各仓 AGENTS.md 与主仓[唯一规范正文](../bgxiong-ai-story/docs/dev/guides/20261107-GUIDE-三仓平级与创作Skill唯一治理目录.md)。平台实现只在本仓维护；SDK 拆分后从 SDK 唯一真源按锁消费，拉最新源码不等于自动升级现有包。
 
 用户2026-11-05明确：唯一工程名、开发目录、Git仓名及用户可见分发总目录名均为bgxiong-third-party-adapters；中文名比格熊第三方适配器。
 
