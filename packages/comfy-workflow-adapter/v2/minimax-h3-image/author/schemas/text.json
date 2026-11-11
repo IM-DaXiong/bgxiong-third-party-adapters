@@ -6,32 +6,42 @@
       "minLength": 1,
       "maxLength": 8000
     },
-    "width": {
-      "type": "integer",
-      "minimum": 2048,
-      "maximum": 2048,
-      "multipleOf": 32,
-      "default": 2048
-    },
-    "height": {
-      "type": "integer",
-      "minimum": 2048,
-      "maximum": 2048,
-      "multipleOf": 32,
-      "default": 2048
-    },
     "seed": {
       "type": "integer",
       "minimum": 0,
       "maximum": 9007199254740991,
       "default": 0
+    },
+    "aspectRatio": {
+      "type": "string",
+      "enum": [
+        "1:1",
+        "4:3",
+        "3:4",
+        "3:2",
+        "2:3",
+        "16:9",
+        "9:16",
+        "21:9",
+        "2.35:1",
+        "2.39:1"
+      ],
+      "default": "1:1"
+    },
+    "resolution": {
+      "type": "string",
+      "enum": [
+        "2K",
+        "4K"
+      ],
+      "default": "2K"
     }
   },
   "required": [
     "prompt",
-    "width",
-    "height",
-    "seed"
+    "seed",
+    "aspectRatio",
+    "resolution"
   ],
   "additionalProperties": false
 }

@@ -11,6 +11,7 @@ struct RecordedHost {
     calls: Vec<Value>,
     checkpoint: Value,
     fault: &'static str,
+    output_size: Option<(u32, u32)>,
 }
 
 fn buffered(value: Value) -> Value {
@@ -37,10 +38,10 @@ impl Host for RecordedHost {
                 let width: u32 = if self.fault == "wrong-size" {
                     1024
                 } else {
-                    2048
+                    self.output_size.map_or(2048, |size| size.0)
                 };
                 bytes.extend_from_slice(&width.to_be_bytes());
-                bytes.extend_from_slice(&2048u32.to_be_bytes());
+                bytes.extend_from_slice(&self.output_size.map_or(2048, |size| size.1).to_be_bytes());
                 if self.fault == "bad-png" {
                     bytes[0] = 0;
                 }
@@ -149,7 +150,7 @@ impl Host for RecordedHost {
 
 fn payload(count: usize) -> Value {
     let edit = count > 0;
-    let mut input = json!({"prompt":"照搬 <Picture 1>，保留原文。\nOnly change the cup.","width":2048,"height":2048,"seed":7});
+    let mut input = json!({"prompt":"照搬 <Picture 1>，保留原文。\nOnly change the cup.","aspectRatio":"1:1","resolution":"2K","seed":7});
     let media: Vec<Value> = ["a","b"].into_iter().take(count).map(|id| json!({"id":id,"kind":"image","handle":format!("lease-{id}"),"fileName":format!("{id}.png"),"mime":"image/png","byteLength":"100"})).collect();
     if edit {
         input["referenceImages"] = json!(media
@@ -202,6 +203,9 @@ fn two_capabilities_project_separate_models_and_required_media() {
             serde_json::from_str(contract["schemas"][0]["schemaJson"].as_str().unwrap()).unwrap();
         assert!(input["properties"].get("negativePrompt").is_none());
         assert!(input["properties"].get("steps").is_none());
+        assert!(input["properties"].get("width").is_none());
+        assert!(input["properties"].get("height").is_none());
+        assert_eq!(input["properties"]["resolution"]["enum"], json!(["2K", "4K"]));
         if index == 1 {
             assert_eq!(operation["mediaSlots"][0]["minCount"], 1);
             assert_eq!(operation["mediaSlots"][0]["maxCount"], 2);
@@ -268,6 +272,9 @@ fn invalid_inputs_and_incomplete_leases_have_no_network_effects() {
     for (key, value) in [
         ("width", json!(2049)),
         ("height", json!(4096)),
+        ("aspectRatio", json!("auto")),
+        ("resolution", json!("8K")),
+        ("resolution", json!(4096)),
         ("seed", json!(-1)),
         ("prompt", json!(" ")),
         ("negativePrompt", json!("x")),
@@ -300,6 +307,45 @@ fn invalid_inputs_and_incomplete_leases_have_no_network_effects() {
             .calls
             .iter()
             .all(|c| c["method"] != "host-http.execute"));
+    }
+}
+
+#[test]
+fn size_presets_reach_workflow_and_frozen_resume_dimensions() {
+    for (ratio, small, large) in [
+        ("1:1", (2048, 2048), (4096, 4096)),
+        ("4:3", (2368, 1792), (4736, 3552)),
+        ("3:4", (1792, 2368), (3552, 4736)),
+        ("3:2", (2528, 1696), (5024, 3360)),
+        ("2:3", (1696, 2528), (3360, 5024)),
+        ("16:9", (2752, 1536), (5472, 3072)),
+        ("9:16", (1536, 2752), (3072, 5472)),
+        ("21:9", (3136, 1344), (6272, 2688)),
+        ("2.35:1", (3168, 1344), (6304, 2688)),
+        ("2.39:1", (3168, 1344), (6336, 2656)),
+    ] {
+        for (resolution, (width, height)) in [("2K", small), ("4K", large)] {
+            for count in 0..=2 {
+                let mut p = payload(count);
+                p["input"]["aspectRatio"] = json!(ratio);
+                p["input"]["resolution"] = json!(resolution);
+                let mut host = RecordedHost::default();
+                let accepted = data(&invoke("submit", &p, &mut host));
+                assert_eq!(accepted["resumeToken"]["width"], width);
+                assert_eq!(accepted["resumeToken"]["height"], height);
+                let calls = prompt_calls(&host);
+                assert_eq!(calls.len(), 1);
+                let bytes: Vec<u8> = serde_json::from_value(calls[0]["args"]["plan"]["body"]["bytes"].clone()).unwrap();
+                let submitted: Value = serde_json::from_slice(&bytes).unwrap();
+                assert_eq!(submitted["prompt"]["4"]["inputs"]["width"], width);
+                assert_eq!(submitted["prompt"]["4"]["inputs"]["height"], height);
+                assert_eq!(host.checkpoint["result"], accepted);
+                let mut resumed = RecordedHost { output_size: Some((width as u32, height as u32)), ..Default::default() };
+                let query = json!({"operationId":p["operationId"],"configuration":p["configuration"],"vendorTaskId":"remote-17","resumeToken":accepted["resumeToken"]});
+                assert_eq!(data(&invoke("query", &query, &mut resumed))["status"], "succeeded");
+                assert!(prompt_calls(&resumed).is_empty());
+            }
+        }
     }
 }
 

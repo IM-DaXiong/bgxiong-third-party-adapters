@@ -58,5 +58,32 @@
       "8549f76f-4ba7-449b-aeab-899ea9b1724b"
     ],
     "result": "SDK submit, checkpoint, fresh-process query, download and full PNG decode succeeded"
+  },
+  "sizePresetAcceptance": {
+    "version": "1.0.0",
+    "date": "2026-11-11",
+    "ratios": [
+      "16:9",
+      "9:16",
+      "4:3",
+      "3:4",
+      "3:2",
+      "2:3",
+      "1:1",
+      "2.35:1",
+      "2.39:1",
+      "21:9"
+    ],
+    "resolutions": [
+      "2K",
+      "4K"
+    ],
+    "sdkRealTextToImage": [
+      5472,
+      3072
+    ],
+    "promptId": "b7c62785-e55f-4c51-ace1-11921a5e2df8",
+    "decodedSha256": "ee5e65e07217eb2c4abafc6fe4545074f223e8bf92950ba46ea0ba8b04d1212d",
+    "new4kReferenceEditGpuTested": false
   }
 }

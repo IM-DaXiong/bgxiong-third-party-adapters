@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "pluginId": "local.bgx.minimax-h3-image-comfy",
+  "version": "1.0.0",
+  "applicationInstalled": true,
+  "uiConfirmedByUser": true,
+  "sdkRealTextToImage": [
+    5472,
+    3072
+  ],
+  "unitTests": 9,
+  "publicDownloadVerified": false,
+  "sha256": "4bec2fc13ec8dddf354c32d479a45934b47079fc1ee68f12760f3deea87881ab",
+  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/minimax-h3-image-v1.0.0/minimax-h3-image-1.0.0.zip"
+}

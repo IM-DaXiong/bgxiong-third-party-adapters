@@ -100,8 +100,8 @@ fn capabilities() -> Value {
                 "uiSchema":{"controls":[
                     {"fieldPointer":"/prompt","widget":"multiline","label":"提示词","description":"","group":"Input"},
                     {"fieldPointer":"/seed","widget":"number","label":"随机种子","description":"","group":"Input"},
-                    {"fieldPointer":"/width","widget":"number","label":"宽度","description":"","group":"Input"},
-                    {"fieldPointer":"/height","widget":"number","label":"高度","description":"","group":"Input"}]},
+                    {"fieldPointer":"/aspectRatio","widget":"select","label":"画幅比例","description":"","group":"Input"},
+                    {"fieldPointer":"/resolution","widget":"select","label":"分辨率","description":"","group":"Input"}]},
                 "mediaSlots":slots,
                 "execution":{"mode":"asynchronous","streaming":false,"cancellation":"unsupported","resumable":true,"remoteIdempotency":false},
                 "outputSlots":[{"role":"artifact","kind":"image","minCount":1,"maxCount":1}]}],
@@ -202,12 +202,34 @@ fn probe(h: &mut dyn Host, p: &Value, budget: u64) -> Outcome<Value> {
         _ => Err(fail("INVALID_INPUT", "Unknown probe kind")),
     }
 }
+// Official 16MP size table; 2K uses half dimensions rounded to the node's 32px grid.
+// Platform dimension mapping belongs to this adapter, never the host or SDK.
+fn dimensions(input: &Value) -> Outcome<(u64, u64)> {
+    let (width, height) = match input["aspectRatio"].as_str() {
+        Some("1:1") => (4096, 4096),
+        Some("4:3") => (4736, 3552),
+        Some("3:4") => (3552, 4736),
+        Some("3:2") => (5024, 3360),
+        Some("2:3") => (3360, 5024),
+        Some("16:9") => (5472, 3072),
+        Some("9:16") => (3072, 5472),
+        Some("21:9") => (6272, 2688),
+        Some("2.35:1") => (6304, 2688),
+        Some("2.39:1") => (6336, 2656),
+        _ => return Err(fail("INVALID_INPUT", "Unsupported aspect ratio")),
+    };
+    match input["resolution"].as_str() {
+        Some("2K") => Ok((((width / 2 + 16) / 32) * 32, ((height / 2 + 16) / 32) * 32)),
+        Some("4K") => Ok((width, height)),
+        _ => Err(fail("INVALID_INPUT", "Unsupported resolution")),
+    }
+}
 fn validate_input(input: &Value, edit: bool) -> Outcome<()> {
     let object = input
         .as_object()
         .ok_or_else(|| fail("INVALID_INPUT", "input must be an object"))?;
     if object.keys().any(|key| {
-        !["prompt", "seed", "width", "height"].contains(&key.as_str())
+        !["prompt", "seed", "aspectRatio", "resolution"].contains(&key.as_str())
             && !(edit && key == "referenceImages")
     }) {
         return Err(fail("INVALID_INPUT", "Unknown image input"));
@@ -220,12 +242,7 @@ fn validate_input(input: &Value, edit: bool) -> Outcome<()> {
         .as_u64()
         .filter(|seed| *seed <= MAX_SEED)
         .ok_or_else(|| fail("INVALID_INPUT", "seed must be an integer in 0..2^53-1"))?;
-    if input["width"].as_u64() != Some(2048) || input["height"].as_u64() != Some(2048) {
-        return Err(fail(
-            "INVALID_INPUT",
-            "This adapter supports verified 2048 by 2048 inputs",
-        ));
-    }
+    dimensions(input)?;
     if edit {
         reference_ids(input)?;
     }
@@ -236,8 +253,9 @@ fn build_graph(input: &Value, edit: bool) -> Outcome<Value> {
     let mut graph = workflow(edit)?;
     graph["4"]["inputs"]["prompt"] = input["prompt"].clone();
     graph["6"]["inputs"]["seed"] = input["seed"].clone();
-    graph["4"]["inputs"]["width"] = input["width"].clone();
-    graph["4"]["inputs"]["height"] = input["height"].clone();
+    let (width, height) = dimensions(input)?;
+    graph["4"]["inputs"]["width"] = json!(width);
+    graph["4"]["inputs"]["height"] = json!(height);
     if edit && reference_ids(input)?.len() == 1 {
         graph["4"]["inputs"]
             .as_object_mut()
@@ -514,7 +532,8 @@ fn submit(h: &mut dyn Host, request: &Invocation, p: &Value) -> Outcome<Value> {
             request: Some(id.to_string()),
         });
     }
-    let accepted = json!({"kind":"accepted","vendorTaskId":id,"appliedParams":null,"resumeToken":{"requestId":request.r#request_id,"width":p["input"]["width"],"height":p["input"]["height"]},"usage":null});
+    let (width, height) = dimensions(&p["input"])?;
+    let accepted = json!({"kind":"accepted","vendorTaskId":id,"appliedParams":null,"resumeToken":{"requestId":request.r#request_id,"width":width,"height":height},"usage":null});
     persist_accepted(h, request, &accepted).map_err(|_| Failure {
         code: "ACCEPTANCE_UNKNOWN",
         message: "Accepted prompt checkpoint failed; recover the known task without resubmission",
