@@ -10,7 +10,7 @@
 
 ## 可安装 ZIP 目录
 
-以下 19 包来自当前冻结发行清单。所有包均已完成包级校验；实际安装、云端生成和 GPU 验证程度不同，详见每项的验收记录字段，不将“已打包”宣称为全部平台实测通过。H3 Image 1.0.1 已完成应用安装、四参考图真实生成；16 张边界已通过离线行为验证，尚未实测 16 张 GPU 生成。
+以下安装包来自当前发行清单。所有包均已完成包级校验；实际安装、云端生成和 GPU 验证程度不同，详见每项的验收记录字段，不将“已打包”宣称为全部平台实测通过。H3 Image 1.0.1 已完成应用安装、四参考图真实生成；16 张边界已通过离线行为验证，尚未实测 16 张 GPU 生成。
 
 ### 全景图片 · 1.0.3
 
@@ -124,19 +124,19 @@ M3 文本生成与对话，需要自己的平台 API Key。 连接：**MiniMax �
 
 包内：WASM、manifest 与摘要、许可及说明；另含 工作流／配置／配套文件。完整文件名见发行清单。
 
+### RunningHub H3 全工作流 · 1.0.0
+
+安装 `runninghub-h3-all` 后，在视频工作台的 **RunningHub** 分组选择多图参考、固定图数参考、首帧或对口型工作流，共 11 项。安装时绑定 RunningHub API Key。
+
+[完整安装 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.0/local.thirdparty.runninghub-h3-all-1.0.0.zip) · [SHA256](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.0/SHA256SUMS.txt) · [安装与工作流说明](docs/USAGE.zh-CN.md#runninghub-h3-视频)
+
+1.0.0 为测试包。20 项定向测试、SDK 包检查和应用安装声明检查已通过。云端生成与播放待实际验证。
+
 ## 托管语音、作者样例与候选
 
 Breeze TTS 属于托管语音运行时，包含 plain、voice_design、reference_clone，用其 [独立安装说明](packages/tts-adapters/breeze) 获取运行环境；不把四个冻结说明文件包装成可直接安装的完整运行时。VoxCPM 当前不在可发布安装包清单。
 
 H3 r2v/r2v-audio/t2v、LTX2.3、LTX2.5、Qwen i2i/multi-ref/t2i/two-output 的 `sourceExample` 是 [作者样例](packages/comfy-workflow-adapter/v2)，不列为可直接安装发行包。源码目录中的候选版本可能高于上面的已冻结版本；用户下载以本页和发行锁为准。
-
-### RunningHub H3 全工作流 · 1.0.0
-
-一个适配器包含十一项独立工作流，名称与顺序见[包说明](packages/cloud-adapters/runninghub-h3-all/README.md)。连接：**RunningHub**。
-
-[完整安装 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.0/local.thirdparty.runninghub-h3-all-1.0.0.zip) · [SHA256](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.0/SHA256SUMS.txt)
-
-已通过20项原生行为测试、SDK源码与运行包校验、当前应用安装信封检查；本次未付费生成、未自动安装到用户库。旧包由用户自行卸载，不做兼容或迁移。
 
 ## 开发与跨机器资源恢复
 
@@ -144,7 +144,7 @@ H3 r2v/r2v-audio/t2v、LTX2.3、LTX2.5、Qwen i2i/multi-ref/t2i/two-output 的 `
 
 源码在 `packages/` 与 `projects/`；适配器 SDK 独立维护于 [bgxiong-adapter-sdk](https://github.com/IM-DaXiong/bgxiong-adapter-sdk)。协议和 SDK 说明文档采用该仓 MIT 许可，不改变本仓许可。
 
-开发者可从同一发行页下载 `third-party-frozen-resources-*.zip`，它是跨机恢复全集，**不是单个可安装适配器**。在主仓运行 `python scripts/restore-third-party-release.py --archive <绝对路径>`，再运行 `python scripts/stage-third-party-release.py --local-current`；恢复须匹配 [资源回执](release/current-artifact.json)。本地安装入口为 `artifacts/current/<pluginId>/<version>/`。
+开发者可按[资源回执](release/current-artifact.json)下载 `third-party-frozen-resources-*.zip`，它是跨机恢复全集，**不是单个可安装适配器**。在主仓运行 `python scripts/restore-third-party-release.py --archive <绝对路径>`，再运行 `python scripts/stage-third-party-release.py --local-current`；恢复须匹配 [资源回执](release/current-artifact.json)。本地安装入口为 `artifacts/current/<pluginId>/<version>/`。
 
 [用户安装指南](docs/USAGE.zh-CN.md) · [开发指南](docs/DEVELOPING.md) · [智能体入口](AGENT.md) · [源码包清单](packages/README.zh-CN.md) · [独立工程](projects/README.md)
 

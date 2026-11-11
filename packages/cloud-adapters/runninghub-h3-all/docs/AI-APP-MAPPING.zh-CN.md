@@ -1,9 +1,9 @@
-# HOST_MAPPING · RunningHub MiniMax H3 r2v + fl2va + soundtrack (OpenAPI V2 AI App)
+# RunningHub H3 固定应用映射
+
+适用 `runninghub-h3-all` 的固定图数、首帧和对口型工作流。操作标签见[能力声明](../src/classic/mod.rs)，映射参数见[配置](../src/classic/config.rs)。
 
 All slots: `POST /openapi/v2/run/ai-app/{APP_ID}`.
-Query: `/openapi/v2/query`. Upload: `/media/upload/binary`.
-This crate does not `POST /prompt` to LAN Comfy and does not use the
-legacy `/task/openapi/ai-app/run` envelope.
+Query: `/openapi/v2/query`. Upload: `/openapi/v2/media/upload/binary`.
 
 | modelId | endpoint | LoadImage |
 |---|---|---|
@@ -75,7 +75,7 @@ Zero images or zero `referenceAudios` is a submit error.
 SDK v2 inputMode is multi_image_to_video on every declared operation.
 SDK v2 mediaSlots carry exact ordered mediaId references and leased originals.
 Each workflow requires exactly its declared image count; soundtrack requires one audio.
-No legacy startFrame/endFrame folding, inline Base64, or implicit stored input reuse.
+The request uses the submitted media IDs and their leased originals.
 
 ## Weight pins (every submit)
 
@@ -131,6 +131,6 @@ be sent every time. Do not copy i2v-turbo node ids onto ref2va graphs.
 
 Upload `fieldValue` for LoadImage: `data.fileName` unchanged (`openapi/<hash>.ext`). Do not use `download_url` and do not strip `openapi/`.
 
-## 1.0.2 工作台合同修复
+## 工作台参数合同
 
 `resolution` 使用 `mp:0.25`、`mp:0.4`、`mp:0.6`、`mp:1` 四个命名档，包内转换到原有 megapixels 节点；不声明连续范围。七个操作不声明 seed，宿主不得注入 seed 或未声明的 advanced，原云端种子策略不变。仅 soundtrack 声明 `advanced.audioUsage=soundtrack_copy`，表示完整原音驱动对口型，提交前校验，不是附加云端节点。其余六项不造音频用途。

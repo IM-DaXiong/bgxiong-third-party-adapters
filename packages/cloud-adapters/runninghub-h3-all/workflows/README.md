@@ -1,6 +1,10 @@
-# Workflow dumps (author input)
+# RunningHub H3 工作流资料
 
-OpenAPI V2 AI App graphs. Node tables in `../src/config.rs` are frozen from these
+四项多图参考的提交图位于 [src/dynamic/graphs](../src/dynamic/graphs)，由 [routes.rs](../src/dynamic/routes.rs) 绑定云端工作流和参数合同，提交到 `/openapi/v2/run/workflow/{workflowId}`。
+
+## 固定应用的作者资料
+
+OpenAPI V2 AI App graphs. Node tables in `../src/classic/config.rs` are frozen from these
 UI dumps + the official `/openapi/v2/run/ai-app/{id}` apiCallDemo.
 
 | modelId | APP_ID | dump |
@@ -17,7 +21,7 @@ UI dumps + the official `/openapi/v2/run/ai-app/{id}` apiCallDemo.
 
 Do not copy LAN Comfy H3 pins into cloud tables. Do not guess renumbered nodes.
 
-Weight pin tables in `../src/config.rs` are frozen from these dumps plus the
+Weight pin tables in `../src/classic/config.rs` are frozen from these dumps plus the
 official `/openapi/v2/run/ai-app/{id}` apiCallDemo. i2v turbo UNet is **fl2va**;
 `h3.r2v.1slot` and 2/3/4-slot UNet is **ref2va**. 1-slot does not pin CLIP type/device
 and has no adjustable fps node; the v2 package declares native 24fps as a fixed value. Mapped submit always sends those pins; omitting

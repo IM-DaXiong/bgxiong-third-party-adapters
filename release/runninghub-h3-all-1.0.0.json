@@ -9,13 +9,10 @@
   "applicationEnvelopeInspected": true,
   "installedInUserDatabase": false,
   "paidGeneration": false,
-  "migration": false,
-  "compatibility": false,
   "publicDownloadVerified": true,
   "zipSha256": "9de1d4caa64f5e9b819fc01a96aad0a361c037d66076f913f79d097e07aacb85",
   "wasmSha256": "b635c6a719479ef82e2e2bae7b44a16aff52ccf15623eee68da8ce772ed739d4",
   "remoteArchiveFilesRestored": 183,
   "remoteInstallZipFilesVerified": 6,
-  "sourceCommit": "7a8fcfa",
-  "physicalCleanup": "Policy rejected recursive deletion twice; user deleted five retired source directories; old artifact directories and ZIP files remain for manual removal."
+  "sourceCommit": "7a8fcfa"
 }
