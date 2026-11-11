@@ -1266,60 +1266,60 @@
     },
     {
       "pluginId": "local.bgx.minimax-h3-image-comfy",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "kind": "installable",
-      "validation": "application_gpu_workbench_mcp_restart_verified_prerelease",
+      "validation": "sdk_9_tests_application_install_and_four_reference_gpu_verified",
       "sourceManifest": "packages/comfy-workflow-adapter/v2/minimax-h3-image/author/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",
-          "source": "artifacts/releases/minimax-h3-image-1.0.0-final/adapter-install.json",
-          "sha256": "e35fc0089711c149a6b937509e2dc747fd679a66bf36e095f32682089b0f613c"
+          "source": "artifacts/releases/minimax-h3-image-1.0.1/adapter-install.json",
+          "sha256": "801236aae33f5b5f072b1698730de25a6476adcdb3303c9dfc6e6fdc5cf10486"
         },
         {
           "path": "companion/SOURCE.json",
-          "source": "artifacts/releases/minimax-h3-image-1.0.0-final/companion/SOURCE.json",
-          "sha256": "109c67786bc7778cff0648829fc76d636735372a355c7165a2565bfa59fd5145"
+          "source": "artifacts/releases/minimax-h3-image-1.0.1/companion/SOURCE.json",
+          "sha256": "d93dad78404545bce334b841bab66081b35ca558d60e0ba3329894cfb32d78b0"
         },
         {
           "path": "companion/workflows/minimax_h3_image_edit.json",
-          "source": "artifacts/releases/minimax-h3-image-1.0.0-final/companion/workflows/minimax_h3_image_edit.json",
+          "source": "artifacts/releases/minimax-h3-image-1.0.1/companion/workflows/minimax_h3_image_edit.json",
           "sha256": "8e75e3287123d9b49d2e3d937147b239b9698aeda1191531923dbc08e293dc2c"
         },
         {
           "path": "companion/workflows/minimax_h3_image_t2i.json",
-          "source": "artifacts/releases/minimax-h3-image-1.0.0-final/companion/workflows/minimax_h3_image_t2i.json",
+          "source": "artifacts/releases/minimax-h3-image-1.0.1/companion/workflows/minimax_h3_image_t2i.json",
           "sha256": "14a080b28ee539e215d110991a5f6bed023e8d6e7c45daaf3510cc0f2e435bf2"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/minimax-h3-image-1.0.0-final/LICENSE",
+          "source": "artifacts/releases/minimax-h3-image-1.0.1/LICENSE",
           "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/releases/minimax-h3-image-1.0.0-final/package/adapter.wasm",
-          "sha256": "c13a22e99cca36bdc5b707e56fbaa4d9ac6c50a74de23ed575ab9543fb681a7d"
+          "source": "artifacts/releases/minimax-h3-image-1.0.1/package/adapter.wasm",
+          "sha256": "a5c971fc907c54b1862ffdbb99dea1b4d130ea2cb004314a4311c5d5fd409253"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/releases/minimax-h3-image-1.0.0-final/package/manifest.json",
-          "sha256": "40dbab0538662a75d13ea69efe7099ca844da8646ee88c97706e22727d085ef0"
+          "source": "artifacts/releases/minimax-h3-image-1.0.1/package/manifest.json",
+          "sha256": "c293dd6ed66d0770f9b60b9a1d0b2c21d797a31bd195686d03ca49b367446453"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/releases/minimax-h3-image-1.0.0-final/package/manifest.sha256",
-          "sha256": "e7b7968ef50fc4cec77f1636f8c0978bcfcc632f7c29c1f20c46950af2bd58f6"
+          "source": "artifacts/releases/minimax-h3-image-1.0.1/package/manifest.sha256",
+          "sha256": "0ea67c4858a9c21a9296915064efb0baad484ee7d283a7126281ce66b8183eae"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/releases/minimax-h3-image-1.0.0-final/README.txt",
-          "sha256": "d66f7136c50607da23552109bad96448413eaf7a17a4eb11c5970539838e0ae3"
+          "source": "artifacts/releases/minimax-h3-image-1.0.1/README.txt",
+          "sha256": "24e44845445d976095d56b059bd0a7840e7b3144fdd88779ca63e1776d92ce3d"
         },
         {
           "path": "SHA256SUMS",
-          "source": "artifacts/releases/minimax-h3-image-1.0.0-final/SHA256SUMS",
-          "sha256": "2daf537d9c9fc47649dc75b95681373b975e1f01033c92facaed73c5bd50dfff"
+          "source": "artifacts/releases/minimax-h3-image-1.0.1/SHA256SUMS",
+          "sha256": "a4fd6e3016ae554a03277a7dcb968963d7f3bb0c269c9588960bcb86116d5d34"
         }
       ]
     }

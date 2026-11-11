@@ -85,5 +85,13 @@
     "promptId": "b7c62785-e55f-4c51-ace1-11921a5e2df8",
     "decodedSha256": "ee5e65e07217eb2c4abafc6fe4545074f223e8bf92950ba46ea0ba8b04d1212d",
     "new4kReferenceEditGpuTested": false
+  },
+  "dynamicReferenceInputs": {
+    "version": "1.0.1",
+    "minCount": 1,
+    "maxCount": 16,
+    "modelSupportSource": "https://github.com/MiniMax-AI/MiniMax-H3-Image#introduction",
+    "nodeSource": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_minimax_h3.py",
+    "assembly": "Replace example loaders and links with the ordered actual input count; preserve frozen base workflow bytes."
   }
 }

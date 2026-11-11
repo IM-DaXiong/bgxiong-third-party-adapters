@@ -8,7 +8,7 @@ https://github.com/IM-DaXiong/bgxiong-third-party-adapters
 ## 导入到比格熊
 
 1. 安装 [BGXiong / 比格熊数字导演工作站](https://www.bgxiong.com)
-2. 按[开发指南](DEVELOPING.md)用[当前 SDK](../contract/README.md)构建，或获取已构建的适配器包。
+2. 从[首页下载目录](../README.md#可安装-zip-目录)选择已构建 ZIP 并解压，无需编译；不要下载 GitHub 自动生成的 Source code ZIP 当安装包。
 3. 在「设置 → 第三方适配器 → 安装适配包」选择含安装声明和 package 的完整目录。
 4. 配置平台 API 密钥后做一次探测/试跑；安装成功不等于厂商侧已经出片
 

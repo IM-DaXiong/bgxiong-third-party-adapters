@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "pluginId": "local.bgx.minimax-h3-image-comfy",
+  "version": "1.0.1",
+  "sdkSourceCommit": "e903a21a8807e6290284b99ac9f24d94e8023bc5",
+  "unitTests": 9,
+  "applicationInstalled": true,
+  "currentSelectionMigratedViaCreator": true,
+  "sdkGpuReferenceCount": 4,
+  "sdkGpuSize": [
+    2048,
+    2048
+  ],
+  "gpuTaskId": "5ef3e157-cffd-48e3-b5f8-1c3612d238f9",
+  "outputSha256": "9a8c76f1741b799d14c8ca921cf75df32d249c2c173f9a10b6f4aa5c3db92019",
+  "sixteenReferenceGpu": "NOT_RUN",
+  "publicDownloadVerified": false,
+  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/installable-adapters-20261111-h3-101/local.bgx.minimax-h3-image-comfy-1.0.1.zip",
+  "sha256": "b128ee22b5695b1d80efdb273713d7a7763692b6b01b89f37888a52316363838"
+}

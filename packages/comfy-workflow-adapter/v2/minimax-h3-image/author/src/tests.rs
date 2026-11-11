@@ -151,7 +151,7 @@ impl Host for RecordedHost {
 fn payload(count: usize) -> Value {
     let edit = count > 0;
     let mut input = json!({"prompt":"照搬 <Picture 1>，保留原文。\nOnly change the cup.","aspectRatio":"1:1","resolution":"2K","seed":7});
-    let media: Vec<Value> = ["a","b"].into_iter().take(count).map(|id| json!({"id":id,"kind":"image","handle":format!("lease-{id}"),"fileName":format!("{id}.png"),"mime":"image/png","byteLength":"100"})).collect();
+    let media: Vec<Value> = (0..count).map(|index| { let id = ((b'a' + index as u8) as char).to_string(); json!({"id":id,"kind":"image","handle":format!("lease-{id}"),"fileName":format!("{id}.png"),"mime":"image/png","byteLength":"100"}) }).collect();
     if edit {
         input["referenceImages"] = json!(media
             .iter()
@@ -208,14 +208,15 @@ fn two_capabilities_project_separate_models_and_required_media() {
         assert_eq!(input["properties"]["resolution"]["enum"], json!(["2K", "4K"]));
         if index == 1 {
             assert_eq!(operation["mediaSlots"][0]["minCount"], 1);
-            assert_eq!(operation["mediaSlots"][0]["maxCount"], 2);
+            assert_eq!(operation["mediaSlots"][0]["maxCount"], 16);
+            assert_eq!(input["properties"]["referenceImages"]["maxItems"], 16);
         }
     }
 }
 
 #[test]
-fn text_single_and_double_reference_submit_checkpoint_and_resume() {
-    for count in 0..=2 {
+fn dynamic_references_submit_checkpoint_and_resume() {
+    for count in [0, 1, 2, 4, 16, 4, 1] {
         let p = payload(count);
         let mut host = RecordedHost::default();
         let accepted = data(&invoke("submit", &p, &mut host));
@@ -232,7 +233,13 @@ fn text_single_and_double_reference_submit_checkpoint_and_resume() {
         );
         assert_eq!(submitted["prompt"]["6"]["inputs"]["steps"], 6);
         assert_eq!(submitted["prompt"]["6"]["inputs"]["cfg"], 1);
-        assert_eq!(submitted["prompt"].get("10").is_some(), count == 2);
+        assert_eq!(submitted["prompt"].as_object().unwrap().values().filter(|n| n["class_type"] == "LoadImage").count(), count);
+        assert_eq!(submitted["prompt"]["4"]["inputs"].as_object().unwrap().keys().filter(|key| key.starts_with("images.image_")).count(), count);
+        for index in 0..count {
+            let node = reference_node(index);
+            assert_eq!(submitted["prompt"]["4"]["inputs"][format!("images.image_{}", index + 1)], json!([node, 0]));
+            assert_eq!(submitted["prompt"][&node]["inputs"]["image"], format!("uploaded/{}.png", p["media"][index]["handle"].as_str().unwrap()));
+        }
         // A fresh host instance simulates process restart, using the persisted receipt only.
         let mut resumed = RecordedHost::default();
         let query = json!({"operationId":p["operationId"],"configuration":p["configuration"],"vendorTaskId":host.checkpoint["vendorTaskId"],"resumeToken":host.checkpoint["resumeToken"]});
@@ -281,7 +288,7 @@ fn invalid_inputs_and_incomplete_leases_have_no_network_effects() {
         ("referenceImages", json!([])),
         (
             "referenceImages",
-            json!([{"mediaId":"a"},{"mediaId":"b"},{"mediaId":"c"}]),
+            payload(17)["input"]["referenceImages"].clone(),
         ),
     ] {
         let mut p = payload(2);

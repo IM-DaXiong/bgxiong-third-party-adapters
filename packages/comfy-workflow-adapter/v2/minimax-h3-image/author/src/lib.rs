@@ -19,7 +19,11 @@ const EDIT_OPERATION: &str = "local.bgx.minimax-h3-image-comfy/reference-edit";
 const TEXT_MODEL: &str = "minimax-h3-image-text-to-image";
 const EDIT_MODEL: &str = "minimax-h3-image-reference-edit";
 const OUTPUT_NODE: &str = "8";
-const REFERENCE_NODES: [&str; 2] = ["9", "10"];
+// Model support is 16 images; the two loaders in the template are examples only.
+const MAX_REFERENCES: usize = 16;
+fn reference_node(index: usize) -> String {
+    (9 + index).to_string()
+}
 const MAX_PROMPT: usize = 8000;
 const MAX_SEED: u64 = 9007199254740991;
 const TEXT_SCHEMA: &str = include_str!("../schemas/text.json");
@@ -86,7 +90,7 @@ fn capabilities() -> Value {
     let contracts: Vec<Value> = [
         (TEXT_OPERATION, TEXT_MODEL, "text-to-image", "MiniMax-H3-Image · 文生图", TEXT_SCHEMA, vec![]),
         (EDIT_OPERATION, EDIT_MODEL, "reference-edit", "MiniMax-H3-Image · 参考图编辑", EDIT_SCHEMA,
-            vec![json!({"role":"referenceImages","inputPointer":"/referenceImages","mediaKind":"image","minCount":1,"maxCount":2})]),
+            vec![json!({"role":"referenceImages","inputPointer":"/referenceImages","mediaKind":"image","minCount":1,"maxCount":MAX_REFERENCES})]),
     ].into_iter().map(|(operation, model, local, label, input_schema, slots)| {
         let input = schema("input", input_schema);
         let output = schema("output", OUTPUT_SCHEMA);
@@ -256,15 +260,20 @@ fn build_graph(input: &Value, edit: bool) -> Outcome<Value> {
     let (width, height) = dimensions(input)?;
     graph["4"]["inputs"]["width"] = json!(width);
     graph["4"]["inputs"]["height"] = json!(height);
-    if edit && reference_ids(input)?.len() == 1 {
+    if edit {
+        let count = reference_ids(input)?.len();
+        let loader = graph["9"].clone();
         graph["4"]["inputs"]
             .as_object_mut()
             .ok_or_else(malformed)?
-            .remove("images.image_2");
-        graph
-            .as_object_mut()
-            .ok_or_else(malformed)?
-            .remove(REFERENCE_NODES[1]);
+            .retain(|key, _| !key.starts_with("images.image_"));
+        graph.as_object_mut().ok_or_else(malformed)?.remove("9");
+        graph.as_object_mut().ok_or_else(malformed)?.remove("10");
+        for index in 0..count {
+            let node = reference_node(index);
+            graph[&node] = loader.clone();
+            graph["4"]["inputs"][format!("images.image_{}", index + 1)] = json!([node, 0]);
+        }
     }
     Ok(graph)
 }
@@ -313,11 +322,11 @@ fn preflight(h: &mut dyn Host, configuration: &Value, graph: &Value, budget: u64
 fn reference_ids(input: &Value) -> Outcome<Vec<&str>> {
     let refs = input["referenceImages"]
         .as_array()
-        .filter(|r| (1..=2).contains(&r.len()))
+        .filter(|r| (1..=MAX_REFERENCES).contains(&r.len()))
         .ok_or_else(|| {
             fail(
                 "INVALID_INPUT",
-                "One or two ordered original images are required",
+                "One to sixteen ordered original images are required",
             )
         })?;
     let mut ids = Vec::new();
@@ -461,8 +470,8 @@ fn submit(h: &mut dyn Host, request: &Invocation, p: &Value) -> Outcome<Value> {
     }
     let mut graph = build_graph(&p["input"], edit)?;
     preflight(h, &p["configuration"], &graph, request.r#budget_ms)?;
-    for (node, original) in REFERENCE_NODES.iter().zip(media) {
-        graph[*node]["inputs"]["image"] = json!(upload_reference(
+    for (index, original) in media.into_iter().enumerate() {
+        graph[reference_node(index)]["inputs"]["image"] = json!(upload_reference(
             h,
             &p["configuration"],
             original,
