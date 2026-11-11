@@ -4,45 +4,45 @@
   "packages": [
     {
       "pluginId": "local.thirdparty.comfy-panorama-image",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "kind": "installable",
-      "validation": "sdk_package_validated",
+      "validation": "sdk_package_and_install_envelope_validated",
       "sourceManifest": "packages/workflow-adapters/panorama-image/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.comfy-panorama-image/1.0.2/adapter-install.json",
-          "sha256": "460cfb2c9188fb2e1825eb60845695b4c3743095e60a6a4e3108c5dab7bcfc68"
+          "source": "artifacts/releases/panorama-image-v1.0.3/local.thirdparty.comfy-panorama-image/1.0.3/adapter-install.json",
+          "sha256": "0295d0287d287694323693befe9c7ae80018c4ec8d142d0ddfb0db294be54b73"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.comfy-panorama-image/1.0.2/LICENSE",
+          "source": "artifacts/releases/panorama-image-v1.0.3/local.thirdparty.comfy-panorama-image/1.0.3/LICENSE",
           "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.comfy-panorama-image/1.0.2/package/adapter.wasm",
-          "sha256": "af81b8c39d721eb9e8370c085139451281ac2a5c0846995bf99ff4c6dabdd860"
+          "source": "artifacts/releases/panorama-image-v1.0.3/local.thirdparty.comfy-panorama-image/1.0.3/package/adapter.wasm",
+          "sha256": "1af05b64934a9b2d692a40b2b7d41e7c9665a8fdb2a167540e9c30996b82941c"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.comfy-panorama-image/1.0.2/package/manifest.json",
-          "sha256": "efae1ec3fd2c0007594b6d433a5af734a50497c344440f6d16ebe5b9fc9e8927"
+          "source": "artifacts/releases/panorama-image-v1.0.3/local.thirdparty.comfy-panorama-image/1.0.3/package/manifest.json",
+          "sha256": "bedb3f61c9319dee879d4851be7b04eb93b20124cebc37e3361482f5929c8b2c"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.comfy-panorama-image/1.0.2/package/manifest.sha256",
-          "sha256": "88b96ad8eda8799ab06cf3e319364cc01c8698d4e3051780f40f2216af85a9ad"
+          "source": "artifacts/releases/panorama-image-v1.0.3/local.thirdparty.comfy-panorama-image/1.0.3/package/manifest.sha256",
+          "sha256": "a297fe87f1fc53c6b81db6a6728c49edc17535a662942150350fcfcc2485cfbb"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.comfy-panorama-image/1.0.2/README.txt",
-          "sha256": "6f4142bc8f1b1477fb0c06351c9243a2ab3cc85bb8cbd10d51fb777975e1729a"
+          "source": "artifacts/releases/panorama-image-v1.0.3/local.thirdparty.comfy-panorama-image/1.0.3/README.txt",
+          "sha256": "358c9e4fade1b2fd4d329309c1cf6f0c0d409b22c42cf02c1bdf44b4810c9d57"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.thirdparty.comfy-panorama-image/1.0.2/安装说明.txt",
-          "sha256": "99ba25fadca7ad0a71f2bdd33f9721759977f358b740dba553adbe4f8a46065b"
+          "source": "artifacts/releases/panorama-image-v1.0.3/local.thirdparty.comfy-panorama-image/1.0.3/安装说明.txt",
+          "sha256": "a6aaec5a148e7238805ec291d58a5822ba8ea649e0b2c786eb70bbd18a3e84a9"
         }
       ]
     },

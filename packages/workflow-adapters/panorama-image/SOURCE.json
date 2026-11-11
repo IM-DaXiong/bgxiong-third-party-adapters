@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "packageId": "local.thirdparty.comfy-panorama-image",
-  "packageVersion": "1.0.1",
+  "packageVersion": "1.0.3",
   "modelId": "panorama-image-single",
   "operationId": "local.thirdparty.comfy-panorama-image/image-to-panorama",
   "windowsNote": "workflow/SOURCE.json 与 source.json 在 Windows 大小写不敏感文件系统冲突；溯源放在包根 SOURCE.json，与 RunningHub 动态包一致。",
@@ -14,7 +14,7 @@
   "frozenApiGraph": "workflow/api.json",
   "frozenApiGraphSha256": "3691c1aef9bd6150bde96e2391af6ab29d1d5a615e832e125a5e93cf41383088",
   "apiExport": "STRUCTURAL_DERIVATION_WITHOUT_NATIVE_COMFY_EXPORT",
-  "liveC02Proof": "NOT_RUN",
+  "liveC02Proof": "HEADLESS_CONTROL_VERIFIED_ON_COMFYUI_0_45_0",
   "adaptations": [
     "Add LoadImage for the single reference; wire to PanoramaStickers.sticker_image",
     "Fix headless sticker_state: yaw=0 pitch=0 roll=0 hFOV=90 (pano_sticker_state v1)",

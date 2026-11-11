@@ -37,6 +37,10 @@ fn mapping_accepts_single_reference_and_binds_upload() {
     assert_eq!(graph["31"]["inputs"]["seed"], 7);
     assert_eq!(graph["31"]["inputs"]["steps"], 20);
     assert_eq!(applied["outputProjection"], "equirectangular360");
+    let input = valid_input();
+    assert!(applied.as_object().unwrap().keys().all(|key| input.get(key).is_some()));
+    assert_eq!(applied["advanced"], input["advanced"]);
+    assert_eq!(applied["prompt"], graph["6"]["inputs"]["text"]);
     let state = graph["70"]["inputs"]["sticker_state"].as_str().unwrap();
     assert!(state.contains("\"hFOV_deg\":90"));
     assert!(state.contains("\"yaw_deg\":0"));

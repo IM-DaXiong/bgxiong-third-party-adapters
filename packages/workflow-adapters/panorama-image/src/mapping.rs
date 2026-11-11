@@ -172,18 +172,12 @@ pub fn build_graph(input: &Value, uploaded: &str) -> Result<(Value, Value), Fail
     g[SAMPLER_NODE]["inputs"]["steps"] = json!(steps);
     g[STICKERS_NODE]["inputs"]["sticker_state"] = json!(STICKER_STATE);
     let applied = json!({
-        "operationId": OPERATION_ID,
-        "modelId": MODEL_ID,
         "outputProjection": "equirectangular360",
         "width": WIDTH,
         "height": HEIGHT,
         "seed": seed,
-        "steps": steps,
-        "promptOriginal": prompt,
-        "promptExecuted": executed,
-        "stickerState": serde_json::from_str::<Value>(STICKER_STATE).expect("const"),
-        "outputNodeId": "66",
-        "loadImageNodeId": LOAD_NODE,
+        "advanced": {"steps": steps},
+        "prompt": executed,
     });
     Ok((g, applied))
 }
