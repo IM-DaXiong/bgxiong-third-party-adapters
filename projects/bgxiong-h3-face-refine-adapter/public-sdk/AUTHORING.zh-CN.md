@@ -196,4 +196,4 @@ command/exitCode 是证据声明，conform 不代替你执行所写命令；EVID
 
 本稿尚未提供已验收的 export_sdk.py、verify_release.py、check_author_evidence.py 发行工作链；不要把这些未来工具名当作当前可用 CLI 子命令。候选导出、G00–G06、C01–C36 及最终 SDK_READY 必须由完整真实证据决定；局部 --self-test 通过不能替代后续独立作者和重现。
 
-本树使用 LicenseRef-Proprietary 标识，本文不授予 MIT、Apache、开源、分发、商业使用或再授权等新权利；适用权利须由权利人另行明确。依赖锁不是许可证清单，候选发行仍须审查并附依赖来源与许可证材料。SDK 就绪也不代表任何生产模块已经接入。
+SDK 说明文档自 2026-11-11 起采用 [MIT 许可](https://github.com/IM-DaXiong/bgxiong-adapter-sdk/blob/main/LICENSE)。本适配器仓库不因此改为 MIT。依赖锁不是第三方许可证清单。SDK 就绪也不代表任何生产模块已经接入。

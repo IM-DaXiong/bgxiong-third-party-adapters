@@ -123,4 +123,4 @@ Profile 支持范围见[profile-semantics](protocol/profile-semantics.json)及[�
 
 export_sdk.py、check_author_evidence.py、verify_release.py 的候选发行工作链在本稿时点尚未完成验收，未来命令名称不等于已有可用功能。当前不声明发行 READY、全矩阵全绿或任意真实厂商 LIVE 通过。SDK 完成后仍须各生产切换单元单独接入 GUI/Creator/F1/MCP 共用内核并通过 G07；所有 modules 保持 NOT_ADOPTED，既有产品路径不会因参考宿主测试而切换。
 
-LicenseRef-Proprietary 是当前许可标识，本文没有授予额外使用或分发权。正式候选还需完整的许可证/依赖来源清单；独立构建、签名或验收都不能代替权利人的分发授权。
+SDK 说明文档采用 [MIT 许可](https://github.com/IM-DaXiong/bgxiong-adapter-sdk/blob/main/LICENSE)。正式候选仍需完整的依赖来源与许可证清单；独立构建、签名或验收不代替尚未完成的依赖审查。本适配器仓库不因此改为 MIT。

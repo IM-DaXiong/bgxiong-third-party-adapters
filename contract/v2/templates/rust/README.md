@@ -16,4 +16,4 @@ cargo build --release --locked --offline --target wasm32-wasip2
 
 开发自己的适配器时修改 `src/lib.rs` 的能力、schema、模型及业务操作，并同步 `manifest.json` 的插件身份与权限。所有服务语义放在作者适配器内。媒体、凭据、HTTP、事件和 checkpoint 使用公开受管端口；不要自己读取用户文件或拿到原始密钥。修改 schema 时重新计算对应真实摘要；示例用公开 SHA-256 实时计算，宿主仍独立验证。
 
-`vendor-sdk/` 与 `template-lock.json` 是同步生成的公开 SDK/WIT 镜像，禁止手改。SDK 维护者用公开包中的 `tools/sync_templates.py --write` 更新，再用 `--check --self-test` 验证。模板依赖锁从公开 workspace lock 裁出作者所需完整闭包，不引用主程序或开发仓库私有 crate。SDK 与作者包的发布许可分别审查；当前未作 MIT 等授权声明。
+`vendor-sdk/` 与 `template-lock.json` 是同步生成的公开 SDK/WIT 镜像，禁止手改。SDK 维护者用公开包中的 `tools/sync_templates.py --write` 更新，再用 `--check --self-test` 验证。模板依赖锁从公开 workspace lock 裁出作者所需完整闭包，不引用主程序或开发仓库私有 crate。SDK 说明文档采用 [MIT 许可](https://github.com/IM-DaXiong/bgxiong-adapter-sdk/blob/main/LICENSE)。作者自己的适配包许可单独决定，不因复制本模板而自动变成 MIT。

@@ -1,5 +1,9 @@
 # 变更记录
 
+## 文档许可 — 2026-11-11
+
+- SDK 仓库已公开。说明文档采用 [MIT](https://github.com/IM-DaXiong/bgxiong-adapter-sdk/blob/main/LICENSE)。本适配器仓库许可不变。
+
 ## 2.0.2 工具／参考宿主 S0 候选 — 2026-10-26
 
 - 发布 speech-v1 三操作 schema、固定摘要与三层数据类型；缺 UI 只给诊断，不阻断合法调用，媒体边界继续由 schema 校验。

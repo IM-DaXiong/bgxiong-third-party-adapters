@@ -1,6 +1,6 @@
 # 比格熊第三方适配器统一规范
 
-- **四仓平级与 SDK（用户2026-11-10）**：先从同级主仓 `../bgxiong-ai-story` 定位同一开发根。四个 checkout 固定为 bgxiong-ai-story、bgxiong-third-party-adapters、bgxiong-adapter-sdk、bgxiong-content-skills。SDK 远程是 `https://github.com/IM-DaXiong/bgxiong-adapter-sdk.git`，主程序需求驱动更新，消费和导出使用该批最新已核定的 SDK 回执。缺仓从登记远程恢复，禁止创建替代真源。创作 Skill（含 H3）仍只在内容仓维护。见[四仓规范](../bgxiong-ai-story/docs/dev/guides/20261107-GUIDE-三仓平级与创作Skill唯一治理目录.md)。
+- **四仓平级与 SDK（用户2026-11-10）**：先从同级主仓 `../bgxiong-ai-story` 定位同一开发根。四个 checkout 固定为 bgxiong-ai-story、bgxiong-third-party-adapters、bgxiong-adapter-sdk、bgxiong-content-skills。SDK 远程是 `https://github.com/IM-DaXiong/bgxiong-adapter-sdk.git`，2026-11-11 起该仓公开，说明文档采用其根目录 LICENSE 的 MIT 许可。本仓许可仍见仓库 LICENSE，不是 MIT。主程序需求驱动更新，消费和导出使用该批最新已核定的 SDK 回执。缺仓从登记远程恢复，禁止创建替代真源。创作 Skill（含 H3）仍只在内容仓维护。见[四仓规范](../bgxiong-ai-story/docs/dev/guides/20261107-GUIDE-三仓平级与创作Skill唯一治理目录.md)。
 
 用户2026-11-05明确：唯一工程名、开发目录、Git仓名及用户可见分发总目录名均为bgxiong-third-party-adapters；中文名比格熊第三方适配器。
 
