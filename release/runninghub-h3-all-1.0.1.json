@@ -8,7 +8,10 @@
   "sdkSourceAndRuntimeValidated": true,
   "applicationEnvelopeInspected": true,
   "paidGeneration": false,
-  "publicDownloadVerified": false,
+  "publicDownloadVerified": true,
   "zipSha256": "ad570450683e2b80daeb24449174d412af7067997826436e49b430b82e367a72",
-  "wasmSha256": "e52c7c8f220d256b4db1e1f939a72910c62db9e091d30fcc79857c174ac5824b"
+  "wasmSha256": "e52c7c8f220d256b4db1e1f939a72910c62db9e091d30fcc79857c174ac5824b",
+  "remoteArchiveFilesRestored": 183,
+  "remoteInstallZipFilesVerified": 6,
+  "sourceCommit": "483ce6ba3165d834c32f121bfd6f18a56ffa986a"
 }
