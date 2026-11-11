@@ -403,7 +403,7 @@ fn query_downloads_original_without_credentials_and_preserves_remote_identity() 
     }
     h.download_stat = Some(video_stat("video/quicktime", "original.mov"));
     if let Ok(file) = std::env::var("RUNNINGHUB_CONTRACT_FIXTURES") {
-        std::fs::write(file, json!({"capabilities":capabilities(),"usage":result["usage"],"queryResults":query_results,"managedVideoStats":managed_stats}).to_string()).unwrap();
+        std::fs::write(file, json!({"capabilities":crate::capabilities(),"usage":result["usage"],"queryResults":query_results,"managedVideoStats":managed_stats}).to_string()).unwrap();
     }
     h.deny_download = true;
     let denied = query(&mut h, &invocation("query", &q), &q).unwrap_err();

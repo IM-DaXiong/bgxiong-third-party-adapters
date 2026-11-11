@@ -5,7 +5,7 @@ fn main() {
         serde_json::from_slice(&std::fs::read(std::env::args().nth(1).unwrap()).unwrap()).unwrap();
     let c: Vec<bgx_adapter_v2_sdk::CapabilityContractV2> =
         serde_json::from_value(f["capabilities"]["capabilityContracts"].clone()).unwrap();
-    assert_eq!(c.len(), 6);
+    assert_eq!(c.len(), 9);
     for one in &c {
         validate_contract(one).unwrap();
     }
@@ -128,5 +128,5 @@ fn main() {
         )
         .is_err());
     println!("PUBLIC_SDK_NETWORK_POLICY_PASS: exact API/output origin granted; other origin/absent output grant rejected; credential restricted to API; no network call");
-    println!("PUBLIC_SDK_VALIDATOR_PASS: 6 capability contracts; actual reported usage; unnamespaced usage rejected");
+    println!("PUBLIC_SDK_VALIDATOR_PASS: 9 capability contracts; actual reported usage; unnamespaced usage rejected");
 }

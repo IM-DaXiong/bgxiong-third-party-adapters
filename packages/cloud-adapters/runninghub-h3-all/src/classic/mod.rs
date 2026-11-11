@@ -250,22 +250,7 @@ fn selected<'a>(p: &'a Value) -> Result<Vec<(&'static str, &'a Value)>> {
                 return Err(invalid("媒体身份或分类不匹配"));
             }
             let m = found[0];
-            let mime = text(m, "mime")?;
-            let accepted = if k == "image" {
-                ["image/png", "image/jpeg", "image/webp"].contains(&mime)
-            } else {
-                ["audio/wav", "audio/mpeg", "audio/flac"].contains(&mime)
-            };
-            if !accepted
-                || text(m, "handle")?.is_empty()
-                || text(m, "fileName")?.is_empty()
-                || text(m, "byteLength")?
-                    .parse::<u64>()
-                    .ok()
-                    .is_none_or(|n| n == 0)
-            {
-                return Err(invalid("原件格式、长度或句柄无效"));
-            }
+            crate::media_input::validate(m, k).map_err(|message| invalid(&message))?;
             result.push((k, m));
         }
     }

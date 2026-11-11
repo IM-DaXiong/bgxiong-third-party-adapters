@@ -124,13 +124,13 @@ M3 文本生成与对话，需要自己的平台 API Key。 连接：**MiniMax �
 
 包内：WASM、manifest 与摘要、许可及说明；另含 工作流／配置／配套文件。完整文件名见发行清单。
 
-### RunningHub H3 全工作流 · 1.0.1
+### RunningHub H3 全工作流 · 1.0.2
 
 安装 `runninghub-h3-all` 后，在视频工作台的 **RunningHub** 分组选择多图参考、固定图数参考和首帧工作流，共 9 项。安装时绑定 RunningHub API Key。
 
-[完整安装 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.1/local.thirdparty.runninghub-h3-all-1.0.1.zip) · [SHA256](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.1/SHA256SUMS.txt) · [安装与工作流说明](docs/USAGE.zh-CN.md#runninghub-h3-视频)
+[完整安装 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.2/local.thirdparty.runninghub-h3-all-1.0.2.zip) · [SHA256](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.2/SHA256SUMS.txt) · [安装与工作流说明](docs/USAGE.zh-CN.md#runninghub-h3-视频)
 
-1.0.1 为测试包。20 项定向测试、SDK 包检查和应用安装声明检查已通过。云端生成与播放待实际验证。
+1.0.2 修复三条多参路线的音频 MIME 误拒，与 SDK 2.1.3 联合支持常见音频格式。22 组真实音频已通过平台上传与解码，三条路线均已真实出片、下载并完整解码。含非 UTF-8 旧标签的 APE 仍可能被平台解码器拒绝；具体范围见[验收记录](release/runninghub-h3-all-1.0.2.json)。
 
 ## 托管语音、作者样例与候选
 

@@ -24,7 +24,7 @@ fn prepared(n: usize, a: usize) -> Value {
     let mut media = Vec::new();
     for (kind, count, prefix, mime, ext) in [
         ("image", n, "i", "image/jpeg", "jpg"),
-        ("audio", a, "a", "audio/wav", "wav"),
+        ("audio", a, "a", "audio/x-wav", "wav"),
     ] {
         for i in 0..count {
             media.push(json!({"id":format!("{prefix}{i}"),"kind":kind,"handle":format!("{prefix}{i}"),"fileName":format!("original-{prefix}{i}.{ext}"),"mime":mime,"byteLength":"17"}));
@@ -289,6 +289,16 @@ fn declared_scalar_fields_are_consumed_without_rewriting_size() {
 #[test]
 fn invalid_contract_and_media_fail_before_any_effect() {
     let mut cases = vec![prepared(0, 0), prepared(10, 0), prepared(1, 4)];
+    for (field, value) in [
+        ("mime", json!("application/json")), ("mime", json!("audio/")),
+        ("handle", json!("")), ("fileName", json!(null)),
+        ("byteLength", json!("0")), ("byteLength", json!(17)),
+        ("byteLength", json!("bad")),
+    ] {
+        let mut bad = prepared(1, 1);
+        bad["media"][1][field] = value;
+        cases.push(bad);
+    }
     let mut wrong = prepared(1, 0);
     wrong["input"]["resolutionValue"]["value"] = json!(0.15);
     cases.push(wrong);
@@ -657,5 +667,37 @@ fn all_dynamic_routes_preserve_graph_audio_and_exact_identity() {
             "INVALID_INPUT"
         );
         assert!(h.calls.is_empty());
+    }
+}
+
+#[test]
+#[ignore = "Requires measured SDK audio facts, not handcrafted MIME fixtures"]
+fn measured_audio_formats_preserve_identity_through_all_routes() {
+    let path = std::env::var("BGX_MEASURED_AUDIO_FACTS").expect("measured SDK fixture path");
+    let facts: Value = serde_json::from_slice(&std::fs::read(path).unwrap()).unwrap();
+    let rows = facts.as_array().expect("SDK facts array");
+    assert!(rows.len() >= 10, "common formats must actually be measured");
+    for row in rows {
+        let stat = &row["stat"];
+        for route in &ROUTES {
+            let mut p = prepared(3, 1);
+            p["modelId"] = json!(route.model);
+            p["operationId"] = json!(route.operation);
+            p["inputSchemaDigest"] = capabilities(route)["capabilityContracts"][0]["operations"][0]["inputSchema"]["digest"].clone();
+            p["input"]["advanced"]["audioUsage"] = json!(route.audio_usage());
+            for key in ["kind", "mime", "fileName", "byteLength"] { p["media"][3][key] = stat[key].clone(); }
+            let mut h = Fixture::for_payload(&p);
+            let mut measured = stat.clone();
+            measured["id"] = json!("a0");
+            h.stats.insert("a0".into(), measured);
+            let response = serde_json::to_value(crate::RunningHubH3::invoke(invocation("submit", &p), &mut h)).unwrap();
+            assert!(response.get("error").is_none_or(Value::is_null), "{} {}: {response}", row["name"], route.slug);
+            let uploads: Vec<_> = h.calls.iter().filter(|c| c["args"]["plan"]["url"] == "https://www.runninghub.cn/openapi/v2/media/upload/binary").collect();
+            assert_eq!(uploads.len(), 4);
+            let part = &uploads[3]["args"]["plan"]["body"]["parts"][0];
+            assert_eq!(part["mime"], stat["mime"]);
+            assert_eq!(part["fileName"], stat["fileName"]);
+            assert_eq!(part["handle"], "a0");
+        }
     }
 }

@@ -16,7 +16,7 @@ https://github.com/IM-DaXiong/bgxiong-third-party-adapters
 
 安装 `runninghub-h3-all` 后可选择 9 个工作流。三项多图参考支持 1–30 秒、8 种画幅和 0.1–16 MP。固定图数和首帧工作流支持 1–15 秒、4 种画幅和 0.25、0.4、0.6、1 MP 四档。所有工作流采用 24 fps。
 
-1. 下载 [完整安装 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.1/local.thirdparty.runninghub-h3-all-1.0.1.zip)，按 [SHA256SUMS.txt](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.1/SHA256SUMS.txt) 核对摘要后解压。
+1. 下载 [完整安装 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.2/local.thirdparty.runninghub-h3-all-1.0.2.zip)，按 [SHA256SUMS.txt](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.2/SHA256SUMS.txt) 核对摘要后解压。常见音频扩展识别需要消费 SDK 2.1.3 的主程序版本。
 2. 在比格熊打开 **设置 → 第三方适配器 → 安装适配包**，选择同时包含 `adapter-install.json` 和 `package/` 的目录。
 3. 按提示绑定 RunningHub 账号，或填写自己的 RunningHub API Key。
 4. 在视频工作台的 **RunningHub** 分组选择 `runninghub-h3-all` 下的工作流，按所选项添加素材和设置参数。

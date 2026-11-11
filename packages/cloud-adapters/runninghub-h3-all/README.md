@@ -4,7 +4,7 @@
 
 ## 安装与使用
 
-1. 下载 [完整安装 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.1/local.thirdparty.runninghub-h3-all-1.0.1.zip)，按 [SHA256SUMS.txt](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.1/SHA256SUMS.txt) 核对摘要后解压。
+1. 下载 [完整安装 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.2/local.thirdparty.runninghub-h3-all-1.0.2.zip)，按 [SHA256SUMS.txt](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.2/SHA256SUMS.txt) 核对摘要后解压。
 2. 在比格熊打开 **设置 → 第三方适配器 → 安装适配包**，选择同时包含 `adapter-install.json` 和 `package/` 的目录。
 3. 按提示绑定 RunningHub 账号，或填写自己的 RunningHub API Key。
 4. 在视频工作台的 **RunningHub** 分组选择 `runninghub-h3-all` 下的工作流，按所选项添加素材和设置参数。
@@ -40,4 +40,8 @@ Turbo 与官方原生多图参考可用音频作为音色条件，成片使用�
 
 定向测试：`cargo test --manifest-path Cargo.toml --locked --offline`。不需要构建主程序。
 
-1.0.1 提供上述 9 项能力。云端生成与播放由实际任务验证。
+1.0.2 修正 WAV/FLAC MIME 别名导致的音频误拒。常见音频完整支持要求主程序消费 SDK 2.1.3：WAV（PCM16/24/float、RF64）、MP3、FLAC、AAC/M4A（含 ALAC）、Ogg/Vorbis、Opus、WMA、AIFF、AMR-NB/WB、APE，以及纯音频 MP4、WebM、MKA。保留原件上传，不转码；真实视频需要先显式提取音频。
+
+2026-11-11 已验证真实文件识别、上传原件往返摘要及部署端 LoadAudio 解码，三条多参路线实际生成 5 秒视频并下载解码，保留原音路线核对音轨。APE 样本中异常的旧非 UTF-8 标签会被云端 PyAV 拒绝；正常标签 APE 已通过，不会自动改写用户原件。
+
+源码测试、SDK 实际运行、主程序安装及正式安装器验收分别记录，不能仅凭本包版本推断旧 EXE 已支持所有格式。

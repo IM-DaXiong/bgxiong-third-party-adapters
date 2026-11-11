@@ -5,6 +5,7 @@ use serde_json::{json, Value};
 pub const PLUGIN: &str = "local.thirdparty.runninghub-h3-all";
 mod classic;
 mod dynamic;
+mod media_input;
 pub fn capabilities() -> Value {
     let mut contracts = alloc::vec::Vec::new();
     for route in &dynamic::ROUTES {
