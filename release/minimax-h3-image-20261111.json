@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "pluginId": "local.bgx.minimax-h3-image-comfy",
+  "version": "1.0.0-dev.3",
+  "releaseChannel": "prerelease",
+  "sourceCommit": "a0a8c0f43925952c42c31551a1b54f3678411219",
+  "sdkCommit": "cee2023a196c838eb3ef9feffbaedb658caa937f",
+  "hostSourceCommit": "b87ea37dd",
+  "hostExeSha256": "a4f129d8779195dfb0c3dbd4e81a3705b3ca622f3ccd10d717eb713bbd1fca8b",
+  "applicationVersion": "0.6.1112",
+  "actualApplicationEnvelopeInstalled": true,
+  "installedInNormalDevelopmentData": true,
+  "textToImage": true,
+  "oneReferenceEdit": true,
+  "twoReferenceEdit": true,
+  "freeCanvasWorkbench": true,
+  "creatorMcp": true,
+  "clipsSameTaskRestartRecovery": true,
+  "sizes": [
+    [
+      2048,
+      2048
+    ]
+  ],
+  "modelWeightsBundled": false,
+  "companionKind": "external-comfy-dependency-metadata-and-frozen-workflows",
+  "applicationInstallerTested": false,
+  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/minimax-h3-image-v1.0.0-dev.3/minimax-h3-image-1.0.0-dev.3.zip",
+  "sha256": "68948271df51d537a5ffcc82a15945718aff7a1b2b6fb00b78174592ec23e6e3",
+  "publicDownloadVerified": true
+}

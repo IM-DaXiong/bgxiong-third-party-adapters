@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "lockSha256": "3a0378b7c26b356a5ea1aa29691d59e9202828bae1d230d45ff1f73d69a323cc",
-  "archiveSha256": "4c6f8d5b292ac04b564f9082ee2d630b0ed2e00d3dc56c54da7869fbe5405e9d",
-  "archiveBytes": 4315225,
-  "fileCount": 202,
-  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/sdk-completion-20261111/third-party-frozen-resources-20261111.zip"
+  "lockSha256": "52ef8424b9c9214f8148254ca04255bcf9a47fdce376a9dfa609d160110aa805",
+  "archiveSha256": "654671f556da4a862d39f2f3a6d988c69fa4aaad8b1d11e9f4f0f8974067efc6",
+  "archiveBytes": 4575310,
+  "fileCount": 212,
+  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/minimax-h3-image-v1.0.0-dev.3/third-party-frozen-resources-h3-image-20261111.zip"
 }

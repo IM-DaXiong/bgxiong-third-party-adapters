@@ -148,3 +148,9 @@ git clone https://github.com/IM-DaXiong/bgxiong-third-party-adapters.git <实际
 [完整安装包与校验信息](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/wan22-animate-v0.2.13)。修复参数拒绝凭证缺少能力声明，明确窗口/重叠帧数字段错误。37项包测试、标准包校验及真实CLI拒绝回放通过，完整应用GUI/GPU成片验收待完成，按prerelease候选提供。解压后在应用“设置→第三方适配器”导入包含adapter-install.json的目录。
 
 RunningHub H3 当前 SDK 完整包：[1.0.4 下载与 SHA256](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/runninghub-h3-v1.0.4)。实际验证范围见 [分项记录](release/runninghub-h3-current-sdk-20261111.json)。
+
+## MiniMax H3-Image 1.0.0-dev.3 实测预发布版
+
+[完整包与 SHA256](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/minimax-h3-image-v1.0.0-dev.3) · [验收记录](release/minimax-h3-image-20261111.json)。已实测应用安装、文生图、1–2 张参考编辑、自由画布工作台、片段画布、MCP 及同任务重启回收。仅 2048×2048；需要现有 ComfyUI 0.45.0+ 与模型权重，包内 companion 为依赖清单与冻结工作流，不包含推理环境或权重。导入包含 adapter-install.json 的目录；LAN 使用前按 README 同时填写 endpoint 和允许的 origin。
+
+本机固定安装入口 `artifacts/current/local.bgx.minimax-h3-image-comfy/1.0.0-dev.3/`；远程机器从上述 ZIP 恢复该目录。正常应用发行安装器尚未验证。本版本不与 RunningHub H3 视频包混用。
