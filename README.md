@@ -128,7 +128,7 @@ M3 文本生成与对话，需要自己的平台 API Key。 连接：**MiniMax �
 
 安装 `runninghub-h3-all` 后，在视频工作台的 **RunningHub** 分组选择多图参考、固定图数参考和首帧工作流，共 9 项。安装时绑定 RunningHub API Key。
 
-[完整安装 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.1/local.thirdparty.local.thirdparty.runninghub-h3-all-1.0.1.zip) · [SHA256](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.1/SHA256SUMS.txt) · [安装与工作流说明](docs/USAGE.zh-CN.md#runninghub-h3-视频)
+[完整安装 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.1/local.thirdparty.runninghub-h3-all-1.0.1.zip) · [SHA256](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.1/SHA256SUMS.txt) · [安装与工作流说明](docs/USAGE.zh-CN.md#runninghub-h3-视频)
 
 1.0.1 为测试包。20 项定向测试、SDK 包检查和应用安装声明检查已通过。云端生成与播放待实际验证。
 
