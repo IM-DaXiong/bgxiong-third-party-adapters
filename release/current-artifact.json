@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "lockSha256": "6444370d5afef594503ee7f6dc5cf72267f779d72e04e8a357cea611fbae525f",
-  "archiveSha256": "654671f556da4a862d39f2f3a6d988c69fa4aaad8b1d11e9f4f0f8974067efc6",
-  "archiveBytes": 4575310,
+  "lockSha256": "fe707b516b9cbcce8ced797318ba1cc07b2a4a3f559c8dac369634ab0a85c0cb",
+  "archiveSha256": "0dc0a9e2bbc95087ee7581d5118bb1ea0ed0e1233d81e62142cc28c43a7ed45b",
+  "archiveBytes": 4577635,
   "fileCount": 212,
-  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/minimax-h3-image-v1.0.0-dev.3/third-party-frozen-resources-h3-image-20261111.zip"
+  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/frozen-resources-fe707b516b9c/third-party-frozen-resources-fe707b516b9c.zip"
 }
