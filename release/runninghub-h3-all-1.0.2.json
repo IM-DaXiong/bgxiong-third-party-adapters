@@ -14,9 +14,11 @@
     "2120488108805029889"
   ],
   "originalSoundtrackCorrelation": 0.9979762545171584,
-  "applicationInstallationVerified": false,
+  "applicationInstallationVerified": true,
   "publicDownloadVerified": false,
   "zipSha256": "399c63d22c04c99e62a4e3b2c1b00473c747f53fbf294c57cad948eded01d7f4",
   "wasmSha256": "623378d2455ef4229298ed82a948d3e1052f98686f830a39a77f7479a3003f1a",
-  "limitation": "APE with legacy non-UTF8 metadata can fail in platform PyAV; normal-metadata APE verified. No silent transcoding or metadata rewriting of user originals."
+  "limitation": "APE with legacy non-UTF8 metadata can fail in platform PyAV; normal-metadata APE verified. No silent transcoding or metadata rewriting of user originals.",
+  "currentSelectionsMigrated": 3,
+  "historicalTasksAndMediaPreserved": true
 }
