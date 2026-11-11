@@ -127,7 +127,7 @@ fn every_workflow_has_its_declared_fixed_media_and_native_timing() {
     let _: bgx_adapter_v2_sdk::RuntimeCapsV2 =
         serde_json::from_value(caps.clone()).expect("public typed capability contract");
     let contracts = caps["capabilityContracts"].as_array().unwrap();
-    assert_eq!(contracts.len(), 7);
+    assert_eq!(contracts.len(), 6);
     for (kind, c) in MODELS.iter().zip(contracts) {
         assert_eq!(c["modelIds"][0], kind.model_id());
         let schema: Value = serde_json::from_str(kind.input_schema()).unwrap();
@@ -155,7 +155,7 @@ fn every_workflow_has_its_declared_fixed_media_and_native_timing() {
     }
 }
 #[test]
-fn all_seven_submit_exact_original_assets_prompt_and_workflow_specific_pins() {
+fn all_six_submit_exact_original_assets_prompt_and_workflow_specific_pins() {
     for kind in MODELS {
         let p = payload(kind);
         let mut h = Fixture::for_payload(&p);

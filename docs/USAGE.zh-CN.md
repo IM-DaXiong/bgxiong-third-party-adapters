@@ -14,14 +14,14 @@ https://github.com/IM-DaXiong/bgxiong-third-party-adapters
 
 ## RunningHub H3 视频
 
-安装 `runninghub-h3-all` 后可选择 11 个工作流。四项多图参考支持 1–30 秒、8 种画幅和 0.1–16 MP。固定图数、首帧和对口型工作流支持 1–15 秒、4 种画幅和 0.25、0.4、0.6、1 MP 四档。所有工作流采用 24 fps。
+安装 `runninghub-h3-all` 后可选择 9 个工作流。三项多图参考支持 1–30 秒、8 种画幅和 0.1–16 MP。固定图数和首帧工作流支持 1–15 秒、4 种画幅和 0.25、0.4、0.6、1 MP 四档。所有工作流采用 24 fps。
 
-1. 下载 [完整安装 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.0/local.thirdparty.runninghub-h3-all-1.0.0.zip)，按 [SHA256SUMS.txt](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.0/SHA256SUMS.txt) 核对摘要后解压。
+1. 下载 [完整安装 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.1/local.thirdparty.local.thirdparty.runninghub-h3-all-1.0.1.zip)，按 [SHA256SUMS.txt](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.1/SHA256SUMS.txt) 核对摘要后解压。
 2. 在比格熊打开 **设置 → 第三方适配器 → 安装适配包**，选择同时包含 `adapter-install.json` 和 `package/` 的目录。
 3. 按提示绑定 RunningHub 账号，或填写自己的 RunningHub API Key。
 4. 在视频工作台的 **RunningHub** 分组选择 `runninghub-h3-all` 下的工作流，按所选项添加素材和设置参数。
 
-「多图参考」前三项可选音色参考。「保留原音」要求一段原音作为成片音轨。「参考音对口型」需要一张图和一段驱动音频。完整选项和素材要求见[工作流说明](../packages/cloud-adapters/runninghub-h3-all/README.md#工作流与素材)。
+Turbo 与官方原生多图参考可选音色参考。「保留原音」要求一段原音作为成片音轨。视频任务提示云端付费积分不足时，请检查 RunningHub 账号的付费积分余额。完整选项和素材要求见[工作流说明](../packages/cloud-adapters/runninghub-h3-all/README.md#工作流与素材)。
 
 ## 给智能体
 

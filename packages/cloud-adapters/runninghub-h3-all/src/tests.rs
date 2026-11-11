@@ -1,11 +1,14 @@
 use super::*;
 use std::collections::BTreeSet;
 #[test]
-fn unified_catalog_has_eleven_unique_closed_routes() {
+fn unified_catalog_has_nine_unique_closed_routes() {
     let c = capabilities();
     assert_eq!(c["pluginId"], PLUGIN);
     let rows = c["capabilityContracts"].as_array().unwrap();
-    assert_eq!(rows.len(), 11);
+    assert_eq!(rows.len(), 9);
+    assert!(rows.iter().all(|row| row["localId"] != "r2v-spectrum"));
+    assert!(rows.iter().all(|row| row["localId"] != "soundtrack"));
+    assert!(rows.iter().any(|row| row["localId"] == "r2v-soundtrack"));
     let mut ids = BTreeSet::new();
     let mut ops = BTreeSet::new();
     let mut models = BTreeSet::new();

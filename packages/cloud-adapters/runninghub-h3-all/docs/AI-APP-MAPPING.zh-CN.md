@@ -1,6 +1,6 @@
 # RunningHub H3 固定应用映射
 
-适用 `runninghub-h3-all` 的固定图数、首帧和对口型工作流。操作标签见[能力声明](../src/classic/mod.rs)，映射参数见[配置](../src/classic/config.rs)。
+适用 `runninghub-h3-all` 的固定图数和首帧工作流。操作标签见[能力声明](../src/classic/mod.rs)，映射参数见[配置](../src/classic/config.rs)。
 
 All slots: `POST /openapi/v2/run/ai-app/{APP_ID}`.
 Query: `/openapi/v2/query`. Upload: `/openapi/v2/media/upload/binary`.
@@ -58,7 +58,7 @@ Native fps is fixed at 24; no adjustable fps node. Do not write nodes `130`, `13
 
 Native fps is fixed at 24; no adjustable fps node. Node `131` on this App is `noise_seed` and must not be written.
 
-### soundtrack (`h3.soundtrack.1ref`)
+### soundtrack (`h3.soundtrack.1ref`，源码参考)
 
 | SDK v2 input | Node | field |
 |---|---|---|
@@ -119,7 +119,7 @@ be sent every time. Do not copy i2v-turbo node ids onto ref2va graphs.
 | 121 / 122 | video / audio `vae_name` |
 | 126 | `steps` `20`, `scheduler` `simple`, `denoise` `1` |
 
-### soundtrack
+### soundtrack（源码参考）
 
 | Node | fields |
 |---|---|

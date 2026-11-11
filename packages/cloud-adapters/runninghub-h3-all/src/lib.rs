@@ -45,3 +45,11 @@ impl Adapter for RunningHubH3 {
 bgx_adapter_v2_sdk::export_adapter!(RunningHubH3);
 #[cfg(test)]
 mod tests;
+
+fn video_failure_message(reason: &str) -> &str {
+    if reason.trim_start().starts_with("付费积分余额不足") {
+        "云端付费积分不足，请检查 RunningHub 账号的付费积分余额。"
+    } else {
+        reason
+    }
+}

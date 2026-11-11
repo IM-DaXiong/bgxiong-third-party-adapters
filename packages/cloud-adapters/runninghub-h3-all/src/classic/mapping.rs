@@ -27,6 +27,7 @@ pub enum ModelKind {
     Slot4,
     I2vTurbo,
     Fl2va,
+    #[allow(dead_code)] // Mapping is retained for the disabled Spectrum operation.
     Soundtrack,
 }
 
@@ -115,12 +116,12 @@ pub fn parse_model_kind(model: Option<&str>) -> Result<ModelKind, String> {
         Some(m) if m == MODEL_ID_4SLOT => Ok(ModelKind::Slot4),
         Some(m) if m == MODEL_ID_I2V_TURBO => Ok(ModelKind::I2vTurbo),
         Some(m) if m == MODEL_ID_FL2VA => Ok(ModelKind::Fl2va),
-        Some(m) if m == MODEL_ID_SOUNDTRACK => Ok(ModelKind::Soundtrack),
+        // Some(m) if m == MODEL_ID_SOUNDTRACK => Ok(ModelKind::Soundtrack),
         Some(m) => Err(format!(
-            "unknown model {m}; expected {MODEL_ID_1SLOT}, {MODEL_ID_2SLOT}, {MODEL_ID_3SLOT}, {MODEL_ID_4SLOT}, {MODEL_ID_I2V_TURBO}, {MODEL_ID_FL2VA} or {MODEL_ID_SOUNDTRACK}"
+            "unknown model {m}; expected {MODEL_ID_1SLOT}, {MODEL_ID_2SLOT}, {MODEL_ID_3SLOT}, {MODEL_ID_4SLOT}, {MODEL_ID_I2V_TURBO} or {MODEL_ID_FL2VA}"
         )),
         None => Err(format!(
-            "model is required; expected {MODEL_ID_1SLOT}, {MODEL_ID_2SLOT}, {MODEL_ID_3SLOT}, {MODEL_ID_4SLOT}, {MODEL_ID_I2V_TURBO}, {MODEL_ID_FL2VA} or {MODEL_ID_SOUNDTRACK}"
+            "model is required; expected {MODEL_ID_1SLOT}, {MODEL_ID_2SLOT}, {MODEL_ID_3SLOT}, {MODEL_ID_4SLOT}, {MODEL_ID_I2V_TURBO} or {MODEL_ID_FL2VA}"
         )),
     }
 }

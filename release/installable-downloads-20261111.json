@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "releaseUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/runninghub-h3-all-v1.0.0",
+  "releaseUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/runninghub-h3-all-v1.0.1",
   "packages": [
     {
       "pluginId": "local.thirdparty.comfy-panorama-image",
@@ -337,10 +337,10 @@
     },
     {
       "pluginId": "local.thirdparty.runninghub-h3-all",
-      "version": "1.0.0",
-      "file": "local.thirdparty.runninghub-h3-all-1.0.0.zip",
-      "sha256": "9de1d4caa64f5e9b819fc01a96aad0a361c037d66076f913f79d097e07aacb85",
-      "bytes": 294998,
+      "version": "1.0.1",
+      "file": "local.thirdparty.runninghub-h3-all-1.0.1.zip",
+      "sha256": "ad570450683e2b80daeb24449174d412af7067997826436e49b430b82e367a72",
+      "bytes": 295895,
       "files": [
         "adapter-install.json",
         "LICENSE",
@@ -350,10 +350,10 @@
         "README.md"
       ],
       "validation": "sdk_package_and_application_envelope_inspected_cloud_not_run",
-      "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.0/local.thirdparty.runninghub-h3-all-1.0.0.zip",
+      "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.1/local.thirdparty.runninghub-h3-all-1.0.1.zip",
       "displayName": "RunningHub H3 全工作流",
       "service": "RunningHub",
-      "purpose": "单包十一项独立视频工作流；多图、固定图数、首帧、原音和对口型。"
+      "purpose": "九项 RunningHub H3 视频工作流，支持多图参考、固定图数、首帧和保留原音。"
     }
   ]
 }

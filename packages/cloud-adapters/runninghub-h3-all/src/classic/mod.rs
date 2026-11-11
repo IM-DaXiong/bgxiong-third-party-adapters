@@ -84,14 +84,14 @@ fn schema(id: &str, s: &str) -> Value {
 mod config;
 mod mapping;
 use mapping::ModelKind;
-const MODELS: [ModelKind; 7] = [
+const MODELS: [ModelKind; 6] = [
     ModelKind::Ref1,
     ModelKind::Slot2,
     ModelKind::Slot3,
     ModelKind::Slot4,
     ModelKind::Fl2va,
     ModelKind::I2vTurbo,
-    ModelKind::Soundtrack,
+    // ModelKind::Soundtrack, // Spectrum lip-sync is disabled.
 ];
 impl ModelKind {
     fn slug(self) -> &'static str {
@@ -332,7 +332,9 @@ fn unwrap_response(r: &Value) -> Result<Value> {
         if !s.is_empty() && s != "0" && v["status"] != "FAILED" {
             let mut e = fail(
                 "UPSTREAM_ERROR",
-                v["errorMessage"].as_str().unwrap_or("RunningHub拒绝请求"),
+                crate::video_failure_message(
+                    v["errorMessage"].as_str().unwrap_or("RunningHub拒绝请求"),
+                ),
             );
             e.vendor = Some(s.into());
             return Err(e);
@@ -488,7 +490,9 @@ fn submit(h: &mut dyn Host, r: &Invocation, p: &Value) -> Result<Value> {
     if v["status"] == "FAILED" {
         return Err(fail(
             "UPSTREAM_ERROR",
-            v["errorMessage"].as_str().unwrap_or("RunningHub拒绝请求"),
+            crate::video_failure_message(
+                v["errorMessage"].as_str().unwrap_or("RunningHub拒绝请求"),
+            ),
         ));
     }
     let id =
@@ -647,7 +651,7 @@ fn query(h: &mut dyn Host, r: &Invocation, p: &Value) -> Result<Value> {
         })?);
     }
     Ok(
-        json!({"status":state,"outputs":outputs,"data":{"appId":kind.app_id(),"modelId":kind.model_id(),"remoteTaskId":id,"downloadedCount":outputs.len()},"usage":usage(&v),"progress":if matches!(state,"queued"|"running"){json!({"fraction":null,"message":raw})}else{Value::Null},"terminalFailure":if state=="failed"{json!({"category":"vendorTaskFailed","message":v["errorMessage"].as_str().unwrap_or("RunningHub任务失败"),"vendorCode":v["errorCode"],"details":{"taskId":id,"remoteStatus":raw}})}else{Value::Null},"resumeToken":p["resumeToken"]}),
+        json!({"status":state,"outputs":outputs,"data":{"appId":kind.app_id(),"modelId":kind.model_id(),"remoteTaskId":id,"downloadedCount":outputs.len()},"usage":usage(&v),"progress":if matches!(state,"queued"|"running"){json!({"fraction":null,"message":raw})}else{Value::Null},"terminalFailure":if state=="failed"{json!({"category":"vendorTaskFailed","message":crate::video_failure_message(v["errorMessage"].as_str().unwrap_or("RunningHub任务失败")),"vendorCode":v["errorCode"],"details":{"taskId":id,"remoteStatus":raw}})}else{Value::Null},"resumeToken":p["resumeToken"]}),
     )
 }
 pub struct RunningHubH3;

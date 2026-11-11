@@ -404,7 +404,9 @@ fn unwrap_response(r: &Value) -> Result<Value> {
         if !s.is_empty() && s != "0" && v["status"] != "FAILED" {
             let mut e = fail(
                 "UPSTREAM_ERROR",
-                v["errorMessage"].as_str().unwrap_or("RunningHub拒绝请求"),
+                crate::video_failure_message(
+                    v["errorMessage"].as_str().unwrap_or("RunningHub拒绝请求"),
+                ),
             );
             e.vendor = Some(s.into());
             return Err(e);
@@ -600,6 +602,10 @@ fn submit(route: &Route, h: &mut dyn Host, r: &Invocation, p: &Value) -> Result<
     })?;
     if v["status"] == "FAILED" {
         let msg = v["errorMessage"].as_str().unwrap_or("RunningHub拒绝工作流");
+        let reason = crate::video_failure_message(msg);
+        if reason != msg {
+            return Err(fail("UPSTREAM_ERROR", reason));
+        }
         // 平台参数/尺寸拒绝沿错误通道显式回传；保留用户草稿宽高，禁止静默改参重提。
         return Err(fail(
             "UPSTREAM_ERROR",
@@ -770,7 +776,7 @@ fn query(route: &Route, h: &mut dyn Host, r: &Invocation, p: &Value) -> Result<V
         }
     }
     Ok(
-        json!({"status":state,"outputs":outputs,"data":{"workflowId":route.workflow,"remoteTaskId":id,"downloadedCount":outputs.len()},"usage":usage(&v),"progress":if matches!(state,"queued"|"running"){json!({"fraction":null,"message":raw})}else{Value::Null},"terminalFailure":if state=="failed"{json!({"category":"vendorTaskFailed","message":v["errorMessage"].as_str().unwrap_or("RunningHub任务生成失败"),"vendorCode":v["errorCode"],"details":{"taskId":id,"remoteStatus":raw}})}else{Value::Null},"resumeToken":p["resumeToken"]}),
+        json!({"status":state,"outputs":outputs,"data":{"workflowId":route.workflow,"remoteTaskId":id,"downloadedCount":outputs.len()},"usage":usage(&v),"progress":if matches!(state,"queued"|"running"){json!({"fraction":null,"message":raw})}else{Value::Null},"terminalFailure":if state=="failed"{json!({"category":"vendorTaskFailed","message":crate::video_failure_message(v["errorMessage"].as_str().unwrap_or("RunningHub任务生成失败")),"vendorCode":v["errorCode"],"details":{"taskId":id,"remoteStatus":raw}})}else{Value::Null},"resumeToken":p["resumeToken"]}),
     )
 }
 pub fn invoke(route: &Route, r: Invocation, h: &mut dyn Host) -> Response {

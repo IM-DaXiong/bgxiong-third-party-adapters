@@ -35,7 +35,7 @@ impl Route {
         }
     }
 }
-pub const ROUTES: [Route; 4] = [
+pub const ROUTES: [Route; 3] = [
     Route {
         slug: "r2v-turbo",
         model: "runninghub-h3-r2v-turbo-dynamic",
@@ -48,6 +48,7 @@ pub const ROUTES: [Route; 4] = [
         output_schema: include_str!("../../schemas/dynamic/turbo/output.json"),
         resume_schema: include_str!("../../schemas/dynamic/turbo/resume.json"),
     },
+    /* RunningHub has withdrawn this workflow. Keep the route and graph for reference.
     Route {
         slug: "r2v-spectrum",
         model: "runninghub-h3-r2v-spectrum-dynamic",
@@ -60,6 +61,7 @@ pub const ROUTES: [Route; 4] = [
         output_schema: include_str!("../../schemas/dynamic/spectrum/output.json"),
         resume_schema: include_str!("../../schemas/dynamic/spectrum/resume.json"),
     },
+    */
     Route {
         slug: "r2v-native",
         model: "runninghub-h3-r2v-dynamic",

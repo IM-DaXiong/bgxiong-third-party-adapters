@@ -1,6 +1,6 @@
 # RunningHub H3 工作流资料
 
-四项多图参考的提交图位于 [src/dynamic/graphs](../src/dynamic/graphs)，由 [routes.rs](../src/dynamic/routes.rs) 绑定云端工作流和参数合同，提交到 `/openapi/v2/run/workflow/{workflowId}`。
+三项多图参考的提交图位于 [src/dynamic/graphs](../src/dynamic/graphs)，由 [routes.rs](../src/dynamic/routes.rs) 绑定云端工作流和参数合同，提交到 `/openapi/v2/run/workflow/{workflowId}`。
 
 ## 固定应用的作者资料
 

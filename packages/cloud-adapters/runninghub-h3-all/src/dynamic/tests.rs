@@ -493,6 +493,20 @@ fn unknown_responses_and_uncertain_acceptance_are_not_retried() {
     let failed = query(&ROUTES[0], &mut h, &invocation("query", &p), &p).unwrap();
     assert_eq!(failed["status"], "failed");
     assert_eq!(failed["terminalFailure"]["vendorCode"], "1000");
+    assert_eq!(
+        failed["terminalFailure"]["message"],
+        "fixture generation failure"
+    );
+    h.query_response = Some(json!({
+        "taskId":"task-1", "status":"FAILED",
+        "errorMessage":"付费积分余额不足，消费级 API 调用仅支持使用付费积分，免费积分不可用于 API 调用"
+    }));
+    let failed = query(&ROUTES[0], &mut h, &invocation("query", &p), &p).unwrap();
+    assert_eq!(
+        failed["terminalFailure"]["message"],
+        "云端付费积分不足，请检查 RunningHub 账号的付费积分余额。"
+    );
+
     let e = unwrap_response(&response_json(
         json!({"errorCode":"803","errorMessage":"fixture rejection","taskId":"not-accepted"}),
     ))
