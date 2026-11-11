@@ -172,6 +172,8 @@ H3 r2v/r2v-audio/t2v、LTX2.3、LTX2.5、Qwen i2i/multi-ref/t2i/two-output 的 `
 
 ## 开发与跨机器资源恢复
 
+本地与公开仓库遵循同一套[目录结构](docs/DIRECTORY_LAYOUT.zh-CN.md)。安装 ZIP 与本地 current 目录逐文件一致；历史现场归 records，不再混在根目录。
+
 源码在 `packages/` 与 `projects/`；适配器 SDK 独立维护于 [bgxiong-adapter-sdk](https://github.com/IM-DaXiong/bgxiong-adapter-sdk)。协议和 SDK 说明文档采用该仓 MIT 许可，不改变本仓许可。
 
 开发者可从同一发行页下载 `third-party-frozen-resources-*.zip`，它是跨机恢复全集，**不是单个可安装适配器**。在主仓运行 `python scripts/restore-third-party-release.py --archive <绝对路径>`，再运行 `python scripts/stage-third-party-release.py --local-current`；恢复须匹配 [资源回执](release/current-artifact.json)。本地安装入口为 `artifacts/current/<pluginId>/<version>/`。

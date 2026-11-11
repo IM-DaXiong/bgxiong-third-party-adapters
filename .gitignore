@@ -9,7 +9,8 @@
 /contract/v2/bin/
 
 # Local migration, runtime artifacts and historical working trees are never implicit public inputs.
-/artifacts/
+/artifacts/*
+!/artifacts/README.md
 /records/
 /sources/
 /build/
