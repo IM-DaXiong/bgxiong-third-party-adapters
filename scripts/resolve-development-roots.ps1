@@ -19,7 +19,19 @@ function Get-AdapterDevelopmentRoots {
     $actualHost = (& git -C $hostPath rev-parse --show-toplevel) -join ''
     if ($LASTEXITCODE -ne 0 -or [IO.Path]::GetFullPath($actualHost) -ne $hostPath) { throw "Missing host Git checkout: $hostPath" }
     $hostRemote = (& git -C $hostPath remote get-url origin) -join ''
-    if ($LASTEXITCODE -ne 0 -or $hostRemote -notmatch '^(https://github\.com/IM-DaXiong/|git@github\.com:IM-DaXiong/)bgxiong-ai-story-dev(\.git)?$') {
+    # Hash allowlist: this public script must not contain the private host address.
+    $hostRemoteSha = [System.BitConverter]::ToString(
+        [System.Security.Cryptography.SHA256]::Create().ComputeHash(
+            [System.Text.Encoding]::UTF8.GetBytes($hostRemote.Trim())
+        )
+    ).Replace('-', '').ToLowerInvariant()
+    $knownHostRemotes = @(
+        '4083145fd2de85cd3826a4df10cabf79bc3c021e19af272c5688a2c43278c4a7',
+        'f0b4b303d860b71dc40222147cedd9fea02dbd312ab07266b220cbb73ff80a3f',
+        'cc3c045cb62a32d82b9b5cc2260cf5b38e2b7095d24838ba7bfb2db29013021c',
+        'a708daa9664626e8a86a875a8f15f9274312231a232b1aac41e0d61933821d1f'
+    )
+    if ($LASTEXITCODE -ne 0 -or $knownHostRemotes -notcontains $hostRemoteSha) {
         throw 'Unexpected host repository'
     }
     $dependency = Join-Path $hostPath 'scripts/adapter-sdk-dependency.py'
