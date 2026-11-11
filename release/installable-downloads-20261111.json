@@ -4,10 +4,10 @@
   "packages": [
     {
       "pluginId": "local.thirdparty.comfy-panorama-image",
-      "version": "1.0.2",
-      "file": "local.thirdparty.comfy-panorama-image-1.0.2.zip",
-      "sha256": "b230567645cf9c487a3085c8d3ef9dc1466fb4edeb6e6956a2da4fe45d25672c",
-      "bytes": 233044,
+      "version": "1.0.3",
+      "file": "local.thirdparty.comfy-panorama-image-1.0.3.zip",
+      "sha256": "08e3c8f912973e108556b2305d862b6dbabca6d5fdb7b5a59730f4a1b82aa159",
+      "bytes": 230918,
       "files": [
         "adapter-install.json",
         "LICENSE",
@@ -17,8 +17,8 @@
         "README.txt",
         "安装说明.txt"
       ],
-      "validation": "sdk_package_validated",
-      "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/installable-adapters-20261111-h3-101/local.thirdparty.comfy-panorama-image-1.0.2.zip",
+      "validation": "sdk_package_and_install_envelope_validated",
+      "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/panorama-image-v1.0.3/local.thirdparty.comfy-panorama-image-1.0.3.zip",
       "displayName": "全景图片",
       "service": "本地或局域网 ComfyUI",
       "purpose": "将单张图片扩展为 ERP 全景图。"

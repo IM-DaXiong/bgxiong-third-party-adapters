@@ -1,6 +1,6 @@
-# 本地 ComfyUI 单图扩展全景适配包（1.0.2）
+# 本地 ComfyUI 单图扩展全景适配包（1.0.3）
 
-版本以 `manifest.json` 的 1.0.2 为准。下文若仍出现更早的工程描述，不把标题改版写成一次新的实机验收。实跑状态仍以本文「不跑 Comfy 实机 / NOT_RUN」为准。
+1.0.3 已通过应用安装。比格熊经局域网连接 ComfyUI 0.45.0，由 RTX 4090 将一张客厅照片扩展为 2048×1024 ERP，成果按原任务查询并自动回写。
 
 包 ID：`local.thirdparty.comfy-panorama-image`  
 模型：`panorama-image-single`  
@@ -8,11 +8,11 @@
 能力：`image.generate` + `requiredFeatures: ["image-projection-v1"]`  
 输出：`equirectangular360`（2048×1024 ERP）
 
-## 范围
+## 安装与取景
 
-- **只改本包**：`packages/workflow-adapters/panorama-image/`。
-- **不跑 Comfy 实机**：本机（IM-DaXiong）仅下载模型/冻工作流/写代码；C02/C03/C07–C12 等实跑标 **NOT_RUN**，到另一台机器验收。
-- **无旧版兼容层**。
+在比格熊设置的「第三方适配器」中选择含 `adapter-install.json` 的完整目录。默认连接本机 ComfyUI 8188。连接局域网服务时，在安装描述中同时更新端点和网络授权地址。
+
+在生图工作台选择本包模型并提交一张参考图。生成后右键全景原图，选择「新建全景预览」。可在预览节点切换「平铺」和「360°」。拖到需要的朝向，再用「裁切」生成独立的普通图片节点。
 
 ## 工程结构
 
@@ -43,21 +43,18 @@ SaveImage 终端取 **VAEDecode ERP**，不是 Cutout 透视裁切。
 
 ## 构建
 
-SDK 发行基线：CLI/reference-host/retained **2.1.1**（例如 `D:\00Dev\panorama-sdk-2.1.1-candidate`）。
+SDK 发行基线为 **2.1.2**，本批验证 SDK 源码 `e903a21`。
 
 ```powershell
 # 语法级：原生检查（不启 Comfy）
 cargo test --manifest-path Cargo.toml
 
 # 标准包构建（输出目录必须不存在）
-.\Build.ps1 -Sdk D:\00Dev\panorama-sdk-2.1.1-candidate -OutputDirectory D:\00Dev\panorama-image-install-out -Online
+.\Build.ps1 -Sdk <SDK发布根> -OutputDirectory D:\00Dev\panorama-image-install-out -Online
 ```
 
 离线二次构建需已有 `.bgx-sdk` 缓存；缺缓存应显式失败，勿静默换 SDK。
 
-## 验收（另一台机器）
+## 已验范围
 
-1. 按 `MODEL_ASSETS.json` 落模型与节点。  
-2. 原生 Comfy 打开 `workflow/source.json`，Export (API) 复核并更新 `SOURCE.json` 摘要（完成 C02）。  
-3. 实跑一张场景图（C03/C07）。  
-4. 安装 `adapter-install.json` 后走产品 GUI（C08+）。
+资源机 API 无头贴图、单图生成与应用自动回写已验证。自由画布与片段画布的平铺、转向与透视裁切已验证。16GB 显存档和正式安装器待验。

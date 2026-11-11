@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "lockSha256": "7274ab2fa83c2d4031e8913816cc665533861e1a8575ca0f64fa5fdd9ab5c92f",
-  "archiveSha256": "a2b026a6259fd8df1511bdc04396dcef2b25aef284fcf3fd47302c355fc34fd6",
-  "archiveBytes": 4579530,
+  "lockSha256": "1c4ceaa9bd23cfb92d86b6cbb2b403c9b5e47a52d4b423c90c14183fecdc30c0",
+  "archiveSha256": "e69350f6733d7696574757a8be7948fd2d27fb7308b373ccc603d11d3a215b02",
+  "archiveBytes": 4577250,
   "fileCount": 212,
-  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/installable-adapters-20261111-h3-101/third-party-frozen-resources-7274ab2fa83c.zip"
+  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/panorama-image-v1.0.3/third-party-frozen-resources-1c4ceaa9bd23.zip"
 }

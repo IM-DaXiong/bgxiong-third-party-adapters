@@ -10,12 +10,8 @@ if (Test-Path -LiteralPath $OutputDirectory) { throw 'OutputDirectory must not e
 $TemplatePath = Join-Path $Project 'installation/adapter-install.template.json'
 $Installation = Get-Content -LiteralPath $TemplatePath -Raw | ConvertFrom-Json
 if ($Installation.schemaVersion -ne 1 -or $Installation.packageDirectory -ne 'package') { throw 'Invalid installation layout.' }
-if ($Installation.hostConfig.credentials.Count -ne 0 -or $Installation.authentication.source -ne 'userInput') { throw 'Installation must use the application credential broker.' }
-$Origins = @($Installation.hostConfig.network.origins)
-foreach ($Field in $Installation.authentication.fields) {
-    foreach ($Origin in $Field.origins) {
-        if ($Origin -notin $Origins) { throw 'Credential origin is outside the declared network origins.' }
-    }
+if ($Installation.hostConfig.credentials.Count -ne 0 -or $Installation.authentication.source -ne 'none') {
+    throw 'This local ComfyUI adapter does not request credentials.'
 }
 $Cli = Join-Path $Sdk 'bin/bgx-adapter-v2.exe'
 $Worker = Join-Path $Sdk 'bin/bgx-adapter-v2-worker.exe'

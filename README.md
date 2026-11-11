@@ -12,11 +12,11 @@
 
 以下 19 包来自当前冻结发行清单。所有包均已完成包级校验；实际安装、云端生成和 GPU 验证程度不同，详见每项的验收记录字段，不将“已打包”宣称为全部平台实测通过。H3 Image 1.0.1 已完成应用安装、四参考图真实生成；16 张边界已通过离线行为验证，尚未实测 16 张 GPU 生成。
 
-### 全景图片 · 1.0.2
+### 全景图片 · 1.0.3
 
-将单张图片扩展为 ERP 全景图。 连接：**本地或局域网 ComfyUI**。
+将单张图片扩展为 ERP 全景图。1.0.3 已实测资源机生成与比格熊自动回写。 连接：**本地或局域网 ComfyUI**。
 
-[下载页面](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/installable-adapters-20261111-h3-101) · [直接下载 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/installable-adapters-20261111-h3-101/local.thirdparty.comfy-panorama-image-1.0.2.zip)
+[下载页面](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/panorama-image-v1.0.3) · [直接下载 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/panorama-image-v1.0.3/local.thirdparty.comfy-panorama-image-1.0.3.zip)
 
 包内：WASM、manifest 与摘要、许可及说明。完整文件名见发行清单。
 
