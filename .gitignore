@@ -50,3 +50,10 @@
 /projects/runninghub-legacy-upgrades-20261028/
 *.wasm
 /projects/bgxiong-h3-face-refine-adapter/verification/
+
+# Retired H3 source directories: untracked; physical cleanup was policy-blocked.
+/packages/cloud-adapters/runninghub-minimax-h3/
+/packages/cloud-adapters/runninghub-h3-dynamic/
+/packages/cloud-adapters/runninghub-h3-spectrum-dynamic/
+/packages/cloud-adapters/runninghub-h3-r2v-dynamic/
+/packages/cloud-adapters/runninghub-h3-r2v-soundtrack/

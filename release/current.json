@@ -307,138 +307,6 @@
       ]
     },
     {
-      "pluginId": "local.thirdparty.runninghub-h3-dynamic",
-      "version": "1.2.7",
-      "kind": "installable",
-      "validation": "sdk_package_and_install_envelope_validated",
-      "sourceManifest": "packages/cloud-adapters/runninghub-h3-dynamic/manifest.json",
-      "files": [
-        {
-          "path": "adapter-install.json",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-dynamic/1.2.7/adapter-install.json",
-          "sha256": "76c7593e7ba7605176bbbe28ba81b1c8ebca1e2f459f904f78cebc5e4cb3ae1e"
-        },
-        {
-          "path": "LICENSE",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-dynamic/1.2.7/LICENSE",
-          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
-        },
-        {
-          "path": "package/adapter.wasm",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-dynamic/1.2.7/package/adapter.wasm",
-          "sha256": "f5604c1243c6c784de7cbeb00cc95c56672abde04b8902a37973311118c1ff45"
-        },
-        {
-          "path": "package/manifest.json",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-dynamic/1.2.7/package/manifest.json",
-          "sha256": "d47ea38a21a05ade09db785732f8a69d7e34fd32597011932156fa0240678e2c"
-        },
-        {
-          "path": "package/manifest.sha256",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-dynamic/1.2.7/package/manifest.sha256",
-          "sha256": "96c1e8c9766f5fb20c6d24333e48fdec3776ed26e48615dfd9f6e5cc107b7d2d"
-        },
-        {
-          "path": "README.txt",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-dynamic/1.2.7/README.txt",
-          "sha256": "4e7d084f8adb386ce012f349bee65f6f63d7eb5de2748aba93bad1f430501fc2"
-        },
-        {
-          "path": "安装说明.txt",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-dynamic/1.2.7/安装说明.txt",
-          "sha256": "4e0827b5d8ff58af8680bffe8eff16c25f48828433e2dcfd87bf6aebb56c164f"
-        }
-      ]
-    },
-    {
-      "pluginId": "local.example.runninghub-minimax-h3",
-      "version": "1.0.4",
-      "kind": "installable",
-      "validation": "sdk_package_and_install_envelope_validated",
-      "sourceManifest": "packages/cloud-adapters/runninghub-minimax-h3/manifest.json",
-      "files": [
-        {
-          "path": "adapter-install.json",
-          "source": "artifacts/releases/h3-current-sdk-20261111/local.example.runninghub-minimax-h3/1.0.4/adapter-install.json",
-          "sha256": "f9827f6f8d9069d8fc1d6f5742c9b819095706663cc74a6fc9065deab16edfac"
-        },
-        {
-          "path": "LICENSE",
-          "source": "artifacts/releases/h3-current-sdk-20261111/local.example.runninghub-minimax-h3/1.0.4/LICENSE",
-          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
-        },
-        {
-          "path": "package/adapter.wasm",
-          "source": "artifacts/releases/h3-current-sdk-20261111/local.example.runninghub-minimax-h3/1.0.4/package/adapter.wasm",
-          "sha256": "b2a32543fc044f21b6337e367dd4d5e8e701cdc2a3a8485ecb227f4625af9807"
-        },
-        {
-          "path": "package/manifest.json",
-          "source": "artifacts/releases/h3-current-sdk-20261111/local.example.runninghub-minimax-h3/1.0.4/package/manifest.json",
-          "sha256": "757ba4d4997e6dda920d2788ad6a6206c9adf0636fe4eaee4fabf824b5a1651b"
-        },
-        {
-          "path": "package/manifest.sha256",
-          "source": "artifacts/releases/h3-current-sdk-20261111/local.example.runninghub-minimax-h3/1.0.4/package/manifest.sha256",
-          "sha256": "a9484666de145e88d9f9cb1adc136bd118dde3565a92e5e167f951754a490b9c"
-        },
-        {
-          "path": "README.md",
-          "source": "artifacts/releases/h3-current-sdk-20261111/local.example.runninghub-minimax-h3/1.0.4/README.md",
-          "sha256": "b80b160284856b84c5cd41f547262f421b4cee9d6868643a4cff26c165dc558e"
-        },
-        {
-          "path": "SHA256SUMS.txt",
-          "source": "artifacts/releases/h3-current-sdk-20261111/local.example.runninghub-minimax-h3/1.0.4/SHA256SUMS.txt",
-          "sha256": "97858d04c2815740e56d1ad4babaccbec48f8d19166da84083ca89ba8378d649"
-        }
-      ]
-    },
-    {
-      "pluginId": "local.thirdparty.runninghub-h3-spectrum-dynamic",
-      "version": "1.0.2",
-      "kind": "installable",
-      "validation": "sdk_package_and_install_envelope_validated",
-      "sourceManifest": "packages/cloud-adapters/runninghub-h3-spectrum-dynamic/manifest.json",
-      "files": [
-        {
-          "path": "adapter-install.json",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-spectrum-dynamic/1.0.2/adapter-install.json",
-          "sha256": "9761187a6f679e7099d1d9948c2bee16b30feae029309896b984a869935b9599"
-        },
-        {
-          "path": "LICENSE",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-spectrum-dynamic/1.0.2/LICENSE",
-          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
-        },
-        {
-          "path": "package/adapter.wasm",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-spectrum-dynamic/1.0.2/package/adapter.wasm",
-          "sha256": "f884c0d7983d69865130aae09b2f2106de27b3b0cbba90879bca4e7bd52718c4"
-        },
-        {
-          "path": "package/manifest.json",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-spectrum-dynamic/1.0.2/package/manifest.json",
-          "sha256": "40316f1528cbe87285fb35544671960bf6b2396df9b1dda62434b0bd1c15719a"
-        },
-        {
-          "path": "package/manifest.sha256",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-spectrum-dynamic/1.0.2/package/manifest.sha256",
-          "sha256": "d0f2a1628f99a55f7a0751c1d585ec7821e3aa764d58c68bab39744bcdbc4f3a"
-        },
-        {
-          "path": "README.txt",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-spectrum-dynamic/1.0.2/README.txt",
-          "sha256": "018413eb3ebbe09060a0153394d9b6e834fb668c0af52011086489123dc65ba4"
-        },
-        {
-          "path": "安装说明.txt",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-spectrum-dynamic/1.0.2/安装说明.txt",
-          "sha256": "770601b7d2e39249178b0e927867b3e388c46b65282a1c5d7a1f496a5bddae92"
-        }
-      ]
-    },
-    {
       "pluginId": "local.bgx.seedream-image",
       "version": "1.0.6",
       "kind": "installable",
@@ -1079,94 +947,6 @@
       ]
     },
     {
-      "pluginId": "local.thirdparty.runninghub-h3-r2v-dynamic",
-      "version": "1.0.2",
-      "kind": "installable",
-      "validation": "sdk_package_and_install_envelope_validated",
-      "sourceManifest": "packages/cloud-adapters/runninghub-h3-r2v-dynamic/manifest.json",
-      "files": [
-        {
-          "path": "adapter-install.json",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.2/adapter-install.json",
-          "sha256": "0c071cee036d52f53a1c0df8ff341900a39ed9c81e06f8db4ab8af92d013024c"
-        },
-        {
-          "path": "LICENSE",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.2/LICENSE",
-          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
-        },
-        {
-          "path": "package/adapter.wasm",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.2/package/adapter.wasm",
-          "sha256": "e3ae89399fd07883d7bf101db4524a36cf148e9b2d960b585b3831cc64d4c9d2"
-        },
-        {
-          "path": "package/manifest.json",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.2/package/manifest.json",
-          "sha256": "51773e6d911f01e85dae917052059d57ae809e5d049d587044e8b5323b3318a6"
-        },
-        {
-          "path": "package/manifest.sha256",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.2/package/manifest.sha256",
-          "sha256": "fdfa2db3efc7cf0e6525fe3043f5a69dcb9510b67e369249428ae5a168a58d5f"
-        },
-        {
-          "path": "README.txt",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.2/README.txt",
-          "sha256": "b1474c0d3de7ee1b6818892554832e0c69cb71dae240c84c30c8d2185d84d65b"
-        },
-        {
-          "path": "安装说明.txt",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-dynamic/1.0.2/安装说明.txt",
-          "sha256": "89824c7fe0a72f17ea87181213c3bc6cf80d4e68c99a12b8bd443a937d65182e"
-        }
-      ]
-    },
-    {
-      "pluginId": "local.thirdparty.runninghub-h3-r2v-soundtrack",
-      "version": "1.0.1",
-      "kind": "installable",
-      "validation": "sdk_package_and_install_envelope_validated",
-      "sourceManifest": "packages/cloud-adapters/runninghub-h3-r2v-soundtrack/manifest.json",
-      "files": [
-        {
-          "path": "adapter-install.json",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.1/adapter-install.json",
-          "sha256": "14c243a9b6fee2d15ea3c3069c2cc2afd0027fc4626db6611d62e36ff4600fce"
-        },
-        {
-          "path": "LICENSE",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.1/LICENSE",
-          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
-        },
-        {
-          "path": "package/adapter.wasm",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.1/package/adapter.wasm",
-          "sha256": "19b7d1269db2d94bad17350f2571050a465c9cf1e310161b6c63ec8ca1679c0b"
-        },
-        {
-          "path": "package/manifest.json",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.1/package/manifest.json",
-          "sha256": "360a0b82dbe54f17ce7ba6ce4243ccfedbfd70e0d1d4fbf6f5c0596549a8582a"
-        },
-        {
-          "path": "package/manifest.sha256",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.1/package/manifest.sha256",
-          "sha256": "6af87a0c21feef3a43d3b6cafb5cd6c696388c6f889797f4b5ddb9fc55818c35"
-        },
-        {
-          "path": "README.txt",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.1/README.txt",
-          "sha256": "ea64e560fbbd7f946ee5533f7d9ca85718b9880acc5eea74c2e89d05c47e2c5f"
-        },
-        {
-          "path": "安装说明.txt",
-          "source": "artifacts/releases/sdk-completion-20261111/local.thirdparty.runninghub-h3-r2v-soundtrack/1.0.1/安装说明.txt",
-          "sha256": "1972e29dcb7d77be380a28154ed9c7ce730e45fad0480793febc30c2d18d535b"
-        }
-      ]
-    },
-    {
       "pluginId": "local.thirdparty.runninghub-qwen-image-21",
       "version": "0.1.1",
       "kind": "installable",
@@ -1320,6 +1100,45 @@
           "path": "SHA256SUMS",
           "source": "artifacts/releases/minimax-h3-image-1.0.1/SHA256SUMS",
           "sha256": "a4fd6e3016ae554a03277a7dcb968963d7f3bb0c269c9588960bcb86116d5d34"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.thirdparty.runninghub-h3-all",
+      "version": "1.0.0",
+      "kind": "installable",
+      "validation": "sdk_package_and_application_envelope_inspected_cloud_not_run",
+      "sourceManifest": "packages/cloud-adapters/runninghub-h3-all/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/runninghub-h3-all-v1.0.0/local.thirdparty.runninghub-h3-all/1.0.0/adapter-install.json",
+          "sha256": "843b606a159f1446f5cd9bfef5f4b5b9c1659e5f007d73dcf73285ce593a1d3f"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/runninghub-h3-all-v1.0.0/local.thirdparty.runninghub-h3-all/1.0.0/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/runninghub-h3-all-v1.0.0/local.thirdparty.runninghub-h3-all/1.0.0/package/adapter.wasm",
+          "sha256": "b635c6a719479ef82e2e2bae7b44a16aff52ccf15623eee68da8ce772ed739d4"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/runninghub-h3-all-v1.0.0/local.thirdparty.runninghub-h3-all/1.0.0/package/manifest.json",
+          "sha256": "d7c037095ce49887b6f7acd4025e7346fb7a79941f95e114e7d1f0ad4ba59b77"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/runninghub-h3-all-v1.0.0/local.thirdparty.runninghub-h3-all/1.0.0/package/manifest.sha256",
+          "sha256": "72e825e15416d02106cc0ec37c3b7a3d49615345990be2a1958ebd40bed010de"
+        },
+        {
+          "path": "README.md",
+          "source": "artifacts/releases/runninghub-h3-all-v1.0.0/local.thirdparty.runninghub-h3-all/1.0.0/README.md",
+          "sha256": "713b13673ff4e4615fd7e8630ebde70b20f063594bc0c4582428ce0c1a3eacd1"
         }
       ]
     }

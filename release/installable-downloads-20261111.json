@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "releaseUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/installable-adapters-20261111-h3-101",
+  "releaseUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/runninghub-h3-all-v1.0.0",
   "packages": [
     {
       "pluginId": "local.thirdparty.comfy-panorama-image",
@@ -137,69 +137,6 @@
       "purpose": "M3 文本生成与对话，需要自己的平台 API Key。"
     },
     {
-      "pluginId": "local.thirdparty.runninghub-h3-dynamic",
-      "version": "1.2.7",
-      "file": "local.thirdparty.runninghub-h3-dynamic-1.2.7.zip",
-      "sha256": "372f12037feb00816695a4a0afccd8b1d29027f291ffc4e48c10b39d99aa02a8",
-      "bytes": 245847,
-      "files": [
-        "adapter-install.json",
-        "LICENSE",
-        "package/adapter.wasm",
-        "package/manifest.json",
-        "package/manifest.sha256",
-        "README.txt",
-        "安装说明.txt"
-      ],
-      "validation": "sdk_package_and_install_envelope_validated",
-      "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/installable-adapters-20261111-h3-101/local.thirdparty.runninghub-h3-dynamic-1.2.7.zip",
-      "displayName": "H3-r2v-turbo",
-      "service": "RunningHub",
-      "purpose": "H3 参考素材视频生成的 Turbo 工作流；按输入动态提交。"
-    },
-    {
-      "pluginId": "local.example.runninghub-minimax-h3",
-      "version": "1.0.4",
-      "file": "local.example.runninghub-minimax-h3-1.0.4.zip",
-      "sha256": "28bc2da987172a8bfd1c60bb87d8c45eedb6fb09b3b694650fa91a8319aa3c37",
-      "bytes": 241336,
-      "files": [
-        "adapter-install.json",
-        "LICENSE",
-        "package/adapter.wasm",
-        "package/manifest.json",
-        "package/manifest.sha256",
-        "README.md",
-        "SHA256SUMS.txt"
-      ],
-      "validation": "sdk_package_and_install_envelope_validated",
-      "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/installable-adapters-20261111-h3-101/local.example.runninghub-minimax-h3-1.0.4.zip",
-      "displayName": "H3 多参",
-      "service": "RunningHub",
-      "purpose": "MiniMax H3 多参考素材视频生成，包声明模型、素材槽和参数。"
-    },
-    {
-      "pluginId": "local.thirdparty.runninghub-h3-spectrum-dynamic",
-      "version": "1.0.2",
-      "file": "local.thirdparty.runninghub-h3-spectrum-dynamic-1.0.2.zip",
-      "sha256": "85f9b15a3f35c45b6145d545ed7a429d1c4d5a3c71660fb8c567c7b335900ba8",
-      "bytes": 241129,
-      "files": [
-        "adapter-install.json",
-        "LICENSE",
-        "package/adapter.wasm",
-        "package/manifest.json",
-        "package/manifest.sha256",
-        "README.txt",
-        "安装说明.txt"
-      ],
-      "validation": "sdk_package_and_install_envelope_validated",
-      "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/installable-adapters-20261111-h3-101/local.thirdparty.runninghub-h3-spectrum-dynamic-1.0.2.zip",
-      "displayName": "H3-r2v-spectrum",
-      "service": "RunningHub",
-      "purpose": "H3 参考视频生成的 Spectrum 工作流。"
-    },
-    {
       "pluginId": "local.bgx.seedream-image",
       "version": "1.0.6",
       "file": "local.bgx.seedream-image-1.0.6.zip",
@@ -331,48 +268,6 @@
       "purpose": "快速文生图工作流接入；附工作流模板声明。"
     },
     {
-      "pluginId": "local.thirdparty.runninghub-h3-r2v-dynamic",
-      "version": "1.0.2",
-      "file": "local.thirdparty.runninghub-h3-r2v-dynamic-1.0.2.zip",
-      "sha256": "d4e81a1e220e99c2ac5c539bec86c61b36455d93cc47940d5160241115fa351a",
-      "bytes": 241084,
-      "files": [
-        "adapter-install.json",
-        "LICENSE",
-        "package/adapter.wasm",
-        "package/manifest.json",
-        "package/manifest.sha256",
-        "README.txt",
-        "安装说明.txt"
-      ],
-      "validation": "sdk_package_and_install_envelope_validated",
-      "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/installable-adapters-20261111-h3-101/local.thirdparty.runninghub-h3-r2v-dynamic-1.0.2.zip",
-      "displayName": "H3-r2v",
-      "service": "RunningHub",
-      "purpose": "H3 官方 20 步参考素材视频工作流。"
-    },
-    {
-      "pluginId": "local.thirdparty.runninghub-h3-r2v-soundtrack",
-      "version": "1.0.1",
-      "file": "local.thirdparty.runninghub-h3-r2v-soundtrack-1.0.1.zip",
-      "sha256": "20440a4e55ee359edd7173d53dc85ae652eb57e6ed3c42a5ebcd800369c09bb4",
-      "bytes": 240144,
-      "files": [
-        "adapter-install.json",
-        "LICENSE",
-        "package/adapter.wasm",
-        "package/manifest.json",
-        "package/manifest.sha256",
-        "README.txt",
-        "安装说明.txt"
-      ],
-      "validation": "sdk_package_and_install_envelope_validated",
-      "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/installable-adapters-20261111-h3-101/local.thirdparty.runninghub-h3-r2v-soundtrack-1.0.1.zip",
-      "displayName": "H3-r2v 原声",
-      "service": "RunningHub",
-      "purpose": "H3 官方 20 步参考素材视频工作流，保留原声用途。"
-    },
-    {
       "pluginId": "local.thirdparty.runninghub-qwen-image-21",
       "version": "0.1.1",
       "file": "local.thirdparty.runninghub-qwen-image-21-0.1.1.zip",
@@ -439,6 +334,26 @@
       "displayName": "MiniMax H3 Image",
       "service": "本地或局域网 ComfyUI",
       "purpose": "文生图与 1–16 张有序参考图编辑；动态增减图片槽，支持画幅选择和 2K/4K；附冻结工作流与模型摘要。"
+    },
+    {
+      "pluginId": "local.thirdparty.runninghub-h3-all",
+      "version": "1.0.0",
+      "file": "local.thirdparty.runninghub-h3-all-1.0.0.zip",
+      "sha256": "9de1d4caa64f5e9b819fc01a96aad0a361c037d66076f913f79d097e07aacb85",
+      "bytes": 294998,
+      "files": [
+        "adapter-install.json",
+        "LICENSE",
+        "package/adapter.wasm",
+        "package/manifest.json",
+        "package/manifest.sha256",
+        "README.md"
+      ],
+      "validation": "sdk_package_and_application_envelope_inspected_cloud_not_run",
+      "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.0/local.thirdparty.runninghub-h3-all-1.0.0.zip",
+      "displayName": "RunningHub H3 全工作流",
+      "service": "RunningHub",
+      "purpose": "单包十一项独立视频工作流；多图、固定图数、首帧、原音和对口型。"
     }
   ]
 }

@@ -60,30 +60,6 @@ M3 文本生成与对话，需要自己的平台 API Key。 连接：**MiniMax �
 
 包内：WASM、manifest 与摘要、许可及说明。完整文件名见发行清单。
 
-### H3-r2v-turbo · 1.2.7
-
-H3 参考素材视频生成的 Turbo 工作流；按输入动态提交。 连接：**RunningHub**。
-
-[下载页面](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/installable-adapters-20261111-h3-101) · [直接下载 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/installable-adapters-20261111-h3-101/local.thirdparty.runninghub-h3-dynamic-1.2.7.zip)
-
-包内：WASM、manifest 与摘要、许可及说明。完整文件名见发行清单。
-
-### H3 多参 · 1.0.4
-
-MiniMax H3 多参考素材视频生成，包声明模型、素材槽和参数。 连接：**RunningHub**。
-
-[下载页面](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/installable-adapters-20261111-h3-101) · [直接下载 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/installable-adapters-20261111-h3-101/local.example.runninghub-minimax-h3-1.0.4.zip)
-
-包内：WASM、manifest 与摘要、许可及说明。完整文件名见发行清单。
-
-### H3-r2v-spectrum · 1.0.2
-
-H3 参考视频生成的 Spectrum 工作流。 连接：**RunningHub**。
-
-[下载页面](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/installable-adapters-20261111-h3-101) · [直接下载 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/installable-adapters-20261111-h3-101/local.thirdparty.runninghub-h3-spectrum-dynamic-1.0.2.zip)
-
-包内：WASM、manifest 与摘要、许可及说明。完整文件名见发行清单。
-
 ### Seedream 5.0 Pro · 1.0.6
 
 图片生成与编辑接入；需配置服务账号和 API 凭证。 连接：**Seedream 云端图像服务**。
@@ -124,22 +100,6 @@ H3 参考视频生成的 Spectrum 工作流。 连接：**RunningHub**。
 
 包内：WASM、manifest 与摘要、许可及说明；另含 工作流／配置／配套文件。完整文件名见发行清单。
 
-### H3-r2v · 1.0.2
-
-H3 官方 20 步参考素材视频工作流。 连接：**RunningHub**。
-
-[下载页面](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/installable-adapters-20261111-h3-101) · [直接下载 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/installable-adapters-20261111-h3-101/local.thirdparty.runninghub-h3-r2v-dynamic-1.0.2.zip)
-
-包内：WASM、manifest 与摘要、许可及说明。完整文件名见发行清单。
-
-### H3-r2v 原声 · 1.0.1
-
-H3 官方 20 步参考素材视频工作流，保留原声用途。 连接：**RunningHub**。
-
-[下载页面](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/installable-adapters-20261111-h3-101) · [直接下载 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/installable-adapters-20261111-h3-101/local.thirdparty.runninghub-h3-r2v-soundtrack-1.0.1.zip)
-
-包内：WASM、manifest 与摘要、许可及说明。完整文件名见发行清单。
-
 ### Qwen Image 2.1 · 0.1.1
 
 千问图像生成与参考图编辑；下载版本以冻结清单为准，源码候选另计。 连接：**RunningHub**。
@@ -169,6 +129,14 @@ H3 官方 20 步参考素材视频工作流，保留原声用途。 连接：**R
 Breeze TTS 属于托管语音运行时，包含 plain、voice_design、reference_clone，用其 [独立安装说明](packages/tts-adapters/breeze) 获取运行环境；不把四个冻结说明文件包装成可直接安装的完整运行时。VoxCPM 当前不在可发布安装包清单。
 
 H3 r2v/r2v-audio/t2v、LTX2.3、LTX2.5、Qwen i2i/multi-ref/t2i/two-output 的 `sourceExample` 是 [作者样例](packages/comfy-workflow-adapter/v2)，不列为可直接安装发行包。源码目录中的候选版本可能高于上面的已冻结版本；用户下载以本页和发行锁为准。
+
+### RunningHub H3 全工作流 · 1.0.0
+
+一个适配器包含十一项独立工作流，名称与顺序见[包说明](packages/cloud-adapters/runninghub-h3-all/README.md)。连接：**RunningHub**。
+
+[完整安装 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.0/local.thirdparty.runninghub-h3-all-1.0.0.zip) · [SHA256](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.0/SHA256SUMS.txt)
+
+已通过20项原生行为测试、SDK源码与运行包校验、当前应用安装信封检查；本次未付费生成、未自动安装到用户库。旧包由用户自行卸载，不做兼容或迁移。
 
 ## 开发与跨机器资源恢复
 
