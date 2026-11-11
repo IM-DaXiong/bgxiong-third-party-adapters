@@ -15,7 +15,7 @@
 
 日期：2026-10-26（Asia/Shanghai）  
 分支：**`main`**（本轮成果直接落在主线，与 S0–S5 一致；未另开 feature 分支）  
-远程：`https://github.com/IM-DaXiong/bgxiong-ai-story-dev.git`  
+远程：主程序仓库不公开，本文不保留其地址。  
 当前 tip（写本文时）：`1016fed7a` — `feat(tts): T22 H1 version 0.6.1026 + offline kit CDN staging`  
 （若你拉到的 tip 更新，以 `git log --oneline --grep=tts` / 本文件后续修订为准。）
 
