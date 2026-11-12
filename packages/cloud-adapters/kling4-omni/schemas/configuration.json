@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "endpointBaseUrl",
+    "credentialRef"
+  ],
+  "properties": {
+    "endpointBaseUrl": {
+      "type": "string",
+      "const": "https://api-beijing.klingai.com"
+    },
+    "credentialRef": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

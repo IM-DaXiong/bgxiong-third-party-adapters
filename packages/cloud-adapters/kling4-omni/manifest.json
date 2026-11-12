@@ -1,0 +1,45 @@
+{
+  "artifactSha256": "eab46eca9293e230d963d1600286db296acc47ed254c723981c5369f31aca494",
+  "displayName": "可灵",
+  "entry": "adapter.wasm",
+  "language": "rust",
+  "limits": {
+    "fuel": 20000000000,
+    "memoryBytes": 67108864,
+    "outputBytes": 1048576,
+    "wallMs": 540000
+  },
+  "optionalFeatures": [],
+  "pluginId": "local.thirdparty.kling4-omni",
+  "protocolRange": {
+    "max": 2,
+    "min": 2
+  },
+  "publisherId": null,
+  "publisherKeyId": null,
+  "requestedCapabilities": {
+    "allowPrivateNetwork": false,
+    "auth": [
+      "bearer"
+    ],
+    "embeddedHeaders": [],
+    "endpointPolicy": [
+      "staticHosts"
+    ],
+    "mediaSlots": [
+      "file",
+      "image",
+      "video"
+    ],
+    "networkHosts": [
+      "api-beijing.klingai.com",
+      "p2-kling.klingai.com"
+    ],
+    "stateBytes": 0
+  },
+  "requiredFeatures": [
+    "submission-rejection-v1"
+  ],
+  "schemaVersion": 2,
+  "version": "0.1.0"
+}

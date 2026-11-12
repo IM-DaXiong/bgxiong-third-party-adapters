@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "packageDirectory": "package",
+  "manifestSha256": "BUILD_GENERATED_MANIFEST_SHA256",
+  "hostConfig": {
+    "bindingId": "kling4-omni",
+    "bindingRevision": 1,
+    "configurationRef": "kling4-omni",
+    "configuration": {
+      "endpointBaseUrl": "https://api-beijing.klingai.com",
+      "credentialRef": "kling4-user-key"
+    },
+    "network": {
+      "origins": [
+        "https://api-beijing.klingai.com",
+        "https://p2-kling.klingai.com"
+      ],
+      "allowPrivate": false,
+      "allowEmbeddedAuthorization": false,
+      "deniedHosts": [],
+      "deniedNetworks": []
+    },
+    "credentials": [],
+    "trust": {
+      "publishers": [],
+      "revokedPlugins": [],
+      "revokedVersions": [],
+      "revokedKeys": [],
+      "denylistedHosts": [],
+      "isFresh": false,
+      "supportedFeatures": [
+        "submission-rejection-v1"
+      ]
+    },
+    "mediaTtlMs": 3600000,
+    "transport": {
+      "handshakeTimeoutMs": 10000,
+      "writeTimeoutMs": 60000,
+      "shutdownTimeoutMs": 10000,
+      "cancelGraceMs": 100
+    },
+    "budgetMs": {
+      "capabilities": 60000,
+      "probe": 60000,
+      "submit": 540000,
+      "query": 540000,
+      "cancel": 60000
+    },
+    "probe": null
+  },
+  "authentication": {
+    "source": "userInput",
+    "fields": [
+      {
+        "reference": "kling4-user-key",
+        "label": "可灵 API Key",
+        "mode": "bearer",
+        "origins": [
+          "https://api-beijing.klingai.com"
+        ],
+        "customHeader": null
+      }
+    ]
+  },
+  "managedMediaProbe": true
+}

@@ -1,0 +1,17 @@
+[workspace]
+[package]
+name = "kling4-sdk-transport-probe"
+version = "0.1.0"
+edition = "2021"
+publish = false
+[[test]]
+name = "sdk_transport"
+path = "sdk_transport.rs"
+[dependencies]
+bgx-adapter-v2-reference-host = { path = "../../../../../../bgxiong-adapter-sdk/crates/reference-host" }
+bgx-adapter-v2-validator = { path = "../../../../../../bgxiong-adapter-sdk/crates/validator" }
+bgx-adapter-v2-ports = { path = "../../../../../../bgxiong-adapter-sdk/crates/ports" }
+bgx-adapter-v2-transport = { path = "../../../../../../bgxiong-adapter-sdk/crates/transport" }
+serde_json = "=1.0.149"
+tempfile = "=3.27.0"
+tokio = { version = "=1.52.1", features = ["rt-multi-thread", "macros", "io-util", "net", "time"] }

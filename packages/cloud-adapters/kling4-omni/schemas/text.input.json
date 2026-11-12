@@ -1,0 +1,53 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "prompt",
+    "inputMode",
+    "durationSeconds",
+    "fps",
+    "resolution",
+    "aspectRatio"
+  ],
+  "properties": {
+    "prompt": {
+      "type": "string",
+      "minLength": 1
+    },
+    "inputMode": {
+      "type": "string",
+      "const": "text_to_video",
+      "default": "text_to_video"
+    },
+    "durationSeconds": {
+      "type": "integer",
+      "minimum": 3,
+      "maximum": 30,
+      "default": 5
+    },
+    "fps": {
+      "type": "integer",
+      "const": 24,
+      "default": 24
+    },
+    "resolution": {
+      "type": "string",
+      "enum": [
+        "720p",
+        "1080p"
+      ],
+      "default": "1080p"
+    },
+    "aspectRatio": {
+      "type": "string",
+      "enum": [
+        "21:9",
+        "16:9",
+        "9:16",
+        "1:1",
+        "adaptive"
+      ],
+      "default": "adaptive"
+    }
+  }
+}

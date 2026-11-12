@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "remoteTaskId",
+    "downloadedCount"
+  ],
+  "properties": {
+    "remoteTaskId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "downloadedCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1
+    }
+  }
+}

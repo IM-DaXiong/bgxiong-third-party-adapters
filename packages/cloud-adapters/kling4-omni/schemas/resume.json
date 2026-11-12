@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "taskId",
+    "modelId"
+  ],
+  "properties": {
+    "taskId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "modelId": {
+      "type": "string",
+      "enum": [
+        "kling-4.0.text",
+        "kling-4.0.reference-images"
+      ]
+    }
+  }
+}
