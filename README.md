@@ -1,5 +1,7 @@
 # bgxiong-third-party-adapters / 比格熊第三方适配器
 
+比格熊官网 [www.bgxiong.com](https://www.bgxiong.com)｜微信公众号：天途影像｜[比格熊开发治理 Skill](https://www.bgxiong.com/goods/9p65SRB2Sl)
+
 ## 下载后安装，无需编译
 
 这里提供已经构建好的比格熊第三方适配器。打开 [发行下载页](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/installable-adapters-20261111-h3-101)，下载对应适配器的 ZIP，解压后在比格熊 **设置 → 第三方适配器 → 安装适配包** 中选择解压目录。含 `adapter-install.json` 的包选完整目录；FLUX.2、Z Image 包按随包说明选择 `package/` 并配置服务。无需下载源码或安装 Rust。
@@ -152,6 +154,6 @@ H3 r2v/r2v-audio/t2v、LTX2.3、LTX2.5、Qwen i2i/multi-ref/t2i/two-output 的 `
 
 许可见 [LICENSE](LICENSE)（不是 MIT）：允许个人使用和自有项目商用；禁止将本仓内容原样或改造后作为独立商业产品、付费包或付费适配器库出售。
 
-比格熊数字导演工作站是本地 AI 创作工作台。适配器仓不包含主程序。
+比格熊数字导演工作站是本地 AI 创作工作台。适配器仓不包含主程序。[版本说明](https://www.bgxiong.com/client/version.html)。
 
-[官网下载](https://www.bgxiong.com) · [版本说明](https://www.bgxiong.com/client/version.html)。公众号：天途影像。
+比格熊官网 [www.bgxiong.com](https://www.bgxiong.com)｜微信公众号：天途影像｜[比格熊开发治理 Skill](https://www.bgxiong.com/goods/9p65SRB2Sl)
