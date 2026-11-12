@@ -1,0 +1,10 @@
+{
+  "sourceCommit": "41c3ee734fba14175251869bb66fec661854e7ac",
+  "pluginId": "local.tts.breeze",
+  "pluginVersion": "1.0.0-d",
+  "runtimeVersion": "1.0.2",
+  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/breeze-installer-input-1.0.0-d-runtime-1.0.2/breeze-installer-input-1.0.0-d-runtime-1.0.2.zip",
+  "archiveSha256": "a8b4796b5ffdfed29b561022d08974196565f1995402ebd287d8c2f22ac5ced0",
+  "archiveBytes": 379324,
+  "fileCount": 60
+}
