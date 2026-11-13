@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "pluginId": "local.tts.breeze",
+  "pluginVersion": "1.0.1",
+  "runtimeVersion": "1.0.2",
+  "release": "breeze-durable-1.0.1",
+  "assets": [
+    {
+      "file": "breeze-tts-h1-1.0.2.zip.offline-bundle.json",
+      "url": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/breeze-durable-1.0.1/breeze-tts-h1-1.0.2.zip.offline-bundle.json",
+      "sha256": "c3677921a1a65b12d0a12cbe353f051d7019a874f524e136fdbff9f70dc6b1f3",
+      "bytes": 406
+    },
+    {
+      "file": "breeze-tts-h1-1.0.2.json",
+      "url": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/breeze-durable-1.0.1/breeze-tts-h1-1.0.2.json",
+      "sha256": "a6f0c3509b3b7c06bc09941a1f8a8f7f68de9928bfe1d78e856c8ace1328e33b",
+      "bytes": 9794
+    },
+    {
+      "file": "BREEZE-INSTALL-METADATA-SHA256SUMS.txt",
+      "url": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/breeze-durable-1.0.1/BREEZE-INSTALL-METADATA-SHA256SUMS.txt",
+      "sha256": "4f56bae36e4f9ba3e16d574de24c96b7fdbb426ca6d77fc6ee66d736008930e3",
+      "bytes": 201
+    }
+  ],
+  "runtimeArchive": {
+    "url": "https://r.bgxiong.com/client/ai-story/runtimes/BreezeTTS/breeze-tts-h1-1.0.2.zip",
+    "sha256": "de793dc80dd2ea4936970300e57f3d1d65da8f854171f6aee98f2e626b7eed47",
+    "bytes": 148516
+  },
+  "originalRuntimeManifest": {
+    "url": "https://r.bgxiong.com/client/ai-story/runtimes/BreezeTTS/breeze-tts-h1-1.0.2.json",
+    "sha256": "a6f0c3509b3b7c06bc09941a1f8a8f7f68de9928bfe1d78e856c8ace1328e33b",
+    "bytes": 9794
+  },
+  "existingReleaseAssetsUnchanged": {
+    "local.tts.breeze-1.0.1.zip": {
+      "id": "RA_kwDOUbPh1c4sV76-",
+      "size": 406875,
+      "digest": "sha256:f71ea8eed7b1058d84db6ea3d92e65c6e082e44e703d3d936198892b8b133b6e",
+      "updatedAt": "2026-11-13T14:27:19Z"
+    },
+    "SHA256SUMS": {
+      "id": "RA_kwDOUbPh1c4sV76_",
+      "size": 207,
+      "digest": "sha256:de0c026d51deb9493403f03d0db02930b7accc256c68d76832526ddee5aaba5c",
+      "updatedAt": "2026-11-13T14:27:09Z"
+    },
+    "third-party-frozen-resources-34014c11382e.zip": {
+      "id": "RA_kwDOUbPh1c4sV77C",
+      "size": 4035739,
+      "digest": "sha256:1f0e9469cca3edc096ee1715708a4024bb1fc9a3879e39c38f48094e85696c88",
+      "updatedAt": "2026-11-13T14:27:31Z"
+    }
+  },
+  "publicDownloadsVerified": true,
+  "applicationDiscovery": {
+    "entry": "OfflineBundlePanel -> offlineBundleScan -> strict builtin sdk_speech locator",
+    "sidecarPlacement": "Place the new sidecar next to the original runtime ZIP in the selected BreezeTTS resource folder. Keep other resource files and the Python sibling folder.",
+    "automaticMetadataFetch": false
+  },
+  "newNativeInstallationVerified": false
+}

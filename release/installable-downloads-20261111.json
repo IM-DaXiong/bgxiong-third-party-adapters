@@ -434,7 +434,33 @@
       "displayName": "Breeze TTS 2",
       "service": "Managed local Breeze runtime 1.0.2",
       "purpose": "Durable speech synthesis, reference cloning and voice design; SDK 2.2.0 required.",
-      "mainApplicationInstallationVerified": false
+      "mainApplicationInstallationVerified": false,
+      "offlineInstallationMetadata": {
+        "receipt": "release/breeze-durable-1.0.1-metadata.json",
+        "assets": [
+          {
+            "file": "breeze-tts-h1-1.0.2.zip.offline-bundle.json",
+            "url": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/breeze-durable-1.0.1/breeze-tts-h1-1.0.2.zip.offline-bundle.json",
+            "sha256": "c3677921a1a65b12d0a12cbe353f051d7019a874f524e136fdbff9f70dc6b1f3",
+            "bytes": 406
+          },
+          {
+            "file": "breeze-tts-h1-1.0.2.json",
+            "url": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/breeze-durable-1.0.1/breeze-tts-h1-1.0.2.json",
+            "sha256": "a6f0c3509b3b7c06bc09941a1f8a8f7f68de9928bfe1d78e856c8ace1328e33b",
+            "bytes": 9794
+          },
+          {
+            "file": "BREEZE-INSTALL-METADATA-SHA256SUMS.txt",
+            "url": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/breeze-durable-1.0.1/BREEZE-INSTALL-METADATA-SHA256SUMS.txt",
+            "sha256": "4f56bae36e4f9ba3e16d574de24c96b7fdbb426ca6d77fc6ee66d736008930e3",
+            "bytes": 201
+          }
+        ],
+        "publicDownloadsVerified": true,
+        "runtimeArchiveUnchanged": true,
+        "automaticMetadataFetch": false
+      }
     }
   ]
 }

@@ -138,6 +138,8 @@ M3 文本生成与对话，需要自己的平台 API Key。 连接：**MiniMax �
 
 Breeze TTS 1.0.1 提供[完整托管安装包](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/breeze-durable-1.0.1/local.tts.breeze-1.0.1.zip)，包含适配器、companion、资源准备脚本、清单和摘要。plain、voice_design、reference_clone 三种模式保留；新增持久任务与受理结果恢复。需要 SDK 2.2.0 和对应的应用接线，运行时仍为 1.0.2，模型与环境资源按[安装说明](packages/tts-adapters/breeze)另行准备。包级校验与真实模型受理恢复已通过，最终应用安装联验见[独立验收记录](release/breeze-durable-1.0.1.json)。VoxCPM 当前不在可发布安装包清单。
 
+**Breeze 1.0.1 离线安装元数据（新电脑）**：请下载本次的 [安装识别文件](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/breeze-durable-1.0.1/breeze-tts-h1-1.0.2.zip.offline-bundle.json)、[原运行时清单](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/breeze-durable-1.0.1/breeze-tts-h1-1.0.2.json) 和[独立 SHA256 清单](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/breeze-durable-1.0.1/BREEZE-INSTALL-METADATA-SHA256SUMS.txt)。前两个文件与原 [breeze-tts-h1-1.0.2.zip](https://r.bgxiong.com/client/ai-story/runtimes/BreezeTTS/breeze-tts-h1-1.0.2.zip) 放在所选资源目录的 `BreezeTTS/` 内，保留完整文件名；依赖、模型、SoX 归档沿安装包内 `provisioning.json` 的原 URL/文件名放在同目录，Python 归档放在并列 `Python/`。然后在应用的本地离线资源面板选择该资源目录并扫描安装。旧 CDN 识别文件对应旧适配器，不能与 1.0.1 混用；应用不会自动下载或替换这个识别文件。此更新仅补齐元数据，原运行时 1.0.2、完整安装 ZIP 与原 SHA256SUMS 均未覆盖。公开下载字节验证见[元数据回执](release/breeze-durable-1.0.1-metadata.json)。
+
 H3 r2v/r2v-audio/t2v、LTX2.3、LTX2.5、Qwen i2i/multi-ref/t2i/two-output 的 `sourceExample` 是 [作者样例](packages/comfy-workflow-adapter/v2)，不列为可直接安装发行包。源码目录中的候选版本可能高于上面的已冻结版本；用户下载以本页和发行锁为准。
 
 ## 开发与跨机器资源恢复
