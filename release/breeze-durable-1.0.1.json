@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "pluginId": "local.tts.breeze",
+  "version": "1.0.1",
+  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/breeze-durable-1.0.1/local.tts.breeze-1.0.1.zip",
+  "sha256": "f71ea8eed7b1058d84db6ea3d92e65c6e082e44e703d3d936198892b8b133b6e",
+  "bytes": 406875,
+  "fileCount": 65,
+  "build": {
+    "schemaVersion": 1,
+    "pluginId": "local.tts.breeze",
+    "version": "1.0.1",
+    "adapterSha256": "dee7f3d0f97d54be7b13ddb13b549084227d6c58be8fe921bbc6d95f831e7a05",
+    "sdkSourceBaseCommit": "649f1d75206a13ed0db137d5cb75594ccd93e0a0",
+    "adapterSourceBaseCommit": "8e33f7d440712f24a45a92e91515ac081fcc0d73",
+    "sdkSourceDirty": false,
+    "sdkCliSha256": "5080ad3ae7aee972c6429f58bc2aa9bfcfdca166c3d23a0f9791d5e2429f718a",
+    "sdkWorkerSha256": "c47f9de56de9b4a0cd55874ea82178f9b7ec7033008752ceb279ed64c27ef44c",
+    "runtimeVersion": "1.0.2",
+    "modelInferenceAcceptance": "pending-separate-host-test",
+    "sdkBuildReceiptSha256": "a746198c6f93bfa0a56f598e9ae782f579eec888061d8f6a4f2bba5ea9d5f0ef"
+  },
+  "acceptance": {
+    "officialSdkPackageCheck": "passed",
+    "durableProtocolTests": 7,
+    "requestMappingTests": 32,
+    "rustAdapterTests": 2,
+    "realModelLostAcceptanceRecovery": {
+      "status": "passed",
+      "originalSubmitCount": 1,
+      "audioSamples": 161280,
+      "sampleRate": 24000,
+      "audioSha256": "9b1c15b8675401fa44020dc5696950ca9e185cddb6b3c214ac3fbb1171501f0c",
+      "scope": "Same WASM and companion; pre-release SDK integration binaries. Final SDK 2.2.0 package check passed separately."
+    },
+    "mainApplicationInstallationVerified": false,
+    "publicDownloadVerified": true
+  },
+  "publicRecovery": {
+    "fullPackage": {
+      "url": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/breeze-durable-1.0.1/local.tts.breeze-1.0.1.zip",
+      "sha256": "f71ea8eed7b1058d84db6ea3d92e65c6e082e44e703d3d936198892b8b133b6e",
+      "bytes": 406875,
+      "verifiedFiles": 65
+    },
+    "frozenResources": {
+      "url": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/breeze-durable-1.0.1/third-party-frozen-resources-34014c11382e.zip",
+      "sha256": "1f0e9469cca3edc096ee1715708a4024bb1fc9a3879e39c38f48094e85696c88",
+      "bytes": 4035739,
+      "restore": {
+        "restored": 244,
+        "alreadyPresent": 0,
+        "files": 244
+      }
+    },
+    "originalUserDataTouched": false
+  }
+}

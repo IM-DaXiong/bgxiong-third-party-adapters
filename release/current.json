@@ -352,30 +352,335 @@
     },
     {
       "pluginId": "local.tts.breeze",
-      "version": "1.0.0-d",
+      "version": "1.0.1",
       "kind": "speechManaged",
-      "validation": "frozen_speech_owner_validated",
-      "sourceManifest": "records/release-sources/breeze/1.0.0-d/manifest.json",
+      "validation": "sdk_package_and_real_model_reconciliation_validated",
+      "sourceManifest": "packages/tts-adapters/breeze/adapter/manifest.json",
       "files": [
         {
+          "path": "adapter-pack/adapter.wasm",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/adapter.wasm",
+          "sha256": "dee7f3d0f97d54be7b13ddb13b549084227d6c58be8fe921bbc6d95f831e7a05"
+        },
+        {
+          "path": "adapter-pack/companion/_shared/bgx_remote_fetch.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/_shared/bgx_remote_fetch.py",
+          "sha256": "4e1673f58997b62e149d3550b21dad035562fa9fa51798ea6ccafec020b68b2a"
+        },
+        {
+          "path": "adapter-pack/companion/_shared/bgx_sidecar_common.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/_shared/bgx_sidecar_common.py",
+          "sha256": "609b47ae60fcb8b943a4b70fa107e17ed129b4b02095be42a08d52b7480e762a"
+        },
+        {
+          "path": "adapter-pack/companion/_shared/remote_sources.json",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/_shared/remote_sources.json",
+          "sha256": "664171464c504a78e76ca121035a499a6d7e05b483f1847e6b418061ebf7952c"
+        },
+        {
+          "path": "adapter-pack/companion/breeze_runtime.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/breeze_runtime.py",
+          "sha256": "4282fde45ad0b5b88e661074cdf6cb88cbb0c354b7499466149e88c398999ab7"
+        },
+        {
+          "path": "adapter-pack/companion/CONTRACT.md",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/CONTRACT.md",
+          "sha256": "225254fc0c0c45b69bf0fb0bda95009b686383e36051f3acda197525bda9d4b9"
+        },
+        {
+          "path": "adapter-pack/companion/durable_jobs.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/durable_jobs.py",
+          "sha256": "002c066ee591ecad8683f922cc72da7b56daa16204d1957a0537126b5e8bbd01"
+        },
+        {
+          "path": "adapter-pack/companion/files.json",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/files.json",
+          "sha256": "92aa3858e1f5512a4ddf3f4e54b0c13fe569f1f9bf4f9e830428a46e691dda4e"
+        },
+        {
+          "path": "adapter-pack/companion/manifest.json",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/manifest.json",
+          "sha256": "927b3e286876b68133c8cde0b5c132d0ad8ac7e8b782f711e8e514ad8f4b7f59"
+        },
+        {
+          "path": "adapter-pack/companion/request_map.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/request_map.py",
+          "sha256": "492e02f2f41af1ea4bb5f159ef31770d593a081c3c5ce4a91cb420dca5dfb040"
+        },
+        {
+          "path": "adapter-pack/companion/requirements.lock.txt",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/requirements.lock.txt",
+          "sha256": "10ab75aea39454b56fae589ff9c473aa16850c84f1ab1d7adec006a7f5585e97"
+        },
+        {
+          "path": "adapter-pack/companion/requirements.txt",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/requirements.txt",
+          "sha256": "1df2128892297032c017f22d5c1d0ea5ccde0443cd9260691f13c68454d8d280"
+        },
+        {
+          "path": "adapter-pack/companion/s0_prove.ps1",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/s0_prove.ps1",
+          "sha256": "66602ba1b35c7b194fa36cec5c8f499b13ae822ace5aa1e326e149b9c3f69dae"
+        },
+        {
+          "path": "adapter-pack/companion/sidecar_server.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/sidecar_server.py",
+          "sha256": "71fa149efb587b6697effa67c2c4a26235568d70eb09964b3d8505ba4d23372f"
+        },
+        {
+          "path": "adapter-pack/companion/start-managed.ps1",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/start-managed.ps1",
+          "sha256": "a9c0755266bacbddd543b6c593c635ff316631068efe81632c33ff431405907a"
+        },
+        {
+          "path": "adapter-pack/companion/start-sidecar.ps1",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/start-sidecar.ps1",
+          "sha256": "24de81dfcb20da3b7fed742f8b6ae642169f2b5afea0592c220ce3738e5b0d89"
+        },
+        {
+          "path": "adapter-pack/companion/start-sidecar.sh",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/start-sidecar.sh",
+          "sha256": "d2b3ff90d324d6d1054271e7436d541be79ba8ef7cc9ba3580aa1ebb95c937bb"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/breeze_infer/__init__.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/breeze_infer/__init__.py",
+          "sha256": "810141b5e6326542cced736e82763c37300f9de2b531f3ab97921a1aca32328d"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/breeze_infer/api.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/breeze_infer/api.py",
+          "sha256": "acee4503bcdddfef20ab1078d98d2079e15b8c2dd1e5cde65fcc0b7245460910"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/breeze_infer/audio.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/breeze_infer/audio.py",
+          "sha256": "3dc7977d8b1f3097918d4164e5607c20d99491877f3c4723649a36724713cff4"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/breeze_infer/batch.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/breeze_infer/batch.py",
+          "sha256": "2bb0e4999f07f2391a4a5a600e5b95c49110a8d4472601dc7e4609cf55aa6b91"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/breeze_infer/runtime.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/breeze_infer/runtime.py",
+          "sha256": "a257d868b867009edddd8ba53b22d3b66394057801c62f198879b1c992637ab9"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/breeze_infer/templates.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/breeze_infer/templates.py",
+          "sha256": "52057796b74b95e34adf7238cb07ed1484941a5f6c168760632ac54a0bd0ca06"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/configs/fast.json",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/configs/fast.json",
+          "sha256": "879c719966e3cd560e47f7555faacd0073f42b36df5c60a5569d3b8558715900"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/infer.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/infer.py",
+          "sha256": "14d39834056bec63dcb73918c96ca8f5d01f534fc7b0d5eda2f5fecc7d13a4b3"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/LICENSE",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/LICENSE",
+          "sha256": "c8858a5a76440bbca484e134cf7df46385d090dd18b2c58e650f939258802e5b"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/__init__.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/__init__.py",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/breeze.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/breeze.py",
+          "sha256": "9c408b2323f1fb57f7ddc4217cc72e4d9fce82cbf287a0d2ae4578e63f204cc2"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/breeze_backbone_factory.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/breeze_backbone_factory.py",
+          "sha256": "8d8519dccb82f5363d4e4ff64f182906a0f93dd5853619547b54c89ff22f17ef"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/breeze_base_config.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/breeze_base_config.py",
+          "sha256": "6b8aab8979fef27108176d654077e7f1d797a0ca2ed18e6e1460fdf8ab93b7a9"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/breeze_config.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/breeze_config.py",
+          "sha256": "f37fc58792ea936d24925254dfbd75eafb47c2ca85db46b0c371b94550a3fb25"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/cudagraph/__init__.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/cudagraph/__init__.py",
+          "sha256": "ef0418048e1766dfd2efab2f000bcc15f3d75ccfc700e1e5f52d7c540f56bf62"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/cudagraph/backbone_graph.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/cudagraph/backbone_graph.py",
+          "sha256": "942b07eb2c16a31f362e10ecc23e9d1c131fc8cc3116550650010d2ec83fd024"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/cudagraph/backbone_prefill_graph.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/cudagraph/backbone_prefill_graph.py",
+          "sha256": "bd90e34eb8bc4e507af9e222b58db741e913e5c833cd9c5625f4168660d45d82"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/cudagraph/depth_decoder_graph.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/cudagraph/depth_decoder_graph.py",
+          "sha256": "407bb07d0cd610f9c11748655450ad7708f8bab811d2129382925bf729b88acc"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/cudagraph/sampling.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/cudagraph/sampling.py",
+          "sha256": "3dcaa35fd106c730bc630a998d3a6ed3329beb55e8df03d76d3f857346a86623"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/fast_streaming.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/fast_streaming.py",
+          "sha256": "7748cc11fef2a5f54ae82fefc96325673d71b8cb9b1bdd7bb92275c4c100a825"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/generation_breeze.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/generation_breeze.py",
+          "sha256": "ebc55c27b896423f7a3464cb6dcf1df0918c78bda6b0236235f0f0f4c4d04e84"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/logits_process.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/logits_process.py",
+          "sha256": "43bbcc1c85da535aefc757e44716b0e69701c90db660cf14d77da73d31485b9f"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/stream_runtime/__init__.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/stream_runtime/__init__.py",
+          "sha256": "f5f6ff5a5013666069d61bc7d6275fdb4b3feac9d569a1afec3cfacd59dec799"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/stream_runtime/core/__init__.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/stream_runtime/core/__init__.py",
+          "sha256": "c3daf48ca2c409d255ba51bbbeb9f56a66a68e4934b33a77f0714541f0566670"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/stream_runtime/core/compat.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/stream_runtime/core/compat.py",
+          "sha256": "27354ec2e98991579b421f1d24af93786da066532a61ad66462ffcff6a978d97"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/stream_runtime/inference/__init__.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/stream_runtime/inference/__init__.py",
+          "sha256": "01f6c318a7ac1be7df8f78a42d59bac4214126adbd900c649e5ec3a5367e62a3"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/stream_runtime/stream/__init__.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/stream_runtime/stream/__init__.py",
+          "sha256": "c5cad715006f19bb5c097c2556a301252845b31facd4e402b90db2d727886187"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/stream_runtime/stream/kv_cache.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/stream_runtime/stream/kv_cache.py",
+          "sha256": "1162ba9bce3fbb2e64b6fcb2e95e20b9f6efb9dfce541be61ab8346f123c8f41"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/stream_runtime/stream/lane.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/stream_runtime/stream/lane.py",
+          "sha256": "074a88bd1c6ea367993f66b352df48be372a8236c66dbb7a7e151f50bd620486"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/stream_runtime/stream/runtime.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/stream_runtime/stream/runtime.py",
+          "sha256": "6b886844b7e317a4218a9f6f68735e502d8fd853ce41dd8c90648bf1de88c320"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/stream_runtime/stream/state.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/stream_runtime/stream/state.py",
+          "sha256": "05631403bae6b29538b1bba7710854d1fada84033f656e7302e43cf8c7f5eba7"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/stream_runtime/stream/workspace.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/stream_runtime/stream/workspace.py",
+          "sha256": "1607e23cf928febd76efe57f075430a97f8311e1901c1ebe33dde144f3e1c584"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/t5gemma2_compat.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/t5gemma2_compat.py",
+          "sha256": "5902c67fdd3ca28bb13508cb139d0ea96594f118763bc5cd4d940e78d1cf92bf"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/text_encoder_graph.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/text_encoder_graph.py",
+          "sha256": "a8cb9c92b9b13124652e93c0f9a95fe8d70775fec105f3616435b08970cbbddb"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/warmup_profile.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/warmup_profile.py",
+          "sha256": "48faa9be17f740a808946eae5f2724e370b68b3e177e7871563f4ee45a0e85c6"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/README.md",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/README.md",
+          "sha256": "a6e4456cc2cb0114ec88b017782027f9c2cf2788de1698bdfa7aa8e07e071545"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/requirements.txt",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/requirements.txt",
+          "sha256": "1274174e9e53afd4db15c4728fb981c6e8071f9fa867605b6426222c31fc4f3e"
+        },
+        {
+          "path": "adapter-pack/companion/upstream-snapshot.json",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream-snapshot.json",
+          "sha256": "a524ada712a1d2809b5e4ff04f523f519ac1ff496ca0619573a4793e89a2c76c"
+        },
+        {
+          "path": "adapter-pack/manifest.json",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/manifest.json",
+          "sha256": "16cb06b9085b1bb457b37aedfbd2478f114d5d683e5298a8407dac92f3733e0b"
+        },
+        {
+          "path": "adapter-pack/manifest.sha256",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/manifest.sha256",
+          "sha256": "08676e733498dbe6318908f927e27066be9a509d35f43c6a4c627cc797359dca"
+        },
+        {
+          "path": "adapter-pack/tts-bundle.json",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/tts-bundle.json",
+          "sha256": "c0a8bb1f96fab8c6762c4b8c4765b9493443a28fac65942f0de35ee00bed0cb4"
+        },
+        {
+          "path": "build-receipt.json",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/build-receipt.json",
+          "sha256": "e77136bb862cc2c483da1531d764d585d0e662d8a37f64738d21dcfa1e5185ca"
+        },
+        {
           "path": "LICENSE",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.tts.breeze/1.0.0-d/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
-          "path": "README.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.tts.breeze/1.0.0-d/README.txt",
-          "sha256": "60df1ca1513287c39ec674a3c9d77c42ef3dd20531dd24674aaed6f82e74a5e5"
+          "path": "package-check.json",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/package-check.json",
+          "sha256": "ded4d152c5203fa77a52b389726f81aac84d813fc40b49ff952d9118dbc86dba"
         },
         {
-          "path": "speech-owner.json",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.tts.breeze/1.0.0-d/speech-owner.json",
-          "sha256": "ba46ab8b6ba733f92629e9533c246b349ad46795dd2f624b6e07f3f29162b7ca"
+          "path": "prepare-resources.ps1",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/prepare-resources.ps1",
+          "sha256": "310f2018c3fe1257c4349737b9995a61e835f3b1f5597db78239dd687aae4d1f"
         },
         {
-          "path": "安装说明.txt",
-          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.tts.breeze/1.0.0-d/安装说明.txt",
-          "sha256": "47eeb093f95d7c27efb54574c0f8ab1c0f34dc5174cb272c8ab7be87e7f7cab3"
+          "path": "provisioning.json",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/provisioning.json",
+          "sha256": "a6b37bb5841878f79e483bea0739f3dd669a94e69a55e6e4d06660f7b3e2d67a"
+        },
+        {
+          "path": "README.md",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/README.md",
+          "sha256": "b7390dda47202a16b2895652b2d042d689b62cad9e1b1c0a55f4d3fbbcdd4191"
+        },
+        {
+          "path": "SHA256SUMS.txt",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/SHA256SUMS.txt",
+          "sha256": "fa9f948559a343b8a7d42d14ff9a03f8b23f13e30559a250068c2bcb8cb62974"
         }
       ]
     },

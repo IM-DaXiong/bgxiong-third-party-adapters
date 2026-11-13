@@ -136,7 +136,7 @@ M3 文本生成与对话，需要自己的平台 API Key。 连接：**MiniMax �
 
 ## 托管语音、作者样例与候选
 
-Breeze TTS 属于托管语音运行时，包含 plain、voice_design、reference_clone，用其 [独立安装说明](packages/tts-adapters/breeze) 获取运行环境；不把四个冻结说明文件包装成可直接安装的完整运行时。VoxCPM 当前不在可发布安装包清单。
+Breeze TTS 1.0.1 提供[完整托管安装包](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/breeze-durable-1.0.1/local.tts.breeze-1.0.1.zip)，包含适配器、companion、资源准备脚本、清单和摘要。plain、voice_design、reference_clone 三种模式保留；新增持久任务与受理结果恢复。需要 SDK 2.2.0 和对应的应用接线，运行时仍为 1.0.2，模型与环境资源按[安装说明](packages/tts-adapters/breeze)另行准备。包级校验与真实模型受理恢复已通过，最终应用安装联验见[独立验收记录](release/breeze-durable-1.0.1.json)。VoxCPM 当前不在可发布安装包清单。
 
 H3 r2v/r2v-audio/t2v、LTX2.3、LTX2.5、Qwen i2i/multi-ref/t2i/two-output 的 `sourceExample` 是 [作者样例](packages/comfy-workflow-adapter/v2)，不列为可直接安装发行包。源码目录中的候选版本可能高于上面的已冻结版本；用户下载以本页和发行锁为准。
 

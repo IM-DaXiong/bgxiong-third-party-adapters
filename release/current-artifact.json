@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "lockSha256": "cff8705cea70b253c8562d212e2c634d75324474e8618fd807344b389f447da1",
-  "archiveSha256": "a1b889ed39f9a6749a55644c778d9538760318f1e91c2c00c7271e7dbd0633c7",
-  "archiveBytes": 3626269,
-  "fileCount": 183,
-  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.2/third-party-frozen-resources-cff8705cea70.zip"
+  "lockSha256": "34014c11382e68e2336fe920f691f11c864bafe9c322b8f47110af74ea3f2882",
+  "archiveSha256": "1f0e9469cca3edc096ee1715708a4024bb1fc9a3879e39c38f48094e85696c88",
+  "archiveBytes": 4035739,
+  "fileCount": 244,
+  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/breeze-durable-1.0.1/third-party-frozen-resources-34014c11382e.zip"
 }
