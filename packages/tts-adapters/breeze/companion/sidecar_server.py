@@ -21,7 +21,7 @@ from typing import Any, AsyncIterator, Optional
 
 import uvicorn
 from fastapi import FastAPI, File, HTTPException, Request, Response, UploadFile
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from pydantic import BaseModel, ConfigDict, Field
 from starlette.concurrency import run_in_threadpool
 
@@ -123,7 +123,17 @@ from breeze_runtime import BreezeRuntime  # noqa: E402
 from request_map import RequestMapError, map_speech_request, parse_runtime_options  # noqa: E402
 
 _request_lock = threading.Lock()
+from durable_jobs import Jobs, JobError
+
 _runtime = BreezeRuntime()
+_jobs: Optional[Jobs] = None
+
+
+def _execute_durable_speech(body: dict[str, Any]) -> bytes:
+    with _request_lock:
+        mapped = _map_or_400(body)
+        wav, _status = _runtime.synthesize_wav(mapped)
+        return wav
 
 logging.basicConfig(
     level=logging.DEBUG if os.environ.get("BGX_TTS_SIDECAR_DEBUG") == "1" else logging.INFO,
@@ -247,10 +257,82 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
         log.exception("load_model failed")
         raise
     append_bootstrap(BOOTSTRAP_JSONL, "ready", "Sidecar ready for synthesis requests")
-    yield
+    global _jobs
+    _jobs = Jobs(RUNTIME_ROOT / "jobs-v1", _execute_durable_speech, TMP_REF_DIR)
+    _jobs.start()
+    try:
+        yield
+    finally:
+        await loop.run_in_executor(None, _jobs.close)
+        _jobs = None
 
 
 app = FastAPI(title="Breeze TTS 2 Sidecar", version="1.0.0", lifespan=lifespan)
+
+
+class DurableSubmission(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    requestId: str
+    requestDigest: str
+    expectedStoreId: str
+    speech: SpeechRequest
+    receipt: dict[str, Any]
+
+
+class DurableResolution(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    requestId: str
+    requestDigest: str
+    expectedStoreId: str
+
+
+def _job_store() -> Jobs:
+    if _jobs is None:
+        raise HTTPException(status_code=503, detail="Durable speech store is not ready")
+    return _jobs
+
+
+@app.exception_handler(JobError)
+async def durable_error(_request: Request, error: JobError):
+    status = 404 if error.code == "JOB_NOT_FOUND" else 409
+    return JSONResponse({"error": error.code, "message": str(error)}, status_code=status)
+
+
+@app.get("/v1/store-identity")
+async def durable_identity():
+    return _job_store().identity()
+
+
+@app.post("/v1/jobs")
+async def durable_submit(body: DurableSubmission):
+    speech = body.speech.model_dump(exclude_none=True)
+    # Validate before making any durable acceptance promise.
+    _map_or_400(speech)
+    return await run_in_threadpool(_job_store().submit, body.requestId, body.requestDigest,
+                                   body.expectedStoreId, speech, body.receipt)
+
+
+@app.post("/v1/jobs/resolve")
+async def durable_resolve(body: DurableResolution):
+    return await run_in_threadpool(_job_store().resolve, body.requestId, body.requestDigest, body.expectedStoreId)
+
+
+@app.get("/v1/jobs/{identifier}")
+async def durable_status(identifier: str):
+    return await run_in_threadpool(_job_store().get, identifier)
+
+
+@app.get("/v1/jobs/{identifier}/audio")
+async def durable_audio(identifier: str):
+    path = await run_in_threadpool(_job_store().audio, identifier)
+    return FileResponse(path, media_type="audio/wav", filename="speech.wav")
+
+
+@app.post("/v1/jobs/{identifier}/cancel")
+async def durable_cancel(identifier: str, body: DurableResolution):
+    if body.requestId != identifier:
+        raise HTTPException(status_code=409, detail="Cancellation request identity differs")
+    return await run_in_threadpool(_job_store().cancel, identifier, body.requestDigest, body.expectedStoreId)
 
 
 @app.get("/health")

@@ -136,3 +136,12 @@ Companion-scoped temporary reference upload (SDK media bridge). **Not** a public
 Releases one temp lease early. Missing id returns `{deleted:false}`.
 
 After upload, `POST /v1/audio/speech` with `mode=reference_clone` uses the returned `audioPath` plus required `reference.promptText` (and optional `styleControl` for direction).
+
+
+## Durable speech jobs (adapter 1.0.1, runtime stays 1.0.2)
+
+`GET /v1/store-identity` returns a persistent `storeId` and this process's `instanceId`.
+`POST /v1/jobs` accepts `{requestId, requestDigest, expectedStoreId, speech, receipt}` only after durable queue insertion; duplicate identity/digest returns the original receipt. The uploaded reference is privately snapshotted before acceptance.
+`POST /v1/jobs/resolve` requires the original storeId. Existing jobs return accepted; missing jobs are atomically tombstoned before returning rejected with `tombstoneId` and `fencesLateSubmit=true`. Changed stores return unknown without mutation. A GET 404 is never a rejection proof.
+`GET /v1/jobs/{id}` returns queued/running/succeeded/failed/cancelled. Successful WAV is available from `/v1/jobs/{id}/audio` only after exact SHA256/length validation. `POST /v1/jobs/{id}/cancel` is a request; a running worker remains running until it actually exits. Cancellation is best effort: a successful running kernel remains succeeded with its reusable result, and a failed kernel remains failed. Only queued cancellation produces cancelled without execution. A restarted service marks interrupted running rows failed and retains completed rows and their audio. No automatic new inference is performed for an interrupted job.
+The same exclusive store lock covers process lifetime; short SQLite transactions never include inference or file I/O. Files are atomically published before terminal metadata. Late submission and resolution share one admission lock; changing a store or request digest cannot unlock an old unknown attempt.

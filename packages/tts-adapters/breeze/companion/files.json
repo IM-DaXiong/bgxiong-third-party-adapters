@@ -3,8 +3,8 @@
   "files": [
     {
       "path": "CONTRACT.md",
-      "sha256": "01c37efd2a921779ce5967f65f27a5397feaa20ebb046144d9adaa12943ad4ee",
-      "byteLength": "4870"
+      "sha256": "225254fc0c0c45b69bf0fb0bda95009b686383e36051f3acda197525bda9d4b9",
+      "byteLength": "6493"
     },
     {
       "path": "_shared/bgx_remote_fetch.py",
@@ -27,9 +27,14 @@
       "byteLength": "18368"
     },
     {
+      "path": "durable_jobs.py",
+      "sha256": "002c066ee591ecad8683f922cc72da7b56daa16204d1957a0537126b5e8bbd01",
+      "byteLength": "12710"
+    },
+    {
       "path": "manifest.json",
-      "sha256": "26aada340e734c431173068c14494ed601d8c7da326741a427b18bdf339637cb",
-      "byteLength": "3291"
+      "sha256": "927b3e286876b68133c8cde0b5c132d0ad8ac7e8b782f711e8e514ad8f4b7f59",
+      "byteLength": "3316"
     },
     {
       "path": "request_map.py",
@@ -48,23 +53,23 @@
     },
     {
       "path": "s0_prove.ps1",
-      "sha256": "d444575faf65c5d08d6cf0fdd27ed590ee04373978e3be993ced0965208e073b",
-      "byteLength": "5599"
+      "sha256": "66602ba1b35c7b194fa36cec5c8f499b13ae822ace5aa1e326e149b9c3f69dae",
+      "byteLength": "5512"
     },
     {
       "path": "sidecar_server.py",
-      "sha256": "2495ea91073a06984779cd88e11574d63d2badbc68154a1133b827f19fddfa60",
-      "byteLength": "19203"
+      "sha256": "71fa149efb587b6697effa67c2c4a26235568d70eb09964b3d8505ba4d23372f",
+      "byteLength": "21863"
     },
     {
       "path": "start-managed.ps1",
-      "sha256": "44d267e2936101f9d2a0646aa95f427d43a33dea4bbd52cafb7da1cd75c10c66",
-      "byteLength": "413"
+      "sha256": "a9c0755266bacbddd543b6c593c635ff316631068efe81632c33ff431405907a",
+      "byteLength": "405"
     },
     {
       "path": "start-sidecar.ps1",
-      "sha256": "9b24b98b9ec5413230571749ce85450b888df8e864fe9ff7cb61ef214ec896e0",
-      "byteLength": "8162"
+      "sha256": "24de81dfcb20da3b7fed742f8b6ae642169f2b5afea0592c220ce3738e5b0d89",
+      "byteLength": "7966"
     },
     {
       "path": "start-sidecar.sh",
@@ -83,8 +88,8 @@
     },
     {
       "path": "upstream/README.md",
-      "sha256": "12a72e38090fe0a2854ae31698736d1469a1991dac8063111d439e5d745cdaf8",
-      "byteLength": "12605"
+      "sha256": "a6e4456cc2cb0114ec88b017782027f9c2cf2788de1698bdfa7aa8e07e071545",
+      "byteLength": "12621"
     },
     {
       "path": "upstream/breeze_infer/__init__.py",

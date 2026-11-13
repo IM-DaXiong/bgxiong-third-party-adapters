@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "packageId": "local.tts.breeze",
-  "version": "1.0.0-d",
-  "displayName": "Breeze TTS 2 (plain / voice_design / reference_clone)",
+  "version": "1.0.1",
+  "displayName": "Breeze TTS 2",
   "adapter": {
-    "path": "dist-pack-d/adapter.wasm",
-    "sha256": "07b18217f4f5cf03fd18668cc80944cc108534f7f55eecf4e8496d636e053d08"
+    "path": "adapter/adapter.wasm",
+    "sha256": "dee7f3d0f97d54be7b13ddb13b549084227d6c58be8fe921bbc6d95f831e7a05"
   },
   "runtimes": [
     {
@@ -15,7 +15,7 @@
       "arch": "x86_64",
       "code": {
         "path": "companion/files.json",
-        "sha256": "945cca6afb08ffbc40cb71941b05bc2586d71611e836f1ddcf60d359fbd398ec"
+        "sha256": "92aa3858e1f5512a4ddf3f4e54b0c13fe569f1f9bf4f9e830428a46e691dda4e"
       },
       "executable": {
         "source": "code",

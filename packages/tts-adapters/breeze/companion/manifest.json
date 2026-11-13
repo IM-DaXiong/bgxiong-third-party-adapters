@@ -21,9 +21,10 @@
     "_shared/bgx_remote_fetch.py",
     "_shared/bgx_sidecar_common.py",
     "_shared/remote_sources.json",
-    "start-managed.ps1"
+    "start-managed.ps1",
+    "durable_jobs.py"
   ],
-  "description": "Breeze TTS 2 sidecar (pip + FastAPI · BreezeBlue/Breeze-TTS-2 · shared TtsSidecarManager)",
+  "description": "Breeze TTS 2 sidecar (pip + FastAPI 路 BreezeBlue/Breeze-TTS-2 路 shared TtsSidecarManager)",
   "minVramGb": 12,
   "healthEndpoint": "/health",
   "speechEndpoint": "/v1/audio/speech",

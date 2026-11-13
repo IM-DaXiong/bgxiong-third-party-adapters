@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "pluginId": "local.tts.breeze",
-  "pluginVersion": "1.0.0-d",
+  "pluginVersion": "1.0.1",
   "capabilityContracts": [
     {
       "schemaVersion": 2,
@@ -52,11 +52,11 @@
             }
           ],
           "execution": {
-            "mode": "synchronous",
+            "mode": "asynchronous",
             "streaming": false,
-            "cancellation": "unsupported",
-            "resumable": false,
-            "remoteIdempotency": false
+            "cancellation": "remote",
+            "resumable": true,
+            "remoteIdempotency": true
           },
           "outputSlots": [
             {

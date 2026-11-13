@@ -6,8 +6,14 @@ use alloc::{
     vec,
     vec::Vec,
 };
-use bgx_adapter_v2_sdk::{guest, host, Adapter, Host, Invocation, MediaInputV2, OperationSubmitV2, Response};
+use bgx_adapter_v2_sdk::{
+    guest, host, Adapter, Host, Invocation, MediaInputV2, OperationSubmitV2, Response,
+};
 use serde_json::{json, Value};
+
+mod durable;
+#[cfg(test)]
+mod tests;
 
 type Outcome<T> = Result<T, Failure>;
 struct Failure {
@@ -128,7 +134,10 @@ fn optional_seed(input: &Value) -> Outcome<Option<u64>> {
         Some(Value::Null) => Err(fail("INVALID_INPUT", "seed may be omitted but not null")),
         Some(Value::String(s)) => {
             if s.is_empty() {
-                return Err(fail("INVALID_INPUT", "seed must be non-empty when provided"));
+                return Err(fail(
+                    "INVALID_INPUT",
+                    "seed must be non-empty when provided",
+                ));
             }
             let n = s
                 .parse::<u64>()
@@ -196,10 +205,12 @@ fn emotion_text_for_instruction(input: &Value) -> Outcome<Option<String>> {
             "emotionControl may be omitted but not null",
         ));
     }
-    let mode = ec
-        .get("mode")
-        .and_then(Value::as_str)
-        .ok_or_else(|| fail("INVALID_INPUT", "emotionControl.mode is required when emotionControl is present"))?;
+    let mode = ec.get("mode").and_then(Value::as_str).ok_or_else(|| {
+        fail(
+            "INVALID_INPUT",
+            "emotionControl.mode is required when emotionControl is present",
+        )
+    })?;
     match mode {
         "none" | "inherit_speaker" => Ok(None),
         "text" => {
@@ -284,7 +295,8 @@ impl Receipt {
         }
     }
     fn apply(&mut self, pointer: &str, value: Value) {
-        self.applied.push(json!({"pointer": pointer, "value": value}));
+        self.applied
+            .push(json!({"pointer": pointer, "value": value}));
     }
     fn skip(&mut self, pointer: &str, reason: &str, message: &str) {
         self.not_applied.push(json!({
@@ -388,10 +400,7 @@ fn collect_optional_not_applied(input: &Value, mode_name: &str, receipt: &mut Re
     }
 }
 
-fn find_media<'a>(
-    submit: &'a OperationSubmitV2,
-    media_id: &str,
-) -> Outcome<&'a MediaInputV2> {
+fn find_media<'a>(submit: &'a OperationSubmitV2, media_id: &str) -> Outcome<&'a MediaInputV2> {
     submit
         .r#media
         .iter()
@@ -417,10 +426,7 @@ fn upload_reference_temp(
         .unwrap_or(media.r#mime.as_str());
     let kind = stat.get("kind").and_then(Value::as_str);
     if kind != Some("audio") && !mime.starts_with("audio/") {
-        return Err(fail(
-            "INVALID_INPUT",
-            "reference media handle is not audio",
-        ));
+        return Err(fail("INVALID_INPUT", "reference media handle is not audio"));
     }
     let bl = match stat.get("byteLength") {
         Some(Value::String(s)) => s.parse::<u64>().unwrap_or(0),
@@ -465,7 +471,10 @@ fn upload_reference_temp(
     let response = port(h, "host-http.execute", plan)?;
     let status = number(&response, "status")?;
     if status == 401 || status == 403 {
-        return Err(fail("UNAUTHORIZED", "Companion rejected the reference upload"));
+        return Err(fail(
+            "UNAUTHORIZED",
+            "Companion rejected the reference upload",
+        ));
     }
     if !(200..300).contains(&status) {
         return Err(Failure {
@@ -722,7 +731,11 @@ fn applied_params_echo(input: &Value, receipt: &Receipt) -> Value {
     }
 }
 
-fn synthesize(h: &mut dyn Host, submit: &OperationSubmitV2) -> Outcome<Value> {
+fn synthesize(
+    h: &mut dyn Host,
+    request: &Invocation,
+    submit: &OperationSubmitV2,
+) -> Outcome<Value> {
     let input = Value::Object(submit.r#input.clone().into_iter().collect());
     let mode_name = mode(&input)?;
     let delivery_name = delivery(&input)?;
@@ -751,98 +764,32 @@ fn synthesize(h: &mut dyn Host, submit: &OperationSubmitV2) -> Outcome<Value> {
     }
 
     let body = build_companion_body(
-        h, submit, &input, mode_name, &text_value, seed, origin, &mut receipt,
+        h,
+        submit,
+        &input,
+        mode_name,
+        &text_value,
+        seed,
+        origin,
+        &mut receipt,
     )?;
     let temp_id = receipt.temp_id.clone();
 
-    let url = format!("{}/v1/audio/speech", origin.trim_end_matches('/'));
-    let body_bytes = serde_json::to_vec(&body).map_err(|_| malformed())?;
-    let plan = json!({
-        "plan":{
-            "method":"POST",
-            "url":url,
-            "headers":[{"name":"Content-Type","value":"application/json; charset=utf-8"}],
-            "generatedHeaders":[],
-            "body":{"kind":"bytes","bytes": body_bytes},
-            "sink":{"kind":"media"},
-            "timeoutMs": 600000u64
-        },
-        "credential": Value::Null
-    });
-    let response = match port(h, "host-http.execute", plan) {
-        Ok(v) => v,
-        Err(e) => {
-            if let Some(tid) = temp_id.as_deref() {
-                release_temp(h, origin, tid);
-            }
-            return Err(e);
-        }
-    };
-    let status = match number(&response, "status") {
-        Ok(s) => s,
-        Err(e) => {
-            if let Some(tid) = temp_id.as_deref() {
-                release_temp(h, origin, tid);
-            }
-            return Err(e);
-        }
-    };
-    if let Some(tid) = temp_id.as_deref() {
-        release_temp(h, origin, tid);
-    }
-    if status == 401 || status == 403 {
-        return Err(fail("UNAUTHORIZED", "Companion rejected the request"));
-    }
-    if status == 429 {
-        return Err(fail("RATE_LIMITED", "Companion rate limited the request"));
-    }
-    if !(200..300).contains(&status) {
-        return Err(Failure {
-            code: "UPSTREAM_ERROR",
-            message: "Companion synthesis failed; no retry was attempted",
-            vendor: Some(status.to_string()),
-            request: None,
-        });
-    }
-    let handle = text(&response["payload"], "handle")?;
-    let stat = port(h, "host-media.info", json!({"handle": handle}))?;
-    if stat.get("kind").and_then(Value::as_str) != Some("audio") {
-        let mime = stat.get("mime").and_then(Value::as_str).unwrap_or("");
-        if !mime.starts_with("audio/") && stat.get("kind").and_then(Value::as_str) != Some("audio")
-        {
-            return Err(fail(
-                "UPSTREAM_ERROR",
-                "Companion response was not audio media",
-            ));
+    let result = durable::submit(
+        h,
+        request,
+        origin,
+        body,
+        json!({"appliedParams":applied_params_echo(&input, &receipt),"data":build_data_attachment(&receipt)}),
+    );
+    // Unknown transport outcome retains the original upload: a late HTTP admission
+    // may still be snapshotting it. Confirmed acceptance owns its private copy.
+    if result.is_ok() {
+        if let Some(tid) = temp_id.as_deref() {
+            release_temp(h, origin, tid);
         }
     }
-    let bl = match stat.get("byteLength") {
-        Some(Value::String(s)) => s.parse::<u64>().unwrap_or(0),
-        Some(Value::Number(n)) => n.as_u64().unwrap_or(0),
-        _ => 0,
-    };
-    if bl < 1000 {
-        return Err(fail(
-            "UPSTREAM_ERROR",
-            "Companion returned audio that is too small to be a real waveform",
-        ));
-    }
-    let media = json!({
-        "id": stat["id"],
-        "kind": "audio",
-        "handle": handle,
-        "mime": stat.get("mime").cloned().unwrap_or_else(|| json!("audio/wav")),
-        "fileName": stat.get("fileName").cloned().unwrap_or_else(|| json!("speech.wav")),
-        "byteLength": stat["byteLength"]
-    });
-    Ok(json!({
-        "kind":"completed",
-        "vendorTaskId": null,
-        "appliedParams": applied_params_echo(&input, &receipt),
-        "outputs":[{"kind":"media","role":"audio","media": media}],
-        "data": build_data_attachment(&receipt),
-        "usage": null
-    }))
+    result
 }
 
 pub struct BreezeSpeechAdapter;
@@ -854,14 +801,20 @@ impl Adapter for BreezeSpeechAdapter {
                 guest::completed_response(&request, &capabilities()).expect("serializable")
             }
             "probe" => {
-                let result = json!({
-                    "packageValid":true,
-                    "connection":"not_checked",
-                    "authentication":"not_checked",
-                    "resources":"not_checked",
-                    "issues":[]
-                });
-                guest::completed_response(&request, &result).expect("serializable")
+                let p: Value = serde_json::from_str(&request.r#payload_json).unwrap_or(Value::Null);
+                finish(&request, durable::probe(host, &p))
+            }
+            "query" | "cancel" => {
+                let p: Value = match serde_json::from_str(&request.r#payload_json) {
+                    Ok(value) => value,
+                    Err(_) => {
+                        return failure(&request, fail("INVALID_INPUT", "Invalid task payload"))
+                    }
+                };
+                finish(
+                    &request,
+                    durable::control(host, operation.as_str().unwrap(), &p),
+                )
             }
             "submit" => {
                 let input: OperationSubmitV2 = match serde_json::from_str(&request.r#payload_json) {
@@ -891,13 +844,13 @@ impl Adapter for BreezeSpeechAdapter {
                         fail("INVALID_INPUT", "capabilityKey must be audio.synthesize"),
                     );
                 }
-                finish(&request, synthesize(host, &input))
+                finish(&request, synthesize(host, &request, &input))
             }
             _ => failure(
                 &request,
                 fail(
                     "UNSUPPORTED_FEATURE",
-                    "This synchronous pack does not implement the selected operation",
+                    "This pack does not implement the selected operation",
                 ),
             ),
         }

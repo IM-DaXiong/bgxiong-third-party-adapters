@@ -1,0 +1,20 @@
+[workspace]
+members = ["."]
+
+[package]
+name = "bgx-breeze-speech"
+version = "1.0.1"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+bgx-adapter-v2-sdk = { path = "../../../../../bgxiong-adapter-sdk/sdk/rust" }
+serde_json = { version = "=1.0.149", default-features = false, features = ["alloc", "arbitrary_precision"] }
+
+[profile.release]
+panic = "abort"
+debug = 0
+incremental = false

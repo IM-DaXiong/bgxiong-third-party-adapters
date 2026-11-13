@@ -1,0 +1,4 @@
+companion/** text eol=lf
+installation/** text eol=lf
+*.md text eol=lf
+*.py text eol=lf
