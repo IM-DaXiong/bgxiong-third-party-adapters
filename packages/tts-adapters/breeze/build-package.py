@@ -90,13 +90,14 @@ def main():
     write(destination / "package-check.json", json.loads(checked.stdout))
     sdk_head = subprocess.check_output(["git", "-C", str(sdk_source), "rev-parse", "HEAD"], text=True).strip()
     source_head = subprocess.check_output(["git", "-C", str(REPO), "rev-parse", "HEAD"], text=True).strip()
+    sdk_receipt = next((p for p in (args.sdk / "build-receipt.json", args.sdk.parent / "build-receipt.json") if p.is_file()), None)
     write(destination / "build-receipt.json", {
         "schemaVersion": 1, "pluginId": manifest["pluginId"], "version": manifest["version"],
         "adapterSha256": sha(wasm), "sdkSourceBaseCommit": sdk_head, "adapterSourceBaseCommit": source_head,
         "sdkSourceDirty": bool(subprocess.check_output(["git", "-C", str(sdk_source), "status", "--porcelain"], text=True).strip()),
         "sdkCliSha256": sha(args.cli), "sdkWorkerSha256": sha(args.worker),
         "runtimeVersion": provisioning["version"], "modelInferenceAcceptance": "pending-separate-host-test",
-        "sdkBuildReceiptSha256": sha(args.sdk.parent / "build-receipt.json") if (args.sdk.parent / "build-receipt.json").is_file() else None,
+        "sdkBuildReceiptSha256": sha(sdk_receipt) if sdk_receipt else None,
     })
     (destination / "SHA256SUMS.txt").write_text("".join(
         f"{sha(file)}  {file.relative_to(destination).as_posix()}\n"
