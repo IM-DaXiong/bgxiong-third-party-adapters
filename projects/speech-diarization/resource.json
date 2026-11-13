@@ -1,0 +1,8 @@
+{
+  "pluginId": "local.speech.diarization",
+  "version": "1.0.0",
+  "url": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/speech-diarization-1.0.0/speech-diarization-1.0.0-windows-x64.zip",
+  "sha256": "fca04c8147a0be99d55d10936f289675cd1d2e51e4b3613f840a6bb74a74bf43",
+  "bytes": 852182912,
+  "adapterSha256": "5a55e7f4f038b1d26f4e9de32749f97e0c4d34e1fe7b466ddedacbde35fe0418"
+}

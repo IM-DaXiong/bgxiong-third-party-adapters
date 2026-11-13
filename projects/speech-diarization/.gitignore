@@ -1,0 +1,6 @@
+adapter/target/
+adapter-pack/
+companion/models/
+__pycache__/
+*.pyc
+dist/

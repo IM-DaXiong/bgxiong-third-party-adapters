@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 1,
+  "upstream": {
+    "url": "https://github.com/modelscope/3D-Speaker",
+    "commit": "065629c313eaf1a01c65c640c46d77e61e9607b4",
+    "license": "Apache-2.0"
+  },
+  "models": [
+    {
+      "id": "iic/speech_campplus_sv_zh_en_16k-common_advanced",
+      "revision": "v1.0.0"
+    },
+    {
+      "id": "iic/speech_fsmn_vad_zh-cn-16k-common-pytorch",
+      "revision": "v2.0.4"
+    }
+  ],
+  "files": [
+    {
+      "path": "models/campplus/campplus_cn_en_common.pt",
+      "sha256": "92f29b94e6948786a26778c9e302525d185bb08c8b9f5252ed98776902840199"
+    },
+    {
+      "path": "models/campplus/config.yaml",
+      "sha256": "17342041bd5b22f6fd7e32f6e7a267b0bf65f018c0a721bada6547e3d28fbfc9"
+    },
+    {
+      "path": "models/campplus/configuration.json",
+      "sha256": "d1ae364ff71e84ef5918ba30b0f8c2f28d2fdfdac4003b60ce0877b3f4630048"
+    },
+    {
+      "path": "models/campplus/README.md",
+      "sha256": "5cc4c68f2f5afc255564493686f2a22370ac86f86ba02117989fc5a39a6aff0a"
+    },
+    {
+      "path": "models/fsmn/am.mvn",
+      "sha256": "6820fef9687708c4fc3fab2530179c8fcea6262daa25514380056cd8f6eb1754"
+    },
+    {
+      "path": "models/fsmn/config.yaml",
+      "sha256": "486861ca26ddb79081663b6179cb204c6bfae71c52f04aafc48a9e9d8dde1e93"
+    },
+    {
+      "path": "models/fsmn/configuration.json",
+      "sha256": "7bce8867e37d55c3dd8f672695ced18077a2be199ea529a5d432d5350fc0acba"
+    },
+    {
+      "path": "models/fsmn/model.pt",
+      "sha256": "b3be75be477f0780277f3bae0fe489f48718f585f3a6e45d7dd1fbb1a4255fc5"
+    },
+    {
+      "path": "models/fsmn/README.md",
+      "sha256": "6fc838ef6b23aef579ac9001c3d098941ff1d37b800efc0bd25e455309edcb37"
+    },
+    {
+      "path": "engine.py",
+      "sha256": "d9eedc99f74f68f35f0f7b59d44def56e7ac6bda1e885a838fb2e966283b29a2"
+    },
+    {
+      "path": "server.py",
+      "sha256": "fb04a080027bf87c5788eef368fe33d8af6fd7aed1300b8ff368288aa0faed37"
+    },
+    {
+      "path": "start-sidecar.ps1",
+      "sha256": "cfb1d356ab0df494bcd9032723f3e38f431ff443aeaf5e53d9f7fd08145602e6"
+    },
+    {
+      "path": "upstream/speakerlab/bin/compute_score_metrics.py",
+      "sha256": "4726b6bcc113dabef04d8415e3d753c12c2a771e0417e433b69c1e3041ebafe0"
+    },
+    {
+      "path": "upstream/speakerlab/bin/export_speaker_embedding_onnx.py",
+      "sha256": "06904b1d2a99dbd38dd72790d7d567832a654ffa5891ea468eef82939e1696db"
+    },
+    {
+      "path": "upstream/speakerlab/bin/extract.py",
+      "sha256": "f8aaae31ec11d94d8c91eb09f5ea962fa756ead5ffd26ccebc1f11b53394c4b8"
+    },
+    {
+      "path": "upstream/speakerlab/bin/extract_ssl.py",
+      "sha256": "75988a617fcb665b58bff5ba05a759c6d184cf12d4b0dd53a254281286cd9d81"
+    },
+    {
+      "path": "upstream/speakerlab/bin/infer_diarization.py",
+      "sha256": "01b9b18f10999bdcc7a7d7e18174bf356f1745c2de15b32db0653c375792c97a"
+    },
+    {
+      "path": "upstream/speakerlab/bin/infer_sv.py",
+      "sha256": "19adedf262db8f403d63eb70346bd2d571c2209008fdbb6d288c7d0260ed9754"
+    },
+    {
+      "path": "upstream/speakerlab/bin/infer_sv_batch.py",
+      "sha256": "0fa2cfbf589411612f32d1fe5dd4509618ee424544d6373611ff4b358c379f7c"
+    },
+    {
+      "path": "upstream/speakerlab/bin/infer_sv_ssl.py",
+      "sha256": "6b16fe0eab4a71ed955a45efdb4f8adb8c3f82b20bef338352c34d16239c1047"
+    },
+    {
+      "path": "upstream/speakerlab/bin/train.py",
+      "sha256": "5460ea319aa029f29614188b91e552c43b839292663e16cc390c11f7715efb59"
+    },
+    {
+      "path": "upstream/speakerlab/bin/train_asd.py",
+      "sha256": "14538a3da2beaea64920b9695cb67b7a268c9ccb54870155d14b4f3978e3a77e"
+    },
+    {
+      "path": "upstream/speakerlab/bin/train_para.py",
+      "sha256": "ef7dd87e051e27ff6e136bfcd0fb394c2df2a91b4da5f863fb565ceb63d02e8e"
+    },
+    {
+      "path": "upstream/speakerlab/bin/train_rdino.py",
+      "sha256": "6de49cc1c4bc0cc286f04936cb593503f711062c4ea80c614952834db4baedc6"
+    },
+    {
+      "path": "upstream/speakerlab/bin/train_sdpn.py",
+      "sha256": "ee052e716ce14bd1463def2a99cdbd2f4d5a1017d6de03195975703aacacc2a2"
+    },
+    {
+      "path": "upstream/speakerlab/dataset/dataset.py",
+      "sha256": "c6793b4a4af802080af021d2c17c9cec8c039a58bb836b04446f59f9988f573a"
+    },
+    {
+      "path": "upstream/speakerlab/dataset/dataset_asd.py",
+      "sha256": "f0e7c04b21234a5731b50ad120b42271a84ceeffa4e03e848fbd5e9312db1e94"
+    },
+    {
+      "path": "upstream/speakerlab/dataset/dataset_rdino.py",
+      "sha256": "e9d617ec2c165d640464b7a5502c5c2e45513ff38d9471c451664af1c8c5fc18"
+    },
+    {
+      "path": "upstream/speakerlab/dataset/dataset_sdpn.py",
+      "sha256": "6a9a1a77ad14eae5431a30108a18c90aef8db5bbbe473c9617d765954851ed84"
+    },
+    {
+      "path": "upstream/speakerlab/loss/dino_loss.py",
+      "sha256": "92421208126b484cde1d78ec5ab2aadb93556b418596efe77a990207493cd41c"
+    },
+    {
+      "path": "upstream/speakerlab/loss/keleo_loss.py",
+      "sha256": "036350d92e0118de4d2d10f7365d5fc71e1151db3aa912ea45eb0bf9ca9845f5"
+    },
+    {
+      "path": "upstream/speakerlab/loss/margin_loss.py",
+      "sha256": "ffa013924b0be627e11774ad1acdff1ef704379ce576a9f81805d4112dc2747c"
+    },
+    {
+      "path": "upstream/speakerlab/loss/sdpn_loss.py",
+      "sha256": "fbcd522867a7f6930aaf45f69d43c9c993f9427da9e19072aa49cd39cf15acb6"
+    },
+    {
+      "path": "upstream/speakerlab/process/augmentation.py",
+      "sha256": "dc798676c7da76ad9d685b3d817aa9b2c48e8303c633fb9fc2b8a5049a0caef1"
+    },
+    {
+      "path": "upstream/speakerlab/process/cluster.py",
+      "sha256": "5067295b8dbc4d82dbc87402fa09d77aa1e958ab7e7471a48a46a228322967f2"
+    },
+    {
+      "path": "upstream/speakerlab/process/processor.py",
+      "sha256": "b7f48f209b71b0cb459bbffc7947feca279f18be9be9df3f43e819355238394d"
+    },
+    {
+      "path": "upstream/speakerlab/process/processor_para.py",
+      "sha256": "498a53a24417845e3c4065e1f0650279e0b1a6f997d47217d0286f9a73bea0a8"
+    },
+    {
+      "path": "upstream/speakerlab/process/scheduler.py",
+      "sha256": "2353b83a2de2749a0944baea83e51d9f9388febbd50f700cb84a0bd3c6a23b70"
+    },
+    {
+      "path": "upstream/speakerlab/utils/builder.py",
+      "sha256": "fd0499d407fd8d0f47db2fea5830a11337e461e1960d7ff35587cf9180921283"
+    },
+    {
+      "path": "upstream/speakerlab/utils/checkpoint.py",
+      "sha256": "22763c3d3cf8a480750e8bfa59de9b9dfc9920d6968552688d65e2be9617b714"
+    },
+    {
+      "path": "upstream/speakerlab/utils/config.py",
+      "sha256": "e6a8f232fce7fd93a5df01e68c6d98f69e11770f6bb0c69848b06229040383bf"
+    },
+    {
+      "path": "upstream/speakerlab/utils/epoch.py",
+      "sha256": "43b906a5e00241b84c3a80f5249ce8ae31236506d74eadf17d67d73c73b4f771"
+    },
+    {
+      "path": "upstream/speakerlab/utils/fileio.py",
+      "sha256": "a1dace43335fbef0d038e5ede304020b2a8f06acd3221a502fd6df87734a2dc0"
+    },
+    {
+      "path": "upstream/speakerlab/utils/score_metrics.py",
+      "sha256": "f464c1f2d4d16982908d93fefdfad4962eda7e8d59ac9f64008f7cd3947fb298"
+    },
+    {
+      "path": "upstream/speakerlab/utils/utils.py",
+      "sha256": "5ffb35e760a62ae50bdb7a2464c73925aef2109f27d07755bba52f796ccda29b"
+    },
+    {
+      "path": "upstream/speakerlab/utils/utils_rdino.py",
+      "sha256": "940287632f1c8375fdb54501440a2184dd17958155ccb1c93ab9084b5f2e3988"
+    }
+  ]
+}

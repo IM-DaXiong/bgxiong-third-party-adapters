@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 2,
+  "pluginId": "local.speech.diarization",
+  "pluginVersion": "1.0.0",
+  "capabilityContracts": [
+    {
+      "schemaVersion": 2,
+      "localId": "diarization",
+      "capabilityKey": "speech.diarize",
+      "transportSlot": "generic",
+      "modelIds": [
+        "3dspeaker-campplus-fsmn-ahc"
+      ],
+      "configurationSchema": {
+        "id": "https://bgxiong.local/vendor-adapter/v2/profiles/speech-v1/configuration.schema.json",
+        "digest": "9b53c939bfb1f0e518553edbbdec9a89eaef93817feaa654f1e19b7972131ccc"
+      },
+      "operations": [
+        {
+          "id": "std/speech.diarize",
+          "version": 1,
+          "label": "Speaker diarization",
+          "inputSchema": {
+            "id": "https://bgxiong.local/vendor-adapter/v2/profiles/speech-analysis-v1/diarize.input.schema.json",
+            "digest": "c2d18acd6d667a6d6b5d265e87ac5a6da7fcee4429d26f2337568e1bad10c94f"
+          },
+          "outputSchema": {
+            "id": "https://bgxiong.local/vendor-adapter/v2/profiles/speech-analysis-v1/diarize.output.schema.json",
+            "digest": "42355d8b291c4624d3c761a6176e4ced7adadf7bc9e53333b8067e5e58893cfa"
+          },
+          "resumeSchema": {
+            "id": "https://bgxiong.local/vendor-adapter/v2/profiles/speech-analysis-v1/resume.schema.json",
+            "digest": "f921c5cc7d877dd004f220fea6304d260c908ce45a2898e53bbd95b38a98e327"
+          },
+          "uiSchema": {
+            "controls": []
+          },
+          "mediaSlots": [
+            {
+              "role": "audio",
+              "inputPointer": "/audio",
+              "mediaKind": "audio",
+              "minCount": 1,
+              "maxCount": 1
+            }
+          ],
+          "execution": {
+            "mode": "asynchronous",
+            "streaming": false,
+            "cancellation": "best_effort",
+            "resumable": true,
+            "remoteIdempotency": true
+          },
+          "outputSlots": []
+        }
+      ],
+      "schemas": [
+        {
+          "id": "https://bgxiong.local/vendor-adapter/v2/profiles/speech-analysis-v1/diarize.input.schema.json",
+          "digest": "c2d18acd6d667a6d6b5d265e87ac5a6da7fcee4429d26f2337568e1bad10c94f",
+          "schemaJson": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"$id\": \"https://bgxiong.local/vendor-adapter/v2/profiles/speech-analysis-v1/diarize.input.schema.json\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"schemaVersion\": {\"const\": 1},\n    \"audio\": {\"type\": \"object\", \"properties\": {\"mediaId\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"mediaId\"], \"additionalProperties\": false},\n    \"sourceFingerprint\": {\"type\": \"string\", \"pattern\": \"^[a-f0-9]{64}$\"},\n    \"durationMs\": {\"type\": \"integer\", \"minimum\": 1, \"maximum\": 9007199254740991},\n    \"speakerCount\": {\"type\": \"integer\", \"minimum\": 1, \"maximum\": 9007199254740991}\n  },\n  \"required\": [\"schemaVersion\", \"audio\", \"sourceFingerprint\", \"durationMs\"],\n  \"additionalProperties\": false\n}\n"
+        },
+        {
+          "id": "https://bgxiong.local/vendor-adapter/v2/profiles/speech-analysis-v1/diarize.output.schema.json",
+          "digest": "42355d8b291c4624d3c761a6176e4ced7adadf7bc9e53333b8067e5e58893cfa",
+          "schemaJson": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"$id\": \"https://bgxiong.local/vendor-adapter/v2/profiles/speech-analysis-v1/diarize.output.schema.json\",\n  \"anyOf\": [{\"type\": \"null\"}, {\"$ref\": \"#/$defs/Result\"}],\n  \"$defs\": {\n    \"Result\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"schemaVersion\": {\"const\": 1},\n        \"sourceFingerprint\": {\"type\": \"string\", \"pattern\": \"^[a-f0-9]{64}$\"},\n        \"durationMs\": {\"type\": \"integer\", \"minimum\": 1, \"maximum\": 9007199254740991},\n        \"speakers\": {\"type\": \"array\", \"items\": {\"type\": \"object\", \"properties\": {\"id\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"id\"], \"additionalProperties\": false}},\n        \"turns\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Turn\"}},\n        \"overlapDetection\": {\"enum\": [\"unsupported\", \"available\"]},\n        \"warnings\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}}\n      },\n      \"required\": [\"schemaVersion\", \"sourceFingerprint\", \"durationMs\", \"speakers\", \"turns\", \"overlapDetection\", \"warnings\"],\n      \"additionalProperties\": false\n    },\n    \"Turn\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"startMs\": {\"type\": \"integer\", \"minimum\": 0, \"maximum\": 9007199254740991},\n        \"endMs\": {\"type\": \"integer\", \"minimum\": 1, \"maximum\": 9007199254740991},\n        \"speakerId\": {\"type\": \"string\", \"minLength\": 1}\n      },\n      \"required\": [\"startMs\", \"endMs\", \"speakerId\"],\n      \"additionalProperties\": false\n    }\n  }\n}\n"
+        },
+        {
+          "id": "https://bgxiong.local/vendor-adapter/v2/profiles/speech-analysis-v1/resume.schema.json",
+          "digest": "f921c5cc7d877dd004f220fea6304d260c908ce45a2898e53bbd95b38a98e327",
+          "schemaJson": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"$id\": \"https://bgxiong.local/vendor-adapter/v2/profiles/speech-analysis-v1/resume.schema.json\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"schemaVersion\": {\"const\": 1},\n    \"sourceFingerprint\": {\"type\": \"string\", \"pattern\": \"^[a-f0-9]{64}$\"},\n    \"jobId\": {\"type\": \"string\", \"minLength\": 1}\n  },\n  \"required\": [\"schemaVersion\", \"sourceFingerprint\", \"jobId\"],\n  \"additionalProperties\": false\n}\n"
+        },
+        {
+          "id": "https://bgxiong.local/vendor-adapter/v2/profiles/speech-v1/configuration.schema.json",
+          "digest": "9b53c939bfb1f0e518553edbbdec9a89eaef93817feaa654f1e19b7972131ccc",
+          "schemaJson": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"$id\": \"https://bgxiong.local/vendor-adapter/v2/profiles/speech-v1/configuration.schema.json\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"schemaVersion\": {\n      \"const\": 1\n    },\n    \"origin\": {\n      \"type\": \"string\",\n      \"minLength\": 1,\n      \"pattern\": \"^[^\\\\u0000]+$\"\n    },\n    \"instanceId\": {\n      \"type\": \"string\",\n      \"minLength\": 1,\n      \"pattern\": \"^[^\\\\u0000]+$\"\n    },\n    \"credentialSlot\": {\n      \"type\": \"string\",\n      \"minLength\": 1,\n      \"pattern\": \"^[^\\\\u0000]+$\"\n    }\n  },\n  \"required\": [\n    \"schemaVersion\",\n    \"origin\",\n    \"instanceId\",\n    \"credentialSlot\"\n  ],\n  \"additionalProperties\": false\n}\n"
+        }
+      ]
+    }
+  ]
+}
