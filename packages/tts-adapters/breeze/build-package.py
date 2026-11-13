@@ -31,6 +31,7 @@ def main():
     parser.add_argument("--worker", type=Path, required=True)
     parser.add_argument("--sdk", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--sdk-receipt", type=Path)
     args = parser.parse_args()
     destination = args.out.resolve()
     archive = Path(str(destination) + ".zip")
@@ -90,7 +91,9 @@ def main():
     write(destination / "package-check.json", json.loads(checked.stdout))
     sdk_head = subprocess.check_output(["git", "-C", str(sdk_source), "rev-parse", "HEAD"], text=True).strip()
     source_head = subprocess.check_output(["git", "-C", str(REPO), "rev-parse", "HEAD"], text=True).strip()
-    sdk_receipt = next((p for p in (args.sdk / "build-receipt.json", args.sdk.parent / "build-receipt.json") if p.is_file()), None)
+    sdk_receipt = args.sdk_receipt or next((p for p in (args.sdk / "build-receipt.json", args.sdk.parent / "build-receipt.json") if p.is_file()), None)
+    if sdk_receipt and (read(sdk_receipt)["sourceCommit"] != sdk_head or read(sdk_receipt)["dirty"]):
+        raise RuntimeError("SDK receipt differs from the clean source used to compile this adapter")
     write(destination / "build-receipt.json", {
         "schemaVersion": 1, "pluginId": manifest["pluginId"], "version": manifest["version"],
         "adapterSha256": sha(wasm), "sdkSourceBaseCommit": sdk_head, "adapterSourceBaseCommit": source_head,
