@@ -1,3 +1,2 @@
 # Preserve the audited upstream bytes and their runtime integrity inventory.
-companion/upstream/** -text
-companion/resources.lock.json -text
+companion/** -text
