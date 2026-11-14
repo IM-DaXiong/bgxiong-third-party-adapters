@@ -103,12 +103,12 @@ fn scene_submission_uploads_all_views_and_checkpoints_one_qwen_prompt() {
             let body=if url.ends_with("/upload/image") {
                 self.uploads+=1;
                 assert_eq!(plan["body"]["parts"][0]["handle"], format!("lease-{}",self.uploads));
-                let extension=["png","mp4","glb"][self.uploads-1];
+                let extension=["png","mp4","glb","bin"][self.uploads-1];
                 assert!(plan["body"]["parts"][0]["fileName"].as_str().unwrap().ends_with(extension));
                 json!({"name":format!("view-{}.{extension}",self.uploads),"subfolder":"frozen","type":"input"})
             } else {
                 assert!(url.ends_with("/prompt")); self.prompts+=1;
-                assert_eq!(self.uploads,3);
+                assert_eq!(self.uploads,4);
                 let bytes:Vec<u8>=serde_json::from_value(plan["body"]["bytes"].clone()).unwrap();
                 let graph:Value=serde_json::from_slice::<Value>(&bytes).unwrap()["prompt"].clone();
                 let state:Value=serde_json::from_str(graph["83"]["inputs"]["state_json"].as_str().unwrap()).unwrap();
@@ -134,6 +134,9 @@ fn scene_submission_uploads_all_views_and_checkpoints_one_qwen_prompt() {
         media.push(json!({"id":id,"kind":"file","fileName":if i==2 {"opaque.bin"} else {&filename},"handle":format!("lease-{}",i+1),"mime":mime}));
         stickers.push(json!({"id":id,"source":{"kind":"file","filename":filename,"storage":"input"},"direction":{"value":{"yaw_deg":yaw}}}));
     }
+    assets.push(json!({"name":"editor-results/task/0","mediaId":"image-4"}));
+    refs.push(json!({"mediaId":"image-4"}));
+    media.push(json!({"id":"image-4","kind":"file","fileName":"opaque.bin","handle":"lease-4","mime":"application/octet-stream"}));
     let state=json!({"version":2,"camera":{"projection":"erp","erp_range":360},"stickers":stickers});
     input["references"]=json!(refs);
     input["editorDocument"]=json!(json!({"stateText":state.to_string(),"assets":assets}).to_string());

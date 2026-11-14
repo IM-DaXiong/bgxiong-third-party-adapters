@@ -27,10 +27,17 @@ pub fn schema(op: &str) -> Value {
     properties.insert("advanced".into(),json!({"type":"object","additionalProperties":false,
         "properties":{
             "megapixels":{"type":"number","minimum":0.1,"maximum":16,"default":2.0,"title":"百万像素"},
-            "multiple":{"type":"integer","enum":[8,16,32,64,128],"default":8,"title":"尺寸倍数"},
+            "multiple":{"type":"integer","minimum":8,"maximum":128,"multipleOf":4,"default":8,"title":"尺寸倍数"},
             "steps":{"type":"integer","minimum":1,"maximum":50,"default":25,"title":"采样步数"}
         },"required":["megapixels","multiple","steps"],"default":{"megapixels":2.0,"multiple":8,"steps":25}}));
     schema["required"].as_array_mut().unwrap().retain(|v|v!="width" && v!="height");
+    if op=="studio-render" {
+        schema["properties"].as_object_mut().unwrap().remove("seed");
+        schema["required"].as_array_mut().unwrap().retain(|v|v!="seed");
+        schema["properties"]["advanced"]["properties"].as_object_mut().unwrap().remove("steps");
+        schema["properties"]["advanced"]["default"].as_object_mut().unwrap().remove("steps");
+        schema["properties"]["advanced"]["required"].as_array_mut().unwrap().retain(|v|v!="steps");
+    }
     if op=="studio-moge" {
         schema["properties"]["sourceName"]=json!({"type":"string","minLength":1,"title":"深度源素材名称"});
         schema["required"].as_array_mut().unwrap().push(json!("sourceName"));
@@ -101,7 +108,9 @@ pub fn graph(op:&str,input:&Value,uploads:&BTreeMap<String,String>)->Result<(Val
     // Only the selected result is a product output; discard duplicate SaveImage side
     // effects, keeping upstream scene/sticker_state connections inside the graph.
     graph.as_object_mut().unwrap().retain(|id,node|id=="66" || node["class_type"]!="SaveImage");
-    Ok((graph,json!({"prompt":input["prompt"],"seed":input["seed"],"outputProjection":expected,"advanced":input["advanced"]})))
+    let mut applied=json!({"prompt":input["prompt"],"outputProjection":expected,"advanced":input["advanced"]});
+    if op!="studio-render" {applied["seed"]=input["seed"].clone();}
+    Ok((graph,applied))
 }
 
 #[cfg(test)]

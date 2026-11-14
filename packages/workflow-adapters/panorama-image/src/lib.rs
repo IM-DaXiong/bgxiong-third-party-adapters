@@ -124,9 +124,10 @@ fn scene_media(payload: &Value, media_id: &str, name: &str) -> Result<Value, Fai
     // Only opaque 3D files need their original extension. Recognised image/video/audio
     // names remain the SDK's measured names, including its extension safety checks.
     if media["mime"] == "application/octet-stream" {
-        let extension = name.rsplit('.').next().filter(|ext|!ext.is_empty() && ext.len()<=16 && ext.bytes().all(|b|b.is_ascii_alphanumeric()))
-            .ok_or_else(||Failure::invalid("Scene file extension is invalid"))?;
-        media["fileName"] = json!(format!("{media_id}.{extension}"));
+        if let Some((_,extension))=name.rsplit('/').next().unwrap_or(name).rsplit_once('.') {
+            if extension.is_empty() || extension.len()>16 || !extension.bytes().all(|b|b.is_ascii_alphanumeric()) {return Err(Failure::invalid("Scene file extension is invalid"));}
+            media["fileName"] = json!(format!("{media_id}.{extension}"));
+        }
     }
     Ok(media)
 }
