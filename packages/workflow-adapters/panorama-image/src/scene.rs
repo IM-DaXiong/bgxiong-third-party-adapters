@@ -11,7 +11,7 @@ pub struct SceneDocument {
     pub input_node_ids: Vec<String>,
     pub sources: Vec<SceneSource>,
 }
-pub struct SceneSource { pub node_id: String, pub inputs: Vec<String>, pub document: Box<SceneDocument> }
+pub struct SceneSource { pub background_color: String, pub background_range: String, pub node_id: String, pub inputs: Vec<String>, pub document: Box<SceneDocument> }
 
 impl SceneDocument {
     pub fn parse(text: &str) -> Result<Self, Failure> {
@@ -45,7 +45,13 @@ impl SceneDocument {
                 }
                 let source = Self::parse(&entry["document"].to_string())?;
                 if !source.sources.is_empty() || !source.input_node_ids.is_empty() { return Err(Failure::invalid("Connected scenes must use the flat input graph")); }
-                sources.push(SceneSource { node_id, inputs, document: Box::new(source) });
+                let parameters = &entry["generationDraft"]["adapterParameters"];
+                let color = parameters.get("/advanced/backgroundColor").map_or(Some("#00ff00"), Value::as_str)
+                    .filter(|s| s.len()==7 && s.starts_with('#') && s[1..].bytes().all(|b| b.is_ascii_hexdigit()))
+                    .ok_or_else(|| Failure::invalid("Invalid parent background color"))?;
+                let range = parameters.get("/advanced/backgroundRange").map_or(Some("360"), Value::as_str)
+                    .filter(|s| matches!(*s,"180"|"360")).ok_or_else(|| Failure::invalid("Invalid parent background range"))?;
+                sources.push(SceneSource { background_color:color.into(), background_range:range.into(), node_id, inputs, document: Box::new(source) });
             }
         }
         if input_node_ids.len() > 1 || input_node_ids.iter().any(|id| !known.contains_key(id)) { return Err(Failure::invalid("Studio requires a single existing scene input")); }
@@ -72,6 +78,8 @@ impl SceneDocument {
         for (index,source) in self.sources.iter().enumerate() {
             let id=format!("bgx_editor_input_{index}");
             let mut node=render_graph(&source.document.bind(uploads)?,mp,multiple)?["70"].clone();
+            node["inputs"]["background_color"]=json!(source.background_color);
+            node["inputs"]["background_range"]=json!(source.background_range);
             if let Some(parent)=source.inputs.first() {node["inputs"]["scene"]=json!([nodes.get(parent).ok_or_else(||Failure::invalid("Missing parent scene"))?,0]);}
             graph[&id]=node;
             crate::geometry::attach(graph,&id,&source.document.bind(uploads)?)?;
@@ -203,7 +211,7 @@ mod tests {
         assert_eq!(applied["seed"],12345);
         let mut connected: Value = serde_json::from_str(input["editorDocument"].as_str().unwrap()).unwrap();
         connected["inputNodeIds"] = json!(["parent"]);
-        connected["connectedDocuments"] = json!([{"nodeId":"parent","revision":"frozen-parent","inputNodeIds":[],"document":{
+        connected["connectedDocuments"] = json!([{"nodeId":"parent","revision":"frozen-parent","inputNodeIds":[],"generationDraft":{"adapterParameters":{"/advanced/backgroundColor":"#1234ab","/advanced/backgroundRange":"180"}},"document":{
             "stateText":json!({"version":2,"id":"parent-scene","stickers":[state["stickers"][0].clone()]}).to_string(),
             "assets":[{"name":"input/old/desk.png","mediaId":"parent-desk"}]}}]);
         input["editorDocument"] = json!(connected.to_string());
@@ -212,6 +220,8 @@ mod tests {
         uploads.insert("parent-desk".into(), "parent/desk.png".into());
         let (inherited, _) = outpaint_graph(&input, &uploads).unwrap();
         assert_eq!(inherited["83"]["inputs"]["scene"], json!(["bgx_editor_input_0",0]));
+        assert_eq!(inherited["bgx_editor_input_0"]["inputs"]["background_color"], "#1234ab");
+        assert_eq!(inherited["bgx_editor_input_0"]["inputs"]["background_range"], "180");
         let parent_state: Value = serde_json::from_str(inherited["bgx_editor_input_0"]["inputs"]["state_json"].as_str().unwrap()).unwrap();
         assert_eq!(parent_state["stickers"][0]["source"]["subfolder"], "parent");
         assert_eq!(state["stickers"][0]["source"]["subfolder"], "old");

@@ -58,11 +58,17 @@ export function inputLinks(record) {
   if(record.stickerState)links.push({name:'sticker_state',type:'STRING',node:{id:'bgx-input-pose',widgets:[]}});
   return links;
 }
+export function backgroundSettings(draft) {
+  const parameters=draft?.adapterParameters??{}, color=parameters['/advanced/backgroundColor']??'#00ff00', range=parameters['/advanced/backgroundRange']??'360';
+  if(!/^#[0-9a-fA-F]{6}$/.test(color)||!['180','360'].includes(range))throw new Error('背景颜色或范围无效');
+  return {color:[1,3,5].map(i=>parseInt(color.slice(i,i+2),16)/255),range};
+}
 export function upstreamBackground(layers) {
   for(const layer of [...layers].reverse()){
     const ui=layer.ui??{};
     if(!(ui.pano_input_images?.length||ui.pano_input_videos?.length))continue;
-    const out={pano_upstream_coverage:['360'],pano_upstream_bg_color:[[0,1,0]],pano_upstream_bg_clip:[{clip:layer.state.background.clip,fps:layer.state.timeline.fps}]};
+    const settings=layer.background??backgroundSettings();
+    const out={pano_upstream_coverage:[settings.range],pano_upstream_bg_color:[settings.color],pano_upstream_bg_clip:[{clip:layer.state.background.clip,fps:layer.state.timeline.fps}]};
     for(const key of ['pano_input_images','pano_input_videos','pano_input_video_meta'])if(ui[key])out[key.replace('pano_','pano_upstream_')]=ui[key];
     return out;
   }

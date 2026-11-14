@@ -54,6 +54,14 @@ await build({
       if (code.split(original).length !== 2) throw new Error('Upstream state normalizer changed');
       return code.replace(original, original + ' ...Object.fromEntries(["bgxGeometry", "bgxInputs"].filter(key => Object.hasOwn(raw, key)).map(key => [key, structuredClone(raw[key])])),');
     }
+    if (normalized === resolve(source, 'web_src/components/studio/StudioInspectorCard.vue').replaceAll('\\', '/')) {
+      const original = `<template v-else-if="row.control === 'select'">`;
+      if (code.split(original).length !== 2) throw new Error('Upstream inspector select changed');
+      return code.replace(original, `<template v-else-if="row.control === 'select' &amp;&amp; row.options.length &lt;= 4 &amp;&amp; row.options.every(option => option.label.length &lt;= 12)">
+          <StudioSegmented :options="row.options" :value="row.value" :disabled="row.disabled" :label="row.name" fill @select="(value) => send({ type: 'choice', field: row.id, value })" />
+        </template>
+        ${original}`);
+    }
     const binding = styleBindings.get(normalized);
     if (!binding) return null;
     if (code.split(binding.expression).length !== 2) throw new Error(`Upstream stylesheet loader changed: ${id}`);
@@ -80,7 +88,7 @@ await cp(resolve(here, 'upstream.lock.json'), resolve(out, 'upstream.lock.json')
 // A self-contained payload for an opaque-origin frame: no filesystem URL, CDN or
 // executable import from the trusted host is needed when opening the editor.
 await writeFile(resolve(out, 'editor-bundle.json'), JSON.stringify({ schemaVersion: 1, assetTransport:'blob-v1', script: await readFile(resolve(out, 'studio.js'), 'utf8'), stylesheet: css,
-  documentCompatibility: { schemaVersion:1, fromVersions:['1.1.0','1.3.0','1.5.0','1.6.0','1.7.0','1.8.0','1.9.0','1.10.0','1.11.0','1.12.0','1.13.0','1.13.1','1.14.1','1.14.2','1.15.1','1.16.0','1.17.0','1.18.0','1.19.0','1.20.0','1.21.0','1.22.0'] },
+  documentCompatibility: { schemaVersion:1, fromVersions:['1.1.0','1.3.0','1.5.0','1.6.0','1.7.0','1.8.0','1.9.0','1.10.0','1.11.0','1.12.0','1.13.0','1.13.1','1.14.1','1.14.2','1.15.1','1.16.0','1.17.0','1.18.0','1.19.0','1.20.0','1.21.0','1.22.0','1.23.0'] },
   generationBindings: ['editor-geometry','h3-studio-video','studio-video','scene-to-panorama','studio-render','studio-cutout','studio-3d','studio-moge','editor-frame-capture','editor-frame-return','editor-seam-prepare','editor-seam-return'].map(operation => ({ operationId: `local.thirdparty.comfy-panorama-image/${operation}`, documentField: 'editorDocument', assetsField: 'references', includeConnectedDocuments: true })),
   serviceBindings: [{id:'inputPreview',purpose:'mediaPreparation',operationId:'local.thirdparty.comfy-panorama-image/editor-input-preview',modelId:'panorama-editor-input',assetsField:'sources'}, { id: 'file3d', purpose: 'mediaPreparation', operationId: 'local.thirdparty.comfy-panorama-image/editor-3d-preview', modelId: 'panorama-editor-media', assetsField: 'sources' },
     { id: 'geometry', purpose: 'mediaPreparation', operationId: 'local.thirdparty.comfy-panorama-image/editor-geometry', modelId: 'panorama-editor-geometry', assetsField: 'references', revisionField: 'sourceRevision' },

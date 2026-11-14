@@ -64,3 +64,5 @@ The digest-bound companion explicitly lists readable prior document package vers
 
 
 The 1.23.0 candidate adds owned background/world/sticker inputs, original pose handoff, and world/sticker geometry targets. Its installation envelope includes minimal Comfy file/video loader nodes and a read-only metadata route using the installed upstream implementation. Restart ComfyUI after installation; no additional model is bundled. Lightweight bridge tests do not certify native Comfy decoding or GPU output.
+
+1.24.0 freezes parent background settings with scene inputs and uses segmented controls for short animation lists. Browser animation persistence and Spark rendering are checked; native conversion and GPU rendering remain resource-host acceptance items.

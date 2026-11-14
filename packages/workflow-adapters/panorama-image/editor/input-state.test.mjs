@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {inputRecord,inputUi,inputLinks,validateInputs,upstreamBackground} from './input-state.js';
+import {inputRecord,inputUi,inputLinks,validateInputs,upstreamBackground,backgroundSettings} from './input-state.js';
 
 test('owned inputs project background, video and animated world without remote URLs',()=>{
  const assets=new Map(['input//room.png','input//walk.mp4','input/3d/room.glb','editor-results/a/0','editor-results/a/1'].map(name=>[name,true]));
@@ -13,6 +13,12 @@ test('owned inputs project background, video and animated world without remote U
  assert.deepEqual(inputLinks(record).map(x=>x.type),['IMAGE','MESH','VIDEO']);
  const inherited=upstreamBackground([{state:{bgxInputs:record,background:{clip:{start:5}},timeline:{fps:24}},ui}]);
  assert.deepEqual(inherited.pano_upstream_coverage,['360']);assert.equal(inherited.pano_upstream_bg_clip[0].clip.start,5);
+ const settings=backgroundSettings({adapterParameters:{'/advanced/backgroundColor':'#1234ab','/advanced/backgroundRange':'180'}});
+ const parent={state:{background:{clip:{start:5}},timeline:{fps:24}},ui,background:settings};
+ const child={state:{background:{clip:{start:0}},timeline:{fps:30}},ui:{},background:backgroundSettings()};
+ assert.deepEqual(upstreamBackground([parent,child]).pano_upstream_coverage,['180']);
+ assert.deepEqual(upstreamBackground([parent,child]).pano_upstream_bg_color,[[18/255,52/255,171/255]]);
+ assert.throws(()=>backgroundSettings({adapterParameters:{'/advanced/backgroundRange':'90'}}));
  assert.throws(()=>inputUi(record,new Map()),/缺失/);
  const invalid=structuredClone(record);invalid.world.preview.pano_scene_files=[{url:'https://example.invalid/file'}];assert.throws(()=>inputUi(invalid,assets),/受管素材/);
 });
