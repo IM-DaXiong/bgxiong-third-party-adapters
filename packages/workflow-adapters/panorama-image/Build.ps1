@@ -30,10 +30,10 @@ $SourceLock = Get-Content -LiteralPath (Join-Path $Project 'editor/upstream.lock
 if ($EditorReceipt.upstream.commit -ne $SourceLock.commit) { throw 'Editor source differs from the pinned upstream.' }
 if ($EditorReceipt.upstreamLockSha256 -ne (Get-FileHash -LiteralPath (Join-Path $Project 'editor/upstream.lock.json') -Algorithm SHA256).Hash.ToLowerInvariant()) { throw 'Editor upstream/patch lock differs from this source batch.' }
 foreach ($source in $EditorReceipt.bridgeSources) {
-    if ($source.path -notin @('build.mjs','studio.js','actions.js','capture-toolbar.js','state-preservation.js','connected-scenes.js','embedded.css')) { throw 'Unexpected bridge source in editor receipt.' }
+    if ($source.path -notin @('build.mjs','studio.js','actions.js','capture-toolbar.js','state-preservation.js','geometry-state.js','geometry-toolbar.js','connected-scenes.js','embedded.css')) { throw 'Unexpected bridge source in editor receipt.' }
     if ($source.sha256 -ne (Get-FileHash -LiteralPath (Join-Path $Project "editor/$($source.path)") -Algorithm SHA256).Hash.ToLowerInvariant()) { throw "Editor bridge source changed: $($source.path)" }
 }
-if (@($EditorReceipt.bridgeSources).Count -ne 7 -or @($EditorReceipt.bridgeSources.path | Sort-Object -Unique).Count -ne 7) { throw 'Editor bridge source receipt is incomplete or duplicated.' }
+if (@($EditorReceipt.bridgeSources).Count -ne 9 -or @($EditorReceipt.bridgeSources.path | Sort-Object -Unique).Count -ne 9) { throw 'Editor bridge source receipt is incomplete or duplicated.' }
 $EditorFile = Join-Path $EditorDirectory 'editor-bundle.json'
 $EditorEntry = @($EditorReceipt.files | Where-Object { $_.path -eq 'editor-bundle.json' })
 $EditorHash = (Get-FileHash -LiteralPath $EditorFile -Algorithm SHA256).Hash.ToLowerInvariant()

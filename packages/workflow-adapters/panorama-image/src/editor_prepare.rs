@@ -66,6 +66,7 @@ pub fn submit(host:&mut dyn Host,request:&Invocation,payload:&Value)->Result<Val
     if !matches(payload) {return Err(Failure::invalid("Capture identity differs"));}
     let input=&payload["input"];
     let document=SceneDocument::parse(input["editorDocument"].as_str().ok_or_else(||Failure::invalid("Saved document required"))?)?;
+    crate::geometry::validate_media(host,payload,&document)?;
     let mut uploads=BTreeMap::new();let mut media=BTreeMap::new();
     for (name,id) in document.assets.iter().chain(document.sources.iter().flat_map(|s|s.document.assets.iter())) {
         if media.insert(id.clone(),crate::scene_media(payload,id,name)?).is_some() {return Err(Failure::invalid("Duplicate source lease"));}

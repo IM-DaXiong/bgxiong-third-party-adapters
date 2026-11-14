@@ -1,6 +1,7 @@
 // The upstream normalizer intentionally accepts and discards some old/unknown state.
 // Persisted projects must never silently lose those fields when an editor opens.
 // The normalizer is supplied by the pinned upstream module; this is not a second schema.
+import { validateGeometry } from './geometry-state.js';
 export function inspectStatePreservation(text, normalize, serialize = JSON.stringify) {
   let raw;
   try { raw = text?.trim() ? JSON.parse(text) : {}; }
@@ -9,6 +10,10 @@ export function inspectStatePreservation(text, normalize, serialize = JSON.strin
     return { readOnly: true, canPreview: false, reason: '工程格式无效，已保留原文。', paths: ['$'] };
   }
   if (!Object.keys(raw).length) return { readOnly: false, canPreview: true, reason: null, paths: [] };
+  if (Object.hasOwn(raw,'bgxGeometry')) {
+    try { validateGeometry(raw.bgxGeometry); }
+    catch { return {readOnly:true,canPreview:true,reason:'当前版本不支持此几何输入，已保留原工程。',paths:['$.bgxGeometry']}; }
+  }
   if ((raw.version ?? 1) === 1) {
     return { readOnly: true, canPreview: true, reason: '旧版工程仅供预览；当前转换可能丢失图层，已保留原文。', paths: ['$.version'] };
   }

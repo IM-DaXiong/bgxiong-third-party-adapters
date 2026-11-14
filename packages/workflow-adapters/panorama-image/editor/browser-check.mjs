@@ -60,13 +60,27 @@ try {
           const { openEditorFrame } = await import('/frame.js');
           const bundle = await (await fetch('/editor-bundle.json')).json();
           frame = document.createElement('iframe'); frame.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;border:0'; document.body.appendChild(frame);
-          const initialAssets = await Promise.all([...assets].map(async ([filename, url]) => ({ name: `input//${filename}`, bytes: await (await fetch(url)).arrayBuffer(), mimeType: 'image/png', mediaRel: `fixtures/${filename}`, sha256: 'test-only' })));
+          const initialAssets = await Promise.all([...assets].map(async ([filename, url]) => ({ name: `input//${filename}`, bytes: await (await fetch(url)).arrayBuffer(), mimeType: 'image/png', mediaRel: `fixtures/${filename}`, sha256: window.check.geometryFixture ? 'a'.repeat(64) : 'test-only' })));
           editor = await openEditorFrame(frame, bundle, { nodeId: 'test_scene', stateText: saved, preferences: window.check.preferences, assets: [...initialAssets, ...storedAssets.values()],
             inputNodeIds: window.check.inputNodeIds ?? [], connectedDocuments: (window.check.connectedDocuments ?? []).map(source => ({ ...source, assets: initialAssets })) }, async (method, params) => {
             if (method === 'editor.closed') return;
             if (method === 'preferences.set') { window.check.preferences[params.key] = params.value; return; }
             if (method === 'editor.protection') { window.check.protection = params; return; }
             if (window.check.protection?.readOnly) throw new Error('Protected fixture must not write');
+            if(window.check.geometryFixture && method==='operation.run' && params.serviceId==='geometryModels')return {status:'completed',taskId:'models',assets:[],data:{metadataJson:JSON.stringify({da3:['DA3-BASE.safetensors'],moge:['moge_3_vitg_fp16.safetensors']})}};
+            if(window.check.geometryFixture && method==='operation.run' && params.serviceId==='geometry'){
+              if(params.input.editorDocument||params.input.sourceRevision||params.sourceNames.length)throw new Error('Geometry cannot forge host document ownership');
+              window.check.geometrySource=JSON.parse(params.input.geometrySourceJson);window.check.geometrySubmits=(window.check.geometrySubmits??0)+1;
+              return {status:'pending',taskId:'geometry-original',assets:[],data:null};
+            }
+            if(window.check.geometryFixture && method==='operation.collect' && params.taskId==='geometry-original'){
+              const asset={role:'geometryFile',name:'editor-results/geometry-original/0',mediaRel:'fixtures/geometry.glb',sha256:'b'.repeat(64),mimeType:'application/octet-stream',bytes:new Uint8Array(window.check.geometryFixture).buffer};
+              storedAssets.set(asset.name,asset);
+              const source=window.check.geometrySource;
+              return {status:'completed',taskId:params.taskId,assets:[asset],data:{metadataJson:JSON.stringify({version:1,source,
+                sourceAssets:source.images.map(file=>({name:`${file.storage}/${file.subfolder}/${file.filename}`,sha256:'a'.repeat(64)})),
+                ui:{pano_scene_files:[{assetIndex:0,format:'model/gltf-binary'}],pano_scene_meta:[{kind:'mesh',unlit:true}]}})}};
+            }
             if (window.check.captureFixture && method === 'operation.run' && params.serviceId === 'frameCapture') {
               if (params.sourceNames.length || params.input.editorDocument || params.input.sourceRevision) throw new Error('Companion must not forge host document or revision');
               window.check.captures = (window.check.captures ?? 0) + 1;
@@ -134,7 +148,7 @@ try {
     assert.equal(await isolated.evaluate(() => { try { void parent.document.body; return false; } catch { return true; } }), true);
     assert.equal(await isolated.evaluate(() => typeof window.__TAURI_INTERNALS__), 'undefined');
   }
-  if (!['inheritance', 'capture'].includes(option('--focus'))) {
+  if (!['inheritance', 'capture', 'geometry'].includes(option('--focus'))) {
   assert.deepEqual(await page.evaluate(async () => (await window.check.read()).stickers.map(item => item.direction.value.yaw_deg)), [0, -90, 180]);
   await surface.locator('.pano-studio-tl-head[data-head="bedroom"] [data-part="name"]').click();
   const rotation = surface.locator('[data-region="inspector"] [data-row="Rotation"]');
@@ -289,6 +303,41 @@ try {
     await page.evaluate(() => window.check.close());
   }
   } else { await page.evaluate(() => window.check.close()); }
+  if(option('--focus')==='geometry'){
+    if(!option('--frame'))throw new Error('Geometry must exercise the production frame bridge');
+    const glb=await readFile(resolve(option('--source'),'tests/fixtures/gltf_anim/anim.glb'));
+    await page.evaluate(bytes=>{window.check.geometryFixture=bytes;},[...glb]);
+    await page.evaluate(()=>window.check.open());
+    await surface.getByRole('button',{name:'几何输入',exact:true}).click();
+    await surface.getByRole('button',{name:'读取模型',exact:true}).click();
+    await surface.getByRole('radio',{name:'DA3-BASE.safetensors',exact:true}).check();
+    await surface.getByRole('checkbox',{name:'desk.png',exact:true}).check();
+    await surface.getByRole('button',{name:'准备几何',exact:true}).click();
+    await page.waitForFunction(()=>window.check.geometrySubmits===1);
+    assert.equal(await page.evaluate(async()=>(await window.check.read()).bgxGeometry),undefined);
+    await surface.getByRole('button',{name:'采用几何',exact:true}).click();
+    await page.waitForFunction(()=>window.check.saved().bgxGeometry?.preview);
+    assert.equal(await page.evaluate(async()=>(await window.check.read()).stickers.length),3);
+    await page.evaluate(()=>window.check.act('history.undo'));
+    assert.equal(await page.evaluate(async()=>(await window.check.read()).bgxGeometry),undefined);
+    await page.evaluate(()=>window.check.act('history.redo'));
+    assert.equal(await page.evaluate(async()=>(await window.check.read()).bgxGeometry.source.algorithm),'da3');
+    await page.evaluate(()=>window.check.close());await page.evaluate(()=>window.check.open());
+    assert.equal(await page.evaluate(async()=>(await window.check.read()).bgxGeometry.preview.ui.pano_scene_files[0].assetName),'editor-results/geometry-original/0');
+    assert.equal(await page.evaluate(()=>window.check.geometrySubmits),1);
+    await surface.getByRole('button',{name:'几何输入',exact:true}).click();
+    assert.equal(await surface.getByRole('checkbox',{name:'desk.png',exact:true}).isChecked(),true);
+    assert.equal(await surface.getByText('DA3-BASE.safetensors',{exact:true}).count(),1);
+    await page.screenshot({path:resolve(results,'geometry-panel.png')});
+    await page.evaluate(()=>window.check.close());
+    await page.evaluate(()=>{const saved=window.check.saved();saved.bgxGeometry.version=999;window.check.replaceSaved(JSON.stringify(saved));});
+    await page.evaluate(()=>window.check.open());
+    assert.equal((await page.evaluate(()=>window.check.describe())).protection.readOnly,true);
+    await assert.rejects(page.evaluate(()=>window.check.act('geometry.remove')),/read-only/);
+    await page.evaluate(()=>window.check.close());
+    assert.equal(await page.evaluate(()=>window.check.saved().bgxGeometry.version),999);
+    console.log(JSON.stringify({geometryPassed:true,checks:['model discovery','owned source UI','prepare is not adoption','native history undo/redo','saved geometry and preview reopen','old stickers retained','no repeated inference','future geometry preserved read-only']}));
+  }
   if (option('--focus') === 'capture') {
     if (!option('--frame')) throw new Error('Capture check requires production frame');
     await page.evaluate(() => {
@@ -398,7 +447,7 @@ try {
     console.log(JSON.stringify({ preservationPassed: true, checks: ['unknown fields preserve original bytes', 'legacy multi-shot preview does not migrate or save', 'unsupported future version is rejected without mutation'] }));
   }
   assert.deepEqual(problems, []);
-  if (['inheritance', 'capture'].includes(option('--focus'))) {
+  if (['inheritance', 'capture', 'geometry'].includes(option('--focus'))) {
     console.log(JSON.stringify({ passed: true, scope: `${option('--focus')} only`, screenshots: results }));
   } else {
   console.log(JSON.stringify({ passed: true, checks: ['built editor opens', 'three images at distinct directions', 'UI yaw edit', 'undo/redo', 'save/reopen preserves directions', 'no redundant save', ...(option('--frame') ? ['same-name asset import/reopen', 'save conflict retains edits and allows retry', 'opaque origin isolation'] : []), ...(option('--actions') ? ['shared controller actions', 'stale active state rejected', 'keyframe move/save/reopen', 'exactly 50 undo operations'] : []), ...(option('--paint') ? ['sphere mask stroke', 'clear cancel/confirm/undo', 'saved asset add'] : []), ...(option('--3d') ? ['GLB managed conversion bridge', '3D source and result save/reopen'] : []), 'no browser errors'], screenshots: results }));

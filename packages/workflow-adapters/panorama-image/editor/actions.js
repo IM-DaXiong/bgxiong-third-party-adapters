@@ -23,6 +23,7 @@ const specifications = {
   'asset.add': ['name', 'placement'],
   'asset.publish': ['name'],
   'capture.frame': ['megapixels', 'multiple'], 'capture.collect': ['taskId'],
+  'geometry.models': [], 'geometry.prepare': ['source'], 'geometry.adopt': ['taskId'], 'geometry.remove': [],
   'repair.frameReturn': ['sourceName','provenanceName','megapixels','multiple'],
   'repair.seamPrepare': ['sourceName','bandWidth','offset','blur'],
   'repair.seamReturn': ['sourceName','provenanceName'],
@@ -61,7 +62,17 @@ export function createEditorActions(editor, flush, { assetFile, capture } = {}) 
     if (typeof expectedStateDigest !== 'string' || expectedStateDigest !== (await describe()).stateDigest) throw new Error('EDITOR_STATE_CONFLICT: reread the active editor');
     const ctx = current(), selection = editor.session.selection;
     if (ctx.readOnly && !['selection.set', 'timeline.seek', 'timeline.jump', 'timeline.loop', 'timeline.play', 'view.tab'].includes(action)) throw new Error('Editor is read-only');
-    if (action === 'asset.publish') {
+    if (action.startsWith('geometry.')) {
+      if (!capture) throw new Error('Geometry service is unavailable');
+      await flush();
+      if (action === 'geometry.remove') {
+        const state=clone(ctx.state);delete state.bgxGeometry;commit({state});service={status:'removed'};
+      } else {
+        service=await capture(action,args);
+        if(action==='geometry.adopt')commit({state:{...clone(ctx.state),bgxGeometry:service.geometry}});
+      }
+    }
+    else if (action === 'asset.publish') {
       if (!capture || typeof args.name !== 'string' || !args.name) throw new Error('请选择已登记的图片成果');
       await flush(); service = await capture(action, args);
     }

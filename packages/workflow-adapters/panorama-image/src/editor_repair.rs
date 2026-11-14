@@ -97,6 +97,7 @@ pub fn graph(mode:&str,input:&Value,doc:&SceneDocument,uploads:&BTreeMap<String,
 pub fn submit(host:&mut dyn Host,request:&Invocation,payload:&Value)->Result<Value,Failure> {
     let mode=mode(payload).ok_or_else(||Failure::invalid("Repair operation identity differs"))?;
     let input=&payload["input"];let doc=SceneDocument::parse(comfy::text(input,"editorDocument")?)?;doc.validate_references(input)?;
+    crate::geometry::validate_media(host,payload,&doc)?;
     let context=provenance::context(host,payload,&doc)?;
     let name=comfy::text(input,"sourceName")?;let id=doc.assets.get(name).ok_or_else(||Failure::invalid("Choose an owned repair source"))?;
     let source=crate::scene_media(payload,id,name)?;let stat=comfy::port(host,"host-media.info",json!({"handle":source["handle"]}))?;let (width,height)=size(&stat)?;

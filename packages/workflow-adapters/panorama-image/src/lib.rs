@@ -15,6 +15,8 @@ mod workflows;
 mod video_workflows;
 mod editor_video;
 mod h3_editor_video;
+mod geometry;
+mod editor_geometry;
 
 #[cfg(test)]
 mod tests;
@@ -139,6 +141,8 @@ fn scene_media(payload: &Value, media_id: &str, name: &str) -> Result<Value, Fai
 }
 
 fn submit(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<Value, Failure> {
+    if payload["operationId"] == editor_geometry::MODELS_OPERATION { return editor_geometry::models(host,request,payload); }
+    if payload["operationId"] == editor_geometry::OPERATION { return editor_geometry::submit(host,request,payload); }
     if editor_repair::mode(payload).is_some() { return editor_repair::submit(host,request,payload); }
     if payload["operationId"] == editor_prepare::OPERATION { return editor_prepare::submit(host,request,payload); }
     if payload["operationId"] == editor_media::OPERATION { return editor_media::submit(host, request, payload); }
@@ -153,6 +157,7 @@ fn submit(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<
         video_workflows::graph(input)?
     } else if payload["operationId"] == capability::SCENE_OPERATION || workflow.is_some() || editor_video::matches(payload) || h3_editor_video::matches(payload) {
         let document = scene::SceneDocument::parse(input["editorDocument"].as_str().ok_or_else(|| Failure::invalid("Missing editor document"))?)?;
+        geometry::validate_media(host,payload,&document)?;
         let mut uploads = BTreeMap::new();
         let mut assets = BTreeMap::new();
         for (name,id) in document.assets.iter().chain(document.sources.iter().flat_map(|source|source.document.assets.iter())) {
@@ -192,6 +197,7 @@ fn submit(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<
 }
 
 fn query(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<Value, Failure> {
+    if payload["operationId"] == editor_geometry::OPERATION { return editor_geometry::query(host,request,payload); }
     if editor_repair::mode(payload).is_some() { return editor_repair::query(host,request,payload); }
     if payload["operationId"] == editor_prepare::OPERATION { return editor_prepare::query(host,request,payload); }
     require_operation(payload)?;

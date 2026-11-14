@@ -1,6 +1,14 @@
 # 本地 ComfyUI 全景适配包
 
-当前源码为 1.15.1 开发候选：包含单图、多方向工程、Studio 渲染、局部修补返回、三维场景、MoGe 新视角及 LTX 2.3 全景视频。候选不等于公开正式下载版；真实模型、安装版及完整升级验收以产品交接记录为准。
+当前源码为 1.17.0 开发候选：包含单图、多方向工程、Studio 渲染、局部修补返回、三维场景、MoGe 新视角、LTX/H3 全景视频及图片几何输入。候选不等于公开正式下载版；真实模型、安装版及完整升级验收以产品交接记录为准。
+
+## 1.17.0 图片几何输入候选
+
+全景工作台顶部「几何输入」打开紧凑面板。先读取已配置资源机的模型列表，选 DA3 单目/同场景多视角、MoGe 透视或 MoGe 全景，勾选工程图片后准备。收取只查询原任务，显式「采用几何」后才修改工程；采用支持原生撤销/重做，关闭重开保留来源、参数和受管预览。两张以上来源必须尺寸相同，不会自动缩放。MoGe 全景要求单张 2:1 等距柱状图；DA3 多视角仅适用于上游支持的 Small/Base 模型。
+
+保留上游嵌套多视角文件、depth_grid 及颜色代理、动画 source/clip/box；不长期依赖远端临时目录。未知工程扩展版本只读保全。几何模型权重由资源机安装，选择器读取其真实文件清单，不自动下载模型。27 项原生定向检查、生产 companion 浏览器保存/复开/撤销链及 SDK 四段包检查通过；真实 ComfyUI 推理、视频几何输入和应用 EXE 服务链尚待验。前文单图真实验收不覆盖这些候选功能。
+
+节点声明基线：[ComfyUI eee59185 MoGe](https://github.com/Comfy-Org/ComfyUI/blob/eee59185ff4f43ae2d9ad122b245619d27d9daad/comfy_extras/nodes_moge.py)、[DA3 5ece24e7](https://github.com/Comfy-Org/ComfyUI/blob/5ece24e73c0785e95a45a45a2773ecd1a6f5339b/comfy_extras/nodes_depth_anything_3.py)。Panorama 保持 editor/upstream.lock.json 的固定输入，升级先做差异报告与对应行为检查。
 
 LTX 操作使用包内固定的三阶段图，保留视频音轨，输出解码器的完整 360° ERP，而非示例的透视裁切预览。当前固定输出 2048×1024、24 fps，帧数直接填写 `8n+1`，默认 121；不会先取整为秒，也不会静默裁掉无效帧数。编码 CRF、两处 LoRA 强度及种子由用户声明值映射。通过本地映射/查询测试和实际 SDK 包校验；大模型推理尚未验。帧数依据 [ComfyUI EmptyLTXVLatentVideo](https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_lt.py) 的时间下采样合同，最终节点/模型版本仍须资源机按冻结清单核对。
 
@@ -24,7 +32,7 @@ Studio 时间线视频新增 `panorama-studio-video`：直接使用 PanoramaStud
 
 ## 工程结构
 
-参考 RunningHub 动态包：独立 Cargo workspace、官方 `bgx-adapter-v2 init` 生成的 `vendor-sdk/` + `template-lock.json`（作者 SDK **2.0.0**）、标准 `Build.ps1`、`installation/adapter-install.template.json`。
+参考 RunningHub 动态包：独立 Cargo workspace、官方 `bgx-adapter-v2 init` 生成的 `vendor-sdk/` + `template-lock.json`（本批作者 SDK **2.4.0/ddc91f3**）、标准 `Build.ps1`、`installation/adapter-install.template.json`。
 
 > Windows 注意：工作流文件是 [workflow/source.json](workflow/source.json)。不要再放一份只差大小写的溯源文件。溯源摘要在包根 [SOURCE.json](SOURCE.json)。
 

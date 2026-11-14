@@ -23,6 +23,7 @@ impl SceneDocument {
         let state: Value = serde_json::from_str(document["stateText"].as_str().ok_or_else(|| Failure::invalid("stateText must be JSON text"))?)
             .map_err(|_| Failure::invalid("Studio state is not JSON"))?;
         if state["version"] != 2 { return Err(Failure::invalid("This operation requires Studio state version 2")); }
+        if let Some(geometry)=state.get(crate::geometry::STATE_KEY) {crate::geometry::validate(geometry)?;}
         let mut assets = BTreeMap::new();
         for asset in document["assets"].as_array().ok_or_else(|| Failure::invalid("Editor assets must be an array"))? {
             let name = asset["name"].as_str().filter(|value| !value.is_empty()).ok_or_else(|| Failure::invalid("Missing asset name"))?;
@@ -71,9 +72,12 @@ impl SceneDocument {
             let id=format!("bgx_editor_input_{index}");
             let mut node=render_graph(&source.document.bind(uploads)?,mp,multiple)?["70"].clone();
             if let Some(parent)=source.inputs.first() {node["inputs"]["scene"]=json!([nodes.get(parent).ok_or_else(||Failure::invalid("Missing parent scene"))?,0]);}
-            graph[&id]=node; nodes.insert(source.node_id.clone(),id);
+            graph[&id]=node;
+            crate::geometry::attach(graph,&id,&source.document.bind(uploads)?)?;
+            nodes.insert(source.node_id.clone(),id);
         }
         if let Some(parent)=self.input_node_ids.first() {graph[root]["inputs"]["scene"]=json!([nodes.get(parent).ok_or_else(||Failure::invalid("Missing root scene input"))?,0]);}
+        crate::geometry::attach(graph,root,&self.bind(uploads)?)?;
         Ok(())
     }
 
@@ -117,7 +121,7 @@ pub fn render_graph(state: &Value, megapixels: f64, multiple: u64) -> Result<Val
     Ok(json!({
         "70":{"class_type":"PanoramaStudio","inputs":{
             "background_color":"#00ff00","background_range":"360","megapixels":megapixels,
-            "multiple":multiple,"state_json":state.to_string()
+            "multiple":multiple,"state_json":crate::geometry::upstream_state(state).to_string()
         }},
         "66":{"class_type":"SaveImage","inputs":{"images":["70",1],"filename_prefix":"bgx_panorama_studio"}}
     }))
@@ -141,17 +145,8 @@ pub fn outpaint_graph(input: &Value, uploads: &BTreeMap<String, String>) -> Resu
     basic["references"] = json!([{"mediaId":"validated-scene"}]);
     let (_, applied) = crate::mapping::build_graph(&basic, "scene.png")?;
     let mut graph: Value = serde_json::from_str(include_str!("../workflow/qwen-2.1-scene-api.json")).expect("frozen upstream graph");
-    graph["83"]["inputs"]["state_json"] = json!(state.to_string());
-    let mut source_nodes = BTreeMap::new();
-    for (index, source) in document.sources.iter().enumerate() {
-        let id = format!("bgx_editor_input_{index}");
-        let bound = source.document.bind(uploads)?;
-        let mut node = render_graph(&bound, 2.0, 32)?["70"].clone();
-        if let Some(parent) = source.inputs.first() { node["inputs"]["scene"] = json!([source_nodes.get(parent).ok_or_else(|| Failure::invalid("Missing parent scene"))?, 0]); }
-        graph[&id] = node;
-        source_nodes.insert(source.node_id.clone(), id);
-    }
-    if let Some(parent) = document.input_node_ids.first() { graph["83"]["inputs"]["scene"] = json!([source_nodes.get(parent).ok_or_else(|| Failure::invalid("Missing root scene input"))?, 0]); }
+    graph["83"]["inputs"]["state_json"] = json!(crate::geometry::upstream_state(&state).to_string());
+    document.connect_parents(&mut graph,"83",uploads,2.0,32)?;
     graph["83"]["inputs"]["megapixels"] = json!(2.0);
     graph["83"]["inputs"]["multiple"] = json!(32);
     graph["64"]["inputs"]["prompt"] = applied["prompt"].clone();

@@ -1,5 +1,11 @@
 # Local ComfyUI single-image ERP panorama adapter (1.0.3)
 
+Current source is development candidate **1.17.0**. The 1.0.3 inference result below is a retained baseline, not acceptance of every newer feature.
+
+1.17 adds owned image geometry inputs: DA3 mono/multiview, MoGe perspective and MoGe panorama. The compact editor panel discovers model names from the configured resource host, prepares and collects one original task, then explicitly adopts the result. Native undo/redo and reopening retain settings, sources and preview assets. Nested multiview files, depth-grid color proxies and animation metadata are preserved. Differently sized input images are rejected before upload rather than implicitly resized. Unknown extension versions remain read-only.
+
+27 targeted native checks, the production companion/frame browser path and standard SDK build/check/pack/check passed. Actual ComfyUI inference, application EXE service integration and video geometry input remain pending. No weights are downloaded by this package. Node contracts were checked against ComfyUI MoGe eee59185ff4f43ae2d9ad122b245619d27d9daad and DA3 5ece24e73c0785e95a45a45a2773ecd1a6f5339b; Panorama remains pinned in editor/upstream.lock.json.
+
 Version 1.0.3 completed a real single-image ERP generation on LAN ComfyUI 0.45.0 with an RTX 4090. The application queried the original task and saved the 2048×1024 image.
 
 Package ID: `local.thirdparty.comfy-panorama-image`  

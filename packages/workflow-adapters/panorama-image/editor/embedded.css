@@ -17,3 +17,14 @@ html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
 .bgx-capture-toolbar input[type=radio] { width:auto; margin:0; }
 .bgx-capture-toolbar select { width:180px; min-width:80px; text-overflow:ellipsis; }
 .bgx-preparation-controls { overflow-x:auto; flex-shrink:0; }
+.bgx-geometry-panel { position:fixed; top:68px; right:10px; z-index:100000; width:min(640px,calc(100vw - 20px)); max-height:60vh; overflow:auto; padding:12px; box-sizing:border-box; background:#1c2029; color:#e8e8ec; border:1px solid #535a69; border-radius:6px; font:13px sans-serif; box-shadow:0 8px 24px #0006; }
+.bgx-geometry-panel[hidden] { display:none; }
+.bgx-geometry-row,.bgx-geometry-choices { display:flex; align-items:center; flex-wrap:wrap; gap:8px 12px; }
+.bgx-geometry-row + .bgx-geometry-row { margin-top:10px; }
+.bgx-geometry-panel label { display:inline-flex; align-items:center; gap:5px; }
+.bgx-geometry-panel button,.bgx-geometry-panel select,.bgx-geometry-panel input { background:#2a303c; color:inherit; border:1px solid #535a69; border-radius:4px; padding:4px 6px; font:inherit; }
+.bgx-geometry-panel input[type=number] { width:70px; }
+.bgx-geometry-panel input[type=radio],.bgx-geometry-panel input[type=checkbox] { width:auto; margin:0; }
+.bgx-geometry-panel select { max-width:450px; }
+.bgx-geometry-sources { max-height:100px; overflow:auto; }
+.bgx-geometry-panel [role=status] { overflow-wrap:anywhere; }

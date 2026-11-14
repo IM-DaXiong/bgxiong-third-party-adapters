@@ -42,12 +42,17 @@ await build({
     if (normalized === resolve(source, 'web_src/studio/editor.js').replaceAll('\\', '/')) {
       const original = 'return { close, session, stage: () => ctx.stage, paint: () => paint };';
       if (code.split(original).length !== 2) throw new Error('Upstream controller export changed');
-      return code.replace(original, 'return { close, session, stage: () => ctx.stage, paint: () => paint, controller: ctx.controller, view: () => ctx.view };');
+      return code.replace(original, 'return { close, session, stage: () => ctx.stage, paint: () => paint, controller: ctx.controller, view: () => ctx.view, refresh: () => { ctx.refreshVideo(); ctx.sync(); } };');
     }
     if (normalized === resolve(source, 'web_src/pano_editor_state.js').replaceAll('\\', '/')) {
       const original = 'export const HISTORY_LIMIT = 80;';
       if (code.split(original).length !== 2) throw new Error('Upstream history contract changed');
       return code.replace(original, 'export const HISTORY_LIMIT = 51;'); // initial state + 50 successful actions
+    }
+    if (normalized === resolve(source, 'web_src/pano_scene_state.js').replaceAll('\\', '/')) {
+      const original = 'return version === 1 ? migrateV1(parsed) : normalizeV2(parsed);';
+      if (code.split(original).length !== 2) throw new Error('Upstream state loader changed');
+      return code.replace(original, 'const state = version === 1 ? migrateV1(parsed) : normalizeV2(parsed); if (Object.hasOwn(parsed, "bgxGeometry")) state.bgxGeometry = structuredClone(parsed.bgxGeometry); return state;');
     }
     const binding = styleBindings.get(normalized);
     if (!binding) return null;
@@ -75,8 +80,10 @@ await cp(resolve(here, 'upstream.lock.json'), resolve(out, 'upstream.lock.json')
 // A self-contained payload for an opaque-origin frame: no filesystem URL, CDN or
 // executable import from the trusted host is needed when opening the editor.
 await writeFile(resolve(out, 'editor-bundle.json'), JSON.stringify({ schemaVersion: 1, script: await readFile(resolve(out, 'studio.js'), 'utf8'), stylesheet: css,
-  generationBindings: ['h3-studio-video','studio-video','scene-to-panorama','studio-render','studio-cutout','studio-3d','studio-moge','editor-frame-capture','editor-frame-return','editor-seam-prepare','editor-seam-return'].map(operation => ({ operationId: `local.thirdparty.comfy-panorama-image/${operation}`, documentField: 'editorDocument', assetsField: 'references', includeConnectedDocuments: true })),
+  generationBindings: ['editor-geometry','h3-studio-video','studio-video','scene-to-panorama','studio-render','studio-cutout','studio-3d','studio-moge','editor-frame-capture','editor-frame-return','editor-seam-prepare','editor-seam-return'].map(operation => ({ operationId: `local.thirdparty.comfy-panorama-image/${operation}`, documentField: 'editorDocument', assetsField: 'references', includeConnectedDocuments: true })),
   serviceBindings: [{ id: 'file3d', purpose: 'mediaPreparation', operationId: 'local.thirdparty.comfy-panorama-image/editor-3d-preview', modelId: 'panorama-editor-media', assetsField: 'sources' },
+    { id: 'geometry', purpose: 'mediaPreparation', operationId: 'local.thirdparty.comfy-panorama-image/editor-geometry', modelId: 'panorama-editor-geometry', assetsField: 'references', revisionField: 'sourceRevision' },
+    { id: 'geometryModels', purpose: 'mediaPreparation', operationId: 'local.thirdparty.comfy-panorama-image/editor-geometry-models', modelId: 'panorama-editor-geometry', assetsField: 'sources' },
     { id: 'frameCapture', purpose: 'mediaPreparation', operationId: 'local.thirdparty.comfy-panorama-image/editor-frame-capture', modelId: 'panorama-editor-capture', assetsField: 'references', revisionField: 'sourceRevision' },
     ...[['frameReturn','frame-return'],['seamPrepare','seam-prepare'],['seamReturn','seam-return']].map(([id, mode]) => ({id, purpose:'mediaPreparation', operationId:`local.thirdparty.comfy-panorama-image/editor-${mode}`,modelId:`panorama-editor-${mode}`,assetsField:'references',revisionField:'sourceRevision'}))],
 }));
@@ -91,7 +98,7 @@ async function inventory(dir) {
 await inventory(out);
 files.sort((a, b) => a.path.localeCompare(b.path));
 const bridgeSources = [];
-for (const path of ['build.mjs', 'studio.js', 'actions.js', 'capture-toolbar.js', 'state-preservation.js', 'connected-scenes.js', 'embedded.css']) bridgeSources.push({ path, sha256: hash(await readFile(resolve(here, path))) });
+for (const path of ['build.mjs', 'studio.js', 'actions.js', 'capture-toolbar.js', 'state-preservation.js', 'geometry-state.js', 'geometry-toolbar.js', 'connected-scenes.js', 'embedded.css']) bridgeSources.push({ path, sha256: hash(await readFile(resolve(here, path))) });
 await writeFile(resolve(out, 'editor-build.json'), JSON.stringify({ schemaVersion: 1, upstream: lock,
   upstreamLockSha256: hash(await readFile(resolve(here, 'upstream.lock.json'))), bridgeSources, files }, null, 2) + '\n');
 console.log(JSON.stringify({ output: out, upstream: lock.commit, files: files.length }));

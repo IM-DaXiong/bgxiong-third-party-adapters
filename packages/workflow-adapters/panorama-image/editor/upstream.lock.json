@@ -25,6 +25,11 @@
       "file": "web_src/pano_editor_state.js",
       "kind": "guarded-build-transform",
       "purpose": "Keep initial snapshot plus latest 50 successful actions"
+    },
+    {
+      "file": "web_src/pano_scene_state.js",
+      "kind": "guarded-build-transform",
+      "purpose": "Preserve the versioned package-owned geometry binding through native history; remove it before backend state execution"
     }
   ],
   "nodes": [

@@ -6,6 +6,8 @@ import { loadSceneState, sceneStateText } from '@panorama-upstream/web_src/pano_
 import { inspectStatePreservation } from './state-preservation.js';
 import { connectedScenes } from './connected-scenes.js';
 import { captureToolbar } from './capture-toolbar.js';
+import { adoptGeometry, geometryUi, validateGeometry } from './geometry-state.js';
+import { geometryToolbar } from './geometry-toolbar.js';
 
 /** Installation companion entry. The product bridge only knows documents and opaque assets;
  * Comfy source naming and route translation belong to this adapter.
@@ -19,6 +21,8 @@ export async function openAdapterEditor(initial, host) {
   const urls = new Set();
   const key = source => `${source.storage ?? source.type ?? 'input'}/${source.subfolder ?? ''}/${source.filename}`;
   const addAsset = asset => {
+    const existing=assets.get(asset.name);
+    if(existing){if(existing.sha256!==asset.sha256)throw new Error('同名工程素材的摘要已经改变');assets.set(asset.name,{...existing,...asset,url:existing.url});return;}
     const url = URL.createObjectURL(new Blob([asset.bytes], { type: asset.mimeType }));
     urls.add(url);
     assets.set(asset.name, { ...asset, url });
@@ -86,11 +90,28 @@ export async function openAdapterEditor(initial, host) {
     }
   }
   const captureTaskKey = `capture.lastTask:${initial.nodeId}`;
+  const geometryTaskKey = `geometry.lastTask:${initial.nodeId}`;
+  const app={nodeOutputs:{}};
+  const updateGeometryUi=stateText=>{
+    const geometry=protection.readOnly?null:JSON.parse(stateText||'{}').bgxGeometry;
+    app.nodeOutputs[initial.nodeId]={...geometryUi(geometry,assets),...(connected.layers.length?{pano_upstream_layers:connected.layers}:{})};
+  };
+  updateGeometryUi(initial.stateText);
   let toolbar = null;
   const capture = async (action, args) => {
+    if(action==='geometry.models')return host.call('operation.run',{serviceId:'geometryModels',sourceNames:[],input:{}});
     if (action === 'asset.publish') return { status: 'published', ...await host.call('asset.publish', { name: args.name }) };
     let result;
+    if (action === 'geometry.adopt') {
+      const collected=await host.call('operation.collect',{taskId:args.taskId});
+      for(const asset of collected.assets)addAsset(asset);
+      return {...collected,assets:collected.assets.map(({bytes,...asset})=>asset),geometry:await adoptGeometry(collected,assets)};
+    }
     if (action === 'capture.collect') result = await host.call('operation.collect', { taskId: args.taskId });
+    else if(action==='geometry.prepare') {
+      validateGeometry({version:1,source:args.source});
+      result=await host.call('operation.run',{serviceId:'geometry',sourceNames:[],input:{geometrySourceJson:JSON.stringify(args.source),outputProjection:'flat',advanced:{megapixels:.1,multiple:8}}});
+    }
     else {
       const serviceId = {'capture.frame':'frameCapture','repair.frameReturn':'frameReturn','repair.seamPrepare':'seamPrepare','repair.seamReturn':'seamReturn'}[action];
       const input = {outputProjection: ['frameCapture','seamPrepare'].includes(serviceId) ? 'flat' : 'equirectangular360',
@@ -100,6 +121,7 @@ export async function openAdapterEditor(initial, host) {
     }
     await host.call('preferences.set', { key: captureTaskKey, value: result.taskId });
     memory.set(captureTaskKey, result.taskId);
+    if(action==='geometry.prepare'){await host.call('preferences.set',{key:geometryTaskKey,value:result.taskId});memory.set(geometryTaskKey,result.taskId);}
     const roles={frame:'取景',mask:'遮罩',softMask:'羽化遮罩',pose:'取景记录',provenance:'接缝记录',shifted:'接缝工作图',repaired:'修补全景'};
     for (const asset of result.assets) {
       const key=`assetLabel:${initial.nodeId}:${asset.name}`;
@@ -110,11 +132,12 @@ export async function openAdapterEditor(initial, host) {
     toolbar?.refresh(result);
     return { ...result, assets: result.assets.map(({ bytes, ...asset }) => asset) };
   };
-  const editor = await openPanoramaStudio({ nodeId: initial.nodeId, stateText: initial.stateText ?? '',
+  let editor;
+  editor = await openPanoramaStudio({ nodeId: initial.nodeId, stateText: initial.stateText ?? '',
     capture,
     readOnly: protection.readOnly,
     inputs: connected.inputs, graphNodes: connected.nodes,
-    app: { nodeOutputs: connected.layers.length ? { [initial.nodeId]: { pano_upstream_layers: connected.layers } } : {} }, api, stylesheetUrl: 'preloaded',
+    app, api, stylesheetUrl: 'preloaded',
     assetFile: name => {
       const asset = assets.get(name);
       if (!asset) throw new Error('Named asset does not belong to this document');
@@ -125,19 +148,24 @@ export async function openAdapterEditor(initial, host) {
       preferenceTail = preferenceTail.then(() => host.call('preferences.set', { key, value }))
         .then(() => { if (pendingPreferences.get(key) === value) pendingPreferences.delete(key); }).catch(() => {});
     } },
-    onStateChange: stateText => protection.readOnly ? undefined : host.call('document.save', {
-      stateText,
-      assets: [...assets.values()].map(({ name, mediaRel, sha256, mimeType }) => ({ name, mediaRel, sha256, mimeType })),
-    }),
+    onStateChange: async stateText => {
+      if(protection.readOnly)return;
+      updateGeometryUi(stateText);
+      await host.call('document.save', {stateText,assets:[...assets.values()].map(({name,mediaRel,sha256,mimeType})=>({name,mediaRel,sha256,mimeType}))});
+      editor?.refreshMedia();
+    },
     onClosed: () => { void host.call('editor.closed', null).catch(() => {}); },
   });
   toolbar = protection.readOnly ? null : captureToolbar(editor, () => memory.get(captureTaskKey), () => [...assets.values()].map(asset=>({...asset,displayName:memory.get(`assetLabel:${initial.nodeId}:${asset.name}`)??asset.displayName})));
+  const geometryPanel=protection.readOnly?null:geometryToolbar(editor,()=>[...assets.values()],()=>memory.get(geometryTaskKey));
+  if(geometryPanel)toolbar.addControl(geometryPanel.toggle);
   return { read: editor.read, describe: async () => ({ ...await editor.describe(), protection }), act: editor.act, async flush() { const result = await editor.flush(); await flushPreferences(); return result; }, async close() {
     const result = await editor.close();
     await flushPreferences();
     for (const url of urls) URL.revokeObjectURL(url);
     marker.remove();
     toolbar?.remove();
+    geometryPanel?.remove();
     return result;
   } };
 }
@@ -199,6 +227,7 @@ export async function openPanoramaStudio({ nodeId, stateText = '', inputs = [], 
   }
   return {
     read: () => structuredClone(editor.session.state),
+    refreshMedia: () => editor.refresh(),
     ...createEditorActions(editor, flush, { assetFile, capture }),
     flush,
     async close() {

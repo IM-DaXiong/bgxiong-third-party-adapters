@@ -60,6 +60,6 @@ export function captureToolbar(editor, lastTask, assets = () => []) {
   submit.onclick=()=>run(mode,Object.fromEntries([...fields].map(([key,input])=>[key,input.type==='number'?Number(input.value):input.value])));
   collect.onclick=()=>run('capture.collect',{taskId:lastTask()});render();
   adopt.onclick=()=>run('asset.publish',{name:resultChoice.value});resultChoice.onchange=()=>{adopt.disabled=busy||!resultChoice.value;};
-  return {refresh(result){collect.disabled=busy||!lastTask();state.textContent=result.status==='pending'?'等待处理':'已收取';refreshAssets();},
+  return {addControl(control){modes.append(control);},refresh(result){collect.disabled=busy||!lastTask();state.textContent=result.status==='pending'?'等待处理':'已收取';refreshAssets();},
     remove(){bar.remove();document.body.classList.remove('bgx-capture-enabled');}};
 }
