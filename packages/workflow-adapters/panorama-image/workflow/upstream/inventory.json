@@ -39,7 +39,112 @@
           "url": "https://huggingface.co/nomadoor/qwen-image-2.1-360-panorama-outpaint-lora/resolve/main/qwen_image_2_1_360_panorama_outpaint_lora_v0_1.safetensors",
           "directory": "loras"
         }
-      ]
+      ],
+      "noteResources": [
+        {
+          "name": "qwen_image_2.1_int8_convrot.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/diffusion_models/qwen_image_2.1_int8_convrot.safetensors",
+          "sourceNodeId": 55,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        },
+        {
+          "name": "qwen3vl_8b_int8_convrot.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/text_encoders/qwen3vl_8b_int8_convrot.safetensors",
+          "sourceNodeId": 55,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        },
+        {
+          "name": "qwen_image_2.1_vae_bf16.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/vae/qwen_image_2.1_vae_bf16.safetensors",
+          "sourceNodeId": 55,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        },
+        {
+          "name": "qwen_image_2_1_360_panorama_outpaint_lora_v0_1.safetensors",
+          "url": "https://huggingface.co/nomadoor/qwen-image-2.1-360-panorama-outpaint-lora/blob/main/qwen_image_2_1_360_panorama_outpaint_lora_v0_1.safetensors",
+          "sourceNodeId": 55,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        }
+      ],
+      "modelBindings": [
+        {
+          "nodeId": 37,
+          "nodeType": "UNETLoader",
+          "field": "unet_name",
+          "filename": "qwen_image_2.1_int8_convrot.safetensors",
+          "resource": {
+            "name": "qwen_image_2.1_int8_convrot.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/diffusion_models/qwen_image_2.1_int8_convrot.safetensors",
+            "directory": "diffusion_models"
+          },
+          "noteResources": [
+            {
+              "name": "qwen_image_2.1_int8_convrot.safetensors",
+              "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/diffusion_models/qwen_image_2.1_int8_convrot.safetensors",
+              "sourceNodeId": 55,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 38,
+          "nodeType": "CLIPLoader",
+          "field": "clip_name",
+          "filename": "qwen3vl_8b_int8_convrot.safetensors",
+          "resource": {
+            "name": "qwen3vl_8b_int8_convrot.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/text_encoders/qwen3vl_8b_int8_convrot.safetensors",
+            "directory": "text_encoders"
+          },
+          "noteResources": [
+            {
+              "name": "qwen3vl_8b_int8_convrot.safetensors",
+              "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/text_encoders/qwen3vl_8b_int8_convrot.safetensors",
+              "sourceNodeId": 55,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 39,
+          "nodeType": "VAELoader",
+          "field": "vae_name",
+          "filename": "qwen_image_2.1_vae_bf16.safetensors",
+          "resource": {
+            "name": "qwen_image_2.1_vae_bf16.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/vae/qwen_image_2.1_vae_bf16.safetensors",
+            "directory": "vae"
+          },
+          "noteResources": [
+            {
+              "name": "qwen_image_2.1_vae_bf16.safetensors",
+              "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/vae/qwen_image_2.1_vae_bf16.safetensors",
+              "sourceNodeId": 55,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 84,
+          "nodeType": "LoraLoaderModelOnly",
+          "field": "lora_name",
+          "filename": "qwen_image_2_1_360_panorama_outpaint_lora_v0_1.safetensors",
+          "resource": {
+            "name": "qwen_image_2_1_360_panorama_outpaint_lora_v0_1.safetensors",
+            "url": "https://huggingface.co/nomadoor/qwen-image-2.1-360-panorama-outpaint-lora/resolve/main/qwen_image_2_1_360_panorama_outpaint_lora_v0_1.safetensors",
+            "directory": "loras"
+          },
+          "noteResources": [
+            {
+              "name": "qwen_image_2_1_360_panorama_outpaint_lora_v0_1.safetensors",
+              "url": "https://huggingface.co/nomadoor/qwen-image-2.1-360-panorama-outpaint-lora/blob/main/qwen_image_2_1_360_panorama_outpaint_lora_v0_1.safetensors",
+              "sourceNodeId": 55,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        }
+      ],
+      "resourceWarnings": []
     },
     {
       "name": "qwen-image-2.1-panorama-cutout",
@@ -73,7 +178,87 @@
           "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/vae/qwen_image_2.1_vae_bf16.safetensors",
           "directory": "vae"
         }
-      ]
+      ],
+      "noteResources": [
+        {
+          "name": "qwen_image_2.1_int8_convrot.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/diffusion_models/qwen_image_2.1_int8_convrot.safetensors",
+          "sourceNodeId": 55,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        },
+        {
+          "name": "qwen3vl_8b_int8_convrot.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/text_encoders/qwen3vl_8b_int8_convrot.safetensors",
+          "sourceNodeId": 55,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        },
+        {
+          "name": "qwen_image_2.1_vae_bf16.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/vae/qwen_image_2.1_vae_bf16.safetensors",
+          "sourceNodeId": 55,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        }
+      ],
+      "modelBindings": [
+        {
+          "nodeId": 37,
+          "nodeType": "UNETLoader",
+          "field": "unet_name",
+          "filename": "qwen_image_2.1_int8_convrot.safetensors",
+          "resource": {
+            "name": "qwen_image_2.1_int8_convrot.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/diffusion_models/qwen_image_2.1_int8_convrot.safetensors",
+            "directory": "diffusion_models"
+          },
+          "noteResources": [
+            {
+              "name": "qwen_image_2.1_int8_convrot.safetensors",
+              "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/diffusion_models/qwen_image_2.1_int8_convrot.safetensors",
+              "sourceNodeId": 55,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 38,
+          "nodeType": "CLIPLoader",
+          "field": "clip_name",
+          "filename": "qwen3vl_8b_int8_convrot.safetensors",
+          "resource": {
+            "name": "qwen3vl_8b_int8_convrot.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/text_encoders/qwen3vl_8b_int8_convrot.safetensors",
+            "directory": "text_encoders"
+          },
+          "noteResources": [
+            {
+              "name": "qwen3vl_8b_int8_convrot.safetensors",
+              "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/text_encoders/qwen3vl_8b_int8_convrot.safetensors",
+              "sourceNodeId": 55,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 39,
+          "nodeType": "VAELoader",
+          "field": "vae_name",
+          "filename": "qwen_image_2.1_vae_bf16.safetensors",
+          "resource": {
+            "name": "qwen_image_2.1_vae_bf16.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/vae/qwen_image_2.1_vae_bf16.safetensors",
+            "directory": "vae"
+          },
+          "noteResources": [
+            {
+              "name": "qwen_image_2.1_vae_bf16.safetensors",
+              "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/vae/qwen_image_2.1_vae_bf16.safetensors",
+              "sourceNodeId": 55,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        }
+      ],
+      "resourceWarnings": []
     },
     {
       "name": "qwen-image-2.1-panorama-with-3d",
@@ -107,7 +292,87 @@
           "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/vae/qwen_image_2.1_vae_bf16.safetensors",
           "directory": "vae"
         }
-      ]
+      ],
+      "noteResources": [
+        {
+          "name": "qwen_image_2.1_int8_convrot.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/diffusion_models/qwen_image_2.1_int8_convrot.safetensors",
+          "sourceNodeId": 55,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        },
+        {
+          "name": "qwen3vl_8b_int8_convrot.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/text_encoders/qwen3vl_8b_int8_convrot.safetensors",
+          "sourceNodeId": 55,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        },
+        {
+          "name": "qwen_image_2.1_vae_bf16.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/vae/qwen_image_2.1_vae_bf16.safetensors",
+          "sourceNodeId": 55,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        }
+      ],
+      "modelBindings": [
+        {
+          "nodeId": 37,
+          "nodeType": "UNETLoader",
+          "field": "unet_name",
+          "filename": "qwen_image_2.1_int8_convrot.safetensors",
+          "resource": {
+            "name": "qwen_image_2.1_int8_convrot.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/diffusion_models/qwen_image_2.1_int8_convrot.safetensors",
+            "directory": "diffusion_models"
+          },
+          "noteResources": [
+            {
+              "name": "qwen_image_2.1_int8_convrot.safetensors",
+              "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/diffusion_models/qwen_image_2.1_int8_convrot.safetensors",
+              "sourceNodeId": 55,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 38,
+          "nodeType": "CLIPLoader",
+          "field": "clip_name",
+          "filename": "qwen3vl_8b_int8_convrot.safetensors",
+          "resource": {
+            "name": "qwen3vl_8b_int8_convrot.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/text_encoders/qwen3vl_8b_int8_convrot.safetensors",
+            "directory": "text_encoders"
+          },
+          "noteResources": [
+            {
+              "name": "qwen3vl_8b_int8_convrot.safetensors",
+              "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/text_encoders/qwen3vl_8b_int8_convrot.safetensors",
+              "sourceNodeId": 55,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 39,
+          "nodeType": "VAELoader",
+          "field": "vae_name",
+          "filename": "qwen_image_2.1_vae_bf16.safetensors",
+          "resource": {
+            "name": "qwen_image_2.1_vae_bf16.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/vae/qwen_image_2.1_vae_bf16.safetensors",
+            "directory": "vae"
+          },
+          "noteResources": [
+            {
+              "name": "qwen_image_2.1_vae_bf16.safetensors",
+              "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/vae/qwen_image_2.1_vae_bf16.safetensors",
+              "sourceNodeId": 55,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        }
+      ],
+      "resourceWarnings": []
     },
     {
       "name": "qwen-image-2.1-moge3-anyangle",
@@ -154,7 +419,137 @@
           "url": "https://huggingface.co/lilylilith/QI_2.1_AnyAngle/resolve/main/QI2.1_AnyAngle.safetensors",
           "directory": "loras"
         }
-      ]
+      ],
+      "noteResources": [
+        {
+          "name": "qwen_image_2.1_int8_convrot.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/diffusion_models/qwen_image_2.1_int8_convrot.safetensors",
+          "sourceNodeId": 55,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        },
+        {
+          "name": "qwen3vl_8b_int8_convrot.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/text_encoders/qwen3vl_8b_int8_convrot.safetensors",
+          "sourceNodeId": 55,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        },
+        {
+          "name": "qwen_image_2.1_vae_bf16.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/vae/qwen_image_2.1_vae_bf16.safetensors",
+          "sourceNodeId": 55,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        },
+        {
+          "name": "QI2.1_AnyAngle.safetensors",
+          "url": "https://huggingface.co/lilylilith/QI_2.1_AnyAngle/blob/main/QI2.1_AnyAngle.safetensors",
+          "sourceNodeId": 55,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        },
+        {
+          "name": "moge_3_vitg_fp16.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/MoGe/blob/main/geometry_estimation/moge_3_vitg_fp16.safetensors",
+          "sourceNodeId": 55,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        }
+      ],
+      "modelBindings": [
+        {
+          "nodeId": 37,
+          "nodeType": "UNETLoader",
+          "field": "unet_name",
+          "filename": "qwen_image_2.1_int8_convrot.safetensors",
+          "resource": {
+            "name": "qwen_image_2.1_int8_convrot.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/diffusion_models/qwen_image_2.1_int8_convrot.safetensors",
+            "directory": "diffusion_models"
+          },
+          "noteResources": [
+            {
+              "name": "qwen_image_2.1_int8_convrot.safetensors",
+              "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/diffusion_models/qwen_image_2.1_int8_convrot.safetensors",
+              "sourceNodeId": 55,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 38,
+          "nodeType": "CLIPLoader",
+          "field": "clip_name",
+          "filename": "qwen3vl_8b_int8_convrot.safetensors",
+          "resource": {
+            "name": "qwen3vl_8b_int8_convrot.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/text_encoders/qwen3vl_8b_int8_convrot.safetensors",
+            "directory": "text_encoders"
+          },
+          "noteResources": [
+            {
+              "name": "qwen3vl_8b_int8_convrot.safetensors",
+              "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/text_encoders/qwen3vl_8b_int8_convrot.safetensors",
+              "sourceNodeId": 55,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 39,
+          "nodeType": "VAELoader",
+          "field": "vae_name",
+          "filename": "qwen_image_2.1_vae_bf16.safetensors",
+          "resource": {
+            "name": "qwen_image_2.1_vae_bf16.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/vae/qwen_image_2.1_vae_bf16.safetensors",
+            "directory": "vae"
+          },
+          "noteResources": [
+            {
+              "name": "qwen_image_2.1_vae_bf16.safetensors",
+              "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/main/vae/qwen_image_2.1_vae_bf16.safetensors",
+              "sourceNodeId": 55,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 82,
+          "nodeType": "LoadMoGeModel",
+          "field": "model_name",
+          "filename": "moge_3_vitg_fp16.safetensors",
+          "resource": {
+            "name": "moge_3_vitg_fp16.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/MoGe/resolve/main/geometry_estimation/moge_3_vitg_fp16.safetensors",
+            "directory": "geometry_estimation"
+          },
+          "noteResources": [
+            {
+              "name": "moge_3_vitg_fp16.safetensors",
+              "url": "https://huggingface.co/Comfy-Org/MoGe/blob/main/geometry_estimation/moge_3_vitg_fp16.safetensors",
+              "sourceNodeId": 55,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 84,
+          "nodeType": "LoraLoaderModelOnly",
+          "field": "lora_name",
+          "filename": "QI2.1_AnyAngle.safetensors",
+          "resource": {
+            "name": "QI2.1_AnyAngle.safetensors",
+            "url": "https://huggingface.co/lilylilith/QI_2.1_AnyAngle/resolve/main/QI2.1_AnyAngle.safetensors",
+            "directory": "loras"
+          },
+          "noteResources": [
+            {
+              "name": "QI2.1_AnyAngle.safetensors",
+              "url": "https://huggingface.co/lilylilith/QI_2.1_AnyAngle/blob/main/QI2.1_AnyAngle.safetensors",
+              "sourceNodeId": 55,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        }
+      ],
+      "resourceWarnings": []
     },
     {
       "name": "pika-h3-flex-moge3-crossview",
@@ -222,7 +617,187 @@
           "url": "https://huggingface.co/Comfy-Org/MoGe/resolve/main/geometry_estimation/moge_3_vitg_fp16.safetensors",
           "directory": "geometry_estimation"
         }
-      ]
+      ],
+      "noteResources": [
+        {
+          "name": "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+          "sourceNodeId": 118,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        },
+        {
+          "name": "MiniMax-H3_Ref2VA-LoRA-CrossView-Warp_v1_3500.safetensors",
+          "url": "https://huggingface.co/Cseti/MiniMax-H3_Ref2VA-LoRA-CrossView-Warp_v1/blob/main/MiniMax-H3_Ref2VA-LoRA-CrossView-Warp_v1_3500.safetensors",
+          "sourceNodeId": 118,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        },
+        {
+          "name": "pika_h3_flex_ref2va_v1_bf16.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/loras/pika_h3_flex_ref2va_v1_bf16.safetensors",
+          "sourceNodeId": 118,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        },
+        {
+          "name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+          "sourceNodeId": 118,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        },
+        {
+          "name": "minimax_h3_audio_vae_fp32.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/vae/minimax_h3_audio_vae_fp32.safetensors",
+          "sourceNodeId": 118,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        },
+        {
+          "name": "minimax_h3_video_vae_int8_convrot.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/vae/minimax_h3_video_vae_int8_convrot.safetensors",
+          "sourceNodeId": 118,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        },
+        {
+          "name": "moge_3_vitg_fp16.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/MoGe/blob/main/geometry_estimation/moge_3_vitg_fp16.safetensors",
+          "sourceNodeId": 118,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        }
+      ],
+      "modelBindings": [
+        {
+          "nodeId": 39,
+          "nodeType": "VAELoader",
+          "field": "vae_name",
+          "filename": "minimax_h3_video_vae_int8_convrot.safetensors",
+          "resource": {
+            "name": "minimax_h3_video_vae_int8_convrot.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_video_vae_int8_convrot.safetensors",
+            "directory": "vae"
+          },
+          "noteResources": [
+            {
+              "name": "minimax_h3_video_vae_int8_convrot.safetensors",
+              "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/vae/minimax_h3_video_vae_int8_convrot.safetensors",
+              "sourceNodeId": 118,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 37,
+          "nodeType": "UNETLoader",
+          "field": "unet_name",
+          "filename": "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+          "resource": {
+            "name": "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+            "directory": "diffusion_models"
+          },
+          "noteResources": [
+            {
+              "name": "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+              "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+              "sourceNodeId": 118,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 81,
+          "nodeType": "VAELoader",
+          "field": "vae_name",
+          "filename": "minimax_h3_audio_vae_fp32.safetensors",
+          "resource": {
+            "name": "minimax_h3_audio_vae_fp32.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_audio_vae_fp32.safetensors",
+            "directory": "vae"
+          },
+          "noteResources": [
+            {
+              "name": "minimax_h3_audio_vae_fp32.safetensors",
+              "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/vae/minimax_h3_audio_vae_fp32.safetensors",
+              "sourceNodeId": 118,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 38,
+          "nodeType": "CLIPLoader",
+          "field": "clip_name",
+          "filename": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+          "resource": {
+            "name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+            "directory": "text_encoders"
+          },
+          "noteResources": [
+            {
+              "name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+              "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+              "sourceNodeId": 118,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 108,
+          "nodeType": "LoraLoaderModelOnly",
+          "field": "lora_name",
+          "filename": "pika_h3_flex_ref2va_v1_bf16.safetensors",
+          "resource": {
+            "name": "pika_h3_flex_ref2va_v1_bf16.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/loras/pika_h3_flex_ref2va_v1_bf16.safetensors",
+            "directory": "loras"
+          },
+          "noteResources": [
+            {
+              "name": "pika_h3_flex_ref2va_v1_bf16.safetensors",
+              "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/blob/main/loras/pika_h3_flex_ref2va_v1_bf16.safetensors",
+              "sourceNodeId": 118,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 139,
+          "nodeType": "LoraLoaderModelOnly",
+          "field": "lora_name",
+          "filename": "MiniMax-H3_Ref2VA-LoRA-CrossView-Warp_v1_3500.safetensors",
+          "resource": {
+            "name": "MiniMax-H3_Ref2VA-LoRA-CrossView-Warp_v1_3500.safetensors",
+            "url": "https://huggingface.co/Cseti/MiniMax-H3_Ref2VA-LoRA-CrossView-Warp_v1/resolve/main/MiniMax-H3_Ref2VA-LoRA-CrossView-Warp_v1_3500.safetensors",
+            "directory": "loras"
+          },
+          "noteResources": [
+            {
+              "name": "MiniMax-H3_Ref2VA-LoRA-CrossView-Warp_v1_3500.safetensors",
+              "url": "https://huggingface.co/Cseti/MiniMax-H3_Ref2VA-LoRA-CrossView-Warp_v1/blob/main/MiniMax-H3_Ref2VA-LoRA-CrossView-Warp_v1_3500.safetensors",
+              "sourceNodeId": 118,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 144,
+          "nodeType": "LoadMoGeModel",
+          "field": "model_name",
+          "filename": "moge_3_vitg_fp16.safetensors",
+          "resource": {
+            "name": "moge_3_vitg_fp16.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/MoGe/resolve/main/geometry_estimation/moge_3_vitg_fp16.safetensors",
+            "directory": "geometry_estimation"
+          },
+          "noteResources": [
+            {
+              "name": "moge_3_vitg_fp16.safetensors",
+              "url": "https://huggingface.co/Comfy-Org/MoGe/blob/main/geometry_estimation/moge_3_vitg_fp16.safetensors",
+              "sourceNodeId": 118,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        }
+      ],
+      "resourceWarnings": []
     },
     {
       "name": "LTX-2.3_360vr_distilled_3stage",
@@ -288,6 +863,189 @@
           "name": "ltx-2-19b-distilled-lora-384.safetensors",
           "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-distilled-lora-384.safetensors",
           "directory": "loras"
+        }
+      ],
+      "noteResources": [
+        {
+          "name": "ltx-2.3-22b-dev-fp8.safetensors",
+          "url": "https://huggingface.co/Lightricks/LTX-2.3-fp8/blob/main/ltx-2.3-22b-dev-fp8.safetensors",
+          "sourceNodeId": 151,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        },
+        {
+          "name": "ltx-2.3-spatial-upscaler-x2-1.1.safetensors",
+          "url": "https://huggingface.co/Lightricks/LTX-2.3/blob/main/ltx-2.3-spatial-upscaler-x2-1.1.safetensors",
+          "sourceNodeId": 151,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        },
+        {
+          "name": "ltx-2.3-22b-distilled-lora-384.safetensors",
+          "url": "https://huggingface.co/Lightricks/LTX-2.3/blob/main/ltx-2.3-22b-distilled-lora-384.safetensors",
+          "sourceNodeId": 151,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        },
+        {
+          "name": "LTX2.3_360vr.safetensors",
+          "url": "https://civitai.com/models/2327337/360-degree-panoramic-shot-ltx-23",
+          "sourceNodeId": 151,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        },
+        {
+          "name": "gemma_3_12B_it_fp8_scaled.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/ltx-2/blob/main/split_files/text_encoders/gemma_3_12B_it_fp8_scaled.safetensors",
+          "sourceNodeId": 151,
+          "status": "UPSTREAM_NOTE_UNVERIFIED"
+        }
+      ],
+      "modelBindings": [
+        {
+          "nodeId": 133,
+          "nodeType": "CheckpointLoaderSimple",
+          "field": "ckpt_name",
+          "filename": "LTX-2\\ltx-2.3-22b-dev-fp8.safetensors",
+          "resource": null,
+          "noteResources": [
+            {
+              "name": "ltx-2.3-22b-dev-fp8.safetensors",
+              "url": "https://huggingface.co/Lightricks/LTX-2.3-fp8/blob/main/ltx-2.3-22b-dev-fp8.safetensors",
+              "sourceNodeId": 151,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 124,
+          "nodeType": "LTXVAudioVAELoader",
+          "field": "ckpt_name",
+          "filename": "LTX-2\\ltx-2.3-22b-dev-fp8.safetensors",
+          "resource": null,
+          "noteResources": [
+            {
+              "name": "ltx-2.3-22b-dev-fp8.safetensors",
+              "url": "https://huggingface.co/Lightricks/LTX-2.3-fp8/blob/main/ltx-2.3-22b-dev-fp8.safetensors",
+              "sourceNodeId": 151,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 99,
+          "nodeType": "LTXAVTextEncoderLoader",
+          "field": "text_encoder",
+          "filename": "gemma_3_12B_it_fp8_scaled.safetensors",
+          "resource": null,
+          "noteResources": [
+            {
+              "name": "gemma_3_12B_it_fp8_scaled.safetensors",
+              "url": "https://huggingface.co/Comfy-Org/ltx-2/blob/main/split_files/text_encoders/gemma_3_12B_it_fp8_scaled.safetensors",
+              "sourceNodeId": 151,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 99,
+          "nodeType": "LTXAVTextEncoderLoader",
+          "field": "ckpt_name",
+          "filename": "LTX-2\\ltx-2.3-22b-dev-fp8.safetensors",
+          "resource": null,
+          "noteResources": [
+            {
+              "name": "ltx-2.3-22b-dev-fp8.safetensors",
+              "url": "https://huggingface.co/Lightricks/LTX-2.3-fp8/blob/main/ltx-2.3-22b-dev-fp8.safetensors",
+              "sourceNodeId": 151,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 101,
+          "nodeType": "LatentUpscaleModelLoader",
+          "field": "model_name",
+          "filename": "ltx-2.3-spatial-upscaler-x2-1.1.safetensors",
+          "resource": null,
+          "noteResources": [
+            {
+              "name": "ltx-2.3-spatial-upscaler-x2-1.1.safetensors",
+              "url": "https://huggingface.co/Lightricks/LTX-2.3/blob/main/ltx-2.3-spatial-upscaler-x2-1.1.safetensors",
+              "sourceNodeId": 151,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 134,
+          "nodeType": "LoraLoaderModelOnly",
+          "field": "lora_name",
+          "filename": "LTX-2\\ltx-2.3-22b-distilled-lora-384.safetensors",
+          "resource": null,
+          "noteResources": [
+            {
+              "name": "ltx-2.3-22b-distilled-lora-384.safetensors",
+              "url": "https://huggingface.co/Lightricks/LTX-2.3/blob/main/ltx-2.3-22b-distilled-lora-384.safetensors",
+              "sourceNodeId": 151,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        },
+        {
+          "nodeId": 195,
+          "nodeType": "LoraLoaderModelOnly",
+          "field": "lora_name",
+          "filename": "LTX-2\\LTX2.3_360vr.safetensors",
+          "resource": null,
+          "noteResources": [
+            {
+              "name": "LTX2.3_360vr.safetensors",
+              "url": "https://civitai.com/models/2327337/360-degree-panoramic-shot-ltx-23",
+              "sourceNodeId": 151,
+              "status": "UPSTREAM_NOTE_UNVERIFIED"
+            }
+          ]
+        }
+      ],
+      "resourceWarnings": [
+        {
+          "nodeId": 133,
+          "field": "ckpt_name",
+          "filename": "LTX-2\\ltx-2.3-22b-dev-fp8.safetensors",
+          "reason": "Workflow filename differs from its model download declaration; resolve before downloading."
+        },
+        {
+          "nodeId": 124,
+          "field": "ckpt_name",
+          "filename": "LTX-2\\ltx-2.3-22b-dev-fp8.safetensors",
+          "reason": "Workflow filename differs from its model download declaration; resolve before downloading."
+        },
+        {
+          "nodeId": 99,
+          "field": "text_encoder",
+          "filename": "gemma_3_12B_it_fp8_scaled.safetensors",
+          "reason": "Workflow filename differs from its model download declaration; resolve before downloading."
+        },
+        {
+          "nodeId": 99,
+          "field": "ckpt_name",
+          "filename": "LTX-2\\ltx-2.3-22b-dev-fp8.safetensors",
+          "reason": "Workflow filename differs from its model download declaration; resolve before downloading."
+        },
+        {
+          "nodeId": 101,
+          "field": "model_name",
+          "filename": "ltx-2.3-spatial-upscaler-x2-1.1.safetensors",
+          "reason": "Workflow filename differs from its model download declaration; resolve before downloading."
+        },
+        {
+          "nodeId": 134,
+          "field": "lora_name",
+          "filename": "LTX-2\\ltx-2.3-22b-distilled-lora-384.safetensors",
+          "reason": "Workflow filename differs from its model download declaration; resolve before downloading."
+        },
+        {
+          "nodeId": 195,
+          "field": "lora_name",
+          "filename": "LTX-2\\LTX2.3_360vr.safetensors",
+          "reason": "Workflow filename differs from its model download declaration; resolve before downloading."
         }
       ]
     }

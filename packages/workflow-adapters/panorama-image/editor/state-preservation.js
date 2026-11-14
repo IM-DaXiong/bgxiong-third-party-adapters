@@ -10,7 +10,7 @@ export function inspectStatePreservation(text, normalize, serialize = JSON.strin
   }
   if (!Object.keys(raw).length) return { readOnly: false, canPreview: true, reason: null, paths: [] };
   if ((raw.version ?? 1) === 1) {
-    return { readOnly: true, canPreview: true, reason: '旧版工程仅供预览；转换可能丢失图层，请先通过独立升级工具迁移。', paths: ['$.version'] };
+    return { readOnly: true, canPreview: true, reason: '旧版工程仅供预览；当前转换可能丢失图层，已保留原文。', paths: ['$.version'] };
   }
   let normalized;
   try { normalized = normalize(raw); }

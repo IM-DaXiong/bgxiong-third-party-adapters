@@ -1,20 +1,23 @@
 //! Studio state stays in the upstream format. Only persistent file names are translated
 //! to this submission's Comfy uploads; poses, paint, keyframes and unknown fields survive.
 extern crate alloc;
-use alloc::{collections::BTreeMap, format, string::{String, ToString}};
+use alloc::{boxed::Box, collections::BTreeMap, format, string::{String, ToString}, vec::Vec};
 use serde_json::{json, Value};
 use crate::mapping::Failure;
 
 pub struct SceneDocument {
     pub state: Value,
     pub assets: BTreeMap<String, String>,
+    pub input_node_ids: Vec<String>,
+    pub sources: Vec<SceneSource>,
 }
+pub struct SceneSource { pub node_id: String, pub inputs: Vec<String>, pub document: Box<SceneDocument> }
 
 impl SceneDocument {
     pub fn parse(text: &str) -> Result<Self, Failure> {
         let document: Value = serde_json::from_str(text).map_err(|_| Failure::invalid("Editor document is not JSON"))?;
         let fields = document.as_object().ok_or_else(|| Failure::invalid("Editor document must be an object"))?;
-        if fields.len() != 2 || !fields.contains_key("stateText") || !fields.contains_key("assets") {
+        if !matches!(fields.len(), 2 | 4) || fields.keys().any(|key| !matches!(key.as_str(), "stateText" | "assets" | "inputNodeIds" | "connectedDocuments")) || !fields.contains_key("stateText") || !fields.contains_key("assets") {
             return Err(Failure::invalid("Editor document requires stateText and assets"));
         }
         let state: Value = serde_json::from_str(document["stateText"].as_str().ok_or_else(|| Failure::invalid("stateText must be JSON text"))?)
@@ -28,7 +31,23 @@ impl SceneDocument {
                 return Err(Failure::invalid("Duplicate asset name or unknown asset field"));
             }
         }
-        Ok(Self { state, assets })
+        let input_node_ids: Vec<String> = serde_json::from_value(document.get("inputNodeIds").cloned().unwrap_or(json!([]))).map_err(|_| Failure::invalid("Invalid scene inputs"))?;
+        let mut sources = Vec::new();
+        let mut known = BTreeMap::new();
+        if let Some(entries) = document.get("connectedDocuments") {
+            for entry in entries.as_array().ok_or_else(|| Failure::invalid("connectedDocuments must be an array"))? {
+                let node_id = entry["nodeId"].as_str().filter(|id| !id.is_empty()).ok_or_else(|| Failure::invalid("Connected scene identity is missing"))?.to_string();
+                let inputs: Vec<String> = serde_json::from_value(entry["inputNodeIds"].clone()).map_err(|_| Failure::invalid("Invalid connected scene inputs"))?;
+                if inputs.len() > 1 || inputs.iter().any(|id| !known.contains_key(id)) || known.insert(node_id.clone(), ()).is_some() {
+                    return Err(Failure::invalid("Studio requires one scene input per node and an acyclic connected graph"));
+                }
+                let source = Self::parse(&entry["document"].to_string())?;
+                if !source.sources.is_empty() || !source.input_node_ids.is_empty() { return Err(Failure::invalid("Connected scenes must use the flat input graph")); }
+                sources.push(SceneSource { node_id, inputs, document: Box::new(source) });
+            }
+        }
+        if input_node_ids.len() > 1 || input_node_ids.iter().any(|id| !known.contains_key(id)) { return Err(Failure::invalid("Studio requires a single existing scene input")); }
+        Ok(Self { state, assets, input_node_ids, sources })
     }
 
     pub fn bind(&self, uploads: &BTreeMap<String, String>) -> Result<Value, Failure> {
@@ -89,7 +108,8 @@ pub fn outpaint_graph(input: &Value, uploads: &BTreeMap<String, String>) -> Resu
         .remove("editorDocument").ok_or_else(|| Failure::invalid("Save a Studio document before generating"))?;
     let document = SceneDocument::parse(document.as_str().ok_or_else(|| Failure::invalid("editorDocument must be text"))?)?;
     let references = input["references"].as_array().ok_or_else(|| Failure::invalid("references must be an array"))?;
-    if references.len() != document.assets.len() || document.assets.values().any(|id| !references.iter().any(|r| r["mediaId"] == *id)) {
+    let all_assets: Vec<_> = document.assets.values().chain(document.sources.iter().flat_map(|source| source.document.assets.values())).collect();
+    if references.len() != all_assets.len() || all_assets.iter().any(|id| !references.iter().any(|r| r["mediaId"] == **id)) {
         return Err(Failure::invalid("Scene asset list differs from the frozen media slots"));
     }
     let state = document.bind(uploads)?;
@@ -101,6 +121,16 @@ pub fn outpaint_graph(input: &Value, uploads: &BTreeMap<String, String>) -> Resu
     let (_, applied) = crate::mapping::build_graph(&basic, "scene.png")?;
     let mut graph: Value = serde_json::from_str(include_str!("../workflow/qwen-2.1-scene-api.json")).expect("frozen upstream graph");
     graph["83"]["inputs"]["state_json"] = json!(state.to_string());
+    let mut source_nodes = BTreeMap::new();
+    for (index, source) in document.sources.iter().enumerate() {
+        let id = format!("bgx_editor_input_{index}");
+        let bound = source.document.bind(uploads)?;
+        let mut node = render_graph(&bound, 2.0, 32)?["70"].clone();
+        if let Some(parent) = source.inputs.first() { node["inputs"]["scene"] = json!([source_nodes.get(parent).ok_or_else(|| Failure::invalid("Missing parent scene"))?, 0]); }
+        graph[&id] = node;
+        source_nodes.insert(source.node_id.clone(), id);
+    }
+    if let Some(parent) = document.input_node_ids.first() { graph["83"]["inputs"]["scene"] = json!([source_nodes.get(parent).ok_or_else(|| Failure::invalid("Missing root scene input"))?, 0]); }
     graph["83"]["inputs"]["megapixels"] = json!(2.0);
     graph["83"]["inputs"]["multiple"] = json!(32);
     graph["64"]["inputs"]["prompt"] = applied["prompt"].clone();
@@ -152,6 +182,25 @@ mod tests {
         let rendered: Value = serde_json::from_str(graph["83"]["inputs"]["state_json"].as_str().unwrap()).unwrap();
         assert_eq!(rendered["stickers"][1]["direction"], state["stickers"][1]["direction"]);
         assert_eq!(applied["seed"],12345);
+        let mut connected: Value = serde_json::from_str(input["editorDocument"].as_str().unwrap()).unwrap();
+        connected["inputNodeIds"] = json!(["parent"]);
+        connected["connectedDocuments"] = json!([{"nodeId":"parent","revision":"frozen-parent","inputNodeIds":[],"document":{
+            "stateText":json!({"version":2,"id":"parent-scene","stickers":[state["stickers"][0].clone()]}).to_string(),
+            "assets":[{"name":"input/old/desk.png","mediaId":"parent-desk"}]}}]);
+        input["editorDocument"] = json!(connected.to_string());
+        input["references"].as_array_mut().unwrap().push(json!({"mediaId":"parent-desk"}));
+        let mut uploads = uploads;
+        uploads.insert("parent-desk".into(), "parent/desk.png".into());
+        let (inherited, _) = outpaint_graph(&input, &uploads).unwrap();
+        assert_eq!(inherited["83"]["inputs"]["scene"], json!(["bgx_editor_input_0",0]));
+        let parent_state: Value = serde_json::from_str(inherited["bgx_editor_input_0"]["inputs"]["state_json"].as_str().unwrap()).unwrap();
+        assert_eq!(parent_state["stickers"][0]["source"]["subfolder"], "parent");
+        assert_eq!(state["stickers"][0]["source"]["subfolder"], "old");
+        connected["connectedDocuments"][0]["inputNodeIds"] = json!(["parent"]);
+        assert!(SceneDocument::parse(&connected.to_string()).is_err());
+        connected["connectedDocuments"][0]["inputNodeIds"] = json!([]);
+        connected["inputNodeIds"] = json!(["parent","parent"]);
+        assert!(SceneDocument::parse(&connected.to_string()).is_err());
         input["references"] = json!([]);
         assert!(outpaint_graph(&input, &uploads).is_err());
     }

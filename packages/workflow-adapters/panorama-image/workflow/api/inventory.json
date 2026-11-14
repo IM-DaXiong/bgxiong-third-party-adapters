@@ -1,0 +1,37 @@
+{
+  "upstream": "6db991a7ef077170ce51a2f32e29737678285183",
+  "status": "API_TEMPLATES_ONLY",
+  "widgetContractSha256": "a6c84876c82446c15ca9956665bf986d064d9e6086b4965b53896c554cb0c39a",
+  "examples": [
+    {
+      "name": "qwen-image-2.1-360-erp-outpaint",
+      "sha256": "de606c928127d26ec27e6ff70b7a97363f2eb8c85e934238b875a4f2009b4a10",
+      "nodes": 12
+    },
+    {
+      "name": "qwen-image-2.1-panorama-cutout",
+      "sha256": "83a61620139038d187d1e0b408c6af324e655edd21c3627f892571d9960af043",
+      "nodes": 13
+    },
+    {
+      "name": "qwen-image-2.1-panorama-with-3d",
+      "sha256": "53eda5a1fb1302472a492fa2c0e0d48ff2b4bb7a6903163688cd7e0f06a67de2",
+      "nodes": 11
+    },
+    {
+      "name": "qwen-image-2.1-moge3-anyangle",
+      "sha256": "0dfb8db96120225d0be1ed362410b7a2a68a3a046dab4e9af0138f9b68f53c88",
+      "nodes": 14
+    },
+    {
+      "name": "pika-h3-flex-moge3-crossview",
+      "sha256": "8a2994e108efbbe74d340f2cd541a8f3d8d0f5e9a9f4cf6b01ae734c45d286b4",
+      "nodes": 27
+    },
+    {
+      "name": "LTX-2.3_360vr_distilled_3stage",
+      "sha256": "65cafcdfceb31f260c1f027cb0d123977840db9d02488ff319a217e434eb9d2a",
+      "nodes": 42
+    }
+  ]
+}

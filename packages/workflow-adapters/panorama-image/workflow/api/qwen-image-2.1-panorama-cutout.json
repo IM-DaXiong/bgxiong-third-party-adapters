@@ -1,0 +1,168 @@
+{
+  "3": {
+    "class_type": "KSampler",
+    "inputs": {
+      "seed": 123,
+      "steps": 25,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": [
+        "37",
+        0
+      ],
+      "positive": [
+        "64",
+        0
+      ],
+      "negative": [
+        "64",
+        1
+      ],
+      "latent_image": [
+        "62",
+        0
+      ]
+    }
+  },
+  "8": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "39",
+        0
+      ]
+    }
+  },
+  "37": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "qwen_image_2.1_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "38": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen3vl_8b_int8_convrot.safetensors",
+      "type": "qwen_image",
+      "device": "default"
+    }
+  },
+  "39": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "qwen_image_2.1_vae_bf16.safetensors"
+    }
+  },
+  "62": {
+    "class_type": "EmptyLatentImage",
+    "inputs": {
+      "width": [
+        "76",
+        0
+      ],
+      "height": [
+        "76",
+        1
+      ],
+      "batch_size": 1
+    }
+  },
+  "64": {
+    "class_type": "TextEncodeQwenImage21",
+    "inputs": {
+      "prompt": "The girl reaches out her right hand, and the boy grabs it with his right hand as he gets up from the muddy water. Their two hands are clasped firmly in a handshake grip, each hand showing five fingers wrapped around the other's hand. The boy is now half standing in a crouch, knees bent, his left arm hanging at his side, with mud dripping from his pants. The girl leans back slightly to pull him up, still laughing. Keep the faces, outfits, background, lighting, camera angle, and art style the same.",
+      "negative_prompt": "",
+      "resolution": 0,
+      "clip": [
+        "38",
+        0
+      ],
+      "images.image_1": [
+        "105",
+        1
+      ],
+      "vae": [
+        "39",
+        0
+      ]
+    }
+  },
+  "76": {
+    "class_type": "GetImageSize",
+    "inputs": {
+      "image": [
+        "105",
+        1
+      ]
+    }
+  },
+  "80": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "ComfyUI_00218_.png"
+    }
+  },
+  "103": {
+    "class_type": "PanoramaStudio",
+    "inputs": {
+      "background_color": "#00ff00",
+      "background_range": "360",
+      "megapixels": 4,
+      "multiple": 8,
+      "state_json": "{\"version\":2,\"id\":\"PeoiYIhMWU_OFwYG\",\"timeline\":{\"fps\":24,\"length\":null},\"camera\":null,\"scene\":{\"clip\":{\"start\":0,\"in\":0,\"duration\":null},\"position\":{\"value\":[0,0,0],\"keyframes\":[]},\"rotation\":{\"value\":{\"yaw_deg\":0,\"pitch_deg\":0,\"roll_deg\":0},\"keyframes\":[]},\"scale\":{\"value\":1,\"keyframes\":[]}},\"stickers\":[{\"id\":\"sticker_1\",\"placement\":\"sky\",\"source\":{\"kind\":\"port\"},\"clip\":{\"start\":0,\"in\":0,\"duration\":null},\"visible\":true,\"locked\":false,\"crop\":{\"x0\":0,\"y0\":0,\"x1\":1,\"y1\":1},\"direction\":{\"value\":{\"yaw_deg\":156.78037013731,\"pitch_deg\":-28.035274282663643},\"keyframes\":[]},\"roll\":{\"value\":0,\"keyframes\":[]},\"size\":{\"value\":{\"hFOV_deg\":30,\"vFOV_deg\":30},\"keyframes\":[]},\"opacity\":{\"value\":1,\"keyframes\":[]},\"z_index\":0}],\"painting\":{\"version\":1,\"groups\":[],\"paint\":{\"strokes\":[]},\"mask\":{\"strokes\":[]},\"raster_objects\":[]},\"painting_layer\":null}",
+      "scene": [
+        "105",
+        0
+      ],
+      "sticker": [
+        "8",
+        0
+      ],
+      "sticker_state": [
+        "105",
+        4
+      ]
+    }
+  },
+  "104": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "8",
+        0
+      ]
+    }
+  },
+  "105": {
+    "class_type": "PanoramaStudio",
+    "inputs": {
+      "background_color": "#949494",
+      "background_range": "360",
+      "megapixels": 2,
+      "multiple": 8,
+      "state_json": "{\"version\":2,\"id\":\"8aJC4DbC1OSzxASZ\",\"timeline\":{\"fps\":24,\"length\":null},\"camera\":{\"aspect\":1,\"position\":{\"value\":[0,0,0],\"keyframes\":[]},\"rotation\":{\"value\":{\"yaw_deg\":156.78037013731,\"pitch_deg\":-28.035274282663643,\"roll_deg\":0},\"keyframes\":[]},\"fov\":{\"value\":54.3,\"keyframes\":[]}},\"scene\":{\"clip\":{\"start\":0,\"in\":0,\"duration\":null},\"position\":{\"value\":[0,0,0],\"keyframes\":[]},\"rotation\":{\"value\":{\"yaw_deg\":0,\"pitch_deg\":0,\"roll_deg\":0},\"keyframes\":[]},\"scale\":{\"value\":1,\"keyframes\":[]}},\"stickers\":[],\"painting\":{\"version\":1,\"groups\":[],\"paint\":{\"strokes\":[]},\"mask\":{\"strokes\":[]},\"raster_objects\":[]},\"painting_layer\":null}",
+      "background": [
+        "80",
+        0
+      ]
+    }
+  },
+  "106": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "103",
+        1
+      ]
+    }
+  }
+}

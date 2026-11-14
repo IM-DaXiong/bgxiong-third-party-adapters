@@ -1,0 +1,210 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "kind": "ComfyUI object_info input_order",
+    "sha256": "f9b91747925d185e033cbf96723d2d5b88e39c0f15ebef03b97dcde9b0c9edce",
+    "capturedOn": "2026-11-14",
+    "panoramaCommit": "6db991a7ef077170ce51a2f32e29737678285183",
+    "notes": "Only widget names/types/order; no local filenames, credentials, paths or full model inventories."
+  },
+  "widgets": {
+    "LTXVEmptyLatentAudio": [
+      {
+        "name": "frames_number",
+        "type": "INT"
+      },
+      {
+        "name": "frame_rate",
+        "type": "FLOAT"
+      },
+      {
+        "name": "batch_size",
+        "type": "INT"
+      }
+    ],
+    "LTXVConditioning": [
+      {
+        "name": "frame_rate",
+        "type": "FLOAT"
+      }
+    ],
+    "CFGGuider": [
+      {
+        "name": "cfg",
+        "type": "FLOAT"
+      }
+    ],
+    "CLIPTextEncode": [
+      {
+        "name": "text",
+        "type": "STRING"
+      }
+    ],
+    "PrimitiveInt": [
+      {
+        "name": "value",
+        "type": "INT"
+      },
+      {
+        "displayOnly": true,
+        "values": [
+          "fixed",
+          "increment",
+          "decrement",
+          "randomize"
+        ]
+      }
+    ],
+    "CheckpointLoaderSimple": [
+      {
+        "name": "ckpt_name",
+        "type": "COMBO"
+      }
+    ],
+    "LTXVAudioVAELoader": [
+      {
+        "name": "ckpt_name",
+        "type": "COMBO"
+      }
+    ],
+    "LTXAVTextEncoderLoader": [
+      {
+        "name": "text_encoder",
+        "type": "COMBO"
+      },
+      {
+        "name": "ckpt_name",
+        "type": "COMBO"
+      },
+      {
+        "name": "device",
+        "type": "COMBO"
+      }
+    ],
+    "KSamplerSelect": [
+      {
+        "name": "sampler_name",
+        "type": "COMBO"
+      }
+    ],
+    "ManualSigmas": [
+      {
+        "name": "sigmas",
+        "type": "STRING"
+      }
+    ],
+    "ComfyMathExpression": [
+      {
+        "name": "expression",
+        "type": "STRING"
+      }
+    ],
+    "LatentUpscaleModelLoader": [
+      {
+        "name": "model_name",
+        "type": "COMBO"
+      }
+    ],
+    "EmptyLTXVLatentVideo": [
+      {
+        "name": "width",
+        "type": "INT"
+      },
+      {
+        "name": "height",
+        "type": "INT"
+      },
+      {
+        "name": "length",
+        "type": "INT"
+      },
+      {
+        "name": "batch_size",
+        "type": "INT"
+      }
+    ],
+    "LoraLoaderModelOnly": [
+      {
+        "name": "lora_name",
+        "type": "COMBO"
+      },
+      {
+        "name": "strength_model",
+        "type": "FLOAT"
+      }
+    ],
+    "VAEDecodeTiled": [
+      {
+        "name": "tile_size",
+        "type": "INT"
+      },
+      {
+        "name": "overlap",
+        "type": "INT"
+      },
+      {
+        "name": "temporal_size",
+        "type": "INT"
+      },
+      {
+        "name": "temporal_overlap",
+        "type": "INT"
+      }
+    ],
+    "RandomNoise": [
+      {
+        "name": "noise_seed",
+        "type": "INT"
+      },
+      {
+        "displayOnly": true,
+        "values": [
+          "fixed",
+          "increment",
+          "decrement",
+          "randomize"
+        ]
+      }
+    ],
+    "PanoramaPreview": [
+      {
+        "name": "coverage",
+        "type": "COMBO"
+      },
+      {
+        "name": "fps",
+        "type": "FLOAT"
+      }
+    ],
+    "PanoramaCutout": [
+      {
+        "name": "coverage",
+        "type": "COMBO"
+      },
+      {
+        "name": "state_json",
+        "type": "STRING"
+      },
+      {
+        "name": "output_megapixels",
+        "type": "FLOAT"
+      },
+      {
+        "name": "fps",
+        "type": "FLOAT"
+      },
+      {
+        "displayOnly": true,
+        "values": [
+          null
+        ]
+      },
+      {
+        "displayOnly": true,
+        "values": [
+          ""
+        ]
+      }
+    ]
+  }
+}

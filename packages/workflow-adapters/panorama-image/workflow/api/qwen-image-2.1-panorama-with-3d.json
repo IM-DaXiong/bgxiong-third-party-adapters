@@ -1,0 +1,136 @@
+{
+  "3": {
+    "class_type": "KSampler",
+    "inputs": {
+      "seed": 123,
+      "steps": 25,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": [
+        "37",
+        0
+      ],
+      "positive": [
+        "64",
+        0
+      ],
+      "negative": [
+        "64",
+        1
+      ],
+      "latent_image": [
+        "62",
+        0
+      ]
+    }
+  },
+  "8": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "39",
+        0
+      ]
+    }
+  },
+  "37": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "qwen_image_2.1_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "38": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen3vl_8b_int8_convrot.safetensors",
+      "type": "qwen_image",
+      "device": "default"
+    }
+  },
+  "39": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "qwen_image_2.1_vae_bf16.safetensors"
+    }
+  },
+  "62": {
+    "class_type": "EmptyLatentImage",
+    "inputs": {
+      "width": [
+        "76",
+        0
+      ],
+      "height": [
+        "76",
+        1
+      ],
+      "batch_size": 1
+    }
+  },
+  "64": {
+    "class_type": "TextEncodeQwenImage21",
+    "inputs": {
+      "prompt": "Blend the white kei truck naturally into the scene. Match its lighting, shadows, colors, and art style to the surrounding background, and add a soft shadow on the ground beneath it.",
+      "negative_prompt": "",
+      "resolution": 0,
+      "clip": [
+        "38",
+        0
+      ],
+      "images.image_1": [
+        "107",
+        1
+      ],
+      "vae": [
+        "39",
+        0
+      ]
+    }
+  },
+  "76": {
+    "class_type": "GetImageSize",
+    "inputs": {
+      "image": [
+        "107",
+        1
+      ]
+    }
+  },
+  "80": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "ComfyUI_00235_.png"
+    }
+  },
+  "104": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "8",
+        0
+      ]
+    }
+  },
+  "107": {
+    "class_type": "PanoramaStudio",
+    "inputs": {
+      "background_color": "#00ff00",
+      "background_range": "360",
+      "megapixels": 2,
+      "multiple": 8,
+      "state_json": "{\"version\":2,\"id\":\"Hg-4UiGuU9wrFRbl\",\"timeline\":{\"fps\":24,\"length\":null},\"camera\":{\"aspect\":1.7777777777777777,\"position\":{\"value\":[0,0,0],\"keyframes\":[]},\"rotation\":{\"value\":{\"yaw_deg\":-11.947883070194052,\"pitch_deg\":-13.704686858648909,\"roll_deg\":2.3},\"keyframes\":[]},\"fov\":{\"value\":76.22519232904376,\"keyframes\":[]},\"curve\":{\"value\":0.91,\"keyframes\":[]}},\"scene\":{\"clip\":{\"start\":0,\"in\":0,\"duration\":null},\"position\":{\"value\":[0,0,0],\"keyframes\":[]},\"rotation\":{\"value\":{\"yaw_deg\":0,\"pitch_deg\":0,\"roll_deg\":0},\"keyframes\":[]},\"scale\":{\"value\":1,\"keyframes\":[]}},\"stickers\":[{\"id\":\"sticker_7\",\"placement\":\"world\",\"source\":{\"kind\":\"file\",\"filename\":\"track.ply\",\"subfolder\":\"3d\",\"storage\":\"input\"},\"clip\":{\"start\":0,\"in\":0,\"duration\":null},\"visible\":true,\"locked\":false,\"crop\":{\"x0\":0,\"y0\":0,\"x1\":1,\"y1\":1},\"position\":{\"value\":[-1.4019482468836075,-1.1416168385671537,-3.8467020853059744],\"keyframes\":[]},\"rotation\":{\"value\":{\"yaw_deg\":23.010407890913925,\"pitch_deg\":0,\"roll_deg\":0},\"keyframes\":[]},\"scale\":{\"value\":2.672503443876325,\"keyframes\":[]},\"opacity\":{\"value\":1,\"keyframes\":[]}}],\"painting\":{\"version\":1,\"groups\":[],\"paint\":{\"strokes\":[]},\"mask\":{\"strokes\":[]},\"raster_objects\":[]},\"painting_layer\":null}",
+      "background": [
+        "80",
+        0
+      ]
+    }
+  }
+}

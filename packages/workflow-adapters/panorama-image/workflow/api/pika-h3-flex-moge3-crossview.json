@@ -1,0 +1,336 @@
+{
+  "8": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "104",
+        0
+      ],
+      "vae": [
+        "39",
+        0
+      ]
+    }
+  },
+  "37": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "38": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+      "type": "minimax",
+      "device": "default"
+    }
+  },
+  "39": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_video_vae_int8_convrot.safetensors"
+    }
+  },
+  "77": {
+    "class_type": "VAEDecodeAudio",
+    "inputs": {
+      "samples": [
+        "104",
+        0
+      ],
+      "vae": [
+        "81",
+        0
+      ]
+    }
+  },
+  "81": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_audio_vae_fp32.safetensors"
+    }
+  },
+  "86": {
+    "class_type": "ModelAttentionBackend",
+    "inputs": {
+      "attention": "comfy kitchen attention",
+      "model": [
+        "139",
+        0
+      ]
+    }
+  },
+  "91": {
+    "class_type": "CreateVideo",
+    "inputs": {
+      "fps": 24,
+      "bit_depth": "auto",
+      "color_space": "sRGB",
+      "chroma_subsampling": "auto",
+      "codec": "none",
+      "images": [
+        "8",
+        0
+      ],
+      "audio": [
+        "77",
+        0
+      ]
+    }
+  },
+  "101": {
+    "class_type": "ManualSigmas",
+    "inputs": {
+      "sigmas": "1.0, 0.972973, 0.923077, 0.8, 0.571429, 0.333333, 0.0"
+    }
+  },
+  "102": {
+    "class_type": "KSamplerSelect",
+    "inputs": {
+      "sampler_name": "lcm"
+    }
+  },
+  "104": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "105",
+        0
+      ],
+      "guider": [
+        "106",
+        0
+      ],
+      "sampler": [
+        "102",
+        0
+      ],
+      "sigmas": [
+        "101",
+        0
+      ],
+      "latent_image": [
+        "123",
+        1
+      ]
+    }
+  },
+  "105": {
+    "class_type": "RandomNoise",
+    "inputs": {
+      "noise_seed": 1234
+    }
+  },
+  "106": {
+    "class_type": "BasicGuider",
+    "inputs": {
+      "model": [
+        "86",
+        0
+      ],
+      "conditioning": [
+        "153",
+        0
+      ]
+    }
+  },
+  "108": {
+    "class_type": "LoraLoaderModelOnly",
+    "inputs": {
+      "lora_name": "pika_h3_flex_ref2va_v1_bf16.safetensors",
+      "strength_model": 1,
+      "model": [
+        "37",
+        0
+      ]
+    }
+  },
+  "123": {
+    "class_type": "MiniMaxH3ReferenceToVideo",
+    "inputs": {
+      "prompt": "crossview. A man in a bright orange suit with a green open-collar shirt and brown leather shoes dances while walking down a long stone staircase in a narrow sunlit alley. Pastel yellow and pink buildings with green wooden shutters, small iron balconies with potted plants, laundry hanging on lines strung across the alley, a scooter parked on a landing, worn stone steps with metal handrails, warm afternoon light and soft shadows.",
+      "width": [
+        "146",
+        0
+      ],
+      "height": [
+        "146",
+        1
+      ],
+      "length": [
+        "146",
+        2
+      ],
+      "ref_image_size": "match",
+      "clip": [
+        "38",
+        0
+      ],
+      "vae": [
+        "39",
+        0
+      ],
+      "audio_vae": [
+        "81",
+        0
+      ],
+      "ref_videos.ref_video_0": [
+        "149",
+        0
+      ],
+      "ref_video_audios.ref_video_audio_0": [
+        "152",
+        2
+      ]
+    }
+  },
+  "139": {
+    "class_type": "LoraLoaderModelOnly",
+    "inputs": {
+      "lora_name": "MiniMax-H3_Ref2VA-LoRA-CrossView-Warp_v1_3500.safetensors",
+      "strength_model": 0.8,
+      "model": [
+        "108",
+        0
+      ]
+    }
+  },
+  "142": {
+    "class_type": "MoGeInference",
+    "inputs": {
+      "resolution_level": 9,
+      "fov_x_degrees": 0,
+      "batch_size": 4,
+      "force_projection": true,
+      "apply_mask": true,
+      "refine_steps": 2,
+      "moge_model": [
+        "144",
+        0
+      ],
+      "image": [
+        "149",
+        0
+      ]
+    }
+  },
+  "143": {
+    "class_type": "GetVideoComponents",
+    "inputs": {
+      "video": [
+        "156",
+        3
+      ]
+    }
+  },
+  "144": {
+    "class_type": "LoadMoGeModel",
+    "inputs": {
+      "model_name": "moge_3_vitg_fp16.safetensors"
+    }
+  },
+  "145": {
+    "class_type": "ComfyMathExpression",
+    "inputs": {
+      "expression": "17 * round((a * 24 - 5) / 17) + 5",
+      "values.a": [
+        "147",
+        0
+      ]
+    }
+  },
+  "146": {
+    "class_type": "GetImageSize",
+    "inputs": {
+      "image": [
+        "143",
+        0
+      ]
+    }
+  },
+  "147": {
+    "class_type": "PrimitiveFloat",
+    "inputs": {
+      "value": 6
+    }
+  },
+  "149": {
+    "class_type": "ResizeImageMaskNode",
+    "inputs": {
+      "resize_type": "scale total pixels",
+      "resize_type.megapixels": 0.5,
+      "scale_method": "bicubic",
+      "input": [
+        "152",
+        0
+      ]
+    }
+  },
+  "152": {
+    "class_type": "VHS_LoadVideo",
+    "inputs": {
+      "video": "input.mp4",
+      "force_rate": 0,
+      "custom_width": 0,
+      "custom_height": 0,
+      "frame_load_cap": [
+        "145",
+        1
+      ],
+      "skip_first_frames": 0,
+      "select_every_nth": 1,
+      "format": "AnimateDiff"
+    }
+  },
+  "153": {
+    "class_type": "MiniMaxH3AddGuide",
+    "inputs": {
+      "frame_idx": 0,
+      "positive": [
+        "123",
+        0
+      ],
+      "latent": [
+        "123",
+        1
+      ],
+      "vae": [
+        "39",
+        0
+      ],
+      "image": [
+        "143",
+        0
+      ]
+    }
+  },
+  "155": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "filename_prefix": "video/ComfyUI",
+      "format": "auto",
+      "format.codec": "auto",
+      "codec": "auto",
+      "video": [
+        "91",
+        0
+      ]
+    }
+  },
+  "156": {
+    "class_type": "PanoramaStudio",
+    "inputs": {
+      "background_color": "#ff00ff",
+      "background_range": "360",
+      "megapixels": 0.5,
+      "multiple": 8,
+      "state_json": "{\"version\":2,\"id\":\"z5gsFBbMEOWg8JWV\",\"timeline\":{\"fps\":24,\"length\":null},\"camera\":{\"aspect\":1.7777777777777777,\"position\":{\"value\":[2.3970736365607586,-0.4500549698082388,-1.5805835544961933],\"keyframes\":[{\"frame\":0,\"value\":[2.3970736365607586,-0.4500549698082388,-1.5805835544961933],\"easing\":[0.55,0,0.58,1]},{\"frame\":73,\"value\":[-2.7497359840139493,-1.1810353329850332,-0.6360586326016059],\"easing\":[0.56,0,0.58,1]},{\"frame\":140,\"value\":[0.843264260180309,-0.7402063693753504,-0.8613477644050758],\"easing\":[0.42,0,0.58,1]}]},\"rotation\":{\"value\":{\"yaw_deg\":-60.009595954235124,\"pitch_deg\":6.733880727789238,\"roll_deg\":-3},\"keyframes\":[{\"frame\":0,\"value\":{\"yaw_deg\":-60.009595954235124,\"pitch_deg\":6.733880727789238,\"roll_deg\":-3},\"easing\":[0.55,0,0.58,1]},{\"frame\":73,\"value\":{\"yaw_deg\":37.67786268382645,\"pitch_deg\":13.568919893299672,\"roll_deg\":-3},\"easing\":[0.56,0,0.58,1]},{\"frame\":140,\"value\":{\"yaw_deg\":-20.559416082907774,\"pitch_deg\":12.623017306061564,\"roll_deg\":3.9},\"easing\":[0.42,0,0.58,1]}]},\"fov\":{\"value\":99.31635348454651,\"keyframes\":[{\"frame\":0,\"value\":99.31635348454651,\"easing\":[0.42,0,0.58,1]}]},\"curve\":{\"value\":0.72,\"keyframes\":[]}},\"scene\":{\"clip\":{\"start\":0,\"in\":0,\"duration\":null},\"position\":{\"value\":[0,0,0],\"keyframes\":[]},\"rotation\":{\"value\":{\"yaw_deg\":0,\"pitch_deg\":0,\"roll_deg\":0},\"keyframes\":[]},\"scale\":{\"value\":1,\"keyframes\":[]}},\"stickers\":[],\"painting\":{\"version\":1,\"groups\":[],\"paint\":{\"strokes\":[]},\"mask\":{\"strokes\":[]},\"raster_objects\":[]},\"painting_layer\":null}",
+      "world": [
+        "142",
+        0
+      ]
+    }
+  }
+}

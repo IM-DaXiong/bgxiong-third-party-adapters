@@ -4,6 +4,7 @@ import { waitForPendingStickerUploads } from '@panorama-upstream/web_src/pano_st
 import { createEditorActions } from './actions.js';
 import { loadSceneState, sceneStateText } from '@panorama-upstream/web_src/pano_scene_state.js';
 import { inspectStatePreservation } from './state-preservation.js';
+import { connectedScenes } from './connected-scenes.js';
 
 /** Installation companion entry. The product bridge only knows documents and opaque assets;
  * Comfy source naming and route translation belong to this adapter.
@@ -13,6 +14,7 @@ export async function openAdapterEditor(initial, host) {
   if (!protection.canPreview) throw new Error(protection.reason);
   if (protection.readOnly) await host.call('editor.protection', { readOnly: true, message: protection.reason });
   const assets = new Map();
+  const inputAssets = new Map();
   const urls = new Set();
   const key = source => `${source.storage ?? source.type ?? 'input'}/${source.subfolder ?? ''}/${source.filename}`;
   const addAsset = asset => {
@@ -21,13 +23,18 @@ export async function openAdapterEditor(initial, host) {
     assets.set(asset.name, { ...asset, url });
   };
   for (const asset of initial.assets ?? []) addAsset(asset);
+  const connected = connectedScenes(initial, asset => {
+    const url = URL.createObjectURL(new Blob([asset.bytes], { type: asset.mimeType }));
+    urls.add(url); inputAssets.set(asset.name, { ...asset, url });
+  });
   const marker = document.createElement('style');
   marker.id = 'pano-studio-style-link'; marker.dataset.loaded = 'true'; document.head.appendChild(marker);
   const api = {
     apiURL(route) {
       const url = new URL(route, 'https://adapter.invalid');
       if (url.pathname !== '/view') throw new Error(`Unsupported media URL: ${url.pathname}`);
-      const asset = assets.get(key({ filename: url.searchParams.get('filename'), subfolder: url.searchParams.get('subfolder') ?? '', storage: url.searchParams.get('type') ?? 'input' }));
+      const name = key({ filename: url.searchParams.get('filename'), subfolder: url.searchParams.get('subfolder') ?? '', storage: url.searchParams.get('type') ?? 'input' });
+      const asset = assets.get(name) ?? inputAssets.get(name);
       if (!asset) throw new Error(`Missing persistent asset: ${url.searchParams.get('filename')}`);
       return asset.url;
     },
@@ -79,7 +86,8 @@ export async function openAdapterEditor(initial, host) {
   }
   const editor = await openPanoramaStudio({ nodeId: initial.nodeId, stateText: initial.stateText ?? '',
     readOnly: protection.readOnly,
-    app: { nodeOutputs: {} }, api, stylesheetUrl: 'preloaded',
+    inputs: connected.inputs, graphNodes: connected.nodes,
+    app: { nodeOutputs: connected.layers.length ? { [initial.nodeId]: { pano_upstream_layers: connected.layers } } : {} }, api, stylesheetUrl: 'preloaded',
     assetFile: name => {
       const asset = assets.get(name);
       if (!asset) throw new Error('Named asset does not belong to this document');
@@ -109,7 +117,7 @@ export async function openAdapterEditor(initial, host) {
  * The host owns persistent media and transport; no host credentials enter the editor.
  * api implements the upstream media routes, app supplies actual connected input results.
  */
-export async function openPanoramaStudio({ nodeId, stateText = '', inputs = [], app, api, stylesheetUrl, storage, onStateChange, onClosed, readOnly = false, assetFile }) {
+export async function openPanoramaStudio({ nodeId, stateText = '', inputs = [], graphNodes = [], app, api, stylesheetUrl, storage, onStateChange, onClosed, readOnly = false, assetFile }) {
   if (typeof nodeId !== 'string' || !nodeId) throw new Error('A stable scene node identity is required');
   if (typeof stateText !== 'string') throw new Error('Scene state must be JSON text');
   if (!api || typeof api.apiURL !== 'function' || typeof api.fetchApi !== 'function') throw new Error('Persistent media transport is required');
@@ -137,7 +145,7 @@ export async function openPanoramaStudio({ nodeId, stateText = '', inputs = [], 
     id: nodeId, title: '全景工作台', __panoStudio: true, __panoSceneStateV2: true,
     widgets: [widget],
     inputs: inputs.map((input, i) => ({ name: input.name, type: input.type, link: i + 1 })),
-    graph: { getNodeById: id => origins.get(id) ?? null },
+    graph: { getNodeById: id => origins.get(id) ?? null, _nodes: graphNodes },
     isInputConnected: index => !!inputs[index],
     getInputLink: index => inputs[index] ? { origin_id: index + 1, origin_slot: inputs[index].slot ?? 0 } : null,
     getInputNode: index => inputs[index]?.node ?? null,

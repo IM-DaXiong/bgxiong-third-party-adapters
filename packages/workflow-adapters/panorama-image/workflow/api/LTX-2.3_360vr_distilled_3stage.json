@@ -1,0 +1,503 @@
+{
+  "99": {
+    "class_type": "LTXAVTextEncoderLoader",
+    "inputs": {
+      "text_encoder": "gemma_3_12B_it_fp8_scaled.safetensors",
+      "ckpt_name": "LTX-2\\ltx-2.3-22b-dev-fp8.safetensors",
+      "device": "default"
+    }
+  },
+  "100": {
+    "class_type": "ManualSigmas",
+    "inputs": {
+      "sigmas": "0.85, 0.7250, 0.4219, 0.0"
+    }
+  },
+  "101": {
+    "class_type": "LatentUpscaleModelLoader",
+    "inputs": {
+      "model_name": "ltx-2.3-spatial-upscaler-x2-1.1.safetensors"
+    }
+  },
+  "103": {
+    "class_type": "CFGGuider",
+    "inputs": {
+      "cfg": 1,
+      "model": [
+        "195",
+        0
+      ],
+      "positive": [
+        "107",
+        0
+      ],
+      "negative": [
+        "107",
+        1
+      ]
+    }
+  },
+  "106": {
+    "class_type": "LTXVEmptyLatentAudio",
+    "inputs": {
+      "frames_number": [
+        "112",
+        0
+      ],
+      "frame_rate": [
+        "131",
+        0
+      ],
+      "batch_size": 1,
+      "audio_vae": [
+        "124",
+        0
+      ]
+    }
+  },
+  "107": {
+    "class_type": "LTXVConditioning",
+    "inputs": {
+      "frame_rate": [
+        "166",
+        0
+      ],
+      "positive": [
+        "121",
+        0
+      ],
+      "negative": [
+        "110",
+        0
+      ]
+    }
+  },
+  "108": {
+    "class_type": "EmptyLTXVLatentVideo",
+    "inputs": {
+      "width": 512,
+      "height": 256,
+      "length": [
+        "112",
+        0
+      ],
+      "batch_size": 1
+    }
+  },
+  "109": {
+    "class_type": "LTXVConcatAVLatent",
+    "inputs": {
+      "video_latent": [
+        "108",
+        0
+      ],
+      "audio_latent": [
+        "106",
+        0
+      ]
+    }
+  },
+  "110": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "",
+      "clip": [
+        "99",
+        0
+      ]
+    }
+  },
+  "112": {
+    "class_type": "PrimitiveInt",
+    "inputs": {
+      "value": 121
+    }
+  },
+  "113": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "115",
+        0
+      ],
+      "guider": [
+        "129",
+        0
+      ],
+      "sampler": [
+        "137",
+        0
+      ],
+      "sigmas": [
+        "169",
+        0
+      ],
+      "latent_image": [
+        "109",
+        0
+      ]
+    }
+  },
+  "114": {
+    "class_type": "RandomNoise",
+    "inputs": {
+      "noise_seed": 12345
+    }
+  },
+  "115": {
+    "class_type": "RandomNoise",
+    "inputs": {
+      "noise_seed": 12345
+    }
+  },
+  "116": {
+    "class_type": "LTXVSeparateAVLatent",
+    "inputs": {
+      "av_latent": [
+        "113",
+        0
+      ]
+    }
+  },
+  "117": {
+    "class_type": "LTXVConcatAVLatent",
+    "inputs": {
+      "video_latent": [
+        "161",
+        0
+      ],
+      "audio_latent": [
+        "116",
+        1
+      ]
+    }
+  },
+  "119": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "114",
+        0
+      ],
+      "guider": [
+        "103",
+        0
+      ],
+      "sampler": [
+        "138",
+        0
+      ],
+      "sigmas": [
+        "100",
+        0
+      ],
+      "latent_image": [
+        "117",
+        0
+      ]
+    }
+  },
+  "121": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "360-degree panoramic video of a massive waterfall deep in a lush forest, camera placed very close to the riverbank, low angle looking up at a towering waterfall slightly to the right, enormous scale dominating the scene, cliffs rising high above, bright sunlight illuminating the entire environment, crystal clear air, vivid greens and deep blue water, high contrast, sharp lighting, fine water spray glowing in sunlight, small wild birds resting on rocks, no camera movement, static camera, fixed viewpoint, no motion, calm and still environment, fully immersive 360-degree environment, equirectangular panorama, natural ambient sound, waterfall sound, flowing water audio, no music, no background music, no soundtrack, only natural environmental sound",
+      "clip": [
+        "99",
+        0
+      ]
+    }
+  },
+  "124": {
+    "class_type": "LTXVAudioVAELoader",
+    "inputs": {
+      "ckpt_name": "LTX-2\\ltx-2.3-22b-dev-fp8.safetensors"
+    }
+  },
+  "125": {
+    "class_type": "LTXVSeparateAVLatent",
+    "inputs": {
+      "av_latent": [
+        "182",
+        1
+      ]
+    }
+  },
+  "127": {
+    "class_type": "VAEDecodeTiled",
+    "inputs": {
+      "tile_size": 512,
+      "overlap": 64,
+      "temporal_size": 4096,
+      "temporal_overlap": 8,
+      "samples": [
+        "125",
+        0
+      ],
+      "vae": [
+        "133",
+        2
+      ]
+    }
+  },
+  "128": {
+    "class_type": "LTXVAudioVAEDecode",
+    "inputs": {
+      "samples": [
+        "125",
+        1
+      ],
+      "audio_vae": [
+        "124",
+        0
+      ]
+    }
+  },
+  "129": {
+    "class_type": "CFGGuider",
+    "inputs": {
+      "cfg": 1,
+      "model": [
+        "195",
+        0
+      ],
+      "positive": [
+        "107",
+        0
+      ],
+      "negative": [
+        "107",
+        1
+      ]
+    }
+  },
+  "131": {
+    "class_type": "PrimitiveInt",
+    "inputs": {
+      "value": 24
+    }
+  },
+  "133": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "LTX-2\\ltx-2.3-22b-dev-fp8.safetensors"
+    }
+  },
+  "134": {
+    "class_type": "LoraLoaderModelOnly",
+    "inputs": {
+      "lora_name": "LTX-2\\ltx-2.3-22b-distilled-lora-384.safetensors",
+      "strength_model": 0.5,
+      "model": [
+        "133",
+        0
+      ]
+    }
+  },
+  "137": {
+    "class_type": "KSamplerSelect",
+    "inputs": {
+      "sampler_name": "euler"
+    }
+  },
+  "138": {
+    "class_type": "KSamplerSelect",
+    "inputs": {
+      "sampler_name": "euler"
+    }
+  },
+  "140": {
+    "class_type": "VHS_VideoCombine",
+    "inputs": {
+      "frame_rate": 24,
+      "loop_count": 0,
+      "filename_prefix": "LTX-2.3",
+      "format": "video/h264-mp4",
+      "pix_fmt": "yuv420p",
+      "crf": 19,
+      "save_metadata": true,
+      "trim_to_audio": false,
+      "pingpong": false,
+      "save_output": true,
+      "images": [
+        "197",
+        0
+      ],
+      "audio": [
+        "128",
+        0
+      ]
+    }
+  },
+  "161": {
+    "class_type": "LTXVLatentUpsampler",
+    "inputs": {
+      "samples": [
+        "116",
+        0
+      ],
+      "upscale_model": [
+        "101",
+        0
+      ],
+      "vae": [
+        "133",
+        2
+      ]
+    }
+  },
+  "166": {
+    "class_type": "ComfyMathExpression",
+    "inputs": {
+      "expression": "a",
+      "values.a": [
+        "131",
+        0
+      ]
+    }
+  },
+  "169": {
+    "class_type": "ManualSigmas",
+    "inputs": {
+      "sigmas": "1.0, 0.99375, 0.9875, 0.98125, 0.975, 0.909375, 0.725, 0.421875, 0.0"
+    }
+  },
+  "182": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "189",
+        0
+      ],
+      "guider": [
+        "186",
+        0
+      ],
+      "sampler": [
+        "191",
+        0
+      ],
+      "sigmas": [
+        "192",
+        0
+      ],
+      "latent_image": [
+        "185",
+        0
+      ]
+    }
+  },
+  "183": {
+    "class_type": "LTXVSeparateAVLatent",
+    "inputs": {
+      "av_latent": [
+        "119",
+        0
+      ]
+    }
+  },
+  "185": {
+    "class_type": "LTXVConcatAVLatent",
+    "inputs": {
+      "video_latent": [
+        "187",
+        0
+      ],
+      "audio_latent": [
+        "183",
+        1
+      ]
+    }
+  },
+  "186": {
+    "class_type": "CFGGuider",
+    "inputs": {
+      "cfg": 1,
+      "model": [
+        "195",
+        0
+      ],
+      "positive": [
+        "107",
+        0
+      ],
+      "negative": [
+        "107",
+        1
+      ]
+    }
+  },
+  "187": {
+    "class_type": "LTXVLatentUpsampler",
+    "inputs": {
+      "samples": [
+        "183",
+        0
+      ],
+      "upscale_model": [
+        "101",
+        0
+      ],
+      "vae": [
+        "133",
+        2
+      ]
+    }
+  },
+  "189": {
+    "class_type": "RandomNoise",
+    "inputs": {
+      "noise_seed": 12345
+    }
+  },
+  "191": {
+    "class_type": "KSamplerSelect",
+    "inputs": {
+      "sampler_name": "euler"
+    }
+  },
+  "192": {
+    "class_type": "ManualSigmas",
+    "inputs": {
+      "sigmas": "0.85, 0.7250, 0.4219, 0.0"
+    }
+  },
+  "195": {
+    "class_type": "LoraLoaderModelOnly",
+    "inputs": {
+      "lora_name": "LTX-2\\LTX2.3_360vr.safetensors",
+      "strength_model": 0.6,
+      "model": [
+        "134",
+        0
+      ]
+    }
+  },
+  "197": {
+    "class_type": "PanoramaCutout",
+    "inputs": {
+      "coverage": "360",
+      "state_json": "{\"version\":1,\"projection_model\":\"pinhole_rectilinear\",\"alpha_mode\":\"straight\",\"coverage\":360,\"bg_color\":\"#00ff00\",\"output_preset\":2048,\"assets\":{},\"stickers\":[],\"shots\":[{\"id\":\"frame_mo7w8i5e\",\"label\":\"Frame 1\",\"yaw_deg\":42.54363786714384,\"pitch_deg\":27.643773960332986,\"roll_deg\":0,\"hFOV_deg\":63.03921856312168,\"vFOV_deg\":42.0261457087478,\"locked\":false,\"aspect_id\":\"1597:1000\"}],\"painting\":{\"version\":1,\"groups\":[],\"paint\":{\"strokes\":[]},\"mask\":{\"strokes\":[]},\"raster_objects\":[]},\"painting_layer\":null,\"ui_settings\":{\"invert_view_x\":false,\"invert_view_y\":false,\"preview_quality\":\"balanced\"},\"active\":{\"selected_sticker_id\":null,\"selected_shot_id\":\"frame_mo7w8i5e\"}}",
+      "output_megapixels": 1,
+      "fps": 24,
+      "erp_image": [
+        "127",
+        0
+      ]
+    }
+  },
+  "198": {
+    "class_type": "PanoramaPreview",
+    "inputs": {
+      "coverage": "360",
+      "fps": 24,
+      "erp_image": [
+        "127",
+        0
+      ],
+      "audio": [
+        "128",
+        0
+      ]
+    }
+  }
+}

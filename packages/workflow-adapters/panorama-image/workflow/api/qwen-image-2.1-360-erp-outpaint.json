@@ -1,0 +1,147 @@
+{
+  "3": {
+    "class_type": "KSampler",
+    "inputs": {
+      "seed": 1234,
+      "steps": 25,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": [
+        "84",
+        0
+      ],
+      "positive": [
+        "64",
+        0
+      ],
+      "negative": [
+        "64",
+        1
+      ],
+      "latent_image": [
+        "62",
+        0
+      ]
+    }
+  },
+  "8": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "39",
+        0
+      ]
+    }
+  },
+  "37": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "qwen_image_2.1_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "38": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen3vl_8b_int8_convrot.safetensors",
+      "type": "qwen_image",
+      "device": "default"
+    }
+  },
+  "39": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "qwen_image_2.1_vae_bf16.safetensors"
+    }
+  },
+  "56": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "8",
+        0
+      ]
+    }
+  },
+  "62": {
+    "class_type": "EmptyLatentImage",
+    "inputs": {
+      "width": [
+        "76",
+        0
+      ],
+      "height": [
+        "76",
+        1
+      ],
+      "batch_size": 1
+    }
+  },
+  "64": {
+    "class_type": "TextEncodeQwenImage21",
+    "inputs": {
+      "prompt": "Fill the green areas to complete a seamless 360° equirectangular panorama. Continue the existing scene in exactly the same art style: low-poly 3D look with visible flat triangular facets, soft shading on each facet, hand-painted textures, matte surfaces, soft even lighting, slightly muted colors and the same late-afternoon light. Extend the flooded rice paddies with young rice plants, narrow grassy footpaths, a few scattered old houses with dark tiled roofs, low green hills on the horizon all the way around, and the same soft evening sky with a few clouds. The filled areas contain only landscape, with the two students kept as the only people in the panorama. Match colors, scale and perspective so the edges join seamlessly.",
+      "negative_prompt": "",
+      "resolution": 0,
+      "clip": [
+        "38",
+        0
+      ],
+      "images.image_1": [
+        "83",
+        1
+      ],
+      "vae": [
+        "39",
+        0
+      ]
+    }
+  },
+  "76": {
+    "class_type": "GetImageSize",
+    "inputs": {
+      "image": [
+        "83",
+        1
+      ]
+    }
+  },
+  "83": {
+    "class_type": "PanoramaStudio",
+    "inputs": {
+      "background_color": "#00ff00",
+      "background_range": "360",
+      "megapixels": 4,
+      "multiple": 32,
+      "state_json": "{\"version\":2,\"id\":\"LplkgY9Pw8VqFkxh\",\"timeline\":{\"fps\":24,\"length\":null},\"camera\":{\"aspect\":1.7777777777777777,\"projection\":\"erp\",\"position\":{\"value\":[0,0,0],\"keyframes\":[]},\"rotation\":{\"value\":{\"yaw_deg\":0,\"pitch_deg\":0,\"roll_deg\":0},\"keyframes\":[]},\"fov\":{\"value\":209.7,\"keyframes\":[]},\"curve\":{\"value\":0,\"keyframes\":[]}},\"scene\":{\"clip\":{\"start\":0,\"in\":0,\"duration\":null},\"position\":{\"value\":[0,0,0],\"keyframes\":[]},\"rotation\":{\"value\":{\"yaw_deg\":0,\"pitch_deg\":0,\"roll_deg\":0},\"keyframes\":[]},\"scale\":{\"value\":1,\"keyframes\":[]}},\"stickers\":[{\"id\":\"sticker_11\",\"placement\":\"sky\",\"source\":{\"kind\":\"file\",\"filename\":\"denen.png\",\"subfolder\":\"panorama_stickers\",\"storage\":\"input\"},\"clip\":{\"start\":0,\"in\":0,\"duration\":null},\"visible\":true,\"locked\":false,\"crop\":{\"x0\":0,\"y0\":0,\"x1\":1,\"y1\":1},\"direction\":{\"value\":{\"yaw_deg\":-9.02067379839616,\"pitch_deg\":-1.8274083948888786},\"keyframes\":[]},\"roll\":{\"value\":0,\"keyframes\":[]},\"size\":{\"value\":{\"hFOV_deg\":87.57782202746436,\"vFOV_deg\":59.1330066773554},\"keyframes\":[]},\"opacity\":{\"value\":1,\"keyframes\":[]},\"z_index\":1},{\"id\":\"sticker_12\",\"placement\":\"sky\",\"source\":{\"kind\":\"file\",\"filename\":\"denen2.png\",\"subfolder\":\"panorama_stickers\",\"storage\":\"input\"},\"clip\":{\"start\":0,\"in\":0,\"duration\":null},\"visible\":true,\"locked\":false,\"crop\":{\"x0\":0,\"y0\":0,\"x1\":1,\"y1\":1},\"direction\":{\"value\":{\"yaw_deg\":163.5951945819669,\"pitch_deg\":-20.958666399148424},\"keyframes\":[]},\"roll\":{\"value\":0,\"keyframes\":[]},\"size\":{\"value\":{\"hFOV_deg\":52.97982624741101,\"vFOV_deg\":70.02137313689738},\"keyframes\":[]},\"opacity\":{\"value\":1,\"keyframes\":[]},\"z_index\":2}],\"painting\":{\"version\":1,\"groups\":[],\"paint\":{\"strokes\":[]},\"mask\":{\"strokes\":[]},\"raster_objects\":[]},\"painting_layer\":null}"
+    }
+  },
+  "84": {
+    "class_type": "LoraLoaderModelOnly",
+    "inputs": {
+      "lora_name": "qwen_image_2_1_360_panorama_outpaint_lora_v0_1.safetensors",
+      "strength_model": 0.8,
+      "model": [
+        "37",
+        0
+      ]
+    }
+  },
+  "86": {
+    "class_type": "PanoramaPreviewNode",
+    "inputs": {
+      "background_range": "360",
+      "source": [
+        "8",
+        0
+      ]
+    }
+  }
+}

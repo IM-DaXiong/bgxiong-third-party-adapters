@@ -128,12 +128,12 @@ fn submit(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<
     let (graph, applied) = if payload["operationId"] == capability::SCENE_OPERATION {
         let document = scene::SceneDocument::parse(input["editorDocument"].as_str().ok_or_else(|| Failure::invalid("Missing editor document"))?)?;
         let mut uploads = BTreeMap::new();
-        for id in document.assets.values() {
+        for id in document.assets.values().chain(document.sources.iter().flat_map(|source| source.document.assets.values())) {
             find_media(payload, id)?;
             uploads.insert(id.clone(), "pending-upload.png".into());
         }
         scene::outpaint_graph(input, &uploads)?; // Reject malformed state before any network write.
-        for id in document.assets.values() {
+        for id in document.assets.values().chain(document.sources.iter().flat_map(|source| source.document.assets.values())) {
             uploads.insert(id.clone(), comfy::upload(host, &ctx, find_media(payload, id)?)?);
         }
         scene::outpaint_graph(input, &uploads)?

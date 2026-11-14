@@ -60,7 +60,8 @@ try {
           const bundle = await (await fetch('/editor-bundle.json')).json();
           frame = document.createElement('iframe'); frame.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;border:0'; document.body.appendChild(frame);
           const initialAssets = await Promise.all([...assets].map(async ([filename, url]) => ({ name: `input//${filename}`, bytes: await (await fetch(url)).arrayBuffer(), mimeType: 'image/png', mediaRel: `fixtures/${filename}`, sha256: 'test-only' })));
-          editor = await openEditorFrame(frame, bundle, { nodeId: 'test_scene', stateText: saved, assets: [...initialAssets, ...storedAssets.values()] }, async (method, params) => {
+          editor = await openEditorFrame(frame, bundle, { nodeId: 'test_scene', stateText: saved, assets: [...initialAssets, ...storedAssets.values()],
+            inputNodeIds: window.check.inputNodeIds ?? [], connectedDocuments: (window.check.connectedDocuments ?? []).map(source => ({ ...source, assets: initialAssets })) }, async (method, params) => {
             if (method === 'editor.closed') return;
             if (method === 'preferences.set') return;
             if (method === 'editor.protection') { window.check.protection = params; return; }
@@ -79,7 +80,7 @@ try {
             }
             if (method !== 'document.save') throw new Error(`Unexpected host method ${method}`);
             if (window.check.failWrites) throw new Error('EDITOR_REVISION_CONFLICT: test concurrent edit');
-            saved = params.stateText; window.check.writes++;
+            saved = params.stateText; window.check.savedAssets = params.assets; window.check.writes++;
           });
           return;
         }
@@ -110,6 +111,7 @@ try {
     assert.equal(await isolated.evaluate(() => { try { void parent.document.body; return false; } catch { return true; } }), true);
     assert.equal(await isolated.evaluate(() => typeof window.__TAURI_INTERNALS__), 'undefined');
   }
+  if (option('--focus') !== 'inheritance') {
   assert.deepEqual(await page.evaluate(async () => (await window.check.read()).stickers.map(item => item.direction.value.yaw_deg)), [0, -90, 180]);
   await surface.locator('.pano-studio-tl-head[data-head="bedroom"] [data-part="name"]').click();
   const rotation = surface.locator('[data-region="inspector"] [data-row="Rotation"]');
@@ -243,12 +245,43 @@ try {
     }
     await page.evaluate(() => window.check.close());
   }
+  } else { await page.evaluate(() => window.check.close()); }
+  if (option('--inheritance')) {
+    if (!option('--frame')) throw new Error('Inheritance check requires the production frame');
+    const original = await page.evaluate(() => {
+      const source = { version: 2, id: 'parent-scene', stickers: window.check.saved().stickers.slice(0, 3) };
+      window.check.connectedDocuments = [{ target: { nodeId: 'parent' }, revision: 'parent-original', inputNodeIds: [], document: { stateText: JSON.stringify(source) } }];
+      window.check.inputNodeIds = ['parent'];
+      window.check.replaceSaved(JSON.stringify({ version: 2, id: 'child-scene', stickers: [] }));
+      return JSON.stringify(source);
+    });
+    await page.evaluate(() => window.check.open());
+    await surface.locator('[data-stage-canvas]').waitFor();
+    const row = 'upstream:parent-scene:desk';
+    await surface.locator(`.pano-studio-tl-head[data-head="${row}"]`).waitFor();
+    assert.ok(await surface.getByText('From 上游全景', { exact: true }).count());
+    await page.evaluate(row => window.check.act('inspector.field', { target: { kind: 'sticker', id: row }, field: 'yaw_deg', value: 40 }), row);
+    await page.evaluate(() => window.check.flush());
+    const own = await page.evaluate(() => window.check.saved());
+    assert.equal(own.stickers.length, 0);
+    assert.equal(own.upstream[0].layer, 'parent-scene');
+    assert.equal(own.upstream[0].stickers[0].direction.value.yaw_deg, 40);
+    assert.equal(await page.evaluate(() => window.check.connectedDocuments[0].document.stateText), original);
+    assert.equal(await page.evaluate(() => window.check.savedAssets.some(asset => asset.name.includes('bgx_connected_'))), false);
+    await page.screenshot({ path: resolve(results, 'studio-inherited-override.png') });
+    await page.evaluate(() => window.check.close());
+    await page.evaluate(() => window.check.open());
+    assert.equal(await page.evaluate(async () => (await window.check.read()).upstream[0].stickers[0].direction.value.yaw_deg), 40);
+    await page.evaluate(() => window.check.close());
+    await page.evaluate(() => { window.check.inputNodeIds = []; window.check.connectedDocuments = []; });
+    console.log(JSON.stringify({ inheritancePassed: true, checks: ['connected layer shown', 'override saved only downstream', 'parent bytes preserved', 'reopen keeps override'] }));
+  }
   if (option('--preservation')) {
     if (!option('--frame')) throw new Error('Preservation check requires the production frame');
     const raw = await page.evaluate(() => {
       const value = window.check.saved();
       value.stickers = value.stickers.slice(0, 3);
-      value.stickers[0].futureObjectField = { keep: 'opaque' };
+      if (value.stickers[0]) value.stickers[0].futureObjectField = { keep: 'opaque' };
       value.futureSceneField = ['keep', 7];
       return JSON.stringify(value);
     });
@@ -271,7 +304,11 @@ try {
     console.log(JSON.stringify({ preservationPassed: true, checks: ['unknown fields preserve original bytes', 'legacy multi-shot preview does not migrate or save', 'unsupported future version is rejected without mutation'] }));
   }
   assert.deepEqual(problems, []);
+  if (option('--focus') === 'inheritance') {
+    console.log(JSON.stringify({ passed: true, scope: 'connected scene only', screenshots: results }));
+  } else {
   console.log(JSON.stringify({ passed: true, checks: ['built editor opens', 'three images at distinct directions', 'UI yaw edit', 'undo/redo', 'save/reopen preserves directions', 'no redundant save', ...(option('--frame') ? ['same-name asset import/reopen', 'save conflict retains edits and allows retry', 'opaque origin isolation'] : []), ...(option('--actions') ? ['shared controller actions', 'stale active state rejected', 'keyframe move/save/reopen', 'exactly 50 undo operations'] : []), ...(option('--paint') ? ['sphere mask stroke', 'clear cancel/confirm/undo', 'saved asset add'] : []), ...(option('--3d') ? ['GLB managed conversion bridge', '3D source and result save/reopen'] : []), 'no browser errors'], screenshots: results }));
+  }
 } finally {
   await browser?.close();
   await new Promise(resolve => server.close(resolve));

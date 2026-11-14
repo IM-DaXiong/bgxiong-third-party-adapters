@@ -1,0 +1,176 @@
+{
+  "3": {
+    "class_type": "KSampler",
+    "inputs": {
+      "seed": 1234,
+      "steps": 25,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": [
+        "84",
+        0
+      ],
+      "positive": [
+        "64",
+        0
+      ],
+      "negative": [
+        "64",
+        1
+      ],
+      "latent_image": [
+        "62",
+        0
+      ]
+    }
+  },
+  "8": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "39",
+        0
+      ]
+    }
+  },
+  "37": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "qwen_image_2.1_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "38": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen3vl_8b_int8_convrot.safetensors",
+      "type": "qwen_image",
+      "device": "default"
+    }
+  },
+  "39": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "qwen_image_2.1_vae_bf16.safetensors"
+    }
+  },
+  "62": {
+    "class_type": "EmptyLatentImage",
+    "inputs": {
+      "width": [
+        "76",
+        0
+      ],
+      "height": [
+        "76",
+        1
+      ],
+      "batch_size": 1
+    }
+  },
+  "64": {
+    "class_type": "TextEncodeQwenImage21",
+    "inputs": {
+      "prompt": "Change the camera angle from <image2> to <image1>.",
+      "negative_prompt": "",
+      "resolution": 0,
+      "clip": [
+        "38",
+        0
+      ],
+      "images.image_1": [
+        "80",
+        0
+      ],
+      "images.image_2": [
+        "97",
+        1
+      ],
+      "vae": [
+        "39",
+        0
+      ]
+    }
+  },
+  "76": {
+    "class_type": "GetImageSize",
+    "inputs": {
+      "image": [
+        "97",
+        1
+      ]
+    }
+  },
+  "80": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "ComfyUI_00185_.png"
+    }
+  },
+  "81": {
+    "class_type": "MoGeInference",
+    "inputs": {
+      "resolution_level": 9,
+      "fov_x_degrees": 0,
+      "batch_size": 4,
+      "force_projection": true,
+      "apply_mask": true,
+      "refine_steps": 3,
+      "moge_model": [
+        "82",
+        0
+      ],
+      "image": [
+        "80",
+        0
+      ]
+    }
+  },
+  "82": {
+    "class_type": "LoadMoGeModel",
+    "inputs": {
+      "model_name": "moge_3_vitg_fp16.safetensors"
+    }
+  },
+  "84": {
+    "class_type": "LoraLoaderModelOnly",
+    "inputs": {
+      "lora_name": "QI2.1_AnyAngle.safetensors",
+      "strength_model": 1,
+      "model": [
+        "37",
+        0
+      ]
+    }
+  },
+  "96": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "8",
+        0
+      ]
+    }
+  },
+  "97": {
+    "class_type": "PanoramaStudio",
+    "inputs": {
+      "background_color": "#949494",
+      "background_range": "360",
+      "megapixels": 2,
+      "multiple": 8,
+      "state_json": "{\"version\":2,\"id\":\"8aJC4DbC1OSzxASZ\",\"timeline\":{\"fps\":24,\"length\":null},\"camera\":{\"aspect\":1.7777777777777777,\"position\":{\"value\":[-1.3840266990310008,-1.603507348571414,-3.519156789296118],\"keyframes\":[]},\"rotation\":{\"value\":{\"yaw_deg\":25.513020669378193,\"pitch_deg\":26.79260449795178,\"roll_deg\":-6.5},\"keyframes\":[]},\"fov\":{\"value\":86.9,\"keyframes\":[]},\"curve\":{\"value\":0.23,\"keyframes\":[]}},\"scene\":{\"clip\":{\"start\":0,\"in\":0,\"duration\":null},\"position\":{\"value\":[0,0,0],\"keyframes\":[]},\"rotation\":{\"value\":{\"yaw_deg\":0,\"pitch_deg\":0,\"roll_deg\":0},\"keyframes\":[]},\"scale\":{\"value\":1,\"keyframes\":[]}},\"stickers\":[],\"painting\":{\"version\":1,\"groups\":[],\"paint\":{\"strokes\":[]},\"mask\":{\"strokes\":[]},\"raster_objects\":[]},\"painting_layer\":null}",
+      "world": [
+        "81",
+        0
+      ]
+    }
+  }
+}
