@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "status": "official-build-checked-not-published",
+  "pluginId": "local.bgx.seedvr2-video",
+  "version": "1.0.0",
+  "displayName": "SeedVR2 视频高清放大",
+  "transportSlot": "videoUpscale",
+  "operationId": "local.bgx.seedvr2-video/upscale",
+  "operationVersion": 1,
+  "cancellation": "unsupported",
+  "artifactSha256": "3730b1b7546e6b46a1a2ad66a5c7602242e41d50898f163cfb23127e6f6b9784",
+  "wasmBytes": 898202,
+  "zipFile": "local.bgx.seedvr2-video-1.0.0.zip",
+  "zipSha256": "5af7ea7433b4e2b20f8b0150bba7b11791eb27116dc1de271237585ad625be77",
+  "zipBytes": 210324,
+  "githubReleasePublished": false,
+  "downloadUrl": null,
+  "localReleaseTree": "artifacts/releases/seedvr2-video-1.0.0/local.bgx.seedvr2-video/1.0.0",
+  "localCurrentTree": "artifacts/current/local.bgx.seedvr2-video/1.0.0",
+  "templateLock": {
+    "difference": "generatedFiles[7].sources[0].sha256 for public Cargo.lock",
+    "packageBefore": "ce4cb4ad1d9029a8bfb1bbc6b10184ffbbb381ecfd43c7aa91661c21283cebbb",
+    "currentSdk": "91a0d379c98fbb25b6cd348c8100850147e3a832d02818b645f8f287e648fe89",
+    "authorLockTargetUnchanged": "92ae08ed467aff3fe8374bc4fd3128edb762b39738a029d9399d50691e2744d9",
+    "repair": "bgx-adapter-v2 init copied the current sealed template-lock.json; the hash was not edited by hand"
+  },
+  "toolchain": {
+    "declared": "contract/v2/rust-toolchain.toml channel 1.95.0 target wasm32-wasip2",
+    "rustc": "1.95.0 (59807616e 2026-04-14)"
+  },
+  "checks": [
+    {"command": "bgx-adapter-v2 init", "exit": 0, "status": "CREATED"},
+    {"command": "bgx-adapter-v2 build on the package directory", "exit": 0, "status": "BUILT"},
+    {"command": "bgx-adapter-v2 check on the author project", "exit": 0, "status": "VALIDATED", "network": "disabled"},
+    {"command": "bgx-adapter-v2 pack", "exit": 0, "status": "PACKED"},
+    {"command": "bgx-adapter-v2 check on the release package directory", "exit": 0, "status": "VALIDATED"},
+    {"command": "bgx-adapter-v2 check after appending one byte to adapter.wasm", "exit": 1, "code": "INVALID_PACKAGE"},
+    {"command": "cargo test --locked --lib", "exit": 0, "result": "4 passed"}
+  ],
+  "files": [
+    {"path": "LICENSE", "bytes": 1506, "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"},
+    {"path": "README.txt", "bytes": 131, "sha256": "ca90f8a3d0dbf4bb3a289fce72ce66434942aecb345b13c95b4c915480bb95a3"},
+    {"path": "adapter-install.json", "bytes": 1282, "sha256": "28a675b046fe0e74ce28dc2e62819576019b713a04c8fffaae342f7e9b0ea6b3"},
+    {"path": "package/adapter.wasm", "bytes": 898202, "sha256": "3730b1b7546e6b46a1a2ad66a5c7602242e41d50898f163cfb23127e6f6b9784"},
+    {"path": "package/manifest.json", "bytes": 849, "sha256": "558d3994c142f3875095ce60d9bc6cdd612bf77c77660b10aac3eb750470a696"},
+    {"path": "package/manifest.sha256", "bytes": 157, "sha256": "17fb67db65fafe561fe71c9f611e207d7d727b456e9a9d79b08f719d5c8543a9"},
+    {"path": "workflow-templates.json", "bytes": 142, "sha256": "62209df7a5e01b72e557a79ef2f3319ef7d4b3842b822d510e19fb05f353770a"},
+    {"path": "安装说明.txt", "bytes": 435, "sha256": "3cac6d48413fa589473f5fa94aa90dd0f274096d77011c1cefbba676b2293b49"}
+  ],
+  "notRun": [
+    "GitHub Release publication",
+    "Windows host installation",
+    "ComfyUI / GPU upscale",
+    "paid cloud tasks"
+  ]
+}
