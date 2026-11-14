@@ -62,6 +62,49 @@ await build({
         </template>
         ${original}`);
     }
+    if (normalized === resolve(source, 'web_src/studio/view_input.js').replaceAll('\\', '/')) {
+      code = code.replaceAll('\r\n', '\n');
+      const original = `  if (ctrlKey || metaKey || shiftKey) return null;
+  const actions = BUTTONS[button];
+  if (!actions) return null;
+  if (altKey) return actions[1];
+  if (button === 0 && overObject && objectsTouchable) return "object";
+  return actions[0];`;
+      if (code.split(original).length !== 2) throw new Error('Upstream navigation mapping changed');
+      return code.replace(original, `  if (ctrlKey || metaKey || (altKey && shiftKey)) return null;
+  const actions = BUTTONS[button];
+  if (!actions) return null;
+  if (altKey) return actions[1];
+  if (shiftKey) {
+    if (button === 0) return "look";
+    if (button === 1) return "pan";
+    return null;
+  }
+  if (button === 0) return overObject && objectsTouchable ? "object" : "pan";
+  return actions[0];`);
+    }
+    if (normalized === resolve(source, 'web_src/studio/shortcuts.js').replaceAll('\\', '/')) {
+      code = code.replaceAll('\r\n', '\n');
+      const original = `  for (const altKey of [false, true]) {
+    for (const [button, name] of Object.entries(BUTTON_NAMES)) {
+      const action = navigationAction({ button: Number(button), altKey, shiftKey: false, ctrlKey: false, metaKey: false });
+      if (!action || !NAVIGATION_LABELS[action]) continue;
+      rows[action] ??= { label: NAVIGATION_LABELS[action], keys: [], refs: [] };
+      rows[action].keys.push(altKey ? ["Alt", name] : [name]);
+      rows[action].refs.push(\`button:\${button}\${altKey ? "+alt" : ""}\`);
+    }
+  }`;
+      if (code.split(original).length !== 2) throw new Error('Upstream navigation shortcut list changed');
+      return code.replace(original, `  for (const modifier of [null, "Alt", "Shift"]) {
+    for (const [button, name] of Object.entries(BUTTON_NAMES)) {
+      const action = navigationAction({ button: Number(button), altKey: modifier === "Alt", shiftKey: modifier === "Shift", ctrlKey: false, metaKey: false });
+      if (!action || !NAVIGATION_LABELS[action]) continue;
+      rows[action] ??= { label: NAVIGATION_LABELS[action], keys: [], refs: [] };
+      rows[action].keys.push(modifier ? [modifier, name] : [name]);
+      rows[action].refs.push(\`button:\${button}\${modifier ? "+" + modifier.toLowerCase() : ""}\`);
+    }
+  }`);
+    }
     const binding = styleBindings.get(normalized);
     if (!binding) return null;
     if (code.split(binding.expression).length !== 2) throw new Error(`Upstream stylesheet loader changed: ${id}`);
@@ -88,7 +131,7 @@ await cp(resolve(here, 'upstream.lock.json'), resolve(out, 'upstream.lock.json')
 // A self-contained payload for an opaque-origin frame: no filesystem URL, CDN or
 // executable import from the trusted host is needed when opening the editor.
 await writeFile(resolve(out, 'editor-bundle.json'), JSON.stringify({ schemaVersion: 1, assetTransport:'blob-v1', script: await readFile(resolve(out, 'studio.js'), 'utf8'), stylesheet: css,
-  documentCompatibility: { schemaVersion:1, fromVersions:['1.1.0','1.3.0','1.5.0','1.6.0','1.7.0','1.8.0','1.9.0','1.10.0','1.11.0','1.12.0','1.13.0','1.13.1','1.14.1','1.14.2','1.15.1','1.16.0','1.17.0','1.18.0','1.19.0','1.20.0','1.21.0','1.22.0','1.23.0','1.24.0'] },
+  documentCompatibility: { schemaVersion:1, fromVersions:['1.1.0','1.3.0','1.5.0','1.6.0','1.7.0','1.8.0','1.9.0','1.10.0','1.11.0','1.12.0','1.13.0','1.13.1','1.14.1','1.14.2','1.15.1','1.16.0','1.17.0','1.18.0','1.19.0','1.20.0','1.21.0','1.22.0','1.23.0','1.24.0','1.24.1'] },
   generationBindings: ['editor-geometry','h3-studio-video','studio-video','scene-to-panorama','studio-render','studio-cutout','studio-3d','studio-moge','editor-frame-capture','editor-frame-return','editor-seam-prepare','editor-seam-return'].map(operation => ({ operationId: `local.thirdparty.comfy-panorama-image/${operation}`, documentField: 'editorDocument', assetsField: 'references', includeConnectedDocuments: true })),
   serviceBindings: [{id:'inputPreview',purpose:'mediaPreparation',operationId:'local.thirdparty.comfy-panorama-image/editor-input-preview',modelId:'panorama-editor-input',assetsField:'sources'}, { id: 'file3d', purpose: 'mediaPreparation', operationId: 'local.thirdparty.comfy-panorama-image/editor-3d-preview', modelId: 'panorama-editor-media', assetsField: 'sources' },
     { id: 'geometry', purpose: 'mediaPreparation', operationId: 'local.thirdparty.comfy-panorama-image/editor-geometry', modelId: 'panorama-editor-geometry', assetsField: 'references', revisionField: 'sourceRevision' },

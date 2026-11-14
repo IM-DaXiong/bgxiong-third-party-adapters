@@ -236,6 +236,30 @@ try {
       await page.evaluate(()=>window.check.act('view.tab',{tab:'camera'}));
       let state=await page.evaluate(()=>window.check.read());
       assert.equal(state.camera.projection,'perspective'); assert.equal(state.camera.aspect,1.5); assert.equal(state.camera.fov.value,65);
+      if (option('--gestures')) {
+        const stage = await surface.locator('[data-stage-canvas]').boundingBox();
+        assert.ok(stage);
+        for (const [button, shift, changes, preserves] of [
+          ['middle', false, 'rotation', 'position'],
+          ['left', false, 'position', 'rotation'],
+          ['middle', true, 'position', 'rotation'],
+          ['left', true, 'rotation', 'position'],
+        ]) {
+          const before = await page.evaluate(() => window.check.read());
+          if (shift) await page.keyboard.down('Shift');
+          await page.mouse.move(stage.x + stage.width * .5, stage.y + stage.height * .5);
+          await page.mouse.down({ button });
+          await page.mouse.move(stage.x + stage.width * .5 + 38, stage.y + stage.height * .5 + 19, { steps: 6 });
+          await page.mouse.up({ button });
+          if (shift) await page.keyboard.up('Shift');
+          const after = await page.evaluate(() => window.check.read());
+          const gesture = `${shift ? 'Shift+' : ''}${button}`;
+          assert.notDeepEqual(after.camera[changes], before.camera[changes], gesture);
+          assert.deepEqual(after.camera[preserves], before.camera[preserves], gesture);
+          assert.deepEqual(after.stickers, before.stickers, gesture);
+        }
+        console.log('Four real pointer drags switched rotation/pan without editing stickers.');
+      }
       await page.screenshot({path:resolve(results,'studio-frame-camera.png')});
       await page.evaluate(()=>window.check.close()); await page.evaluate(()=>window.check.open());
       state=await page.evaluate(()=>window.check.read());
