@@ -62,6 +62,9 @@ Copy-Item -LiteralPath $EditorFile -Destination (Join-Path $OutputDirectory 'edi
 Copy-Item -LiteralPath (Join-Path $EditorDirectory 'UPSTREAM-LICENSE.txt') -Destination (Join-Path $OutputDirectory 'PANORAMA-LICENSE.txt')
 Copy-Item -LiteralPath (Join-Path $EditorDirectory 'fonts/OFL.txt') -Destination (Join-Path $OutputDirectory 'FONT-LICENSE.txt')
 Copy-Item -LiteralPath (Join-Path $EditorDirectory 'upstream.lock.json') -Destination (Join-Path $OutputDirectory 'upstream.lock.json')
+Copy-Item -LiteralPath (Join-Path $Project '../../../LICENSE') -Destination (Join-Path $OutputDirectory 'LICENSE.txt')
+Copy-Item -LiteralPath (Join-Path $Project 'README.zh-CN.md') -Destination (Join-Path $OutputDirectory 'README.zh-CN.md')
+Copy-Item -LiteralPath (Join-Path $Project 'README.en.md') -Destination (Join-Path $OutputDirectory 'README.en.md')
 $Installation | ConvertTo-Json -Depth 32 | Set-Content -LiteralPath (Join-Path $OutputDirectory 'adapter-install.json') -Encoding utf8NoBOM
 $Saved = Get-Content -LiteralPath (Join-Path $OutputDirectory 'adapter-install.json') -Raw | ConvertFrom-Json
 if ($Saved.manifestSha256 -ne (Get-FileHash -LiteralPath (Join-Path $PackageDirectory 'manifest.json') -Algorithm SHA256).Hash.ToLowerInvariant()) { throw 'Installation manifest digest mismatch.' }
