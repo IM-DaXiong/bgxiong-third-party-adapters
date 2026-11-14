@@ -56,6 +56,7 @@ pub fn port(h: &mut dyn Host, method: &str, args: Value) -> Result<Value, Failur
     }
     match method {
         "host-http.execute" => decode!(bgx_adapter_v2_sdk::HostPortCallV2HttpResponse),
+        "host-media.read" => decode!(Vec<u8>),
         "host-media.info" => decode!(bgx_adapter_v2_sdk::HostPortCallV2MediaStat),
         "host-media.create" => decode!(bgx_adapter_v2_sdk::HostPortCallV2HostMediaCreateResult),
         "host-media.write" => decode!(bgx_adapter_v2_sdk::HostPortCallV2HostMediaWriteResult),

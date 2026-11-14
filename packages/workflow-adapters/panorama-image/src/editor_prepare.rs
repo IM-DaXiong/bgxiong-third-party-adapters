@@ -29,8 +29,8 @@ pub fn contract(base: &Value) -> Value {
         "sourceRevision":{"type":"string"},"stickerState":{"type":"string"}},
         "required":["mediaArtifacts","sourceRevision","stickerState"]}).to_string());
     let resume=crate::capability::schema("capture-resume",&json!({"type":"object","additionalProperties":false,
-        "properties":{"promptId":{"type":"string","minLength":1},"sourceRevision":{"type":"string","minLength":1}},
-        "required":["promptId","sourceRevision"]}).to_string());
+        "properties":{"promptId":{"type":"string","minLength":1},"sourceRevision":{"type":"string","minLength":1},"sourceContextJson":{"type":"string","minLength":1}},
+        "required":["promptId","sourceRevision","sourceContextJson"]}).to_string());
     c["localId"]=json!(MODEL); c["modelIds"]=json!([MODEL]);c["capabilityKey"]=json!(CAPABILITY);c["transportSlot"]=json!("generic");
     let op=&mut c["operations"][0];op["id"]=json!(OPERATION);op["label"]=json!("取景与遮罩");
     op["inputSchema"]=json!({"id":"capture-input","digest":s["digest"]});
@@ -72,11 +72,12 @@ pub fn submit(host:&mut dyn Host,request:&Invocation,payload:&Value)->Result<Val
         uploads.insert(id.clone(),"pending-upload.png".into());
     }
     graph(input,&uploads)?;
+    let source_context=crate::editor_provenance::context(host,payload,&document)?;
     let ctx=comfy::Ctx{config:&payload["configuration"],budget_ms:request.r#budget_ms};
     for (id,source) in media {uploads.insert(id,comfy::upload(host,&ctx,&source)?);}
     let remote=comfy::submit(host,&ctx,&graph(input,&uploads)?,&request.r#request_id)?;
     let accepted=json!({"kind":"accepted","vendorTaskId":remote,
-        "resumeToken":{"promptId":remote,"sourceRevision":input["sourceRevision"]},"appliedParams":input,"usage":null});
+        "resumeToken":{"promptId":remote,"sourceRevision":input["sourceRevision"],"sourceContextJson":source_context.to_string()},"appliedParams":input,"usage":null});
     crate::persist_accepted(host,request,&accepted)?;Ok(accepted)
 }
 
@@ -102,16 +103,17 @@ pub fn query(host:&mut dyn Host,request:&Invocation,payload:&Value)->Result<Valu
             let pose=outputs["69"]["text"].as_array().filter(|a|a.len()==1).and_then(|a|a[0].as_str()).ok_or_else(||Failure::invalid("Upstream pose handoff missing"))?;
             let pose_json:Value=serde_json::from_str(pose).map_err(|_|Failure::invalid("Invalid upstream pose"))?;
             if pose_json["version"]!=2 || !pose_json["camera"].is_object() {return Err(Failure::invalid("Unsupported upstream pose"));}
-            let mut media=Vec::new();let mut identities=Vec::new();let mut dimensions=None;
+            let mut media=Vec::new();let mut identities=Vec::new();let mut dimensions=None;let mut frame_stat=Value::Null;
             for (role,file) in [("frame",frames[0].clone()),("mask",(comfy::text(mask,"filename")?.into(),mask["subfolder"].as_str().unwrap_or("").into(),comfy::text(mask,"type")?.into()))] {
                 let (asset,stat)=comfy::download_asset(host,&ctx,&file,role)?;
                 if stat["kind"]!="image" {return Err(Failure::invalid("Capture output is not an image"));}
                 let size=(stat["width"].as_u64().filter(|n|*n>0),stat["height"].as_u64().filter(|n|*n>0));
                 if size.0.is_none() || size.1.is_none() || dimensions.is_some_and(|d|d!=size) {return Err(Failure::invalid("Capture frame and mask geometry differ"));}
                 dimensions=Some(size);
+                if role=="frame" {frame_stat=stat.clone();}
                 identities.push(json!({"mediaId":asset["media"]["id"],"role":role,"kind":"image","projection":"flat"}));media.push(asset);
             }
-            media.push(comfy::json_asset(host,"pose",&json!({"sourceRevision":source_revision,"stickerState":pose_json}))?);
+            media.push(comfy::json_asset(host,"pose",&json!({"kind":"bgx.panorama.frame","version":1,"sourceRevision":source_revision,"sourceContext":serde_json::from_str::<Value>(comfy::text(&payload["resumeToken"],"sourceContextJson")?).map_err(|_|Failure::invalid("Frozen source context missing"))?,"frame":{"width":frame_stat["width"],"height":frame_stat["height"],"sha256":frame_stat["sha256"]},"stickerState":pose_json}))?);
             result["status"]=json!("succeeded");result["outputs"]=json!(media);
             result["data"]=json!({"mediaArtifacts":identities,"sourceRevision":source_revision,"stickerState":pose});
         }
@@ -152,7 +154,7 @@ mod tests {
     #[test]
     fn capture_collects_three_owned_outputs_without_resubmitting_and_rejects_changed_mask_size() {
         let payload=json!({"modelId":MODEL,"capabilityKey":CAPABILITY,"operationId":OPERATION,"operationVersion":1,"vendorTaskId":"original",
-            "resumeToken":{"promptId":"original","sourceRevision":"frozen-revision"},"configuration":{"endpointBaseUrl":"http://127.0.0.1:8188","credentialRef":null}});
+            "resumeToken":{"promptId":"original","sourceRevision":"frozen-revision","sourceContextJson":"{}"},"configuration":{"endpointBaseUrl":"http://127.0.0.1:8188","credentialRef":null}});
         let request=serde_json::from_value(json!({"protocolVersion":2,"operation":"query","profileId":"binding","capabilitySlot":"generic","requestId":"q","budgetMs":1000,"payloadJson":payload.to_string(),"bindingId":"binding","negotiatedVersion":2,"enabledFeatures":[]})).unwrap();
         let mut host=CaptureHost{complete:false,mismatch:false,writes:Vec::new()};
         let waiting=query(&mut host,&request,&payload).unwrap();assert_eq!(waiting["status"],"running");assert!(host.writes.is_empty());

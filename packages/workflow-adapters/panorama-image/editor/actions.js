@@ -21,7 +21,11 @@ const specifications = {
   'paint.tool': ['tool'], 'paint.option': ['kind', 'key', 'value', 'id', 'color', 'index'],
   'paint.stroke': ['points'], 'paint.clear': [], 'paint.confirmClear': ['confirmed'],
   'asset.add': ['name', 'placement'],
+  'asset.publish': ['name'],
   'capture.frame': ['megapixels', 'multiple'], 'capture.collect': ['taskId'],
+  'repair.frameReturn': ['sourceName','provenanceName','megapixels','multiple'],
+  'repair.seamPrepare': ['sourceName','bandWidth','offset','blur'],
+  'repair.seamReturn': ['sourceName','provenanceName'],
 };
 const clone = value => JSON.parse(JSON.stringify(value));
 const numeric = value => { if (!Number.isFinite(value)) throw new Error('A finite number is required'); return value; };
@@ -57,14 +61,32 @@ export function createEditorActions(editor, flush, { assetFile, capture } = {}) 
     if (typeof expectedStateDigest !== 'string' || expectedStateDigest !== (await describe()).stateDigest) throw new Error('EDITOR_STATE_CONFLICT: reread the active editor');
     const ctx = current(), selection = editor.session.selection;
     if (ctx.readOnly && !['selection.set', 'timeline.seek', 'timeline.jump', 'timeline.loop', 'timeline.play', 'view.tab'].includes(action)) throw new Error('Editor is read-only');
-    if (action.startsWith('capture.')) {
+    if (action === 'asset.publish') {
+      if (!capture || typeof args.name !== 'string' || !args.name) throw new Error('请选择已登记的图片成果');
+      await flush(); service = await capture(action, args);
+    }
+    else if (action.startsWith('capture.') || action.startsWith('repair.')) {
       if (!capture) throw new Error('Capture service is unavailable');
       await flush();
       if (action === 'capture.frame') {
         const megapixels = numeric(args.megapixels), multiple = numeric(args.multiple);
         if (megapixels < 0.1 || megapixels > 16 || multiple < 8 || multiple > 128 || multiple % 4) throw new Error('Invalid capture size');
         if (ctx.state.camera.projection !== 'perspective') throw new Error('请先将相机切换为 Frame 取景');
-      } else if (typeof args.taskId !== 'string' || !args.taskId) throw new Error('Original capture task is required');
+      } else if (action === 'capture.collect') {
+        if (typeof args.taskId !== 'string' || !args.taskId) throw new Error('Original task is required');
+      } else {
+        if (typeof args.sourceName !== 'string' || !args.sourceName) throw new Error('请选择工程素材');
+        if (action !== 'repair.seamPrepare' && (typeof args.provenanceName !== 'string' || !args.provenanceName)) throw new Error('请选择原始取景或接缝记录');
+        if (action === 'repair.frameReturn') {
+          const mp=numeric(args.megapixels), multiple=numeric(args.multiple);
+          if(mp<0.1 || mp>16 || multiple<8 || multiple>128 || multiple%4) throw new Error('Invalid repair size');
+        }
+        if (action === 'repair.seamPrepare') {
+          for (const [key,min,max] of [['bandWidth',1,2048],['offset',-2048,2048],['blur',0,256]]) {
+            if(!Number.isInteger(args[key]) || args[key]<min || args[key]>max) throw new Error(`Invalid ${key}`);
+          }
+        }
+      }
       service = await capture(action, args);
     }
     else if (action === 'selection.set') controller.select({ row: args.row ?? null, keys: args.keys ?? [] });

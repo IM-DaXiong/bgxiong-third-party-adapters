@@ -95,11 +95,13 @@ pub fn capabilities() -> Value {
     scene["schemas"][0] = scene_input;
     let workflows=crate::workflows::contracts(&scene);
     let capture=crate::editor_prepare::contract(&scene);
+    let repair=crate::editor_repair::contracts(&scene);
     result["capabilityContracts"].as_array_mut().expect("contracts").push(scene);
     result["capabilityContracts"].as_array_mut().expect("contracts").extend(workflows);
     let video=crate::video_workflows::contract(&result["capabilityContracts"][0]);
     result["capabilityContracts"].as_array_mut().expect("contracts").push(video);
     result["capabilityContracts"].as_array_mut().expect("contracts").push(capture);
+    result["capabilityContracts"].as_array_mut().unwrap().extend(repair);
     result["capabilityContracts"].as_array_mut().expect("contracts").push(crate::editor_media::contract(&schema("config", CONFIG_SCHEMA)));
     result
 }

@@ -72,6 +72,11 @@ try {
               window.check.captures = (window.check.captures ?? 0) + 1;
               return { status: 'pending', taskId: 'capture-original', assets: [], data: null };
             }
+            if (window.check.captureFixture && method === 'operation.run' && ['frameReturn','seamPrepare','seamReturn'].includes(params.serviceId)) {
+              if (params.sourceNames.length || params.input.editorDocument || params.input.sourceRevision) throw new Error('Repair cannot forge source ownership');
+              (window.check.preparationCalls ??= []).push(params);
+              return { status:'pending',taskId:'repair-fixture',assets:[],data:null };
+            }
             if (window.check.captureFixture && method === 'operation.collect') {
               if (params.taskId !== 'capture-original') throw new Error('Must collect original capture');
               const png = await (await fetch(assets.get('desk.png'))).arrayBuffer();
@@ -79,6 +84,10 @@ try {
               const captured = ['frame','mask','pose'].map((role, index) => ({ role, name: `editor-results/capture-original/${index}`, mediaRel: `fixtures/capture-${index}`, sha256: 'test-only', mimeType: role === 'pose' ? 'application/octet-stream' : 'image/png', bytes: role === 'pose' ? new TextEncoder().encode(pose).buffer : png.slice(0) }));
               for (const asset of captured) storedAssets.set(asset.name, asset);
               return { status: 'completed', taskId: params.taskId, assets: captured, data: { sourceRevision: 'original', stickerState: pose } };
+            }
+            if (window.check.captureFixture && method === 'asset.publish') {
+              if (!storedAssets.has(params.name) || Object.keys(params).length !== 1) throw new Error('Publish must use a retained named result');
+              window.check.published=params.name;return {versionId:'retained-version',reusedExisting:false};
             }
             if (method === 'operation.run' && window.check.conversionFixture) {
               if (params.serviceId !== 'file3d' || params.sourceNames.length !== 1 || !storedAssets.has(params.sourceNames[0])) throw new Error('Conversion source is not owned');
@@ -288,10 +297,10 @@ try {
     });
     await page.evaluate(() => window.check.open());
     await surface.getByRole('button', { name: '取景与遮罩', exact: true }).click();
-    await surface.getByRole('status').filter({ hasText: '等待渲染' }).waitFor();
+    await surface.getByRole('status').filter({ hasText: '等待处理' }).waitFor();
     assert.equal(await page.evaluate(() => window.check.captures), 1);
     await page.evaluate(() => window.check.close()); await page.evaluate(() => window.check.open());
-    await surface.getByRole('button', { name: '收取取景', exact: true }).click();
+    await surface.getByRole('button', { name: '收取成果', exact: true }).click();
     await surface.getByRole('status').filter({ hasText: '已收取' }).waitFor();
     const state = await page.evaluate(() => window.check.describe());
     assert.equal(state.service.status, 'completed');assert.equal(state.service.assets.length, 3);
@@ -303,6 +312,32 @@ try {
     await page.evaluate(() => window.check.open());
     await page.evaluate(() => window.check.act('asset.add', { name: 'editor-results/capture-original/0', placement: 'sky' }));
     await page.evaluate(() => window.check.close());
+    await page.evaluate(() => window.check.open());
+    for (const [label,service] of [['修补回贴','frameReturn'],['接缝准备','seamPrepare'],['接缝还原','seamReturn']]) {
+      await surface.getByRole('radio',{name:label,exact:true}).check();
+      await surface.getByLabel(service==='seamPrepare'?'全景素材':'修补素材',{exact:true}).selectOption('input//desk.png');
+      if(service!=='seamPrepare') await surface.getByLabel('来源记录',{exact:true}).selectOption('editor-results/capture-original/2');
+      else {await surface.getByLabel('遮罩宽度',{exact:true}).fill('63');await surface.getByLabel('接缝偏移',{exact:true}).fill('-20');await surface.getByLabel('羽化',{exact:true}).fill('12');}
+      await surface.getByRole('button',{name:label,exact:true}).click();
+      await surface.getByRole('status').filter({hasText:'等待处理'}).waitFor();
+      const calls=await page.evaluate(()=>window.check.preparationCalls);const last=calls.at(-1);
+      assert.equal(last.serviceId,service);assert.equal(last.input.sourceName,'input//desk.png');
+      assert.equal(last.input.outputProjection,service==='seamPrepare'?'flat':'equirectangular360');
+      if(service==='seamPrepare') assert.deepEqual([last.input.bandWidth,last.input.offset,last.input.blur],[63,-20,12]);
+    }
+    await page.screenshot({path:resolve(results,'studio-repair-toolbar.png')});
+    await surface.getByLabel('图片成果',{exact:true}).selectOption('editor-results/capture-original/0');
+    await surface.getByRole('button',{name:'采用成果',exact:true}).click();
+    await surface.getByRole('status').filter({hasText:'已采用'}).waitFor();
+    assert.equal(await page.evaluate(()=>window.check.published),'editor-results/capture-original/0');
+    assert.equal(await page.evaluate(()=>window.check.captures),1);
+    await surface.getByRole('radio',{name:'接缝准备',exact:true}).check();
+    const band=surface.getByLabel('遮罩宽度',{exact:true});await band.fill('72');await band.focus();
+    const input=await band.elementHandle();
+    await page.evaluate(()=>window.check.act('capture.collect',{taskId:'capture-original'}));
+    assert.equal(await input.evaluate(el=>el===document.activeElement&&el.value==='72'),true);
+    await page.evaluate(()=>window.check.close());
+    console.log(JSON.stringify({repairUiPassed:true,checks:['three shared service actions','inline radio modes','owned source selectors','parameter forwarding','adopt named result without regeneration','background collection preserves active input']}));
     console.log(JSON.stringify({ capturePassed: true, checks: ['UI shared action', 'pending is not completed', 'close/reopen retains original task', 'collect all three assets', 'no resubmit', 'reopened asset usable'] }));
   }
   if (option('--inheritance')) {

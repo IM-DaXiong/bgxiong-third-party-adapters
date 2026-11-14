@@ -88,14 +88,25 @@ export async function openAdapterEditor(initial, host) {
   const captureTaskKey = `capture.lastTask:${initial.nodeId}`;
   let toolbar = null;
   const capture = async (action, args) => {
-    const result = action === 'capture.frame'
-      ? await host.call('operation.run', { serviceId: 'frameCapture', sourceNames: [], input: {
-        outputProjection: 'flat', advanced: { megapixels: args.megapixels, multiple: args.multiple },
-      } })
-      : await host.call('operation.collect', { taskId: args.taskId });
-    for (const asset of result.assets) addAsset(asset);
+    if (action === 'asset.publish') return { status: 'published', ...await host.call('asset.publish', { name: args.name }) };
+    let result;
+    if (action === 'capture.collect') result = await host.call('operation.collect', { taskId: args.taskId });
+    else {
+      const serviceId = {'capture.frame':'frameCapture','repair.frameReturn':'frameReturn','repair.seamPrepare':'seamPrepare','repair.seamReturn':'seamReturn'}[action];
+      const input = {outputProjection: ['frameCapture','seamPrepare'].includes(serviceId) ? 'flat' : 'equirectangular360',
+        advanced: {megapixels: args.megapixels ?? 2, multiple: args.multiple ?? 8}};
+      for (const key of ['sourceName','provenanceName','bandWidth','offset','blur']) if (args[key] !== undefined) input[key]=args[key];
+      result = await host.call('operation.run', {serviceId,sourceNames:[],input});
+    }
     await host.call('preferences.set', { key: captureTaskKey, value: result.taskId });
     memory.set(captureTaskKey, result.taskId);
+    const roles={frame:'取景',mask:'遮罩',softMask:'羽化遮罩',pose:'取景记录',provenance:'接缝记录',shifted:'接缝工作图',repaired:'修补全景'};
+    for (const asset of result.assets) {
+      const key=`assetLabel:${initial.nodeId}:${asset.name}`;
+      const label=memory.get(key)??`${roles[asset.role]??'处理成果'} ${[...memory.keys()].filter(k=>k.startsWith(`assetLabel:${initial.nodeId}:`)).length+1}`;
+      addAsset({...asset,displayName:label});memory.set(key,label);
+      await host.call('preferences.set',{key,value:label});
+    }
     toolbar?.refresh(result);
     return { ...result, assets: result.assets.map(({ bytes, ...asset }) => asset) };
   };
@@ -120,7 +131,7 @@ export async function openAdapterEditor(initial, host) {
     }),
     onClosed: () => { void host.call('editor.closed', null).catch(() => {}); },
   });
-  toolbar = protection.readOnly ? null : captureToolbar(editor, () => memory.get(captureTaskKey));
+  toolbar = protection.readOnly ? null : captureToolbar(editor, () => memory.get(captureTaskKey), () => [...assets.values()].map(asset=>({...asset,displayName:memory.get(`assetLabel:${initial.nodeId}:${asset.name}`)??asset.displayName})));
   return { read: editor.read, describe: async () => ({ ...await editor.describe(), protection }), act: editor.act, async flush() { const result = await editor.flush(); await flushPreferences(); return result; }, async close() {
     const result = await editor.close();
     await flushPreferences();

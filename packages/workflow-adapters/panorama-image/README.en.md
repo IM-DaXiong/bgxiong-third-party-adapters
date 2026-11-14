@@ -21,3 +21,7 @@ The candidate adds the frozen three-stage LTX 2.3 panorama video operation along
 ## Development candidate 1.13.1
 
 Model-free Frame capture returns the upstream first_frame, mask and sticker_state as three owned editor assets. The saved document, connected scenes and media are frozen by the host. Camera lanes and fps are retained from upstream output 4, not reconstructed. The compact toolbar submits once and collects the same retained task after reopening; UI and MCP share pending/completed service results. Requires PanoramaStudio plus built-in MaskToImage, PreviewAny and SaveImage. Candidate uses SDK 2.4.0/ddc91f3. Real ComfyUI rendering and manual repair/seam return remain pending; package and browser checks do not claim model acceptance.
+
+
+### Repair and adoption (1.14.2 candidate)
+The compact toolbar exposes capture, frame return, seam preparation and seam return as inline radio modes. Frame return consumes the original upstream pose/fps and rejects mismatched dimensions or changed scene provenance. Seam restoration uses the measured/clamped offset. Results remain owned attachments until explicitly adopted as a new image version through the shared `canvas.editor.asset.publish` owner. Prior versions and original task receipts remain intact; repeated adoption is idempotent. Real ComfyUI/model rendering is pending resource-machine acceptance; mock protocol checks are not inference evidence.
