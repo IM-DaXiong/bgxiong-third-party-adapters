@@ -34,6 +34,8 @@ pub fn schema(op: &str) -> Value {
         },"required":["megapixels","multiple","steps"],"default":{"megapixels":2.0,"multiple":8,"steps":25,"backgroundColor":"#00ff00","backgroundRange":"360"}}));
     schema["required"].as_array_mut().unwrap().retain(|v|v!="width" && v!="height");
     if op=="studio-render" {
+        schema["properties"]["prompt"]["minLength"]=json!(0);
+        schema["properties"]["prompt"]["default"]=json!("");
         schema["properties"].as_object_mut().unwrap().remove("seed");
         schema["required"].as_array_mut().unwrap().retain(|v|v!="seed");
         schema["properties"]["advanced"]["properties"].as_object_mut().unwrap().remove("steps");
@@ -130,6 +132,9 @@ mod tests {
     #[test]
     fn frozen_examples_keep_camera_handoff_and_have_no_missing_graph_inputs() {
         for (op,_,_) in OPERATIONS {
+            let prompt_schema=schema(op)["properties"]["prompt"].clone();
+            assert_eq!(prompt_schema["minLength"],if op=="studio-render" {0} else {1});
+            if op=="studio-render" {assert_eq!(prompt_schema["default"],"");}
             for projection in ["flat","equirectangular180","equirectangular360"] {
                 if op=="studio-cutout" && projection!="flat" {continue;}
                 let camera=match projection {"flat"=>json!({"projection":"perspective","aspect":1.5,"rotation":{"value":{"yaw_deg":-90,"pitch_deg":12,"roll_deg":3}},"fov":{"value":65}}),p=>json!({"projection":"erp","erp_range":if p=="equirectangular180" {180} else {360}})};
@@ -138,6 +143,7 @@ mod tests {
                 let mut input=json!({"editorDocument":doc.to_string(),"references":[{"mediaId":"source"}],"sourceName":"input//source.png",
                     "prompt":"a studio","seed":12345,"outputProjection":if op=="studio-cutout" {"equirectangular360"} else {projection},"advanced":{"megapixels":2,"multiple":8,"steps":20}});
                 let uploads=BTreeMap::from([("source".into(),"uploaded/source.png".into())]);
+                if op=="studio-render" {input["prompt"]=json!("");}
                 let (graph,applied)=graph(op,&input,&uploads).unwrap();
                 assert_eq!(graph["66"]["class_type"],"SaveImage");
                 assert_eq!(applied["outputProjection"],input["outputProjection"]);

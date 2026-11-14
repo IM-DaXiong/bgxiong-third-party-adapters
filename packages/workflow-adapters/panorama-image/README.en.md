@@ -52,10 +52,12 @@ The companion declares `assetTransport: blob-v1`. Opening receives owned metadat
 
 Standard SDK package checks and production companion geometry, repair/adoption and parent-child save/reopen checks pass. Native large-file and actual application deployment checks are still pending. This candidate does not replace the public downloadable release; browser fixtures are not evidence of real video decoding or GPU inference.
 
-# Image background candidate 1.21.0
+# Image background candidate
 
 All four image workflows expose background color and 180/360 coverage, with the upstream #00ff00/360 defaults. Values bind to the current Studio node and preserve parent scenes and camera settings; invalid values are rejected. Adapter checks (28) and standard SDK package checks pass. Actual application controls and rendered output for these new parameters remain pending.
 
 ## 1.21.0 document compatibility
+
+The 1.22.0 candidate additionally declares an empty prompt default for the pure Studio image render. Diffusion operations retain their nonempty prompt requirements. Source/package checks do not establish GPU or installed-product acceptance.
 
 The digest-bound companion explicitly lists readable prior document package versions. A supporting host migrates current document identity atomically while preserving scene text, managed assets and history. Unknown versions are not inferred compatible. Model input contracts and account identity remain independently checked. SDK package validation passed; application upgrade and reopen acceptance are tracked in the product P8 handoff.
