@@ -78,7 +78,7 @@ try {
               storedAssets.set(asset.name,asset);
               const source=window.check.geometrySource;
               return {status:'completed',taskId:params.taskId,assets:[asset],data:{metadataJson:JSON.stringify({version:1,source,
-                sourceAssets:source.images.map(file=>({name:`${file.storage}/${file.subfolder}/${file.filename}`,sha256:'a'.repeat(64)})),
+                sourceAssets:(source.video?[source.video]:source.images).map(file=>({name:`${file.storage}/${file.subfolder}/${file.filename}`,sha256:'a'.repeat(64)})),
                 ui:{pano_scene_files:[{assetIndex:0,format:'model/gltf-binary'}],pano_scene_meta:[{kind:'mesh',unlit:true}]}})}};
             }
             if (window.check.captureFixture && method === 'operation.run' && params.serviceId === 'frameCapture') {
@@ -330,13 +330,31 @@ try {
     assert.equal(await surface.getByText('DA3-BASE.safetensors',{exact:true}).count(),1);
     await page.screenshot({path:resolve(results,'geometry-panel.png')});
     await page.evaluate(()=>window.check.close());
+    await page.evaluate(()=>{window.check.storedAssets.set('input//walk.mp4',{name:'input//walk.mp4',mimeType:'video/mp4',mediaRel:'fixtures/walk.mp4',sha256:'a'.repeat(64),bytes:new Uint8Array([0,0,0,24]).buffer});});
+    await page.evaluate(()=>window.check.open());
+    await surface.getByRole('button',{name:'几何输入',exact:true}).click();
+    await surface.getByRole('radio',{name:'视频',exact:true}).check();
+    await surface.getByRole('radio',{name:'walk.mp4',exact:true}).check();
+    await surface.getByRole('button',{name:'准备几何',exact:true}).click();
+    await page.waitForFunction(()=>window.check.geometrySubmits===2);
+    assert.equal(await page.evaluate(()=>window.check.geometrySource.images),undefined);
+    assert.equal(await page.evaluate(()=>window.check.geometrySource.video.filename),'walk.mp4');
+    await surface.getByRole('button',{name:'采用几何',exact:true}).click();
+    await page.waitForFunction(()=>window.check.saved().bgxGeometry?.source.video);
+    await page.evaluate(()=>window.check.close());await page.evaluate(()=>window.check.open());
+    await surface.getByRole('button',{name:'几何输入',exact:true}).click();
+    assert.equal(await surface.getByRole('radio',{name:'视频',exact:true}).isChecked(),true);
+    assert.equal(await surface.getByRole('radio',{name:'walk.mp4',exact:true}).isChecked(),true);
+    assert.equal(await page.evaluate(()=>window.check.geometrySubmits),2);
+    await page.screenshot({path:resolve(results,'geometry-video-panel.png')});
+    await page.evaluate(()=>window.check.close());
     await page.evaluate(()=>{const saved=window.check.saved();saved.bgxGeometry.version=999;window.check.replaceSaved(JSON.stringify(saved));});
     await page.evaluate(()=>window.check.open());
     assert.equal((await page.evaluate(()=>window.check.describe())).protection.readOnly,true);
     await assert.rejects(page.evaluate(()=>window.check.act('geometry.remove')),/read-only/);
     await page.evaluate(()=>window.check.close());
     assert.equal(await page.evaluate(()=>window.check.saved().bgxGeometry.version),999);
-    console.log(JSON.stringify({geometryPassed:true,checks:['model discovery','owned source UI','prepare is not adoption','native history undo/redo','saved geometry and preview reopen','old stickers retained','no repeated inference','future geometry preserved read-only']}));
+    console.log(JSON.stringify({geometryPassed:true,checks:['model discovery','owned source UI','prepare is not adoption','native history undo/redo','saved geometry and preview reopen','video source selection and reopen (no video decoding)','old stickers retained','no repeated inference','future geometry preserved read-only']}));
   }
   if (option('--focus') === 'capture') {
     if (!option('--frame')) throw new Error('Capture check requires production frame');

@@ -30,10 +30,12 @@ pub fn validate(record:&Value)->Result<(),Failure> {
     fields(record,&["version","source","preview"])?;
     if record["version"]!=1 {return Err(Failure::invalid("Unsupported geometry version; preserve the original document"));}
     let source=&record["source"];
-    fields(source,&["algorithm","images","options"])?;
+    fields(source,&["algorithm","images","video","options"])?;
     let algorithm=choice(&source["algorithm"],&["da3","moge","mogePanorama"])?;
-    let images=source["images"].as_array().filter(|v|!v.is_empty()&&v.len()<=1024).ok_or_else(||Failure::invalid("Choose owned geometry source images"))?;
-    for image in images {
+    let video=source.get("video").is_some();
+    if video == source.get("images").is_some() {return Err(Failure::invalid("Choose either owned images or one owned video"));}
+    let images=source_files(source)?;
+    for image in &images {
         fields(image,&["kind","filename","subfolder","storage"])?;
         if image["kind"]!="file" || image["filename"].as_str().is_none_or(|v|!relative(v)||v.contains('/'))
             || image["subfolder"].as_str().is_none_or(|v|!v.is_empty()&&!relative(v))
@@ -51,7 +53,7 @@ pub fn validate(record:&Value)->Result<(),Failure> {
         choice(&options["resizeMethod"],&["upper_bound_resize","lower_bound_resize"])?;
         let mode=choice(&options["mode"],&["mono","multiview"])?;
         if mode=="multiview" {
-            if images.len()<2 {return Err(Failure::invalid("DA3 multiview requires at least two images of the same scene"));}
+            if !video && images.len()<2 {return Err(Failure::invalid("DA3 multiview requires at least two images of the same scene"));}
             choice(&options["refViewStrategy"],&["saddle_balanced","saddle_sim_range","first","middle"])?;
             choice(&options["poseMethod"],&["cam_dec","ray_pose"])?;
         } else if options.get("refViewStrategy").is_some() || options.get("poseMethod").is_some() {
@@ -82,6 +84,30 @@ pub fn validate(record:&Value)->Result<(),Failure> {
     Ok(())
 }
 
+pub fn source_files(source:&Value)->Result<alloc::vec::Vec<&Value>,Failure> {
+    if let Some(video)=source.get("video") {return Ok(alloc::vec![video]);}
+    source["images"].as_array().filter(|v|!v.is_empty()&&v.len()<=1024)
+        .map(|v|v.iter().collect()).ok_or_else(||Failure::invalid("Choose owned geometry sources"))
+}
+
+/// Compare decoded frame facts with the saved scene before sending any files.
+/// No rate conversion, implicit trim, or repeated frames are introduced here.
+pub fn validate_video(state:&Value,stat:&Value)->Result<(),Failure> {
+    let fps=state["timeline"]["fps"].as_f64().filter(|v|v.is_finite()&&*v>0.0).ok_or_else(||Failure::invalid("请先设置视频工程帧率"))?;
+    let frames=state["timeline"]["length"].as_u64().filter(|v|*v>0).ok_or_else(||Failure::invalid("请先设置视频工程长度"))?;
+    let timestamps=stat["timestampsMs"].as_array().ok_or_else(||Failure::invalid("缺少视频实际帧时间，请启用工程素材帧探测"))?;
+    if !stat["mime"].as_str().is_some_and(|v|v.starts_with("video/")) || timestamps.len() as u64!=frames {
+        return Err(Failure::invalid("几何来源实际视频帧数与工程长度不一致；不会自动裁切或补帧"));
+    }
+    if state[STATE_KEY]["source"]["options"]["mode"]=="multiview" && frames<2 {return Err(Failure::invalid("多视角几何需要至少两帧"));}
+    let origin=timestamps.first().and_then(Value::as_str).and_then(|v|v.parse::<f64>().ok()).ok_or_else(||Failure::invalid("视频帧时间无效"))?;
+    for (index,value) in timestamps.iter().enumerate() {
+        let time=value.as_str().and_then(|v|v.parse::<f64>().ok()).filter(|v|v.is_finite()).ok_or_else(||Failure::invalid("视频帧时间无效"))?;
+        if (time-origin-index as f64*1000.0/fps).abs()>1.1 {return Err(Failure::invalid("几何来源帧率与工程不一致或为可变帧率；请显式选择转换"));}
+    }
+    Ok(())
+}
+
 /// Attach uniquely named dependencies to a specific Studio node. Parent and child
 /// documents can each own a geometry source without overwriting each other's nodes.
 pub fn attach(graph:&mut Value,studio:&str,state:&Value)->Result<(),Failure> {
@@ -90,7 +116,7 @@ pub fn attach(graph:&mut Value,studio:&str,state:&Value)->Result<(),Failure> {
     if graph[studio]["inputs"].get("world").is_some() {return Err(Failure::invalid("This workflow already owns the world input; choose the saved geometry operation explicitly"));}
     let prefix=format!("{studio}_bgx_geometry");
     let source=&record["source"];
-    let images=source["images"].as_array().unwrap();
+    let images=source_files(source)?;
     let mut output=Value::Null;
     for (index,image) in images.iter().enumerate() {
         if image["storage"]!="input" {return Err(Failure::invalid("Geometry source must be bound to a current upload"));}
@@ -98,7 +124,10 @@ pub fn attach(graph:&mut Value,studio:&str,state:&Value)->Result<(),Failure> {
         let folder=image["subfolder"].as_str().unwrap();
         let file=image["filename"].as_str().unwrap();
         let path=if folder.is_empty(){file.to_string()}else{format!("{folder}/{file}")};
-        graph[&id]=json!({"class_type":"LoadImage","inputs":{"image":path}});
+        if source.get("video").is_some() {
+            // Same upstream VHS loader as the locked H3 example, with full source frames.
+            graph[&id]=json!({"class_type":"VHS_LoadVideo","inputs":{"video":path,"force_rate":0,"custom_width":0,"custom_height":0,"frame_load_cap":0,"skip_first_frames":0,"select_every_nth":1,"format":"None"}});
+        }else{graph[&id]=json!({"class_type":"LoadImage","inputs":{"image":path}});}
         let current=json!([id,0]);
         if index==0 {output=current;} else {
             let batch=format!("{prefix}_batch_{index}");
@@ -143,14 +172,16 @@ pub fn validate_media(host:&mut dyn bgx_adapter_v2_sdk::Host,payload:&Value,docu
     if let Some(record)=document.state.get(STATE_KEY) {
         validate(record)?;
         let mut dimensions=None;
-        for file in record["source"]["images"].as_array().unwrap() {
+        for file in source_files(&record["source"])? {
             let name=format!("{}/{}/{}",file["storage"].as_str().unwrap(),file["subfolder"].as_str().unwrap(),file["filename"].as_str().unwrap());
             let id=document.assets.get(&name).ok_or_else(||Failure::invalid("Geometry source is not an owned document asset"))?;
             let lease=crate::scene_media(payload,id,&name)?;
             let stat=crate::comfy::port(host,"host-media.info",json!({"handle":lease["handle"]}))?;
             let size=(stat["width"].as_u64().filter(|v|*v>0),stat["height"].as_u64().filter(|v|*v>0));
-            if !stat["mime"].as_str().is_some_and(|v|v.starts_with("image/")) || size.0.is_none() || size.1.is_none() {
-                return Err(Failure::invalid("Geometry sources must be measured images"));
+            let video=record["source"].get("video").is_some();
+            if video {validate_video(&document.state,&stat)?;}
+            if (!video && !stat["mime"].as_str().is_some_and(|v|v.starts_with("image/"))) || size.0.is_none() || size.1.is_none() {
+                return Err(Failure::invalid("Geometry sources must have measured dimensions"));
             }
             if dimensions.is_some_and(|expected|expected!=size) {return Err(Failure::invalid("几何输入图片尺寸必须一致；请先明确选择尺寸处理，不会自动缩放原图"));}
             if record["source"]["algorithm"]=="mogePanorama" && size.0!=size.1.and_then(|v|v.checked_mul(2)) {
@@ -166,6 +197,22 @@ pub fn validate_media(host:&mut dyn bgx_adapter_v2_sdk::Host,payload:&Value,docu
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn owned_video_keeps_every_frame_and_rejects_scene_timing_mismatch() {
+        let mut record=record();let source=record["source"].as_object_mut().unwrap();
+        source.remove("images");source.insert("video".into(),json!({"kind":"file","filename":"walk.mp4","storage":"input","subfolder":"owned"}));
+        validate(&record).unwrap();
+        let state=json!({"version":2,"timeline":{"fps":29.97,"length":73},"bgxGeometry":record});
+        let mut graph=json!({"root":{"class_type":"PanoramaStudio","inputs":{}}});attach(&mut graph,"root",&state).unwrap();
+        assert_eq!(graph["root_bgx_geometry_image_0"],json!({"class_type":"VHS_LoadVideo","inputs":{"video":"owned/walk.mp4","force_rate":0,"custom_width":0,"custom_height":0,"frame_load_cap":0,"skip_first_frames":0,"select_every_nth":1,"format":"None"}}));
+        assert_eq!(graph["root_bgx_geometry_infer"]["inputs"]["image"],json!(["root_bgx_geometry_image_0",0]));
+        let mut facts=json!({"mime":"video/mp4","timestampsMs":(0..73).map(|i|((i as f64*1000.0/29.97).round() as u64+1234).to_string()).collect::<alloc::vec::Vec<_>>()});
+        validate_video(&state,&facts).unwrap();
+        facts["timestampsMs"][20]=json!("2000");assert!(validate_video(&state,&facts).is_err());
+        facts["timestampsMs"]=json!([]);assert!(validate_video(&state,&facts).is_err());
+        let mut invalid=state[STATE_KEY].clone();invalid["source"]["images"]=json!([]);assert!(validate(&invalid).is_err());
+        invalid=state[STATE_KEY].clone();invalid["source"]["video"]["filename"]=json!("../walk.mp4");assert!(validate(&invalid).is_err());
+    }
     pub fn record()->Value {json!({"version":1,"source":{"algorithm":"da3","images":[
         {"kind":"file","filename":"front.png","subfolder":"room","storage":"input"},
         {"kind":"file","filename":"left.png","subfolder":"room","storage":"input"}],

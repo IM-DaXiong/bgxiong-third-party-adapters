@@ -1,4 +1,4 @@
-import { assetDescriptor } from './geometry-state.js';
+import { assetDescriptor, geometrySources } from './geometry-state.js';
 
 // An optional compact panel: source selection and the parameters that matter for
 // the selected algorithm share rows. The main preview keeps the rest of the window.
@@ -8,9 +8,9 @@ export function geometryToolbar(editor,assets,lastTask) {
   const toggle=document.createElement('button');toggle.textContent='几何输入';toggle.setAttribute('aria-expanded','false');
   toggle.onclick=()=>{panel.hidden=!panel.hidden;toggle.setAttribute('aria-expanded',String(!panel.hidden));if(!panel.hidden)render();};
   const original=editor.read().bgxGeometry?.source;
-  let algorithm=original?.algorithm??'da3',mode=original?.options.mode??'mono',busy=false,models=null;
+  let algorithm=original?.algorithm??'da3',mode=original?.options.mode??'mono',sourceKind=original?.video?'video':'images',busy=false,models=null;
   const selected=new Set(), saved={da3:{},moge:{},mogePanorama:{}};
-  if(original){saved[algorithm]={...original.options};for(const file of original.images)selected.add(`${file.storage}/${file.subfolder}/${file.filename}`);}
+  if(original){saved[algorithm]={...original.options};for(const file of geometrySources(original))selected.add(`${file.storage}/${file.subfolder}/${file.filename}`);}
   const controls=new Map();let controlsAlgorithm=algorithm;
   const status=document.createElement('span');status.setAttribute('role','status');
   const row=()=>{const el=document.createElement('div');el.className='bgx-geometry-row';panel.append(el);return el;};
@@ -42,7 +42,9 @@ export function geometryToolbar(editor,assets,lastTask) {
       if(mode==='multiview'){options.refViewStrategy??='saddle_balanced';options.poseMethod??='cam_dec';}
       else{delete options.refViewStrategy;delete options.poseMethod;}
     }
-    return {algorithm,images:[...selected].map(name=>{const d=assetDescriptor(name);return {kind:'file',filename:d.filename,subfolder:d.subfolder,storage:d.type};}),options};
+    const files=[...selected].map(name=>{const d=assetDescriptor(name);return {kind:'file',filename:d.filename,subfolder:d.subfolder,storage:d.type};});
+    if(sourceKind==='video' && files.length!==1)throw new Error('请选择一个工程视频');
+    return {algorithm,...(sourceKind==='video'?{video:files[0]}:{images:files}),options};
   }
   function render() {
     remember();controls.clear();controlsAlgorithm=algorithm;panel.replaceChildren();
@@ -55,8 +57,9 @@ export function geometryToolbar(editor,assets,lastTask) {
       else if(choices.length<=4)radios(modelsRow,'模型','modelName',choices.map(name=>[name,name]),saved[algorithm].modelName??'',id=>{saved[algorithm].modelName=id;});
       else{const select=document.createElement('select');select.setAttribute('aria-label','几何模型');select.append(new Option('选择模型',''),...choices.map(name=>new Option(name,name)));select.value=saved[algorithm].modelName??'';controls.set('modelName',select);modelsRow.append(select);}
     }
-    const sources=row();sources.classList.add('bgx-geometry-sources');sources.setAttribute('role','group');sources.setAttribute('aria-label','来源图片');
-    for(const asset of assets().filter(a=>a.mimeType?.startsWith('image/'))){const el=document.createElement('input');el.type='checkbox';el.checked=selected.has(asset.name);el.onchange=()=>{if(el.checked)selected.add(asset.name);else selected.delete(asset.name);};label(sources,asset.displayName??asset.name.split('/').at(-1),el);}
+    radios(row(),'来源类型','sourceKind',[['images','图片'],['video','视频']],sourceKind,id=>{remember();sourceKind=id;selected.clear();render();});
+    const sources=row();sources.classList.add('bgx-geometry-sources');sources.setAttribute('role','group');sources.setAttribute('aria-label',sourceKind==='video'?'来源视频':'来源图片');
+    for(const asset of assets().filter(a=>a.mimeType?.startsWith(sourceKind==='video'?'video/':'image/'))){const el=document.createElement('input');el.type=sourceKind==='video'?'radio':'checkbox';el.name='geometry-source';el.checked=selected.has(asset.name);el.onchange=()=>{if(sourceKind==='video')selected.clear();if(el.checked)selected.add(asset.name);else selected.delete(asset.name);};label(sources,asset.displayName??asset.name.split('/').at(-1),el);}
     const parameters=row();
     if(algorithm==='da3'){
       radios(parameters,'深度模式','mode',[['mono','单目序列'],['multiview','同场景多视角']],mode,id=>{remember();mode=id;render();});
@@ -74,7 +77,7 @@ export function geometryToolbar(editor,assets,lastTask) {
       if(algorithm==='moge'){input(extra,'fovXDegrees','源视场角',0,0,170,.1);check(extra,'forceProjection','投影约束',true);check(extra,'applyMask','应用遮罩',true);}
       else{input(extra,'splitResolution','分片分辨率',512,256,1024);input(extra,'mergeResolution','合并分辨率',1920,256,8192);}
     }
-    const actions=row();button(actions,'准备几何',()=>run('geometry.prepare',{source:source()}));
+    const actions=row();button(actions,'准备几何',()=>{try{return run('geometry.prepare',{source:source()});}catch(error){status.textContent=String(error.message??error);}});
     button(actions,'收取成果',()=>run('capture.collect',{taskId:lastTask()})).disabled=busy||!lastTask();
     button(actions,'采用几何',()=>run('geometry.adopt',{taskId:lastTask()})).disabled=busy||!lastTask();
     button(actions,'移除几何',()=>run('geometry.remove',{}));actions.append(status);

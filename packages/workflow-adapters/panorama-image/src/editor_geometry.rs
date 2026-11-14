@@ -78,7 +78,7 @@ pub fn submit(host:&mut dyn Host,request:&Invocation,payload:&Value)->Result<Val
     geometry::validate_media(host,payload,&doc)?;
     let mut uploads=BTreeMap::new();let mut media=BTreeMap::new();let mut sources=Vec::new();
     // Only root geometry source files are uploaded. The entire saved document remains frozen.
-    for file in doc.state[geometry::STATE_KEY]["source"]["images"].as_array().unwrap() {
+    for file in geometry::source_files(&doc.state[geometry::STATE_KEY]["source"])? {
         let name=format!("{}/{}/{}",file["storage"].as_str().unwrap(),file["subfolder"].as_str().unwrap(),file["filename"].as_str().unwrap());
         let id=doc.assets.get(&name).ok_or_else(||Failure::invalid("Geometry source missing"))?;
         let lease=crate::scene_media(payload,id,&name)?;

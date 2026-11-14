@@ -40,3 +40,8 @@ Development candidate 1.15.1 adds saved Studio timeline rendering through its na
 Adds the frozen upstream H3/MoGe/CrossView workflow driven by the saved Studio scene and an owned reference video. Select the source by its editor asset name. Both the scene and measured source must be 24 fps with the same exact 17n+5 frame count (5..3600); no implicit trimming, padding or rate conversion. Reference and generated audio connections are retained. The host must request measured frame timestamps for editor_to_video.
 
 23 targeted tests, standard SDK package validation and one SDK submit/query against a protocol fixture passed. Actual GPU inference, visual quality and audio content remain pending on the resource host. This is a candidate, not a replacement public release.
+# Video geometry candidate 1.18.0
+
+The geometry panel selects either owned images or one owned video and retains the choice on reopen. DA3/MoGe consume every decoded video frame through VHS with format=None and no rate, crop, resize, or frame selection override. Measured frame timestamps must match the saved scene timing; panoramic MoGe requires 2:1 input. The original video and audio remain retained. Preparation and explicit adoption are separate actions.
+
+Adapter behavior checks (28), the production editor selection/reopen path, and SDK package validation pass. Browser fixtures do not verify video decoding. Actual host video geometry, real GPU inference, and large-file transport remain pending. This is a candidate, not the public downloadable release.

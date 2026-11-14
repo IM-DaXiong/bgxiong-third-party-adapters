@@ -4,14 +4,15 @@ const keys = (value, allowed) => object(value) && Object.keys(value).every(key =
 const clone = value => structuredClone(value);
 export function validateGeometry(value) {
   if (!keys(value, ['version', 'source', 'preview']) || value.version !== 1
-    || !keys(value.source, ['algorithm', 'images', 'options'])
+    || !keys(value.source, ['algorithm', 'images', 'video', 'options'])
     || !['da3', 'moge', 'mogePanorama'].includes(value.source.algorithm)
-    || !Array.isArray(value.source.images) || !value.source.images.length || value.source.images.length > 1024) throw new Error('当前版本无法保全此几何输入');
+    || Object.hasOwn(value.source,'video') === Object.hasOwn(value.source,'images')
+    || (!Object.hasOwn(value.source,'video') && (!Array.isArray(value.source.images) || !value.source.images.length || value.source.images.length > 1024))) throw new Error('当前版本无法保全此几何输入');
   const allowed = value.source.algorithm === 'da3' ? ['modelName','weightDtype','resolution','resizeMethod','mode','refViewStrategy','poseMethod']
     : value.source.algorithm === 'moge' ? ['modelName','resolutionLevel','fovXDegrees','batchSize','forceProjection','applyMask','refineSteps']
     : ['modelName','resolutionLevel','splitResolution','mergeResolution','batchSize','refineSteps'];
   if (!keys(value.source.options, allowed)) throw new Error('几何输入含未知参数');
-  for (const file of value.source.images) {
+  for (const file of geometrySources(value.source)) {
     if (!keys(file, ['kind','filename','subfolder','storage']) || file.kind !== 'file' || !file.filename
       || /[\\/:]/.test(file.filename) || typeof file.subfolder !== 'string' || /[\\:]/.test(file.subfolder)
       || file.subfolder.split('/').some(part => ['.','..'].includes(part))
@@ -24,6 +25,7 @@ export function assetDescriptor(name) {
   const parts=name.split('/');return {filename:parts.pop(),subfolder:parts.slice(1).join('/'),type:parts[0]};
 }
 export function sourceName(file) {return `${file.storage ?? file.type}/${file.subfolder ?? ''}/${file.filename}`;}
+export function geometrySources(source) {return Object.hasOwn(source,'video') ? [source.video] : source.images;}
 export function geometryUi(geometry, assets) {
   if (!geometry?.preview) return {};
   validateGeometry(geometry);
@@ -48,7 +50,7 @@ export async function adoptGeometry(result, assets) {
   const metadata=JSON.parse(result.data.metadataJson);
   if (!keys(metadata,['version','source','sourceAssets','ui']) || metadata.version!==1 || !Array.isArray(metadata.sourceAssets)) throw new Error('几何成果记录无效');
   const record={version:1,source:clone(metadata.source)};validateGeometry(record);
-  const names=record.source.images.map(sourceName);
+  const names=geometrySources(record.source).map(sourceName);
   if (metadata.sourceAssets.length!==names.length || metadata.sourceAssets.some((source,index)=>source.name!==names[index] || !/^[a-f0-9]{64}$/i.test(source.sha256) || assets.get(source.name)?.sha256!==source.sha256)) throw new Error('几何来源素材已经改变，请保留原成果并重新选择');
   function bind(value) {
     if (!object(value) && !Array.isArray(value)) return value;
