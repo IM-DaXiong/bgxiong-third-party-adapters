@@ -198,7 +198,7 @@ pub fn history_outputs(h:&mut dyn Host,ctx:&Ctx,id:&str)->Result<Value,Failure> 
 
 pub fn json_asset(h:&mut dyn Host,role:&str,value:&Value)->Result<Value,Failure> {
     let bytes=serde_json::to_vec(value).map_err(|_|malformed())?;
-    let handle=port(h,"host-media.create",json!({"kind":"file","mimeHint":"application/json"}))?;
+    let handle=port(h,"host-media.create",json!({"kind":"file","mimeHint":"application/octet-stream"}))?;
     port(h,"host-media.write",json!({"handle":handle,"bytes":bytes}))?;
     port(h,"host-media.finish",json!({"handle":handle}))?;
     let stat=port(h,"host-media.info",json!({"handle":handle}))?;

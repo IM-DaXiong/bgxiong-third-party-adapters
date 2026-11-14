@@ -127,7 +127,7 @@ mod tests {
         fn call(&mut self,call:bgx_adapter_v2_sdk::HostPortCallV2)->Result<Value,bgx_adapter_v2_sdk::host::HostError> {
             let c=serde_json::to_value(call).unwrap();
             match c["method"].as_str().unwrap() {
-                "host-media.create"=>return Ok(json!("pose")),
+                "host-media.create"=>{assert_eq!(c["args"],json!({"kind":"file","mimeHint":"application/octet-stream"}));return Ok(json!("pose"));},
                 "host-media.write"=>{self.writes=serde_json::from_value(c["args"]["bytes"].clone()).unwrap();return Ok(Value::Null);},
                 "host-media.finish"=>return Ok(Value::Null),
                 "host-media.info"=>{

@@ -18,6 +18,6 @@ See `README.zh-CN.md` for model paths, headless sticker_state, and build command
 The candidate adds the frozen three-stage LTX 2.3 panorama video operation alongside the existing image and Studio operations. It exports the full ERP decoder output with its audio, rather than labeling the example's perspective cutout as a panorama. Output is currently 2048×1024 at 24 fps. Exact `8n+1` frame counts (121 by default), seed, LoRA strengths and CRF are mapped without rounding frames into seconds. Local graph/query tests and the actual SDK package checks passed; real model inference, installation release and complete upgrade acceptance remain pending. This is not a public stable release claim.
 
 
-## Development candidate 1.13.0
+## Development candidate 1.13.1
 
 Model-free Frame capture returns the upstream first_frame, mask and sticker_state as three owned editor assets. The saved document, connected scenes and media are frozen by the host. Camera lanes and fps are retained from upstream output 4, not reconstructed. The compact toolbar submits once and collects the same retained task after reopening; UI and MCP share pending/completed service results. Requires PanoramaStudio plus built-in MaskToImage, PreviewAny and SaveImage. Candidate uses SDK 2.4.0/ddc91f3. Real ComfyUI rendering and manual repair/seam return remain pending; package and browser checks do not claim model acceptance.
