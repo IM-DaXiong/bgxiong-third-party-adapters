@@ -4,7 +4,7 @@
 
 当前主线（版本以各包 `manifest.json` 为准）：
 
-- `workflow-adapters/`：`wan22-animate`、`wan-animate2`、`seedvr2-image`、`panorama-image`
+- `workflow-adapters/`：`wan22-animate`、`wan-animate2`、`seedvr2-image`、`seedvr2-video`、`panorama-image`
 - `cloud-adapters/`：DeepSeek / MiniMax M3 / Seedream / RunningHub 系列。视频生成见 [RunningHub H3 全工作流](cloud-adapters/runninghub-h3-all/README.md)
 - `tts-adapters/`：Breeze（及暂缓独立 SDK 分发的 VoxCPM 材料）
 - `comfy-workflow-adapter/`：作者与教学切片
