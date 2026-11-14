@@ -183,6 +183,7 @@ pub fn build_graph(input: &Value, uploaded: &str) -> Result<(Value, Value), Fail
 }
 
 pub fn require_operation(payload: &Value) -> Result<(), Failure> {
+    if crate::workflows::matches(payload) {return Ok(());}
     if payload["operationId"] == SCENE_OPERATION && payload["modelId"] == SCENE_MODEL { return Ok(()); }
     if payload.get("operationId").and_then(Value::as_str) != Some(OPERATION_ID) {
         return Err(Failure::invalid("Unknown panorama operation"));

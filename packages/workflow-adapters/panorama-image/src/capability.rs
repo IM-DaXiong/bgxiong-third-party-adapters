@@ -13,7 +13,7 @@ pub const SCENE_OPERATION: &str = "local.thirdparty.comfy-panorama-image/scene-t
 pub const SCENE_MODEL: &str = "panorama-studio-outpaint";
 pub const CAPABILITY_KEY: &str = "image.generate";
 #[allow(dead_code)]
-pub const FEATURE_PROJECTION: &str = "image-projection-v1";
+pub const FEATURE_PROJECTION: &str = "media-projection-v1";
 
 pub const INPUT_SCHEMA: &str = include_str!("../schemas/input.json");
 pub const OUTPUT_SCHEMA: &str = include_str!("../schemas/output.json");
@@ -88,11 +88,14 @@ pub fn capabilities() -> Value {
     scene["operations"][0]["label"] = json!("Qwen 2.1 · 多方向全景");
     scene["operations"][0]["inputSchema"] = json!({"id":"studio-input","digest":scene_input["digest"]});
     scene["operations"][0]["mediaSlots"][0]["minCount"] = json!(0);
+    scene["operations"][0]["mediaSlots"][0]["mediaKind"] = json!("file");
     scene["operations"][0]["mediaSlots"][0]["maxCount"] = json!(1024);
     scene["operations"][0]["uiSchema"]["controls"][0]["label"] = json!("工程素材");
-    scene["operations"][0]["uiSchema"]["controls"][0]["description"] = json!("已保存工程内的图片素材");
+    scene["operations"][0]["uiSchema"]["controls"][0]["description"] = json!("");
     scene["schemas"][0] = scene_input;
+    let workflows=crate::workflows::contracts(&scene);
     result["capabilityContracts"].as_array_mut().expect("contracts").push(scene);
+    result["capabilityContracts"].as_array_mut().expect("contracts").extend(workflows);
     result["capabilityContracts"].as_array_mut().expect("contracts").push(crate::editor_media::contract(&schema("config", CONFIG_SCHEMA)));
     result
 }

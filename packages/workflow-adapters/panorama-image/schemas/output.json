@@ -2,10 +2,10 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "imageArtifacts"
+    "mediaArtifacts"
   ],
   "properties": {
-    "imageArtifacts": {
+    "mediaArtifacts": {
       "type": "array",
       "items": {
         "type": "object",
@@ -13,7 +13,8 @@
         "required": [
           "mediaId",
           "role",
-          "projection"
+          "projection",
+          "kind"
         ],
         "properties": {
           "mediaId": {
@@ -27,7 +28,16 @@
           "projection": {
             "type": "string",
             "enum": [
+              "flat",
+              "equirectangular180",
               "equirectangular360"
+            ]
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "image",
+              "video"
             ]
           }
         }

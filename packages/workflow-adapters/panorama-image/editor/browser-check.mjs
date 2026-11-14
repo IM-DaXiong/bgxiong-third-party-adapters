@@ -172,6 +172,26 @@ try {
     await page.evaluate(() => window.check.close());
     await page.evaluate(() => window.check.open());
     assert.deepEqual(await page.evaluate(async () => (await window.check.read()).stickers.slice(3).map(item => item.source.filename)), imported);
+    if (option('--camera')) {
+      const camera={kind:'camera',id:'camera'};
+      await page.evaluate(target=>window.check.act('selection.set',{row:'camera'}),camera);
+      await page.evaluate(target=>window.check.act('inspector.choice',{target,field:'projection',value:'perspective'}),camera);
+      await page.evaluate(target=>window.check.act('inspector.field',{target,field:'hFOV_deg',value:65}),camera);
+      await page.evaluate(target=>window.check.act('inspector.field',{target,field:'aspect',value:1.5}),camera);
+      await page.evaluate(()=>window.check.act('view.tab',{tab:'camera'}));
+      let state=await page.evaluate(()=>window.check.read());
+      assert.equal(state.camera.projection,'perspective'); assert.equal(state.camera.aspect,1.5); assert.equal(state.camera.fov.value,65);
+      await page.screenshot({path:resolve(results,'studio-frame-camera.png')});
+      await page.evaluate(()=>window.check.close()); await page.evaluate(()=>window.check.open());
+      state=await page.evaluate(()=>window.check.read());
+      assert.equal(state.camera.projection,'perspective'); assert.equal(state.camera.fov.value,65);
+      await page.evaluate(target=>window.check.act('inspector.choice',{target,field:'projection',value:'erp'}),camera);
+      await page.evaluate(target=>window.check.act('inspector.choice',{target,field:'erp_range',value:180}),camera);
+      assert.equal((await page.evaluate(()=>window.check.read())).camera.erp_range,180);
+      await page.screenshot({path:resolve(results,'studio-180-camera.png')});
+      await page.evaluate(target=>window.check.act('inspector.choice',{target,field:'erp_range',value:360}),camera);
+      await page.evaluate(()=>window.check.act('view.tab',{tab:'3d'}));
+    }
     if (option('--actions')) {
       const initial = await page.evaluate(() => window.check.describe());
       assert.ok(initial.actions.some(action => action.id === 'timeline.keys.move'));

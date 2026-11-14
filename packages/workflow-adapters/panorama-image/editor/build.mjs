@@ -75,7 +75,7 @@ await cp(resolve(here, 'upstream.lock.json'), resolve(out, 'upstream.lock.json')
 // A self-contained payload for an opaque-origin frame: no filesystem URL, CDN or
 // executable import from the trusted host is needed when opening the editor.
 await writeFile(resolve(out, 'editor-bundle.json'), JSON.stringify({ schemaVersion: 1, script: await readFile(resolve(out, 'studio.js'), 'utf8'), stylesheet: css,
-  generationBindings: [{ operationId: 'local.thirdparty.comfy-panorama-image/scene-to-panorama', documentField: 'editorDocument', assetsField: 'references', includeConnectedDocuments: true }],
+  generationBindings: ['scene-to-panorama','studio-render','studio-cutout','studio-3d','studio-moge'].map(operation => ({ operationId: `local.thirdparty.comfy-panorama-image/${operation}`, documentField: 'editorDocument', assetsField: 'references', includeConnectedDocuments: true })),
   serviceBindings: [{ id: 'file3d', purpose: 'mediaPreparation', operationId: 'local.thirdparty.comfy-panorama-image/editor-3d-preview', modelId: 'panorama-editor-media', assetsField: 'sources' }],
 }));
 const files = [];

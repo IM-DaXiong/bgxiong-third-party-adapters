@@ -8,6 +8,7 @@ mod comfy;
 mod mapping;
 mod scene;
 mod editor_media;
+mod workflows;
 
 #[cfg(test)]
 mod tests;
@@ -117,6 +118,19 @@ fn find_media<'a>(payload: &'a Value, media_id: &str) -> Result<&'a Value, Failu
         })
 }
 
+fn scene_media(payload: &Value, media_id: &str, name: &str) -> Result<Value, Failure> {
+    let mut media = payload["media"].as_array().and_then(|items|items.iter().find(|item|item["id"]==media_id && item["kind"]=="file"))
+        .cloned().ok_or_else(|| Failure::invalid("The frozen scene asset has no matching file lease"))?;
+    // Only opaque 3D files need their original extension. Recognised image/video/audio
+    // names remain the SDK's measured names, including its extension safety checks.
+    if media["mime"] == "application/octet-stream" {
+        let extension = name.rsplit('.').next().filter(|ext|!ext.is_empty() && ext.len()<=16 && ext.bytes().all(|b|b.is_ascii_alphanumeric()))
+            .ok_or_else(||Failure::invalid("Scene file extension is invalid"))?;
+        media["fileName"] = json!(format!("{media_id}.{extension}"));
+    }
+    Ok(media)
+}
+
 fn submit(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<Value, Failure> {
     if payload["operationId"] == editor_media::OPERATION { return editor_media::submit(host, request, payload); }
     require_operation(payload)?;
@@ -125,18 +139,21 @@ fn submit(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<
         config: &payload["configuration"],
         budget_ms: request.r#budget_ms,
     };
-    let (graph, applied) = if payload["operationId"] == capability::SCENE_OPERATION {
+    let workflow=workflows::operation(payload["operationId"].as_str().unwrap_or(""));
+    let (graph, applied) = if payload["operationId"] == capability::SCENE_OPERATION || workflow.is_some() {
         let document = scene::SceneDocument::parse(input["editorDocument"].as_str().ok_or_else(|| Failure::invalid("Missing editor document"))?)?;
         let mut uploads = BTreeMap::new();
-        for id in document.assets.values().chain(document.sources.iter().flat_map(|source| source.document.assets.values())) {
-            find_media(payload, id)?;
+        let mut assets = BTreeMap::new();
+        for (name,id) in document.assets.iter().chain(document.sources.iter().flat_map(|source|source.document.assets.iter())) {
+            if assets.insert(id.clone(), scene_media(payload,id,name)?).is_some() { return Err(Failure::invalid("Scene media identity is duplicated")); }
             uploads.insert(id.clone(), "pending-upload.png".into());
         }
-        scene::outpaint_graph(input, &uploads)?; // Reject malformed state before any network write.
-        for id in document.assets.values().chain(document.sources.iter().flat_map(|source| source.document.assets.values())) {
-            uploads.insert(id.clone(), comfy::upload(host, &ctx, find_media(payload, id)?)?);
+        let build=|uploads:&BTreeMap<String,String>| match workflow {Some(op)=>workflows::graph(op,input,uploads),None=>scene::outpaint_graph(input,uploads)};
+        build(&uploads)?; // Reject malformed state before any network write.
+        for (id, media) in assets {
+            uploads.insert(id, comfy::upload(host, &ctx, &media)?);
         }
-        scene::outpaint_graph(input, &uploads)?
+        build(&uploads)?
     } else {
         build_graph(input, "pending-upload.png")?;
         let media = find_media(payload, reference_id(input)?)?;
@@ -144,10 +161,12 @@ fn submit(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<
         build_graph(input, &uploaded)?
     };
     let remote = comfy::submit(host, &ctx, &graph, &request.r#request_id)?;
+    let mut resume=json!({"promptId":remote});
+    if workflow.is_some() {resume["projection"]=input["outputProjection"].clone();}
     let accepted = json!({
         "kind": "accepted",
         "vendorTaskId": remote,
-        "resumeToken": {"promptId": remote},
+        "resumeToken": resume,
         "appliedParams": applied,
         "usage": null
     });
@@ -169,37 +188,39 @@ fn query(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<V
             "Resume token must name the original prompt id",
         ));
     }
+    let projection=if workflows::matches(payload) {payload["resumeToken"]["projection"].as_str().filter(|p|matches!(*p,"flat"|"equirectangular180"|"equirectangular360")).ok_or_else(||Failure::invalid("Saved projection is missing"))?} else {"equirectangular360"};
     match comfy::status(host, &ctx, id, OUTPUT_NODE)? {
         comfy::Remote::Queued => Ok(json!({
             "status": "queued",
-            "resumeToken": {"promptId": id},
+            "resumeToken": payload["resumeToken"],
             "outputs": [],
-            "data": {"imageArtifacts": []},
+            "data": {"mediaArtifacts": []},
             "terminalFailure": null,
             "progress": null,
             "usage": null
         })),
         comfy::Remote::Running => Ok(json!({
             "status": "running",
-            "resumeToken": {"promptId": id},
+            "resumeToken": payload["resumeToken"],
             "outputs": [],
-            "data": {"imageArtifacts": []},
+            "data": {"mediaArtifacts": []},
             "terminalFailure": null,
             "progress": null,
             "usage": null
         })),
         comfy::Remote::Succeeded(files) => {
-            let artifact = comfy::download(host, &ctx, &files[0])?;
+            let artifact = comfy::download_projected(host, &ctx, &files[0],projection)?;
             let media_id = artifact["media"]["id"].clone();
             Ok(json!({
                 "status": "succeeded",
-                    "resumeToken": {"promptId": id},
+                    "resumeToken": payload["resumeToken"],
                 "outputs": [artifact],
                 "data": {
-                    "imageArtifacts": [{
+                    "mediaArtifacts": [{
                         "mediaId": media_id,
                         "role": "result",
-                        "projection": "equirectangular360"
+                        "kind": "image",
+                        "projection": projection
                     }]
                 },
                 "terminalFailure": null,
@@ -209,9 +230,9 @@ fn query(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<V
         }
         comfy::Remote::Failed(vendor) => Ok(json!({
             "status": "failed",
-            "resumeToken": {"promptId": id},
+            "resumeToken": payload["resumeToken"],
             "outputs": [],
-            "data": {"imageArtifacts": []},
+            "data": {"mediaArtifacts": []},
             "terminalFailure": {
                 "category": "vendorTaskFailed",
                 "message": "Panorama ComfyUI execution failed",

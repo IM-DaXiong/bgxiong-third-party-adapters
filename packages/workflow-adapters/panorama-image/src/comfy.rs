@@ -322,17 +322,18 @@ pub fn status(h: &mut dyn Host, ctx: &Ctx, id: &str, output_node: &str) -> Resul
     Ok(Remote::Succeeded(out))
 }
 
-pub fn download(
+pub fn download_projected(
     h: &mut dyn Host,
     ctx: &Ctx,
     file: &(String, String, String),
+    projection: &str,
 ) -> Result<Value, Failure> {
     let (artifact, stat) = download_asset(h, ctx, file, "result")?;
     if stat["kind"] != "image" { return Err(Failure::invalid("ComfyUI output is not an image")); }
     let w = stat["width"].as_u64().ok_or_else(malformed)?;
     let height = stat["height"].as_u64().ok_or_else(malformed)?;
-    if w == 0 || height == 0 || height.checked_mul(2) != Some(w) {
-        return Err(Failure::invalid("Panorama requires positive 2:1 image geometry"));
+    if w == 0 || height == 0 || match projection {"flat"=>false,"equirectangular180"=>w!=height,"equirectangular360"=>height.checked_mul(2)!=Some(w),_=>true} {
+        return Err(Failure::invalid("Output geometry differs from its saved projection"));
     }
     Ok(artifact)
 }

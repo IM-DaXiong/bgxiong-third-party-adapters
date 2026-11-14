@@ -27,7 +27,7 @@ fn capabilities_declare_projection_feature_contract() {
     assert_eq!(c["operations"][0]["mediaSlots"][0]["maxCount"], 1);
     assert_eq!(c["operations"][0]["mediaSlots"][0]["minCount"], 1);
     // Feature is on the package manifest; capability payload still uses image.generate.
-    assert_eq!(FEATURE_PROJECTION, "image-projection-v1");
+    assert_eq!(FEATURE_PROJECTION, "media-projection-v1");
 }
 
 #[test]
@@ -73,7 +73,7 @@ fn reference_id_reads_single_slot() {
 #[test]
 fn manifest_feature_constant_matches_plan() {
     let raw = include_str!("../manifest.json");
-    assert!(raw.contains("image-projection-v1"));
+    assert!(raw.contains("media-projection-v1"));
     assert!(raw.contains("local.thirdparty.comfy-panorama-image"));
     assert!(raw.contains("allowPrivateNetwork"));
 }
@@ -103,7 +103,9 @@ fn scene_submission_uploads_all_views_and_checkpoints_one_qwen_prompt() {
             let body=if url.ends_with("/upload/image") {
                 self.uploads+=1;
                 assert_eq!(plan["body"]["parts"][0]["handle"], format!("lease-{}",self.uploads));
-                json!({"name":format!("view-{}.png",self.uploads),"subfolder":"frozen","type":"input"})
+                let extension=["png","mp4","glb"][self.uploads-1];
+                assert!(plan["body"]["parts"][0]["fileName"].as_str().unwrap().ends_with(extension));
+                json!({"name":format!("view-{}.{extension}",self.uploads),"subfolder":"frozen","type":"input"})
             } else {
                 assert!(url.ends_with("/prompt")); self.prompts+=1;
                 assert_eq!(self.uploads,3);
@@ -112,7 +114,7 @@ fn scene_submission_uploads_all_views_and_checkpoints_one_qwen_prompt() {
                 let state:Value=serde_json::from_str(graph["83"]["inputs"]["state_json"].as_str().unwrap()).unwrap();
                 for (i,yaw) in [0,-90,180].iter().enumerate() {
                     assert_eq!(state["stickers"][i]["direction"]["value"]["yaw_deg"],*yaw);
-                    assert_eq!(state["stickers"][i]["source"]["filename"],format!("view-{}.png",i+1));
+                    assert_eq!(state["stickers"][i]["source"]["filename"],format!("view-{}.{}",i+1,["png","mp4","glb"][i]));
                 }
                 assert_eq!(graph["64"]["inputs"]["images.image_1"],json!(["83",1]));
                 assert_eq!(graph["3"]["inputs"]["seed"],7);
@@ -125,10 +127,11 @@ fn scene_submission_uploads_all_views_and_checkpoints_one_qwen_prompt() {
     let mut input=valid_input();
     let mut assets=Vec::new(); let mut stickers=Vec::new(); let mut media=Vec::new(); let mut refs=Vec::new();
     for (i,yaw) in [0,-90,180].iter().enumerate() {
-        let id=format!("image-{}",i+1); let filename=format!("{}.png",i+1);
+        let id=format!("image-{}",i+1); let filename=format!("{}.{}",i+1,["png","mp4","glb"][i]);
         assets.push(json!({"name":format!("input//{filename}"),"mediaId":id}));
         refs.push(json!({"mediaId":id}));
-        media.push(json!({"id":id,"kind":"image","fileName":filename,"handle":format!("lease-{}",i+1),"mime":"image/png"}));
+        let mime=["image/png","video/mp4","application/octet-stream"][i];
+        media.push(json!({"id":id,"kind":"file","fileName":if i==2 {"opaque.bin"} else {&filename},"handle":format!("lease-{}",i+1),"mime":mime}));
         stickers.push(json!({"id":id,"source":{"kind":"file","filename":filename,"storage":"input"},"direction":{"value":{"yaw_deg":yaw}}}));
     }
     let state=json!({"version":2,"camera":{"projection":"erp","erp_range":360},"stickers":stickers});
@@ -180,7 +183,7 @@ fn query_uses_public_query_dto_and_only_the_original_prompt() {
     let result=crate::query(&mut h,&invocation,&payload).unwrap();
     assert_eq!(h.calls,4);
     assert_eq!(result["status"],"succeeded");
-    assert_eq!(result["data"]["imageArtifacts"][0]["mediaId"],"result-id");
+    assert_eq!(result["data"]["mediaArtifacts"][0]["mediaId"],"result-id");
     assert_eq!(result["outputs"][0]["media"]["mime"],"image/jpeg");
     serde_json::from_value::<bgx_adapter_v2_sdk::QueryResult>(result).unwrap();
 }

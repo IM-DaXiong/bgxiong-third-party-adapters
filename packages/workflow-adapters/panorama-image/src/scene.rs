@@ -56,6 +56,27 @@ impl SceneDocument {
         Ok(state)
     }
 
+    pub fn validate_references(&self,input:&Value)->Result<(),Failure> {
+        let references=input["references"].as_array().ok_or_else(||Failure::invalid("Missing scene media references"))?;
+        let all:Vec<_>=self.assets.values().chain(self.sources.iter().flat_map(|source|source.document.assets.values())).collect();
+        if references.len()!=all.len() || all.iter().any(|id|references.iter().filter(|r|r["mediaId"].as_str()==Some(id.as_str())).count()!=1) {
+            return Err(Failure::invalid("Scene asset list differs from the frozen media slots"));
+        }
+        Ok(())
+    }
+
+    pub fn connect_parents(&self,graph:&mut Value,root:&str,uploads:&BTreeMap<String,String>,mp:f64,multiple:u64)->Result<(),Failure> {
+        let mut nodes=BTreeMap::new();
+        for (index,source) in self.sources.iter().enumerate() {
+            let id=format!("bgx_editor_input_{index}");
+            let mut node=render_graph(&source.document.bind(uploads)?,mp,multiple)?["70"].clone();
+            if let Some(parent)=source.inputs.first() {node["inputs"]["scene"]=json!([nodes.get(parent).ok_or_else(||Failure::invalid("Missing parent scene"))?,0]);}
+            graph[&id]=node; nodes.insert(source.node_id.clone(),id);
+        }
+        if let Some(parent)=self.input_node_ids.first() {graph[root]["inputs"]["scene"]=json!([nodes.get(parent).ok_or_else(||Failure::invalid("Missing root scene input"))?,0]);}
+        Ok(())
+    }
+
     fn bind_value(&self, value: &mut Value, uploads: &BTreeMap<String, String>) -> Result<(), Failure> {
         match value {
             Value::Object(fields) => {

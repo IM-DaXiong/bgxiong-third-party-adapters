@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "f8bc1259df6bdbd21dc284e2f72b01afe8c85864dc3313345afc8058caf0d0ff",
+  "artifactSha256": "beed676979ef924356c439691347f4e668755d5ded739d79e38c8a39f7a2c145",
   "displayName": "本地 ComfyUI 全景工作室",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -34,9 +34,9 @@
     "stateBytes": 0
   },
   "requiredFeatures": [
-    "image-projection-v1",
+    "media-projection-v1",
     "opaque-file-upload-name-v1"
   ],
   "schemaVersion": 2,
-  "version": "1.9.0"
+  "version": "1.10.0"
 }

@@ -46,7 +46,7 @@
           }
         }
       },
-      "description": "已保存工程内的全部图片素材，由宿主冻结并传递。"
+      "description": ""
     },
     "width": {
       "type": "integer",
