@@ -25,3 +25,6 @@ Model-free Frame capture returns the upstream first_frame, mask and sticker_stat
 
 ### Repair and adoption (1.14.2 candidate)
 The compact toolbar exposes capture, frame return, seam preparation and seam return as inline radio modes. Frame return consumes the original upstream pose/fps and rejects mismatched dimensions or changed scene provenance. Seam restoration uses the measured/clamped offset. Results remain owned attachments until explicitly adopted as a new image version through the shared `canvas.editor.asset.publish` owner. Prior versions and original task receipts remain intact; repeated adoption is idempotent. Real ComfyUI/model rendering is pending resource-machine acceptance; mock protocol checks are not inference evidence.
+
+
+Development candidate 1.15.1 adds saved Studio timeline rendering through its native VIDEO output. Mock SDK submit and original-task query preserved 29.97 fps, 73 frames and ERP360; application video-editor wiring and real Comfy rendering remain pending. Core SaveVideo returns `images`; VHS returns `gifs`. The retained 1.15.0 candidate failed checkpoint validation because appliedParams included fields absent from the frozen input. 1.15.1 reports declared input fields only and leaves timeline values unchanged. No failed original task was resubmitted.

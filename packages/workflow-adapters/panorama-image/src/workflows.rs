@@ -56,7 +56,7 @@ pub fn contracts(base: &Value) -> alloc::vec::Vec<Value> {
         c["schemas"][0]=s; c
     }).collect()
 }
-fn projection(state: &Value) -> Result<&'static str,Failure> {
+pub(crate) fn projection(state: &Value) -> Result<&'static str,Failure> {
     match state["camera"]["projection"].as_str() {
         Some("perspective")=>Ok("flat"),
         Some("erp")=>match state["camera"]["erp_range"].as_u64() {Some(180)=>Ok("equirectangular180"),Some(360)=>Ok("equirectangular360"),_=>Err(Failure::invalid("Save an explicit panorama camera range"))},
