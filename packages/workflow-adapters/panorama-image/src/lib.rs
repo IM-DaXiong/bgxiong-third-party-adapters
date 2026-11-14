@@ -14,6 +14,7 @@ mod editor_repair;
 mod workflows;
 mod video_workflows;
 mod editor_video;
+mod h3_editor_video;
 
 #[cfg(test)]
 mod tests;
@@ -150,7 +151,7 @@ fn submit(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<
     let workflow=workflows::operation(payload["operationId"].as_str().unwrap_or(""));
     let (graph, applied) = if video_workflows::matches(payload) {
         video_workflows::graph(input)?
-    } else if payload["operationId"] == capability::SCENE_OPERATION || workflow.is_some() || editor_video::matches(payload) {
+    } else if payload["operationId"] == capability::SCENE_OPERATION || workflow.is_some() || editor_video::matches(payload) || h3_editor_video::matches(payload) {
         let document = scene::SceneDocument::parse(input["editorDocument"].as_str().ok_or_else(|| Failure::invalid("Missing editor document"))?)?;
         let mut uploads = BTreeMap::new();
         let mut assets = BTreeMap::new();
@@ -158,7 +159,13 @@ fn submit(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<
             if assets.insert(id.clone(), scene_media(payload,id,name)?).is_some() { return Err(Failure::invalid("Scene media identity is duplicated")); }
             uploads.insert(id.clone(), "pending-upload.png".into());
         }
-        let build=|uploads:&BTreeMap<String,String>| if editor_video::matches(payload) {editor_video::graph(input,uploads)} else {match workflow {Some(op)=>workflows::graph(op,input,uploads),None=>scene::outpaint_graph(input,uploads)}};
+        if h3_editor_video::matches(payload) {
+            let id=h3_editor_video::source_id(input)?;
+            let lease=assets.get(&id).ok_or_else(||Failure::invalid("参考视频受管凭据缺失"))?;
+            let stat=comfy::port(host,"host-media.info",json!({"handle":lease["handle"]}))?;
+            h3_editor_video::validate_source(input,&stat)?;
+        }
+        let build=|uploads:&BTreeMap<String,String>| if h3_editor_video::matches(payload) {h3_editor_video::graph(input,uploads)} else if editor_video::matches(payload) {editor_video::graph(input,uploads)} else {match workflow {Some(op)=>workflows::graph(op,input,uploads),None=>scene::outpaint_graph(input,uploads)}};
         build(&uploads)?; // Reject malformed state before any network write.
         for (id, media) in assets {
             uploads.insert(id, comfy::upload(host, &ctx, &media)?);
@@ -172,7 +179,7 @@ fn submit(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<
     };
     let remote = comfy::submit(host, &ctx, &graph, &request.r#request_id)?;
     let mut resume=json!({"promptId":remote});
-    if workflow.is_some() || editor_video::matches(payload) {resume["projection"]=input["outputProjection"].clone();}
+    if workflow.is_some() || editor_video::matches(payload) || h3_editor_video::matches(payload) {resume["projection"]=input["outputProjection"].clone();}
     let accepted = json!({
         "kind": "accepted",
         "vendorTaskId": remote,
@@ -200,8 +207,8 @@ fn query(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<V
             "Resume token must name the original prompt id",
         ));
     }
-    let projection=if workflows::matches(payload) || editor_video::matches(payload) {payload["resumeToken"]["projection"].as_str().filter(|p|matches!(*p,"flat"|"equirectangular180"|"equirectangular360")).ok_or_else(||Failure::invalid("Saved projection is missing"))?} else {"equirectangular360"};
-    let video=video_workflows::matches(payload) || editor_video::matches(payload);
+    let projection=if workflows::matches(payload) || editor_video::matches(payload) || h3_editor_video::matches(payload) {payload["resumeToken"]["projection"].as_str().filter(|p|matches!(*p,"flat"|"equirectangular180"|"equirectangular360")).ok_or_else(||Failure::invalid("Saved projection is missing"))?} else {"equirectangular360"};
+    let video=video_workflows::matches(payload) || editor_video::matches(payload) || h3_editor_video::matches(payload);
     // Core SaveVideo uses PreviewVideo.images; VHS_VideoCombine uses gifs.
     match comfy::status_media(host, &ctx, id, OUTPUT_NODE, if video_workflows::matches(payload) {"gifs"} else {"images"})? {
         comfy::Remote::Queued => Ok(json!({

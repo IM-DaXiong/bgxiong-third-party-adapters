@@ -28,3 +28,9 @@ The compact toolbar exposes capture, frame return, seam preparation and seam ret
 
 
 Development candidate 1.15.1 adds saved Studio timeline rendering through its native VIDEO output. Mock SDK submit and original-task query preserved 29.97 fps, 73 frames and ERP360; application video-editor wiring and real Comfy rendering remain pending. Core SaveVideo returns `images`; VHS returns `gifs`. The retained 1.15.0 candidate failed checkpoint validation because appliedParams included fields absent from the frozen input. 1.15.1 reports declared input fields only and leaves timeline values unchanged. No failed original task was resubmitted.
+
+## 1.16.0 H3 editor video candidate
+
+Adds the frozen upstream H3/MoGe/CrossView workflow driven by the saved Studio scene and an owned reference video. Select the source by its editor asset name. Both the scene and measured source must be 24 fps with the same exact 17n+5 frame count (5..3600); no implicit trimming, padding or rate conversion. Reference and generated audio connections are retained. The host must request measured frame timestamps for editor_to_video.
+
+23 targeted tests, standard SDK package validation and one SDK submit/query against a protocol fixture passed. Actual GPU inference, visual quality and audio content remain pending on the resource host. This is a candidate, not a replacement public release.
