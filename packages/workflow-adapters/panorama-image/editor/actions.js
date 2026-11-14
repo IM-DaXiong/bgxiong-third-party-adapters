@@ -3,6 +3,9 @@ import { inspectorSelection } from '@panorama-upstream/web_src/studio/session.js
 import * as timeline from '@panorama-upstream/web_src/studio/timeline_actions.js';
 import { spanOf } from '@panorama-upstream/web_src/studio/timeline_model.js';
 import { yawPitchToDir } from '@panorama-upstream/web_src/pano_camera_math.js';
+import { inputRoles,validateInputs } from './input-state.js';
+import { sourceName } from './geometry-state.js';
+import { reconcilePortStickerState } from '@panorama-upstream/web_src/pano_stickers_node_surface.js';
 
 // Public commands call the same controller and pure action functions used by the Vue UI.
 // No arbitrary state patch, expression evaluation, duplicated angle or keyframe mathematics.
@@ -22,8 +25,9 @@ const specifications = {
   'paint.stroke': ['points'], 'paint.clear': [], 'paint.confirmClear': ['confirmed'],
   'asset.add': ['name', 'placement'],
   'asset.publish': ['name'],
+  'input.set': ['role','name'], 'input.remove': ['role'], 'input.pose': ['name'],
   'capture.frame': ['megapixels', 'multiple'], 'capture.collect': ['taskId'],
-  'geometry.models': [], 'geometry.prepare': ['source'], 'geometry.adopt': ['taskId'], 'geometry.remove': [],
+  'geometry.models': [], 'geometry.prepare': ['source','target'], 'geometry.adopt': ['taskId'], 'geometry.remove': [],
   'repair.frameReturn': ['sourceName','provenanceName','megapixels','multiple'],
   'repair.seamPrepare': ['sourceName','bandWidth','offset','blur'],
   'repair.seamReturn': ['sourceName','provenanceName'],
@@ -62,14 +66,49 @@ export function createEditorActions(editor, flush, { assetFile, capture } = {}) 
     if (typeof expectedStateDigest !== 'string' || expectedStateDigest !== (await describe()).stateDigest) throw new Error('EDITOR_STATE_CONFLICT: reread the active editor');
     const ctx = current(), selection = editor.session.selection;
     if (ctx.readOnly && !['selection.set', 'timeline.seek', 'timeline.jump', 'timeline.loop', 'timeline.play', 'view.tab'].includes(action)) throw new Error('Editor is read-only');
-    if (action.startsWith('geometry.')) {
+    if(action.startsWith('input.')) {
+      if(!capture)throw new Error('Input service is unavailable');
+      const state=clone(ctx.state),record=state.bgxInputs??{version:1};
+      if(action==='input.pose'){
+        if(!record.sticker)throw new Error('请先选择贴图输入');
+        const file=await assetFile(args.name);record.stickerState=await file.text();
+        validateInputs(record);
+        service=await capture('input.set',{role:'sticker',name:sourceName(record.sticker.source),state,stickerState:record.stickerState});
+        record.sticker=service.input;
+      }else{
+        member(args.role,inputRoles);
+        if(action==='input.remove'){delete record[args.role];if(args.role==='sticker')delete record.stickerState;}
+        else{
+          if(args.role==='world'&&state.bgxGeometry&&(state.bgxGeometry.target??'world')==='world')throw new Error('请先移除当前几何输入');
+          if(args.role==='sticker'&&state.bgxGeometry?.target==='sticker')throw new Error('请先移除当前几何贴图');
+          service=await capture(action,{...args,state,stickerState:record.stickerState??''});record[args.role]=service.input;
+        }
+      }
+      if(service?.sticker && (action==='input.pose'||(action==='input.set'&&args.role==='sticker'))){
+        const at=state.stickers.findIndex(item=>item.source.kind==='port');
+        if(at<0)state.stickers.push(service.sticker);else state.stickers[at]=service.sticker;
+        state.next_sticker_id=service.nextStickerId;
+      }else if(action==='input.set'&&args.role==='sticker'&&service.input.mediaKind==='image'){
+        Object.assign(state,reconcilePortStickerState(state,{connected:true}).state);
+      }else if(action==='input.remove'&&args.role==='sticker'){
+        Object.assign(state,reconcilePortStickerState(state,{connected:false}).state);
+      }
+      validateInputs(record);state.bgxInputs=record;commit({state});
+    }
+    else if (action.startsWith('geometry.')) {
       if (!capture) throw new Error('Geometry service is unavailable');
       await flush();
       if (action === 'geometry.remove') {
-        const state=clone(ctx.state);delete state.bgxGeometry;commit({state});service={status:'removed'};
+        let state=clone(ctx.state);if(state.bgxGeometry?.target==='sticker')state=reconcilePortStickerState(state,{connected:false}).state;delete state.bgxGeometry;commit({state});service={status:'removed'};
       } else {
         service=await capture(action,args);
-        if(action==='geometry.adopt')commit({state:{...clone(ctx.state),bgxGeometry:service.geometry}});
+        if(action==='geometry.adopt'){
+          const target=service.geometry.target??'world';
+          if(ctx.state.bgxInputs?.[target])throw new Error('请先移除当前对应外部输入');
+          let state={...clone(ctx.state),bgxGeometry:service.geometry};
+          if(target==='sticker')state=reconcilePortStickerState(state,{connected:true,pose:service.geometry.preview.ui.pano_sticker_input_pose?.[0],awaitingPose:false}).state;
+          commit({state});
+        }
       }
     }
     else if (action === 'asset.publish') {

@@ -29,7 +29,12 @@
     {
       "file": "web_src/pano_scene_state.js",
       "kind": "guarded-build-transform",
-      "purpose": "Preserve the versioned package-owned geometry binding through native history; remove it before backend state execution"
+      "purpose": "Preserve versioned package-owned geometry and external input bindings through native history; strip extensions before backend execution"
+    },
+    {
+      "file": "web_src/components/studio/StudioInspectorCard.vue",
+      "kind": "guarded-build-transform",
+      "purpose": "Use the existing keyboard-accessible segmented control for short lists of up to four choices"
     }
   ],
   "nodes": [

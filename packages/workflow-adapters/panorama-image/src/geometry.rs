@@ -27,8 +27,9 @@ fn relative(text:&str)->bool {
 
 /// Source file references are bound by SceneDocument to this request's owned uploads.
 pub fn validate(record:&Value)->Result<(),Failure> {
-    fields(record,&["version","source","preview"])?;
+    fields(record,&["version","source","preview","target"])?;
     if record["version"]!=1 {return Err(Failure::invalid("Unsupported geometry version; preserve the original document"));}
+    if let Some(target)=record.get("target"){choice(target,&["world","sticker"])?;}
     let source=&record["source"];
     fields(source,&["algorithm","images","video","options"])?;
     let algorithm=choice(&source["algorithm"],&["da3","moge","mogePanorama"])?;
@@ -113,7 +114,8 @@ pub fn validate_video(state:&Value,stat:&Value)->Result<(),Failure> {
 pub fn attach(graph:&mut Value,studio:&str,state:&Value)->Result<(),Failure> {
     let Some(record)=state.get(STATE_KEY) else {return Ok(());};
     validate(record)?;
-    if graph[studio]["inputs"].get("world").is_some() {return Err(Failure::invalid("This workflow already owns the world input; choose the saved geometry operation explicitly"));}
+    let target=record["target"].as_str().unwrap_or("world");
+    if graph[studio]["inputs"].get(target).is_some() {return Err(Failure::invalid("This workflow already owns the geometry target input"));}
     let prefix=format!("{studio}_bgx_geometry");
     let source=&record["source"];
     let images=source_files(source)?;
@@ -156,13 +158,13 @@ pub fn attach(graph:&mut Value,studio:&str,state:&Value)->Result<(),Failure> {
             "resolution_level":options["resolutionLevel"],"split_resolution":options["splitResolution"],"merge_resolution":options["mergeResolution"],
             "batch_size":options["batchSize"],"refine_steps":options["refineSteps"]}});
     }
-    graph[studio]["inputs"]["world"]=json!([inference,0]);
+    graph[studio]["inputs"][target]=json!([inference,0]);
     Ok(())
 }
 
 pub fn upstream_state(state:&Value)->Value {
     let mut native=state.clone();
-    if let Some(object)=native.as_object_mut(){object.remove(STATE_KEY);}
+    if let Some(object)=native.as_object_mut(){object.remove(STATE_KEY);object.remove(crate::inputs::STATE_KEY);}
     native
 }
 
@@ -228,6 +230,11 @@ mod tests {
         assert!(upstream_state(&state).get(STATE_KEY).is_none());
         assert_eq!(upstream_state(&state)["camera"],state["camera"]);
         assert!(attach(&mut graph,"root",&state).is_err());
+        let mut sticker_state=state.clone();sticker_state[STATE_KEY]["target"]=json!("sticker");
+        let mut sticker_graph=json!({"root":{"class_type":"PanoramaStudio","inputs":{}}});
+        attach(&mut sticker_graph,"root",&sticker_state).unwrap();
+        assert_eq!(sticker_graph["root"]["inputs"]["sticker"],json!(["root_bgx_geometry_infer",0]));
+        assert!(sticker_graph["root"]["inputs"].get("world").is_none());
         for (pointer,value) in [("/version",json!(2)),("/source/options/resolution",json!(505)),("/source/images/0/filename",json!("../outside.png")),("/source/options/mode",json!("mono"))] {
             let mut invalid=record();*invalid.pointer_mut(pointer).unwrap()=value;assert!(validate(&invalid).is_err());
         }

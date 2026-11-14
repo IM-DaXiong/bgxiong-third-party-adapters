@@ -62,7 +62,7 @@ try {
           frame = document.createElement('iframe'); frame.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;border:0'; document.body.appendChild(frame);
           const initialAssets = await Promise.all([...assets].map(async ([filename, url]) => ({ name: `input//${filename}`, bytes: await (await fetch(url)).arrayBuffer(), mimeType: 'image/png', mediaRel: `fixtures/${filename}`, sha256: window.check.geometryFixture ? 'a'.repeat(64) : 'test-only' })));
           const present=asset=>{if(bundle.assetTransport!=='blob-v1')return asset;const {bytes,blob,...metadata}=asset;return {...metadata,assetKey:asset.name};};
-          editor = await openEditorFrame(frame, bundle, { nodeId: 'test_scene', stateText: saved, preferences: window.check.preferences, assets: [...initialAssets, ...storedAssets.values()].map(present),
+          editor = await openEditorFrame(frame, bundle, { nodeId: 'test_scene', stateText: saved, preferences: window.check.preferences, generationDraft:window.check.generationDraft, assets: [...initialAssets, ...storedAssets.values()].map(present),
             inputNodeIds: window.check.inputNodeIds ?? [], connectedDocuments: (window.check.connectedDocuments ?? []).map(source => ({ ...source, assets: initialAssets.map(present) })) }, async (method, params) => {
             if(method==='asset.load'){
               const asset=initialAssets.find(a=>a.name===params.assetKey)??storedAssets.get(params.assetKey);
@@ -71,22 +71,28 @@ try {
               return asset.blob??new Blob([asset.bytes],{type:asset.mimeType});
             }
             if (method === 'editor.closed') return;
+            if(method==='operation.run'&&params.serviceId==='inputPreview'&&window.check.inputFixture){
+              const state=JSON.parse(params.input.stateJson),sticker=state.stickers.find(item=>item.source.kind==='port')??{...structuredClone(state.stickers[0]),id:`sticker_${state.next_sticker_id}`,placement:'sky',source:{kind:'port'}};
+              window.check.inputPreviews=(window.check.inputPreviews??0)+1;
+              return {status:'completed',assets:[],data:{metadataJson:JSON.stringify({sticker,nextStickerId:state.next_sticker_id+1})}};
+            }
             if (method === 'preferences.set') { window.check.preferences[params.key] = params.value; return; }
             if (method === 'editor.protection') { window.check.protection = params; return; }
             if (window.check.protection?.readOnly) throw new Error('Protected fixture must not write');
             if(window.check.geometryFixture && method==='operation.run' && params.serviceId==='geometryModels')return {status:'completed',taskId:'models',assets:[],data:{metadataJson:JSON.stringify({da3:['DA3-BASE.safetensors'],moge:['moge_3_vitg_fp16.safetensors']})}};
             if(window.check.geometryFixture && method==='operation.run' && params.serviceId==='geometry'){
               if(params.input.editorDocument||params.input.sourceRevision||params.sourceNames.length)throw new Error('Geometry cannot forge host document ownership');
-              window.check.geometrySource=JSON.parse(params.input.geometrySourceJson);window.check.geometrySubmits=(window.check.geometrySubmits??0)+1;
+              window.check.geometrySource=JSON.parse(params.input.geometrySourceJson);window.check.geometryTarget=params.input.geometryTarget??'world';window.check.geometrySubmits=(window.check.geometrySubmits??0)+1;
               return {status:'pending',taskId:'geometry-original',assets:[],data:null};
             }
             if(window.check.geometryFixture && method==='operation.collect' && params.taskId==='geometry-original'){
               const asset={role:'geometryFile',name:'editor-results/geometry-original/0',mediaRel:'fixtures/geometry.glb',sha256:'b'.repeat(64),mimeType:'application/octet-stream',bytes:new Uint8Array(window.check.geometryFixture).buffer};
               storedAssets.set(asset.name,asset);
               const source=window.check.geometrySource;
-              return {status:'completed',taskId:params.taskId,assets:[present(asset)],data:{metadataJson:JSON.stringify({version:1,source,
+              const prefix=window.check.geometryTarget==='sticker'?'pano_sticker':'pano_scene';
+              return {status:'completed',taskId:params.taskId,assets:[present(asset)],data:{metadataJson:JSON.stringify({version:1,source,target:window.check.geometryTarget,
                 sourceAssets:(source.video?[source.video]:source.images).map(file=>({name:`${file.storage}/${file.subfolder}/${file.filename}`,sha256:'a'.repeat(64)})),
-                ui:{pano_scene_files:[{assetIndex:0,format:'model/gltf-binary'}],pano_scene_meta:[{kind:'mesh',unlit:true}]}})}};
+                ui:{[`${prefix}_files`]:[{assetIndex:0,format:'model/gltf-binary'}],[`${prefix}_meta`]:[{kind:'mesh',unlit:true}],...(window.check.geometryTarget==='sticker'?{pano_sticker_input_pose:[{placement:'world',position:[0,0,-3],rotation:[0,0,0],scale:1}]}:{})}})}};
             }
             if (window.check.captureFixture && method === 'operation.run' && params.serviceId === 'frameCapture') {
               if (params.sourceNames.length || params.input.editorDocument || params.input.sourceRevision) throw new Error('Companion must not forge host document or revision');
@@ -113,9 +119,14 @@ try {
             if (method === 'operation.run' && window.check.conversionFixture) {
               if (params.serviceId !== 'file3d' || params.sourceNames.length !== 1 || !storedAssets.has(params.sourceNames[0])) throw new Error('Conversion source is not owned');
               window.check.conversions = (window.check.conversions ?? 0) + 1;
+              if(params.input.fileName.endsWith('.splat')){
+                const asset={role:'preview',name:'editor-results/fixture/points.ply',mediaRel:'fixtures/points.ply',sha256:'test-only',mimeType:'application/octet-stream',bytes:new Uint8Array(window.check.splatFixture).buffer};
+                storedAssets.set(asset.name,asset);
+                return {taskId:'splat-fixture',assets:[asset],data:{metadataJson:JSON.stringify({kind:'splat',file:{assetRole:'preview',extension:'ply'},box:{min:[-1,-1,-.1],max:[1,1,.1]}})}};
+              }
               const asset = { role: 'preview', name: 'editor-results/fixture/0', mediaRel: 'fixtures/converted.bin', sha256: 'test-only', mimeType: 'model/gltf-binary', bytes: new Uint8Array(window.check.conversionFixture).buffer };
               storedAssets.set(asset.name, asset);
-              return { taskId: 'fixture', assets: [asset], data: { metadataJson: JSON.stringify({ kind: 'mesh', unlit: true, file: { assetRole: 'preview', extension: 'glb' }, box: { min: [-1,-1,-1], max: [1,1,1] } }) } };
+              return { taskId: 'fixture', assets: [asset], data: { metadataJson: JSON.stringify({ kind: 'mesh', unlit: true, file: { assetRole: 'preview', extension: 'glb' }, box: { min: [-1,-1,-1], max: [1,1,1] }, ...(window.check.animationClips ? {animation:{source:{assetRole:'preview',extension:'glb'},clips:window.check.animationClips,box:{min:[-1,-1,-1],max:[1,1,1]}}}: {}) }) } };
             }
             if (method === 'asset.store') {
               const asset = { ...params, mediaRel: `fixtures/import-${storedAssets.size}.png`, sha256: 'test-only' };
@@ -155,7 +166,7 @@ try {
     assert.equal(await isolated.evaluate(() => { try { void parent.document.body; return false; } catch { return true; } }), true);
     assert.equal(await isolated.evaluate(() => typeof window.__TAURI_INTERNALS__), 'undefined');
   }
-  if (!['inheritance', 'capture', 'geometry'].includes(option('--focus'))) {
+  if (!['inheritance', 'capture', 'geometry','inputs'].includes(option('--focus'))) {
   assert.deepEqual(await page.evaluate(async () => (await window.check.read()).stickers.map(item => item.direction.value.yaw_deg)), [0, -90, 180]);
   await surface.locator('.pano-studio-tl-head[data-head="bedroom"] [data-part="name"]').click();
   const rotation = surface.locator('[data-region="inspector"] [data-row="Rotation"]');
@@ -287,7 +298,9 @@ try {
     }
     if (option('--3d')) {
       const glb = await readFile(resolve(option('--source'), 'tests/fixtures/gltf_anim/anim.glb'));
-      await page.evaluate(bytes => { window.check.conversionFixture = bytes; }, [...glb]);
+      const gltf=JSON.parse(glb.subarray(20,20+glb.readUInt32LE(12)).toString());
+      const clips=gltf.animations.map((clip,index)=>({name:clip.name||`animation_${index}`,duration:Math.max(...clip.samplers.map(s=>gltf.accessors[s.input].max[0]))}));
+      await page.evaluate(({bytes,clips}) => { window.check.conversionFixture = bytes; window.check.animationClips=clips; }, {bytes:[...glb],clips});
       await surface.locator('[data-add-picker]').setInputFiles({ name: 'room.glb', mimeType: 'model/gltf-binary', buffer: glb });
       await page.waitForFunction(() => window.check.conversions > 0);
       await page.waitForFunction(async () => (await window.check.read()).stickers.some(s => s.source.filename.endsWith('-room.glb')));
@@ -304,12 +317,86 @@ try {
         await window.check.act('selection.set', { row: mesh.id });
         await window.check.act('view.frameSelected', { row: mesh.id });
       });
+      await page.waitForFunction(async()=>JSON.stringify((await window.check.describe()).inspector).includes('anim_clip'));
+      await surface.getByRole('radio',{name:'wave',exact:true}).click();
+      const meshId=await page.evaluate(async()=>(await window.check.read()).stickers.find(s=>s.source.filename.endsWith('-room.glb')).id);
+      await page.evaluate(async id=>{
+        await window.check.act('inspector.choice',{target:{kind:'sticker',id},field:'anim_clip',value:1});
+        await window.check.act('inspector.field',{target:{kind:'sticker',id},field:'anim_speed',value:1.5});
+        await window.check.act('timeline.seek',{frame:24});
+        await window.check.flush();
+      },meshId);
+      assert.deepEqual(await page.evaluate(async id=>(await window.check.read()).stickers.find(s=>s.id===id).animation,meshId),{clip:clips[1].name,speed:1.5});
+      await page.evaluate(()=>window.check.close());await page.evaluate(()=>window.check.open());
+      await page.waitForFunction(()=>window.check.conversions>=3);
+      assert.deepEqual(await page.evaluate(async id=>(await window.check.read()).stickers.find(s=>s.id===id).animation,meshId),{clip:clips[1].name,speed:1.5});
+      await page.evaluate(async id=>{await window.check.act('selection.set',{row:id});await window.check.act('view.frameSelected',{row:id});await window.check.act('timeline.seek',{frame:24});},meshId);
+      await surface.getByText(/Loading 3D model/).waitFor({state:'hidden',timeout:30000});
       await surface.locator('[data-stage-canvas]').screenshot();
       await page.screenshot({ path: resolve(results, 'studio-3d-managed-roundtrip.png') });
+      const splat=Buffer.alloc(64*32);
+      for(let i=0;i<64;i++){
+        const at=i*32;splat.writeFloatLE((i%8-3.5)*.25,at);splat.writeFloatLE((Math.floor(i/8)-3.5)*.25,at+4);splat.writeFloatLE(0,at+8);
+        for(const offset of [12,16,20])splat.writeFloatLE(.08,at+offset);
+        splat.set([30,180,255,255,255,128,128,128],at+24);
+      }
+      // Upstream converts all splat formats to a 3DGS PLY for its Spark loader.
+      const properties=['x','y','z','f_dc_0','f_dc_1','f_dc_2','opacity','scale_0','scale_1','scale_2','rot_0','rot_1','rot_2','rot_3'];
+      const header=Buffer.from(`ply\nformat binary_little_endian 1.0\nelement vertex 64\n${properties.map(name=>`property float ${name}\n`).join('')}end_header\n`);
+      const points=Buffer.alloc(64*properties.length*4);
+      for(let i=0;i<64;i++)[(i%8-3.5)*.25,(Math.floor(i/8)-3.5)*.25,0,...[30,180,255].map(v=>(v/255-.5)/.28209479177387814),5,...Array(3).fill(Math.log(.08)),1,0,0,0].forEach((value,k)=>points.writeFloatLE(value,(i*properties.length+k)*4));
+      await page.evaluate(bytes=>{window.check.splatFixture=bytes;},[...Buffer.concat([header,points])]);
+      await surface.locator('[data-add-picker]').setInputFiles({name:'points.splat',mimeType:'application/octet-stream',buffer:splat});
+      await page.waitForFunction(async()=>(await window.check.read()).stickers.some(s=>s.source.filename.endsWith('-points.splat')));
+      const splatId=await page.evaluate(async()=>{
+        const state=await window.check.read();const splat=state.stickers.find(s=>s.source.filename.endsWith('-points.splat'));
+        for(const item of state.stickers)if(item.id!==splat.id&&item.visible)await window.check.act('object.visibility',{row:item.id});
+        await window.check.act('selection.set',{row:splat.id});await window.check.act('view.frameSelected',{row:splat.id});await window.check.flush();return splat.id;
+      });
+      await surface.getByText(/Loading 3D model/).waitFor({state:'hidden',timeout:30000});
+      await surface.locator('[data-stage-canvas]').screenshot({path:resolve(results,'studio-splat.png')});
+      await page.evaluate(()=>window.check.close());await page.evaluate(()=>window.check.open());
+      assert.ok(await page.evaluate(async id=>(await window.check.read()).stickers.some(s=>s.id===id&&s.source.filename.endsWith('-points.splat')),splatId));
+      await surface.getByText(/Loading 3D model/).waitFor({state:'hidden',timeout:30000});
     }
     await page.evaluate(() => window.check.close());
   }
   } else { await page.evaluate(() => window.check.close()); }
+  if(option('--focus')==='inputs'){
+    if(!option('--frame'))throw new Error('Inputs must exercise the production frame bridge');
+    const glb=await readFile(resolve(option('--source'),'tests/fixtures/gltf_anim/anim.glb'));
+    await page.evaluate(bytes=>{
+      window.check.inputFixture=true;window.check.conversionFixture=bytes;window.check.generationDraft={adapterParameters:{'/advanced/backgroundRange':'180','/advanced/backgroundColor':'#203040'}};
+      window.check.storedAssets.set('input/3d/room.glb',{name:'input/3d/room.glb',mimeType:'model/gltf-binary',mediaRel:'fixtures/room.glb',sha256:'test-only',bytes:new Uint8Array(bytes).buffer});
+    },[...glb]);
+    await page.evaluate(()=>window.check.open());
+    await surface.getByRole('button',{name:'外部输入',exact:true}).click();
+    await surface.getByRole('combobox',{name:'输入素材',exact:true}).selectOption('input//desk.png');
+    await page.waitForFunction(()=>window.check.saved().bgxInputs?.background?.source.filename==='desk.png');
+    await page.evaluate(()=>window.check.act('timeline.fps',{value:29.97}));
+    assert.equal(await page.evaluate(()=>window.check.saved().bgxInputs.background.source.filename),'desk.png');
+    await surface.getByRole('radio',{name:'空间',exact:true}).check();
+    await surface.getByRole('combobox',{name:'输入素材',exact:true}).selectOption('input/3d/room.glb');
+    await page.waitForFunction(()=>window.check.saved().bgxInputs?.world?.preview);
+    await page.evaluate(()=>window.check.act('input.set',{role:'sticker',name:'input//bedroom.png'}));
+    assert.equal(await page.evaluate(async()=>(await window.check.read()).stickers.filter(item=>item.source.kind==='port').length),1);
+    const before=await page.evaluate(()=>window.check.saved().bgxInputs);
+    await page.evaluate(()=>window.check.act('input.remove',{role:'world'}));
+    await page.evaluate(()=>window.check.act('history.undo'));
+    assert.deepEqual(await page.evaluate(()=>window.check.saved().bgxInputs),before);
+    await page.screenshot({path:resolve(results,'external-inputs.png')});
+    await page.evaluate(()=>window.check.close());await page.evaluate(()=>window.check.open());
+    assert.deepEqual(await page.evaluate(async()=>(await window.check.read()).bgxInputs),before);
+    assert.equal(await page.evaluate(()=>window.check.conversions),1);
+    assert.equal(await page.evaluate(()=>window.check.inputPreviews??0),0);
+    await page.evaluate(()=>window.check.close());
+    await page.evaluate(()=>{const state=window.check.saved();state.bgxInputs.future=true;window.check.replaceSaved(JSON.stringify(state));});
+    await page.evaluate(()=>window.check.open());
+    assert.equal((await page.evaluate(()=>window.check.describe())).protection.readOnly,true);
+    await assert.rejects(page.evaluate(()=>window.check.act('input.remove',{role:'background'})),/read-only/);
+    await page.evaluate(()=>window.check.close());assert.equal(await page.evaluate(()=>window.check.saved().bgxInputs.future),true);
+    console.log(JSON.stringify({inputsPassed:true,checks:['background preview uses saved generation parameters','three owned input roles','fps preserves input records','port sticker visible in state','remove undo','all inputs reopen without reconversion','unknown input read-only']}));
+  }
   if(option('--focus')==='geometry'){
     if(!option('--frame'))throw new Error('Geometry must exercise the production frame bridge');
     const glb=await readFile(resolve(option('--source'),'tests/fixtures/gltf_anim/anim.glb'));
@@ -356,6 +443,15 @@ try {
     assert.ok(await page.evaluate(()=>window.check.loadedAssets.includes('editor-results/geometry-original/0')));
     assert.equal(await page.evaluate(()=>window.check.geometrySubmits),2);
     await page.screenshot({path:resolve(results,'geometry-video-panel.png')});
+    await page.evaluate(()=>window.check.act('geometry.remove'));
+    await surface.getByRole('radiogroup',{name:'几何用途',exact:true}).getByRole('radio',{name:'贴图',exact:true}).check();
+    await surface.getByRole('button',{name:'准备几何',exact:true}).click();
+    await page.waitForFunction(()=>window.check.geometrySubmits===3);
+    await surface.getByRole('button',{name:'采用几何',exact:true}).click();
+    await page.waitForFunction(()=>window.check.saved().bgxGeometry?.target==='sticker');
+    assert.equal(await page.evaluate(async()=>(await window.check.read()).stickers.find(s=>s.source.kind==='port').placement),'world');
+    await page.evaluate(()=>window.check.close());await page.evaluate(()=>window.check.open());
+    assert.equal(await page.evaluate(async()=>(await window.check.read()).bgxGeometry.target),'sticker');
     await page.evaluate(()=>window.check.close());
     await page.evaluate(()=>{const saved=window.check.saved();saved.bgxGeometry.version=999;window.check.replaceSaved(JSON.stringify(saved));});
     await page.evaluate(()=>window.check.open());
@@ -474,10 +570,10 @@ try {
     console.log(JSON.stringify({ preservationPassed: true, checks: ['unknown fields preserve original bytes', 'legacy multi-shot preview does not migrate or save', 'unsupported future version is rejected without mutation'] }));
   }
   assert.deepEqual(problems, []);
-  if (['inheritance', 'capture', 'geometry'].includes(option('--focus'))) {
+  if (['inheritance', 'capture', 'geometry','inputs'].includes(option('--focus'))) {
     console.log(JSON.stringify({ passed: true, scope: `${option('--focus')} only`, screenshots: results }));
   } else {
-  console.log(JSON.stringify({ passed: true, checks: ['built editor opens', 'three images at distinct directions', 'UI yaw edit', 'undo/redo', 'save/reopen preserves directions', 'no redundant save', ...(option('--frame') ? ['same-name asset import/reopen', 'save conflict retains edits and allows retry', 'opaque origin isolation'] : []), ...(option('--actions') ? ['shared controller actions', 'stale active state rejected', 'keyframe move/save/reopen', 'exactly 50 undo operations'] : []), ...(option('--paint') ? ['sphere mask stroke', 'clear cancel/confirm/undo', 'saved asset add'] : []), ...(option('--3d') ? ['GLB managed conversion bridge', '3D source and result save/reopen'] : []), 'no browser errors'], screenshots: results }));
+  console.log(JSON.stringify({ passed: true, checks: ['built editor opens', 'three images at distinct directions', 'UI yaw edit', 'undo/redo', 'save/reopen preserves directions', 'no redundant save', ...(option('--frame') ? ['same-name asset import/reopen', 'save conflict retains edits and allows retry', 'opaque origin isolation'] : []), ...(option('--actions') ? ['shared controller actions', 'stale active state rejected', 'keyframe move/save/reopen', 'exactly 50 undo operations'] : []), ...(option('--paint') ? ['sphere mask stroke', 'clear cancel/confirm/undo', 'saved asset add'] : []), ...(option('--3d') ? ['GLB managed conversion bridge', '3D source and result save/reopen', 'animation radio selection and speed persist', 'Spark points loaded and saved'] : []), 'no browser errors'], screenshots: results }));
   }
 } finally {
   await browser?.close();

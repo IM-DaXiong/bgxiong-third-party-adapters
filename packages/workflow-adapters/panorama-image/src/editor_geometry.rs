@@ -18,12 +18,13 @@ pub fn contract(base:&Value)->Value {
     input["properties"].as_object_mut().unwrap().remove("prompt");
     input["required"].as_array_mut().unwrap().retain(|v|v!="prompt");
     input["properties"]["geometrySourceJson"]=json!({"type":"string","minLength":2});
+    input["properties"]["geometryTarget"]=json!({"type":"string","enum":["world","sticker"],"default":"world"});
     input["properties"]["sourceRevision"]=json!({"type":"string","minLength":1,"readOnly":true});
     input["required"].as_array_mut().unwrap().extend([json!("geometrySourceJson"),json!("sourceRevision")]);
     let input=crate::capability::schema("geometry-input",&input.to_string());
     let output=crate::capability::schema("geometry-output",&json!({"type":"object","additionalProperties":false,"properties":{"metadataJson":{"type":"string"}},"required":["metadataJson"]}).to_string());
     let resume=crate::capability::schema("geometry-resume",&json!({"type":"object","additionalProperties":false,
-        "properties":{"promptId":{"type":"string","minLength":1},"sourceRevision":{"type":"string","minLength":1},"geometrySourceJson":{"type":"string","minLength":2},"sourceAssetsJson":{"type":"string","minLength":2}},
+        "properties":{"promptId":{"type":"string","minLength":1},"sourceRevision":{"type":"string","minLength":1},"geometrySourceJson":{"type":"string","minLength":2},"sourceAssetsJson":{"type":"string","minLength":2},"geometryTarget":{"type":"string","enum":["world","sticker"],"default":"world"}},
         "required":["promptId","sourceRevision","geometrySourceJson","sourceAssetsJson"]}).to_string());
     c["localId"]=json!(MODEL);c["modelIds"]=json!([MODEL]);c["capabilityKey"]=json!(CAPABILITY);
     let op=&mut c["operations"][0];op["id"]=json!(OPERATION);op["label"]=json!("深度几何准备");
@@ -56,7 +57,7 @@ pub fn models(host:&mut dyn Host,request:&Invocation,payload:&Value)->Result<Val
 fn document(input:&Value)->Result<SceneDocument,Failure> {
     let mut doc=SceneDocument::parse(comfy::text(input,"editorDocument")?)?;
     let source:Value=serde_json::from_str(comfy::text(input,"geometrySourceJson")?).map_err(|_|Failure::invalid("Invalid geometry source"))?;
-    let record=json!({"version":1,"source":source});geometry::validate(&record)?;
+    let record=json!({"version":1,"source":source,"target":input.get("geometryTarget").cloned().unwrap_or(json!("world"))});geometry::validate(&record)?;
     doc.state[geometry::STATE_KEY]=record;
     doc.validate_references(input)?;
     Ok(doc)
@@ -94,7 +95,7 @@ pub fn submit(host:&mut dyn Host,request:&Invocation,payload:&Value)->Result<Val
     for (id,lease) in media {uploads.insert(id,comfy::upload(host,&ctx,&lease)?);}
     let id=comfy::submit(host,&ctx,&graph(input,&uploads)?,&request.r#request_id)?;
     let accepted=json!({"kind":"accepted","vendorTaskId":id,"resumeToken":{"promptId":id,"sourceRevision":input["sourceRevision"],
-        "geometrySourceJson":input["geometrySourceJson"],"sourceAssetsJson":json!(sources).to_string()},"appliedParams":input,"usage":null});
+        "geometrySourceJson":input["geometrySourceJson"],"sourceAssetsJson":json!(sources).to_string(),"geometryTarget":doc.state[geometry::STATE_KEY]["target"]},"appliedParams":input,"usage":null});
     crate::persist_accepted(host,request,&accepted)?;Ok(accepted)
 }
 
@@ -135,15 +136,23 @@ pub fn query(host:&mut dyn Host,request:&Invocation,payload:&Value)->Result<Valu
         comfy::Remote::Failed(code)=>{result["status"]=json!("failed");result["terminalFailure"]=json!({"category":"vendorTaskFailed","message":"Geometry preparation failed","vendorCode":code,"details":{"promptId":id}});},
         comfy::Remote::Succeeded(_)=>{
             let outputs=comfy::history_outputs(host,&ctx,id)?;
-            let mut ui=json!({"pano_scene_files":outputs["70"]["pano_scene_files"],"pano_scene_meta":outputs["70"]["pano_scene_meta"]});
-            if ui["pano_scene_files"].as_array().is_none_or(Vec::is_empty) || ui["pano_scene_meta"].as_array().is_none_or(|v|v.len()!=1)
-                || !matches!(ui["pano_scene_meta"][0]["kind"].as_str(),Some("mesh"|"splat"|"depth_grid")) {return Err(Failure::invalid("Upstream geometry preview is missing"));}
+            let target=resume.get("geometryTarget").and_then(Value::as_str).unwrap_or("world");
+            if !matches!(target,"world"|"sticker"){return Err(Failure::invalid("Unknown geometry target"));}
+            let (file_key,meta_key)=if target=="sticker" {("pano_sticker_files","pano_sticker_meta")}else{("pano_scene_files","pano_scene_meta")};
+            let mut ui=json!({file_key:outputs["70"][file_key],meta_key:outputs["70"][meta_key]});
+            if ui[file_key].as_array().is_none_or(Vec::is_empty) || ui[meta_key].as_array().is_none_or(|v|v.len()!=1)
+                || !matches!(ui[meta_key][0]["kind"].as_str(),Some("mesh"|"splat"|"depth_grid")) {return Err(Failure::invalid("Upstream geometry preview is missing"));}
+            if target=="sticker"{
+                let pose=&outputs["70"]["pano_sticker_input_pose"];
+                if pose[0]["placement"]!="world"{return Err(Failure::invalid("Upstream geometry sticker pose is missing"));}
+                ui["pano_sticker_input_pose"]=pose.clone();
+            }
             let mut artifacts=Vec::new();collect_files(host,&ctx,&mut ui,&mut artifacts,&mut BTreeMap::new())?;
             if artifacts.is_empty(){return Err(Failure::invalid("Upstream geometry preview has no owned files"));}
             let source:Value=serde_json::from_str(comfy::text(resume,"geometrySourceJson")?).map_err(|_|Failure::invalid("Frozen geometry source is invalid"))?;
             let assets:Value=serde_json::from_str(comfy::text(resume,"sourceAssetsJson")?).map_err(|_|Failure::invalid("Frozen geometry source identities are invalid"))?;
             result["status"]=json!("succeeded");result["outputs"]=json!(artifacts);
-            result["data"]["metadataJson"]=json!(json!({"version":1,"source":source,"sourceAssets":assets,"ui":ui}).to_string());
+            result["data"]["metadataJson"]=json!(json!({"version":1,"source":source,"sourceAssets":assets,"ui":ui,"target":target}).to_string());
         }
     }
     Ok(result)

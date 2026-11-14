@@ -8,6 +8,8 @@ import { connectedScenes } from './connected-scenes.js';
 import { captureToolbar } from './capture-toolbar.js';
 import { adoptGeometry, geometryUi, validateGeometry } from './geometry-state.js';
 import { geometryToolbar } from './geometry-toolbar.js';
+import { inputKind,inputRecord,inputUi,inputLinks,upstreamBackground } from './input-state.js';
+import { inputToolbar } from './input-toolbar.js';
 
 /** Installation companion entry. The product bridge only knows documents and opaque assets;
  * Comfy source naming and route translation belong to this adapter.
@@ -120,13 +122,45 @@ export async function openAdapterEditor(initial, host) {
   const captureTaskKey = `capture.lastTask:${initial.nodeId}`;
   const geometryTaskKey = `geometry.lastTask:${initial.nodeId}`;
   const app={nodeOutputs:{}};
+  let currentInputRecord=null,currentGeometry=null,inputSignature='';
+  const currentLinks=()=>[...connected.inputs,...inputLinks(currentInputRecord),...(currentGeometry?.target==='sticker'?[{name:'sticker',type:'DA3_GEOMETRY',node:{id:'bgx-geometry-sticker',widgets:[]}}]:[])];
   const updateGeometryUi=stateText=>{
-    const geometry=protection.readOnly?null:JSON.parse(stateText||'{}').bgxGeometry;
-    app.nodeOutputs[initial.nodeId]={...geometryUi(geometry,assets),...(connected.layers.length?{pano_upstream_layers:connected.layers}:{})};
+    const state=protection.readOnly?{}:JSON.parse(stateText||'{}');
+    currentInputRecord=state.bgxInputs;
+    currentGeometry=state.bgxGeometry;
+    const nextSignature=JSON.stringify([currentInputRecord??null,currentGeometry?.target??null]),changed=nextSignature!==inputSignature;inputSignature=nextSignature;
+    app.nodeOutputs[initial.nodeId]={...geometryUi(state.bgxGeometry,assets),...inputUi(currentInputRecord,assets),...upstreamBackground(connected.layers),...(connected.layers.length?{pano_upstream_layers:connected.layers}:{})};
+    return changed;
   };
   updateGeometryUi(initial.stateText);
   let toolbar = null;
   const capture = async (action, args) => {
+    if(action==='input.set'){
+      const asset=assets.get(args.name);if(!asset)throw new Error('请选择本工程素材');
+      let kind=inputKind(asset),preview;
+      if(!kind)throw new Error('不支持的输入格式');
+      if((args.role==='world'&&!['mesh','splat'].includes(kind))||(args.role==='background'&&!['image','video'].includes(kind)))throw new Error('素材类型不适用于此输入');
+      if(['mesh','splat'].includes(kind)){
+        const parts=asset.name.split('/');
+        const response=await api.fetchApi('/panorama_suite/file_3d',{method:'POST',body:JSON.stringify({filename:parts.at(-1),subfolder:parts.slice(1,-1).join('/'),storage:parts[0]})});
+        const metadata=await response.json();kind=metadata.kind;
+        const owned=descriptor=>{
+          const name=key(descriptor);if(!assets.has(name))throw new Error('3D 预览附件缺失');return {assetName:name};
+        };
+        const {file,...meta}=metadata;if(meta.animation?.source)meta.animation.source=owned(meta.animation.source);
+        const prefix=args.role==='world'?'pano_scene':'pano_sticker';
+        preview={[`${prefix}_files`]:[owned(file)],[`${prefix}_meta`]:[meta]};
+      }
+      let metadata={};
+      if(kind==='video'||(args.role==='sticker'&&(kind!=='image'||args.stickerState))){
+        const state={...args.state};delete state.bgxGeometry;delete state.bgxInputs;
+        const result=await host.call('operation.run',{serviceId:'inputPreview',sourceNames:[args.name],input:{fileName:args.name.split('/').at(-1),role:args.role,stateJson:JSON.stringify(state),stickerState:args.stickerState??''}});
+        metadata=JSON.parse(result.data.metadataJson);preview??={};
+        if(metadata.video)preview[args.role==='sticker'?'pano_sticker_input_video_meta':'pano_input_video_meta']=[metadata.video];
+        if(metadata.handoff)preview.pano_sticker_handoff=[metadata.handoff];
+      }
+      return {status:'ready',input:inputRecord(args.name,kind,preview),...metadata};
+    }
     if(action==='geometry.models')return host.call('operation.run',{serviceId:'geometryModels',sourceNames:[],input:{}});
     if (action === 'asset.publish') return { status: 'published', ...await host.call('asset.publish', { name: args.name }) };
     let result;
@@ -138,7 +172,7 @@ export async function openAdapterEditor(initial, host) {
     if (action === 'capture.collect') result = await host.call('operation.collect', { taskId: args.taskId });
     else if(action==='geometry.prepare') {
       validateGeometry({version:1,source:args.source});
-      result=await host.call('operation.run',{serviceId:'geometry',sourceNames:[],input:{geometrySourceJson:JSON.stringify(args.source),outputProjection:'flat',advanced:{megapixels:.1,multiple:8}}});
+      result=await host.call('operation.run',{serviceId:'geometry',sourceNames:[],input:{geometrySourceJson:JSON.stringify(args.source),geometryTarget:args.target??'world',outputProjection:'flat',advanced:{megapixels:.1,multiple:8}}});
     }
     else {
       const serviceId = {'capture.frame':'frameCapture','repair.frameReturn':'frameReturn','repair.seamPrepare':'seamPrepare','repair.seamReturn':'seamReturn'}[action];
@@ -162,9 +196,9 @@ export async function openAdapterEditor(initial, host) {
   };
   let editor;
   editor = await openPanoramaStudio({ nodeId: initial.nodeId, stateText: initial.stateText ?? '',
-    capture,
+    capture, generationDraft:initial.generationDraft,
     readOnly: protection.readOnly,
-    inputs: connected.inputs, graphNodes: connected.nodes,
+    inputs: currentLinks(), graphNodes: connected.nodes,
     app, api, stylesheetUrl: 'preloaded',
     assetFile: async name => {
       if(!assets.has(name))throw new Error('Named asset does not belong to this document');
@@ -179,15 +213,21 @@ export async function openAdapterEditor(initial, host) {
     onStateChange: async stateText => {
       if(protection.readOnly)return;
       await hydrate(JSON.parse(stateText));
-      updateGeometryUi(stateText);
+      const inputsChanged=updateGeometryUi(stateText);
       await host.call('document.save', {stateText,assets:[...assets.values()].map(({name,mediaRel,sha256,mimeType})=>({name,mediaRel,sha256,mimeType}))});
-      editor?.refreshMedia();
+      editor?.refreshMedia(inputsChanged?currentLinks():null);
     },
     onClosed: () => { void host.call('editor.closed', null).catch(() => {}); },
   });
   toolbar = protection.readOnly ? null : captureToolbar(editor, () => memory.get(captureTaskKey), () => [...assets.values()].map(asset=>({...asset,displayName:memory.get(`assetLabel:${initial.nodeId}:${asset.name}`)??asset.displayName})));
   const geometryPanel=protection.readOnly?null:geometryToolbar(editor,()=>[...assets.values()],()=>memory.get(geometryTaskKey));
   if(geometryPanel)toolbar.addControl(geometryPanel.toggle);
+  const inputsPanel=protection.readOnly?null:inputToolbar(editor,()=>[...assets.values()],async file=>{
+    const form=new FormData();form.set('image',file);form.set('subfolder','panorama_stickers');
+    const response=await api.fetchApi('/upload/image',{method:'POST',body:form});const source=await response.json();
+    return key({filename:source.name,subfolder:source.subfolder,storage:source.type});
+  });
+  if(inputsPanel)toolbar.addControl(inputsPanel.toggle);
   return { read: editor.read, describe: async () => ({ ...await editor.describe(), protection }), act: editor.act, async flush() { const result = await editor.flush(); await flushPreferences(); return result; }, async close() {
     const result = await editor.close();
     await flushPreferences();
@@ -196,6 +236,7 @@ export async function openAdapterEditor(initial, host) {
     marker.remove();
     toolbar?.remove();
     geometryPanel?.remove();
+    inputsPanel?.remove();
     return result;
   } };
 }
@@ -204,7 +245,7 @@ export async function openAdapterEditor(initial, host) {
  * The host owns persistent media and transport; no host credentials enter the editor.
  * api implements the upstream media routes, app supplies actual connected input results.
  */
-export async function openPanoramaStudio({ nodeId, stateText = '', inputs = [], graphNodes = [], app, api, stylesheetUrl, storage, onStateChange, onClosed, readOnly = false, assetFile, capture }) {
+export async function openPanoramaStudio({ nodeId, stateText = '', inputs = [], graphNodes = [], app, api, stylesheetUrl, storage, onStateChange, onClosed, readOnly = false, assetFile, capture, generationDraft }) {
   if (typeof nodeId !== 'string' || !nodeId) throw new Error('A stable scene node identity is required');
   if (typeof stateText !== 'string') throw new Error('Scene state must be JSON text');
   if (!api || typeof api.apiURL !== 'function' || typeof api.fetchApi !== 'function') throw new Error('Persistent media transport is required');
@@ -242,6 +283,8 @@ export async function openPanoramaStudio({ nodeId, stateText = '', inputs = [], 
       }
     },
   };
+  const parameters=generationDraft?.adapterParameters??{};
+  node.widgets=[widget,{name:'background_range',value:parameters['/advanced/backgroundRange']??'360'},{name:'background_color',value:parameters['/advanced/backgroundColor']??'#00ff00'}];
   const editor = await openStudioEditor(node, { app, api, storage, readOnly });
   if (!editor) throw new Error('Scene editor is already open');
   opened = true;
@@ -257,7 +300,10 @@ export async function openPanoramaStudio({ nodeId, stateText = '', inputs = [], 
   }
   return {
     read: () => structuredClone(editor.session.state),
-    refreshMedia: () => editor.refresh(),
+    refreshMedia: (next,record) => {
+      if(next){inputs=next;origins.clear();inputs.forEach((input,i)=>origins.set(i+1,input.node));node.inputs=inputs.map((input,i)=>({name:input.name,type:input.type,link:i+1}));}
+      editor.refresh(Boolean(next));
+    },
     ...createEditorActions(editor, flush, { assetFile, capture }),
     flush,
     async close() {

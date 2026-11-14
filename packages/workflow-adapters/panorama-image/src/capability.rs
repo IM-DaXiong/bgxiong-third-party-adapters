@@ -109,5 +109,6 @@ pub fn capabilities() -> Value {
     result["capabilityContracts"].as_array_mut().unwrap().push(geometry);
     result["capabilityContracts"].as_array_mut().unwrap().extend(repair);
     result["capabilityContracts"].as_array_mut().expect("contracts").push(crate::editor_media::contract(&schema("config", CONFIG_SCHEMA)));
+    result["capabilityContracts"].as_array_mut().unwrap().push(crate::editor_inputs::contract(&schema("config",CONFIG_SCHEMA)));
     result
 }
