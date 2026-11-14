@@ -22,6 +22,10 @@
 
 包内：WASM、manifest 与摘要、许可及说明。完整文件名见发行清单。
 
+### 全景工作室 · 1.24.0 开发候选
+
+[完整候选下载](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/panorama-1.24.0-candidate) · [文件摘要与验收边界](release/panorama-1.24.0-candidate.json)。包含离线编辑器、六份上游工作流、三维/视频输入与配套节点，需本批主程序和 SDK 2.4.0。已完成包级及轻量编辑验收；真实 Comfy/GPU 和正式安装版待资源机验证。当前稳定版仍为 1.0.3。
+
 ### SeedVR2 图片放大 · 1.0.3
 
 单张图片高清修复与放大；包含工作流模板声明。 连接：**本地或局域网 ComfyUI**。

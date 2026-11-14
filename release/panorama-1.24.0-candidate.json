@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "status": "public-development-candidate",
+  "pluginId": "local.thirdparty.comfy-panorama-image",
+  "version": "1.24.0",
+  "sourceCommit": "8a61abb969408b2eb33e314936d22d2db5bd82b7",
+  "sdkCommit": "ddc91f3c3465863da5b58082292f61583d48b829",
+  "upstreamCommit": "6db991a7ef077170ce51a2f32e29737678285183",
+  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/panorama-1.24.0-candidate/comfy-panorama-image-1.24.0.zip",
+  "sha256": "a8d181c282c6fca98bce179d27a5462d5d736019ff5a2f3a92917bd56d95961a",
+  "bytes": 2884347,
+  "publicDownloadRestored": true,
+  "files": [
+    {
+      "path": "adapter-install.json",
+      "bytes": 1812,
+      "sha256": "9a7254036686132eba75b9295d1dc1af094ad38f8cd55a67c39b21e07642a261"
+    },
+    {
+      "path": "comfy-nodes/bgx_panorama_inputs/__init__.py",
+      "bytes": 6122,
+      "sha256": "97291114658fcb25e1cd164d68302bcbfda5aac030f3a65c9696d4dc13e3090a"
+    },
+    {
+      "path": "editor-bundle.json",
+      "bytes": 7761412,
+      "sha256": "2d3a10df39141f610fd65edf47c58f8354c701ec65ae97d962f50d2698429551"
+    },
+    {
+      "path": "FONT-LICENSE.txt",
+      "bytes": 4495,
+      "sha256": "05831cfb0b8fbbb02633f7c8968684f43a3b25cb9ea7e45db10b24078ddb922f"
+    },
+    {
+      "path": "package/adapter.wasm",
+      "bytes": 1701619,
+      "sha256": "2d32b46a7a5fb0a559c1700180beb4419a068d12440697114ced84b1855d7055"
+    },
+    {
+      "path": "package/manifest.json",
+      "bytes": 940,
+      "sha256": "13c4c4a291eebe427ff222e90cc619f2807303590e05380293393a4831223a73"
+    },
+    {
+      "path": "package/manifest.sha256",
+      "bytes": 157,
+      "sha256": "f9a7e5ef81dabd685dca622858213ffd52d35829cf4db47323b2c1bb6e1c2c5a"
+    },
+    {
+      "path": "PANORAMA-LICENSE.txt",
+      "bytes": 1086,
+      "sha256": "576cd4d129054efd94fb68a65713b88fef660e95a783fc0b474b3b65d7e44903"
+    },
+    {
+      "path": "upstream.lock.json",
+      "bytes": 1987,
+      "sha256": "2483eb5967127aa639e1c92e4e3b49059ec0f48ca6c6d77c325c5fb3986ef5c6"
+    }
+  ],
+  "acceptance": {
+    "sdkPackage": "build/check/pack/check passed",
+    "adapterBehavior": "29 tests passed",
+    "editor": "production browser actions, persistence, animation selection, Spark display, inheritance passed",
+    "realComfyUI": "not-run",
+    "gpuModels": "not-run",
+    "installedRelease": "not-run",
+    "userDataUpgrade": "not-run"
+  },
+  "stableReleaseLockUnchanged": true
+}
