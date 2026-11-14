@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "status": "public-development-candidate",
+  "pluginId": "local.thirdparty.comfy-panorama-image",
+  "version": "1.24.1",
+  "sourceCommit": "b2d84961e674d4865b2b21ed502db5ad93138dcd",
+  "sdkCommit": "ddc91f3c3465863da5b58082292f61583d48b829",
+  "upstreamCommit": "6db991a7ef077170ce51a2f32e29737678285183",
+  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/panorama-1.24.1-candidate/comfy-panorama-image-1.24.1.zip",
+  "sha256": "c1ba6bb7317096d759397bfe8e255ccccb727af681ea1514f5dfbd6f423f104d",
+  "bytes": 2896794,
+  "publicDownloadRestored": true,
+  "files": [
+    {
+      "path": "adapter-install.json",
+      "bytes": 1812,
+      "sha256": "ba45649d9704a0dda443a0f42d64dbcaee6bb3304e7db493d68012ed55f00c50"
+    },
+    {
+      "path": "comfy-nodes/bgx_panorama_inputs/__init__.py",
+      "bytes": 6122,
+      "sha256": "97291114658fcb25e1cd164d68302bcbfda5aac030f3a65c9696d4dc13e3090a"
+    },
+    {
+      "path": "editor-bundle.json",
+      "bytes": 7761421,
+      "sha256": "af8162d1bbb1c8d451f5a7ba7412939dfac809b2ae733ed291f54cb610d5ca6e"
+    },
+    {
+      "path": "FONT-LICENSE.txt",
+      "bytes": 4495,
+      "sha256": "05831cfb0b8fbbb02633f7c8968684f43a3b25cb9ea7e45db10b24078ddb922f"
+    },
+    {
+      "path": "LICENSE.txt",
+      "bytes": 1506,
+      "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+    },
+    {
+      "path": "package/adapter.wasm",
+      "bytes": 1701635,
+      "sha256": "36bba06879d3083de890e74b61ee901669b2cf4ae33b0d7e1cab1c5c6c81201f"
+    },
+    {
+      "path": "package/manifest.json",
+      "bytes": 940,
+      "sha256": "40203a1170e793dd79f47a3fc745a621733d9d52bb64bd92b1188828ce6c1f8e"
+    },
+    {
+      "path": "package/manifest.sha256",
+      "bytes": 157,
+      "sha256": "be9ea87084d5cd8f964703102b57ac136509d7bf96bc82e9d8aa2d1a22cd5525"
+    },
+    {
+      "path": "PANORAMA-LICENSE.txt",
+      "bytes": 1086,
+      "sha256": "576cd4d129054efd94fb68a65713b88fef660e95a783fc0b474b3b65d7e44903"
+    },
+    {
+      "path": "README.en.md",
+      "bytes": 9028,
+      "sha256": "c0c814ed1b5812a5afdb5cb36bc7f0bea804eb5630b659119e9862e683154bb4"
+    },
+    {
+      "path": "README.zh-CN.md",
+      "bytes": 12892,
+      "sha256": "adf3e46b5ee52f1dc7782f023152310a198556a05369b129c9d22e6cfff8eb52"
+    },
+    {
+      "path": "upstream.lock.json",
+      "bytes": 1987,
+      "sha256": "2483eb5967127aa639e1c92e4e3b49059ec0f48ca6c6d77c325c5fb3986ef5c6"
+    }
+  ],
+  "acceptance": {
+    "sdkPackage": "build/check/pack/check passed",
+    "adapterBehavior": "29 tests passed",
+    "editor": "production browser actions, persistence, animation selection, Spark display, inheritance passed",
+    "realComfyUI": "not-run",
+    "gpuModels": "not-run",
+    "installedRelease": "not-run",
+    "userDataUpgrade": "not-run",
+    "actualDevelopmentExe": {
+      "sha256": "e0d5c36e2adb8a46eda6f3d8c2638a7725d5e2d42298f89d406f00941c2889aa",
+      "hostSourceCommit": "419f62af6f2099e25fa247aa88d25dfe2ac46909",
+      "includesOtherUncommittedHostWork": true,
+      "dataScope": "isolated-consistent-copy",
+      "packageSource": "public-download-restored",
+      "upgradeFrom": "1.23.0",
+      "stores": [
+        "freeCanvas",
+        "clips"
+      ],
+      "preserved": [
+        "scene",
+        "assets",
+        "parameters",
+        "mediaHistory"
+      ],
+      "staleSaveRejected": true,
+      "repeatStable": true,
+      "guiOpened": true,
+      "generationSubmitted": false
+    }
+  },
+  "stableReleaseLockUnchanged": true
+}

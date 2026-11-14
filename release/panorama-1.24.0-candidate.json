@@ -66,5 +66,7 @@
     "installedRelease": "not-run",
     "userDataUpgrade": "not-run"
   },
-  "stableReleaseLockUnchanged": true
+  "stableReleaseLockUnchanged": true,
+  "supersededBy": "panorama-1.24.1-candidate.json",
+  "packagingLimitation": "Repository license and installation readmes were omitted; use 1.24.1."
 }
