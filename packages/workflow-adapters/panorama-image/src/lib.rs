@@ -6,11 +6,13 @@ extern crate alloc;
 mod capability;
 mod comfy;
 mod mapping;
+mod scene;
+mod editor_media;
 
 #[cfg(test)]
 mod tests;
 
-use alloc::{format, string::String, string::ToString};
+use alloc::{collections::BTreeMap, format, string::String, string::ToString};
 use bgx_adapter_v2_sdk::{guest, Adapter, Host, Invocation, Response};
 use serde_json::{json, Value};
 
@@ -116,18 +118,31 @@ fn find_media<'a>(payload: &'a Value, media_id: &str) -> Result<&'a Value, Failu
 }
 
 fn submit(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<Value, Failure> {
+    if payload["operationId"] == editor_media::OPERATION { return editor_media::submit(host, request, payload); }
     require_operation(payload)?;
     let input = &payload["input"];
-    // Validate mapping before any upload.
-    let _ = build_graph(input, "pending-upload.png")?;
-    let media_id = reference_id(input)?;
-    let media = find_media(payload, media_id)?;
     let ctx = comfy::Ctx {
         config: &payload["configuration"],
         budget_ms: request.r#budget_ms,
     };
-    let uploaded = comfy::upload(host, &ctx, media)?;
-    let (graph, applied) = build_graph(input, &uploaded)?;
+    let (graph, applied) = if payload["operationId"] == capability::SCENE_OPERATION {
+        let document = scene::SceneDocument::parse(input["editorDocument"].as_str().ok_or_else(|| Failure::invalid("Missing editor document"))?)?;
+        let mut uploads = BTreeMap::new();
+        for id in document.assets.values() {
+            find_media(payload, id)?;
+            uploads.insert(id.clone(), "pending-upload.png".into());
+        }
+        scene::outpaint_graph(input, &uploads)?; // Reject malformed state before any network write.
+        for id in document.assets.values() {
+            uploads.insert(id.clone(), comfy::upload(host, &ctx, find_media(payload, id)?)?);
+        }
+        scene::outpaint_graph(input, &uploads)?
+    } else {
+        build_graph(input, "pending-upload.png")?;
+        let media = find_media(payload, reference_id(input)?)?;
+        let uploaded = comfy::upload(host, &ctx, media)?;
+        build_graph(input, &uploaded)?
+    };
     let remote = comfy::submit(host, &ctx, &graph, &request.r#request_id)?;
     let accepted = json!({
         "kind": "accepted",

@@ -9,6 +9,8 @@ use sha2::{Digest, Sha256};
 pub const PLUGIN_ID: &str = "local.thirdparty.comfy-panorama-image";
 pub const MODEL_ID: &str = "panorama-image-single";
 pub const OPERATION_ID: &str = "local.thirdparty.comfy-panorama-image/image-to-panorama";
+pub const SCENE_OPERATION: &str = "local.thirdparty.comfy-panorama-image/scene-to-panorama";
+pub const SCENE_MODEL: &str = "panorama-studio-outpaint";
 pub const CAPABILITY_KEY: &str = "image.generate";
 #[allow(dead_code)]
 pub const FEATURE_PROJECTION: &str = "image-projection-v1";
@@ -18,7 +20,7 @@ pub const OUTPUT_SCHEMA: &str = include_str!("../schemas/output.json");
 pub const CONFIG_SCHEMA: &str = include_str!("../schemas/config.json");
 pub const RESUME_SCHEMA: &str = include_str!("../schemas/resume.json");
 
-fn schema(id: &str, source: &str) -> Value {
+pub(crate) fn schema(id: &str, source: &str) -> Value {
     let digest: String = Sha256::digest(source.as_bytes())
         .iter()
         .map(|b| format!("{b:02x}"))
@@ -32,7 +34,7 @@ pub fn capabilities() -> Value {
     let output = schema("output", OUTPUT_SCHEMA);
     let config = schema("config", CONFIG_SCHEMA);
     let resume = schema("resume", RESUME_SCHEMA);
-    json!({
+    let mut result = json!({
         "schemaVersion": 2,
         "pluginId": PLUGIN_ID,
         "pluginVersion": env!("CARGO_PKG_VERSION"),
@@ -77,5 +79,20 @@ pub fn capabilities() -> Value {
             }],
             "schemas": [input, output, config, resume]
         }]
-    })
+    });
+    let mut scene = result["capabilityContracts"][0].clone();
+    let scene_input = schema("studio-input", include_str!("../schemas/studio-input.json"));
+    scene["localId"] = json!(SCENE_MODEL);
+    scene["modelIds"] = json!([SCENE_MODEL]);
+    scene["operations"][0]["id"] = json!(SCENE_OPERATION);
+    scene["operations"][0]["label"] = json!("Qwen 2.1 · 多方向全景");
+    scene["operations"][0]["inputSchema"] = json!({"id":"studio-input","digest":scene_input["digest"]});
+    scene["operations"][0]["mediaSlots"][0]["minCount"] = json!(0);
+    scene["operations"][0]["mediaSlots"][0]["maxCount"] = json!(1024);
+    scene["operations"][0]["uiSchema"]["controls"][0]["label"] = json!("工程素材");
+    scene["operations"][0]["uiSchema"]["controls"][0]["description"] = json!("已保存工程内的图片素材");
+    scene["schemas"][0] = scene_input;
+    result["capabilityContracts"].as_array_mut().expect("contracts").push(scene);
+    result["capabilityContracts"].as_array_mut().expect("contracts").push(crate::editor_media::contract(&schema("config", CONFIG_SCHEMA)));
+    result
 }

@@ -1,0 +1,295 @@
+{
+  "upstream": "6db991a7ef077170ce51a2f32e29737678285183",
+  "examples": [
+    {
+      "name": "qwen-image-2.1-360-erp-outpaint",
+      "sha256": "42cdeb9fc60ee1d7b10a94157e25c93f2b9a92a31592a58a2621984d34fdc0cf",
+      "nodes": [
+        "CLIPLoader",
+        "EmptyLatentImage",
+        "GetImageSize",
+        "KSampler",
+        "LoraLoaderModelOnly",
+        "PanoramaPreviewNode",
+        "PanoramaStudio",
+        "SaveImage",
+        "TextEncodeQwenImage21",
+        "UNETLoader",
+        "VAEDecode",
+        "VAELoader"
+      ],
+      "resources": [
+        {
+          "name": "qwen_image_2.1_int8_convrot.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/diffusion_models/qwen_image_2.1_int8_convrot.safetensors",
+          "directory": "diffusion_models"
+        },
+        {
+          "name": "qwen3vl_8b_int8_convrot.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/text_encoders/qwen3vl_8b_int8_convrot.safetensors",
+          "directory": "text_encoders"
+        },
+        {
+          "name": "qwen_image_2.1_vae_bf16.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/vae/qwen_image_2.1_vae_bf16.safetensors",
+          "directory": "vae"
+        },
+        {
+          "name": "qwen_image_2_1_360_panorama_outpaint_lora_v0_1.safetensors",
+          "url": "https://huggingface.co/nomadoor/qwen-image-2.1-360-panorama-outpaint-lora/resolve/main/qwen_image_2_1_360_panorama_outpaint_lora_v0_1.safetensors",
+          "directory": "loras"
+        }
+      ]
+    },
+    {
+      "name": "qwen-image-2.1-panorama-cutout",
+      "sha256": "77db570fae8abf14bdd70731579650b9c553c1aa2e064a23859ed47ffa3171e8",
+      "nodes": [
+        "CLIPLoader",
+        "EmptyLatentImage",
+        "GetImageSize",
+        "KSampler",
+        "LoadImage",
+        "PanoramaStudio",
+        "SaveImage",
+        "TextEncodeQwenImage21",
+        "UNETLoader",
+        "VAEDecode",
+        "VAELoader"
+      ],
+      "resources": [
+        {
+          "name": "qwen_image_2.1_int8_convrot.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/diffusion_models/qwen_image_2.1_int8_convrot.safetensors",
+          "directory": "diffusion_models"
+        },
+        {
+          "name": "qwen3vl_8b_int8_convrot.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/text_encoders/qwen3vl_8b_int8_convrot.safetensors",
+          "directory": "text_encoders"
+        },
+        {
+          "name": "qwen_image_2.1_vae_bf16.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/vae/qwen_image_2.1_vae_bf16.safetensors",
+          "directory": "vae"
+        }
+      ]
+    },
+    {
+      "name": "qwen-image-2.1-panorama-with-3d",
+      "sha256": "371cbe5cef7141d7f13039d29c24ffb75d7d1c44e03ef4467c7e91c19fcda1e5",
+      "nodes": [
+        "CLIPLoader",
+        "EmptyLatentImage",
+        "GetImageSize",
+        "KSampler",
+        "LoadImage",
+        "PanoramaStudio",
+        "SaveImage",
+        "TextEncodeQwenImage21",
+        "UNETLoader",
+        "VAEDecode",
+        "VAELoader"
+      ],
+      "resources": [
+        {
+          "name": "qwen_image_2.1_int8_convrot.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/diffusion_models/qwen_image_2.1_int8_convrot.safetensors",
+          "directory": "diffusion_models"
+        },
+        {
+          "name": "qwen3vl_8b_int8_convrot.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/text_encoders/qwen3vl_8b_int8_convrot.safetensors",
+          "directory": "text_encoders"
+        },
+        {
+          "name": "qwen_image_2.1_vae_bf16.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/vae/qwen_image_2.1_vae_bf16.safetensors",
+          "directory": "vae"
+        }
+      ]
+    },
+    {
+      "name": "qwen-image-2.1-moge3-anyangle",
+      "sha256": "fa3c685a22884b518db41dc3acdff37154c01fae6acc580769faffcf8b289cd4",
+      "nodes": [
+        "CLIPLoader",
+        "EmptyLatentImage",
+        "GetImageSize",
+        "KSampler",
+        "LoadImage",
+        "LoadMoGeModel",
+        "LoraLoaderModelOnly",
+        "MoGeInference",
+        "PanoramaStudio",
+        "SaveImage",
+        "TextEncodeQwenImage21",
+        "UNETLoader",
+        "VAEDecode",
+        "VAELoader"
+      ],
+      "resources": [
+        {
+          "name": "qwen_image_2.1_int8_convrot.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/diffusion_models/qwen_image_2.1_int8_convrot.safetensors",
+          "directory": "diffusion_models"
+        },
+        {
+          "name": "qwen3vl_8b_int8_convrot.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/text_encoders/qwen3vl_8b_int8_convrot.safetensors",
+          "directory": "text_encoders"
+        },
+        {
+          "name": "qwen_image_2.1_vae_bf16.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/vae/qwen_image_2.1_vae_bf16.safetensors",
+          "directory": "vae"
+        },
+        {
+          "name": "moge_3_vitg_fp16.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/MoGe/resolve/main/geometry_estimation/moge_3_vitg_fp16.safetensors",
+          "directory": "geometry_estimation"
+        },
+        {
+          "name": "QI2.1_AnyAngle.safetensors",
+          "url": "https://huggingface.co/lilylilith/QI_2.1_AnyAngle/resolve/main/QI2.1_AnyAngle.safetensors",
+          "directory": "loras"
+        }
+      ]
+    },
+    {
+      "name": "pika-h3-flex-moge3-crossview",
+      "sha256": "f65b0a4d4a7da15b9f3d340bb1297434b700119ae5ec2abd21f2cede57e57c07",
+      "nodes": [
+        "BasicGuider",
+        "CLIPLoader",
+        "ComfyMathExpression",
+        "CreateVideo",
+        "GetImageSize",
+        "GetVideoComponents",
+        "KSamplerSelect",
+        "LoadMoGeModel",
+        "LoraLoaderModelOnly",
+        "ManualSigmas",
+        "MiniMaxH3AddGuide",
+        "MiniMaxH3ReferenceToVideo",
+        "MoGeInference",
+        "ModelAttentionBackend",
+        "PanoramaStudio",
+        "PrimitiveFloat",
+        "RandomNoise",
+        "ResizeImageMaskNode",
+        "SamplerCustomAdvanced",
+        "SaveVideo",
+        "UNETLoader",
+        "VAEDecode",
+        "VAEDecodeAudio",
+        "VAELoader",
+        "VHS_LoadVideo"
+      ],
+      "resources": [
+        {
+          "name": "minimax_h3_video_vae_int8_convrot.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_video_vae_int8_convrot.safetensors",
+          "directory": "vae"
+        },
+        {
+          "name": "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+          "directory": "diffusion_models"
+        },
+        {
+          "name": "minimax_h3_audio_vae_fp32.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_audio_vae_fp32.safetensors",
+          "directory": "vae"
+        },
+        {
+          "name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+          "directory": "text_encoders"
+        },
+        {
+          "name": "pika_h3_flex_ref2va_v1_bf16.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/loras/pika_h3_flex_ref2va_v1_bf16.safetensors",
+          "directory": "loras"
+        },
+        {
+          "name": "MiniMax-H3_Ref2VA-LoRA-CrossView-Warp_v1_3500.safetensors",
+          "url": "https://huggingface.co/Cseti/MiniMax-H3_Ref2VA-LoRA-CrossView-Warp_v1/resolve/main/MiniMax-H3_Ref2VA-LoRA-CrossView-Warp_v1_3500.safetensors",
+          "directory": "loras"
+        },
+        {
+          "name": "moge_3_vitg_fp16.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/MoGe/resolve/main/geometry_estimation/moge_3_vitg_fp16.safetensors",
+          "directory": "geometry_estimation"
+        }
+      ]
+    },
+    {
+      "name": "LTX-2.3_360vr_distilled_3stage",
+      "sha256": "6bc84f9376e4a445aac2b4129df7e7e5db2ad13fc1290d456d83a7d595fa85f9",
+      "nodes": [
+        "CFGGuider",
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "ComfyMathExpression",
+        "EmptyLTXVLatentVideo",
+        "KSamplerSelect",
+        "LTXAVTextEncoderLoader",
+        "LTXVAudioVAEDecode",
+        "LTXVAudioVAELoader",
+        "LTXVConcatAVLatent",
+        "LTXVConditioning",
+        "LTXVEmptyLatentAudio",
+        "LTXVLatentUpsampler",
+        "LTXVSeparateAVLatent",
+        "LatentUpscaleModelLoader",
+        "LoraLoaderModelOnly",
+        "ManualSigmas",
+        "PanoramaCutout",
+        "PanoramaPreview",
+        "PrimitiveInt",
+        "RandomNoise",
+        "SamplerCustomAdvanced",
+        "VAEDecodeTiled",
+        "VHS_VideoCombine"
+      ],
+      "resources": [
+        {
+          "name": "ltx-2-19b-dev-fp8.safetensors",
+          "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev-fp8.safetensors",
+          "directory": "checkpoints"
+        },
+        {
+          "name": "ltx-2-19b-dev-fp8.safetensors",
+          "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev-fp8.safetensors",
+          "directory": "checkpoints"
+        },
+        {
+          "name": "ltx-2-19b-dev-fp8.safetensors",
+          "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev-fp8.safetensors",
+          "directory": "checkpoints"
+        },
+        {
+          "name": "gemma_3_12B_it.safetensors",
+          "url": "https://huggingface.co/Comfy-Org/ltx-2/resolve/main/split_files/text_encoders/gemma_3_12B_it.safetensors",
+          "directory": "text_encoders"
+        },
+        {
+          "name": "ltx-2-spatial-upscaler-x2-1.0.safetensors",
+          "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-spatial-upscaler-x2-1.0.safetensors",
+          "directory": "latent_upscale_models"
+        },
+        {
+          "name": "ltx-2-19b-distilled-lora-384.safetensors",
+          "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-distilled-lora-384.safetensors",
+          "directory": "loras"
+        },
+        {
+          "name": "ltx-2-19b-distilled-lora-384.safetensors",
+          "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-distilled-lora-384.safetensors",
+          "directory": "loras"
+        }
+      ]
+    }
+  ]
+}

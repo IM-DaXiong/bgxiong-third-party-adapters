@@ -5,7 +5,7 @@ extern crate alloc;
 use alloc::{format, string::String, string::ToString};
 use serde_json::{json, Value};
 
-use crate::capability::{INPUT_SCHEMA, MODEL_ID, OPERATION_ID};
+use crate::capability::{INPUT_SCHEMA, MODEL_ID, OPERATION_ID, SCENE_MODEL, SCENE_OPERATION};
 
 const GRAPH: &str = include_str!("../workflow/api.json");
 const LOAD_NODE: &str = "100";
@@ -183,6 +183,7 @@ pub fn build_graph(input: &Value, uploaded: &str) -> Result<(Value, Value), Fail
 }
 
 pub fn require_operation(payload: &Value) -> Result<(), Failure> {
+    if payload["operationId"] == SCENE_OPERATION && payload["modelId"] == SCENE_MODEL { return Ok(()); }
     if payload.get("operationId").and_then(Value::as_str) != Some(OPERATION_ID) {
         return Err(Failure::invalid("Unknown panorama operation"));
     }

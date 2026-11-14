@@ -1,0 +1,6 @@
+/* The trusted product owns the outer modal. Keep upstream controls and scene layout,
+   and give the nested editor the entire available preview area. */
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+.pano-studio-backdrop > .pano-studio-editor {
+  width: 100%; height: 100%; max-width: none; max-height: none; border-radius: 0;
+}

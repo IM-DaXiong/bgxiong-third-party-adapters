@@ -1,0 +1,98 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "prompt",
+    "outputProjection",
+    "references",
+    "width",
+    "height",
+    "seed",
+    "advanced",
+    "editorDocument"
+  ],
+  "properties": {
+    "prompt": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8000,
+      "title": "提示词原文",
+      "description": "用户确认的完整文字；适配器可追加必要的 ERP outpaint 触发句，原文不丢。"
+    },
+    "outputProjection": {
+      "type": "string",
+      "enum": [
+        "equirectangular360"
+      ],
+      "default": "equirectangular360",
+      "title": "输出投影",
+      "description": "首版仅 equirectangular360（完整 2:1 单目 ERP）。"
+    },
+    "references": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 1024,
+      "title": "工程素材",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "mediaId"
+        ],
+        "properties": {
+          "mediaId": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "description": "已保存工程内的全部图片素材，由宿主冻结并传递。"
+    },
+    "width": {
+      "type": "integer",
+      "const": 2048,
+      "default": 2048,
+      "title": "宽度"
+    },
+    "height": {
+      "type": "integer",
+      "const": 1024,
+      "default": 1024,
+      "title": "高度"
+    },
+    "seed": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "default": 12345,
+      "title": "随机种子"
+    },
+    "advanced": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "steps"
+      ],
+      "default": {
+        "steps": 25
+      },
+      "properties": {
+        "steps": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "default": 25,
+          "title": "采样步数",
+          "description": "Qwen Image 2.1 采样步数"
+        }
+      }
+    },
+    "editorDocument": {
+      "type": "string",
+      "default": "",
+      "title": "全景工程",
+      "readOnly": true,
+      "maxLength": 2097152
+    }
+  }
+}

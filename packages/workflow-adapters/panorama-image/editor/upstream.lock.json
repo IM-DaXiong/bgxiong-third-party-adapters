@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/nomadoor/ComfyUI-Panorama-Stickers.git",
+  "commit": "6db991a7ef077170ce51a2f32e29737678285183",
+  "version": "2.1.1",
+  "packageLockSha256": "f2dfaf23a6f0259e7b3f37d6275e0e9910234171d00f5fa1110af97b696cc101",
+  "licenseSha256": "576cd4d129054efd94fb68a65713b88fef660e95a783fc0b474b3b65d7e44903",
+  "patches": [
+    {
+      "file": "web_src/studio/stylesheet.js",
+      "kind": "guarded-build-transform",
+      "purpose": "Inline offline CSS URL"
+    },
+    {
+      "file": "web_src/pano_styles.js",
+      "kind": "guarded-build-transform",
+      "purpose": "Inline offline CSS URL"
+    },
+    {
+      "file": "web_src/studio/editor.js",
+      "kind": "guarded-build-transform",
+      "purpose": "Export the existing UI controller and view to the host bridge"
+    },
+    {
+      "file": "web_src/pano_editor_state.js",
+      "kind": "guarded-build-transform",
+      "purpose": "Keep initial snapshot plus latest 50 successful actions"
+    }
+  ],
+  "nodes": [
+    "PanoramaStickers",
+    "PanoramaCutout",
+    "PanoramaPreview",
+    "PanoramaPreviewNode",
+    "PanoramaStudio",
+    "PanoramaSeamPrep"
+  ],
+  "workflows": [
+    "qwen-image-2.1-360-erp-outpaint.json",
+    "qwen-image-2.1-panorama-cutout.json",
+    "qwen-image-2.1-panorama-with-3d.json",
+    "qwen-image-2.1-moge3-anyangle.json",
+    "pika-h3-flex-moge3-crossview.json",
+    "LTX-2.3_360vr_distilled_3stage.json"
+  ]
+}

@@ -1,6 +1,6 @@
 {
-  "artifactSha256": "1af05b64934a9b2d692a40b2b7d41e7c9665a8fdb2a167540e9c30996b82941c",
-  "displayName": "本地 ComfyUI 单图扩展全景（ERP）",
+  "artifactSha256": "dbfc1d3ed1b8a24183852393b7bb37f84e8012e2ee900062d43c7aeddbe499cf",
+  "displayName": "本地 ComfyUI 全景工作室",
   "entry": "adapter.wasm",
   "language": "rust",
   "limits": {
@@ -26,14 +26,17 @@
       "allowPrivateNetwork"
     ],
     "mediaSlots": [
-      "image"
+      "image",
+      "file",
+      "video"
     ],
     "networkHosts": [],
     "stateBytes": 0
   },
   "requiredFeatures": [
-    "image-projection-v1"
+    "image-projection-v1",
+    "opaque-file-upload-name-v1"
   ],
   "schemaVersion": 2,
-  "version": "1.0.3"
+  "version": "1.8.0"
 }

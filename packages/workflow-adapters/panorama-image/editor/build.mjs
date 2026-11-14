@@ -1,0 +1,95 @@
+import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
+import { readFile, writeFile, mkdir, cp, readdir } from 'node:fs/promises';
+import { dirname, resolve, relative } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+
+// Builds the unchanged, pinned upstream editor. No clone, dependency install, model download,
+// ComfyUI restart or installation side effects. The caller supplies a prepared source checkout.
+const here = dirname(fileURLToPath(import.meta.url));
+const args = process.argv.slice(2);
+const option = name => args[args.indexOf(name) + 1];
+if (!args.includes('--source') || !args.includes('--out')) throw new Error('Usage: node build.mjs --source <checkout> --out <new-directory>');
+const source = resolve(option('--source'));
+const out = resolve(option('--out'));
+const lock = JSON.parse(await readFile(resolve(here, 'upstream.lock.json'), 'utf8'));
+const git = (...values) => execFileSync('git', ['-C', source, ...values], { encoding: 'utf8' }).trim();
+if (git('rev-parse', 'HEAD') !== lock.commit) throw new Error('Upstream commit differs from source lock');
+if (git('diff', 'HEAD', '--name-only')) throw new Error('Tracked upstream source has modifications');
+const hash = data => createHash('sha256').update(data).digest('hex');
+for (const [file, expected] of [['package-lock.json', lock.packageLockSha256], ['LICENSE', lock.licenseSha256]]) {
+  if (hash(await readFile(resolve(source, file))) !== expected) throw new Error(`Upstream digest differs: ${file}`);
+}
+const font = (await readFile(resolve(source, 'web/fonts/PlusJakartaSans-Latin.woff2'))).toString('base64');
+const inlineCss = css => css.replace('./fonts/PlusJakartaSans-Latin.woff2', `data:font/woff2;base64,${font}`);
+const css = inlineCss(await readFile(resolve(source, 'web/pano_studio.css'), 'utf8')) + '\n' + await readFile(resolve(here, 'embedded.css'), 'utf8');
+const styleBindings = new Map();
+for (const [module, file] of [['web_src/studio/stylesheet.js', 'pano_studio.css'], ['web_src/pano_styles.js', 'pano_editor.css']]) {
+  const text = inlineCss(await readFile(resolve(source, 'web', file), 'utf8'));
+  styleBindings.set(resolve(source, module).replaceAll('\\', '/'), {
+    expression: `new URL("./${file}", import.meta.url).toString()`,
+    value: JSON.stringify(`data:text/css;base64,${Buffer.from(text).toString('base64')}`),
+  });
+}
+await mkdir(out); // Never replace an existing candidate or installed package.
+const { build } = await import(pathToFileURL(resolve(source, 'node_modules/vite/dist/node/index.js')));
+const { default: vue } = await import(pathToFileURL(resolve(source, 'node_modules/@vitejs/plugin-vue/dist/index.mjs')));
+await build({
+  configFile: false,
+  root: source,
+  plugins: [{ name: 'offline-editor-styles', enforce: 'pre', transform(code, id) {
+    const normalized = id.replaceAll('\\', '/');
+    if (normalized === resolve(source, 'web_src/studio/editor.js').replaceAll('\\', '/')) {
+      const original = 'return { close, session, stage: () => ctx.stage, paint: () => paint };';
+      if (code.split(original).length !== 2) throw new Error('Upstream controller export changed');
+      return code.replace(original, 'return { close, session, stage: () => ctx.stage, paint: () => paint, controller: ctx.controller, view: () => ctx.view };');
+    }
+    if (normalized === resolve(source, 'web_src/pano_editor_state.js').replaceAll('\\', '/')) {
+      const original = 'export const HISTORY_LIMIT = 80;';
+      if (code.split(original).length !== 2) throw new Error('Upstream history contract changed');
+      return code.replace(original, 'export const HISTORY_LIMIT = 51;'); // initial state + 50 successful actions
+    }
+    const binding = styleBindings.get(normalized);
+    if (!binding) return null;
+    if (code.split(binding.expression).length !== 2) throw new Error(`Upstream stylesheet loader changed: ${id}`);
+    return code.replace(binding.expression, binding.value);
+  } }, vue()],
+  define: { 'process.env.NODE_ENV': JSON.stringify('production') },
+  resolve: { alias: { '@panorama-upstream': source } },
+  build: {
+    outDir: out,
+    emptyOutDir: false,
+    assetsInlineLimit: 0,
+    lib: { entry: resolve(here, 'studio.js'), formats: ['es'], fileName: () => 'studio.js' },
+    rollupOptions: { output: { inlineDynamicImports: true } },
+  },
+});
+await cp(resolve(source, 'web/pano_studio.css'), resolve(out, 'studio.css'));
+// Keep relative CSS resources and their licenses. These are part of the offline editor,
+// not resources to retrieve from an upstream CDN at runtime.
+await cp(resolve(source, 'web/fonts'), resolve(out, 'fonts'), { recursive: true });
+await cp(resolve(source, 'web/pano_editor.css'), resolve(out, 'pano_editor.css'));
+await cp(resolve(source, 'web/pano_studio.css'), resolve(out, 'pano_studio.css'));
+await cp(resolve(source, 'LICENSE'), resolve(out, 'UPSTREAM-LICENSE.txt'));
+await cp(resolve(here, 'upstream.lock.json'), resolve(out, 'upstream.lock.json'));
+// A self-contained payload for an opaque-origin frame: no filesystem URL, CDN or
+// executable import from the trusted host is needed when opening the editor.
+await writeFile(resolve(out, 'editor-bundle.json'), JSON.stringify({ schemaVersion: 1, script: await readFile(resolve(out, 'studio.js'), 'utf8'), stylesheet: css,
+  generationBindings: [{ operationId: 'local.thirdparty.comfy-panorama-image/scene-to-panorama', documentField: 'editorDocument', assetsField: 'references' }],
+  serviceBindings: [{ id: 'file3d', purpose: 'mediaPreparation', operationId: 'local.thirdparty.comfy-panorama-image/editor-3d-preview', modelId: 'panorama-editor-media', assetsField: 'sources' }],
+}));
+const files = [];
+async function inventory(dir) {
+  for (const entry of await readdir(dir, { withFileTypes: true })) {
+    const path = resolve(dir, entry.name);
+    if (entry.isDirectory()) await inventory(path);
+    else { const bytes = await readFile(path); files.push({ path: relative(out, path).replaceAll('\\', '/'), bytes: bytes.length, sha256: hash(bytes) }); }
+  }
+}
+await inventory(out);
+files.sort((a, b) => a.path.localeCompare(b.path));
+const bridgeSources = [];
+for (const path of ['build.mjs', 'studio.js', 'actions.js', 'state-preservation.js', 'embedded.css']) bridgeSources.push({ path, sha256: hash(await readFile(resolve(here, path))) });
+await writeFile(resolve(out, 'editor-build.json'), JSON.stringify({ schemaVersion: 1, upstream: lock,
+  upstreamLockSha256: hash(await readFile(resolve(here, 'upstream.lock.json'))), bridgeSources, files }, null, 2) + '\n');
+console.log(JSON.stringify({ output: out, upstream: lock.commit, files: files.length }));

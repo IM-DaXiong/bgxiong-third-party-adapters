@@ -111,7 +111,7 @@ fn buffered_json(response: &Value) -> Option<Value> {
     serde_json::from_slice(&bytes).ok()
 }
 
-fn exchange(
+pub(crate) fn exchange(
     h: &mut dyn Host,
     ctx: &Ctx,
     method: &str,
@@ -129,10 +129,10 @@ fn exchange(
         json!({"kind": "buffer", "maxBytes": max_buffer()}),
     )?;
     let response = port(h, "host-http.execute", args).map_err(|e| {
-        if acceptance_unknown_on_transport {
+        if acceptance_unknown_on_transport && matches!(e.code, "TIMEOUT" | "RESOURCE_UNAVAILABLE") {
             Failure {
                 code: "ACCEPTANCE_UNKNOWN",
-                message: "Transport lost before a durable Comfy reply; do not resubmit".into(),
+                message: format!("Transport lost before a durable Comfy reply; do not resubmit: {}", e.message),
             }
         } else {
             e
@@ -327,6 +327,22 @@ pub fn download(
     ctx: &Ctx,
     file: &(String, String, String),
 ) -> Result<Value, Failure> {
+    let (artifact, stat) = download_asset(h, ctx, file, "result")?;
+    if stat["kind"] != "image" { return Err(Failure::invalid("ComfyUI output is not an image")); }
+    let w = stat["width"].as_u64().ok_or_else(malformed)?;
+    let height = stat["height"].as_u64().ok_or_else(malformed)?;
+    if w == 0 || height == 0 || height.checked_mul(2) != Some(w) {
+        return Err(Failure::invalid("Panorama requires positive 2:1 image geometry"));
+    }
+    Ok(artifact)
+}
+
+pub fn download_asset(h: &mut dyn Host, ctx: &Ctx, file: &(String, String, String), role: &str) -> Result<(Value, Value), Failure> {
+    if file.0.is_empty() || file.0.contains(['/', '\\', ':']) || file.1.contains(['\\', ':'])
+        || file.1.split('/').any(|part| matches!(part, "." | ".."))
+        || file.1.starts_with('/') || !matches!(file.2.as_str(), "input" | "output" | "temp") {
+        return Err(Failure::invalid("Unsafe Comfy media reference"));
+    }
     let path = format!(
         "/view?filename={}&subfolder={}&type={}",
         encode(&file.0),
@@ -366,29 +382,19 @@ pub fn download(
         }
         e
     })?;
-    if stat["kind"] != "image" {
-        return Err(Failure {
-            code: "UPSTREAM_ERROR",
-            message: "ComfyUI output is not an image".into(),
-        });
-    }
-    let w = stat["width"].as_u64().ok_or_else(malformed)?;
-    let height = stat["height"].as_u64().ok_or_else(malformed)?;
-    if w == 0 || height == 0 || height.checked_mul(2) != Some(w) {
-        return Err(Failure::invalid("Panorama requires positive 2:1 image geometry"));
-    }
-    Ok(json!({
+    let artifact = json!({
         "kind": "media",
-        "role": "result",
+        "role": role,
         "media": {
             "id": stat["id"],
-            "kind": "image",
+            "kind": stat["kind"],
             "handle": handle,
             "mime": stat["mime"],
             "fileName": stat["fileName"],
             "byteLength": stat["byteLength"]
         }
-    }))
+    });
+    Ok((artifact, stat))
 }
 
 pub fn status_probe(h: &mut dyn Host, ctx: &Ctx) -> Result<(), Failure> {

@@ -29,7 +29,8 @@
       "denylistedHosts": [],
       "isFresh": false,
       "supportedFeatures": [
-        "image-projection-v1"
+        "image-projection-v1",
+        "opaque-file-upload-name-v1"
       ]
     },
     "mediaTtlMs": 3600000,
@@ -51,5 +52,8 @@
   "authentication": {
     "source": "none"
   },
-  "managedMediaProbe": true
+  "managedMediaProbe": true,
+  "comfyui": {
+    "serviceOnly": true
+  }
 }
