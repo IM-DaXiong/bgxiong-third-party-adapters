@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "artifactSha256": "db8f73c7736a5d6ebae09d6b5cc18b54bcf6d988c09ecd15cea7d1b9d47f8dfe",
   "displayName": "SeedVR2 视频高清放大",
   "entry": "adapter.wasm",
   "language": "rust",

@@ -1446,6 +1446,55 @@
           "sha256": "49fd18e0d79f8a6c665438f9bc9067ada9b588fed2494ccad66bc1c6359f98f4"
         }
       ]
+    },
+    {
+      "pluginId": "local.bgx.seedvr2-video",
+      "version": "1.0.0",
+      "kind": "installable",
+      "validation": "sdk_wasm_capabilities_probe_pack_and_install_tree_hashed",
+      "sourceManifest": "packages/workflow-adapters/seedvr2-video/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/seedvr2-video-1.0.0/local.bgx.seedvr2-video/1.0.0/adapter-install.json",
+          "sha256": "d3b6bfc7a90f814451fdec5c374173971def7cc06c7dc2a61ab3ed4df0fa4697"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/seedvr2-video-1.0.0/local.bgx.seedvr2-video/1.0.0/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/seedvr2-video-1.0.0/local.bgx.seedvr2-video/1.0.0/package/adapter.wasm",
+          "sha256": "db8f73c7736a5d6ebae09d6b5cc18b54bcf6d988c09ecd15cea7d1b9d47f8dfe"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/seedvr2-video-1.0.0/local.bgx.seedvr2-video/1.0.0/package/manifest.json",
+          "sha256": "f65f42e9fd6c2ce1a4f6e03928ae07590ea4989c9a2a634a148e60a95cc3d5d9"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/seedvr2-video-1.0.0/local.bgx.seedvr2-video/1.0.0/package/manifest.sha256",
+          "sha256": "9fcc857440d29402cea988fdd3c21ce4a443b54452ec74cd2a21f9b102013f44"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/seedvr2-video-1.0.0/local.bgx.seedvr2-video/1.0.0/README.txt",
+          "sha256": "ca90f8a3d0dbf4bb3a289fce72ce66434942aecb345b13c95b4c915480bb95a3"
+        },
+        {
+          "path": "workflow-templates.json",
+          "source": "artifacts/releases/seedvr2-video-1.0.0/local.bgx.seedvr2-video/1.0.0/workflow-templates.json",
+          "sha256": "62209df7a5e01b72e557a79ef2f3319ef7d4b3842b822d510e19fb05f353770a"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/seedvr2-video-1.0.0/local.bgx.seedvr2-video/1.0.0/安装说明.txt",
+          "sha256": "9e9d9ea275b143bfb7eec0d7187eb6460ef08cf0ed648cff34b241d433a4e7ed"
+        }
+      ]
     }
   ],
   "unpublishable": [

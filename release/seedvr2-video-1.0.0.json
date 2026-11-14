@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "status": "built-and-checked-not-published",
+  "pluginId": "local.bgx.seedvr2-video",
+  "version": "1.0.0",
+  "displayName": "SeedVR2 视频高清放大",
+  "transportSlot": "videoUpscale",
+  "operationId": "local.bgx.seedvr2-video/upscale",
+  "operationVersion": 1,
+  "cancellation": "unsupported",
+  "artifactSha256": "db8f73c7736a5d6ebae09d6b5cc18b54bcf6d988c09ecd15cea7d1b9d47f8dfe",
+  "wasmBytes": 898004,
+  "zipFile": "local.bgx.seedvr2-video-1.0.0.zip",
+  "zipSha256": "dd010e8eeedadf71e7276c1e6edc905171350e982983a6707e1c27a50030d413",
+  "zipBytes": 210269,
+  "githubReleasePublished": false,
+  "downloadUrl": null,
+  "localReleaseTree": "artifacts/releases/seedvr2-video-1.0.0/local.bgx.seedvr2-video/1.0.0",
+  "localCurrentTree": "artifacts/current/local.bgx.seedvr2-video/1.0.0",
+  "toolchain": {
+    "declared": "contract/v2/rust-toolchain.toml channel 1.95.0 target wasm32-wasip2",
+    "rustc": "1.95.0 (59807616e 2026-04-14)",
+    "cargo": "1.95.0 (f2d3ce0bd 2026-03-21)"
+  },
+  "build": {
+    "officialAuthorBuild": "bgx-adapter-v2 build exited 1: package template-lock.json matches seedvr2-image and differs from current contract/v2/templates/template-lock.json. WIT and vendored Rust SDK sources still match contract/v2. SDK was not upgraded.",
+    "wasmCommand": "cargo build --release --locked --target wasm32-wasip2 --lib",
+    "wasmExit": 0,
+    "crateTest": "cargo test --locked --lib",
+    "crateTestExit": 0,
+    "crateTestResult": "4 passed"
+  },
+  "checks": [
+    {
+      "command": "bgx-adapter-v2 check on the author project",
+      "exit": 0,
+      "status": "VALIDATED",
+      "checks": ["inventory", "schema", "signature-policy", "wasm-capabilities", "wasm-package-validation"],
+      "network": "disabled"
+    },
+    {
+      "command": "bgx-adapter-v2 pack",
+      "exit": 0,
+      "status": "PACKED"
+    },
+    {
+      "command": "bgx-adapter-v2 check on artifacts/releases package directory",
+      "exit": 0,
+      "status": "VALIDATED"
+    },
+    {
+      "command": "bgx-adapter-v2 check after appending one byte to a copy of adapter.wasm",
+      "exit": 1,
+      "code": "INVALID_PACKAGE"
+    }
+  ],
+  "files": [
+    {"path": "LICENSE", "bytes": 1506, "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"},
+    {"path": "README.txt", "bytes": 131, "sha256": "ca90f8a3d0dbf4bb3a289fce72ce66434942aecb345b13c95b4c915480bb95a3"},
+    {"path": "adapter-install.json", "bytes": 1282, "sha256": "d3b6bfc7a90f814451fdec5c374173971def7cc06c7dc2a61ab3ed4df0fa4697"},
+    {"path": "package/adapter.wasm", "bytes": 898004, "sha256": "db8f73c7736a5d6ebae09d6b5cc18b54bcf6d988c09ecd15cea7d1b9d47f8dfe"},
+    {"path": "package/manifest.json", "bytes": 849, "sha256": "f65f42e9fd6c2ce1a4f6e03928ae07590ea4989c9a2a634a148e60a95cc3d5d9"},
+    {"path": "package/manifest.sha256", "bytes": 157, "sha256": "9fcc857440d29402cea988fdd3c21ce4a443b54452ec74cd2a21f9b102013f44"},
+    {"path": "workflow-templates.json", "bytes": 142, "sha256": "62209df7a5e01b72e557a79ef2f3319ef7d4b3842b822d510e19fb05f353770a"},
+    {"path": "安装说明.txt", "bytes": 442, "sha256": "9e9d9ea275b143bfb7eec0d7187eb6460ef08cf0ed648cff34b241d433a4e7ed"}
+  ],
+  "notRun": [
+    "GitHub Release publication",
+    "host installation into the Windows application",
+    "ComfyUI / GPU upscale",
+    "paid cloud tasks"
+  ]
+}

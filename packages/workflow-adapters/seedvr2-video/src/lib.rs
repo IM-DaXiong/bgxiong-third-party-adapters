@@ -348,8 +348,13 @@ mod tests {
     fn one_video_operation_is_async_resumable_and_has_matching_schema_digests() {
         let caps = capabilities();
         let contract = &caps["capabilityContracts"][0];
+        assert_eq!(contract["capabilityKey"], OPERATION);
         assert_eq!(contract["transportSlot"], "videoUpscale");
-        assert_eq!(contract["operations"][0]["mediaSlots"][0]["maxCount"], 1);
+        assert_eq!(contract["operations"][0]["id"], OPERATION);
+        assert_eq!(contract["operations"][0]["mediaSlots"][0]["mediaKind"], "video");
+        assert_eq!(contract["operations"][0]["outputSlots"][0]["kind"], "video");
+        assert_eq!(contract["operations"][0]["execution"]["mode"], "asynchronous");
+        assert_eq!(contract["operations"][0]["execution"]["cancellation"], "unsupported");
         assert_eq!(contract["operations"][0]["execution"]["resumable"], true);
         for value in contract["schemas"].as_array().unwrap() {
             let source = value["schemaJson"].as_str().unwrap();

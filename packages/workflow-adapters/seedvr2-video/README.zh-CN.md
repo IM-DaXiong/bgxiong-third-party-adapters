@@ -4,4 +4,4 @@
 
 `workflow/source.json` 是视频高清放大原件。`src/workflow-api.json` 是它的 API 投影：LoadVideo、GetVideoComponents、SeedVR2、CreateVideo、SaveVideo。绕过的 alpha 节点不进入投影。`writerCrf` 不在本图的保存节点上，传入会被拒绝。取消声明为 `unsupported`，不调用 ComfyUI 全局 interrupt。
 
-本目录是源码。未在当前环境编出 wasm 之前，不能把这里当成可安装 ZIP。
+源码清单里的 `artifactSha256` 是 `wasm32-wasip2` 正式构建产物的真实摘要。安装树和 ZIP 不在本目录；发行回执是 `release/seedvr2-video-1.0.0.json`。本目录没有 GitHub Release 下载地址。
