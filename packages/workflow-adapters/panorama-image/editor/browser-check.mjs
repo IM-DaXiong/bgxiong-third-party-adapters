@@ -61,8 +61,15 @@ try {
           const bundle = await (await fetch('/editor-bundle.json')).json();
           frame = document.createElement('iframe'); frame.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;border:0'; document.body.appendChild(frame);
           const initialAssets = await Promise.all([...assets].map(async ([filename, url]) => ({ name: `input//${filename}`, bytes: await (await fetch(url)).arrayBuffer(), mimeType: 'image/png', mediaRel: `fixtures/${filename}`, sha256: window.check.geometryFixture ? 'a'.repeat(64) : 'test-only' })));
-          editor = await openEditorFrame(frame, bundle, { nodeId: 'test_scene', stateText: saved, preferences: window.check.preferences, assets: [...initialAssets, ...storedAssets.values()],
-            inputNodeIds: window.check.inputNodeIds ?? [], connectedDocuments: (window.check.connectedDocuments ?? []).map(source => ({ ...source, assets: initialAssets })) }, async (method, params) => {
+          const present=asset=>{if(bundle.assetTransport!=='blob-v1')return asset;const {bytes,blob,...metadata}=asset;return {...metadata,assetKey:asset.name};};
+          editor = await openEditorFrame(frame, bundle, { nodeId: 'test_scene', stateText: saved, preferences: window.check.preferences, assets: [...initialAssets, ...storedAssets.values()].map(present),
+            inputNodeIds: window.check.inputNodeIds ?? [], connectedDocuments: (window.check.connectedDocuments ?? []).map(source => ({ ...source, assets: initialAssets.map(present) })) }, async (method, params) => {
+            if(method==='asset.load'){
+              const asset=initialAssets.find(a=>a.name===params.assetKey)??storedAssets.get(params.assetKey);
+              if(!asset)throw new Error('Unknown owned fixture asset');
+              (window.check.loadedAssets??=[]).push(asset.name);
+              return asset.blob??new Blob([asset.bytes],{type:asset.mimeType});
+            }
             if (method === 'editor.closed') return;
             if (method === 'preferences.set') { window.check.preferences[params.key] = params.value; return; }
             if (method === 'editor.protection') { window.check.protection = params; return; }
@@ -77,7 +84,7 @@ try {
               const asset={role:'geometryFile',name:'editor-results/geometry-original/0',mediaRel:'fixtures/geometry.glb',sha256:'b'.repeat(64),mimeType:'application/octet-stream',bytes:new Uint8Array(window.check.geometryFixture).buffer};
               storedAssets.set(asset.name,asset);
               const source=window.check.geometrySource;
-              return {status:'completed',taskId:params.taskId,assets:[asset],data:{metadataJson:JSON.stringify({version:1,source,
+              return {status:'completed',taskId:params.taskId,assets:[present(asset)],data:{metadataJson:JSON.stringify({version:1,source,
                 sourceAssets:(source.video?[source.video]:source.images).map(file=>({name:`${file.storage}/${file.subfolder}/${file.filename}`,sha256:'a'.repeat(64)})),
                 ui:{pano_scene_files:[{assetIndex:0,format:'model/gltf-binary'}],pano_scene_meta:[{kind:'mesh',unlit:true}]}})}};
             }
@@ -345,6 +352,8 @@ try {
     await surface.getByRole('button',{name:'几何输入',exact:true}).click();
     assert.equal(await surface.getByRole('radio',{name:'视频',exact:true}).isChecked(),true);
     assert.equal(await surface.getByRole('radio',{name:'walk.mp4',exact:true}).isChecked(),true);
+    assert.equal(await page.evaluate(()=>window.check.loadedAssets.includes('input//walk.mp4')),false);
+    assert.ok(await page.evaluate(()=>window.check.loadedAssets.includes('editor-results/geometry-original/0')));
     assert.equal(await page.evaluate(()=>window.check.geometrySubmits),2);
     await page.screenshot({path:resolve(results,'geometry-video-panel.png')});
     await page.evaluate(()=>window.check.close());

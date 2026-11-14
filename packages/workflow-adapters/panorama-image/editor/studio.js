@@ -20,18 +20,47 @@ export async function openAdapterEditor(initial, host) {
   const inputAssets = new Map();
   const urls = new Set();
   const key = source => `${source.storage ?? source.type ?? 'input'}/${source.subfolder ?? ''}/${source.filename}`;
+  const materialize=asset=>{
+    if(asset.url)return asset;
+    const blob=asset.blob instanceof Blob?asset.blob:asset.bytes instanceof ArrayBuffer?new Blob([asset.bytes],{type:asset.mimeType}):null;
+    if(!blob)return asset;
+    const url=URL.createObjectURL(blob);urls.add(url);return {...asset,blob,url};
+  };
   const addAsset = asset => {
     const existing=assets.get(asset.name);
     if(existing){if(existing.sha256!==asset.sha256)throw new Error('同名工程素材的摘要已经改变');assets.set(asset.name,{...existing,...asset,url:existing.url});return;}
-    const url = URL.createObjectURL(new Blob([asset.bytes], { type: asset.mimeType }));
-    urls.add(url);
-    assets.set(asset.name, { ...asset, url });
+    assets.set(asset.name,materialize(asset));
   };
   for (const asset of initial.assets ?? []) addAsset(asset);
   const connected = connectedScenes(initial, asset => {
-    const url = URL.createObjectURL(new Blob([asset.bytes], { type: asset.mimeType }));
-    urls.add(url); inputAssets.set(asset.name, { ...asset, url });
+    inputAssets.set(asset.name,materialize(asset));
   });
+  const ensureAsset=async name=>{
+    const table=assets.has(name)?assets:inputAssets,asset=table.get(name);
+    if(!asset)throw new Error(`工程素材缺失：${name}`);
+    if(asset.url)return asset;
+    if(!asset.assetKey)throw new Error(`工程素材传输声明缺失：${name}`);
+    const blob=await host.call('asset.load',{assetKey:asset.assetKey});
+    if(!(blob instanceof Blob))throw new Error('工程素材传输没有返回Blob');
+    const ready=materialize({...asset,blob});table.set(name,ready);return ready;
+  };
+  // Only rendered sources enter browser memory. Unused historical/service attachments
+  // stay as owned metadata; geometry's inference source is not itself a render input.
+  const hydrate=async value=>{
+    const needed=new Set();
+    const walk=v=>{
+      if(!v||typeof v!=='object')return;
+      if(typeof v.assetName==='string'){needed.add(v.assetName);return;}
+      if(v.kind==='file'||v.type==='comfy_image'){needed.add(key(v));return;}
+      for(const [name,child] of Object.entries(v)){
+        if(name==='bgxGeometry'){walk(child?.preview?.ui);continue;}
+        walk(child);
+      }
+    };
+    walk(value);for(const name of needed)await ensureAsset(name);
+  };
+  await hydrate(JSON.parse(initial.stateText||'{}'));
+  for(const layer of connected.layers)await hydrate({state:layer.state,ui:layer.ui});
   const marker = document.createElement('style');
   marker.id = 'pano-studio-style-link'; marker.dataset.loaded = 'true'; document.head.appendChild(marker);
   const api = {
@@ -40,7 +69,7 @@ export async function openAdapterEditor(initial, host) {
       if (url.pathname !== '/view') throw new Error(`Unsupported media URL: ${url.pathname}`);
       const name = key({ filename: url.searchParams.get('filename'), subfolder: url.searchParams.get('subfolder') ?? '', storage: url.searchParams.get('type') ?? 'input' });
       const asset = assets.get(name) ?? inputAssets.get(name);
-      if (!asset) throw new Error(`Missing persistent asset: ${url.searchParams.get('filename')}`);
+      if (!asset?.url) throw new Error(`Missing loaded asset: ${url.searchParams.get('filename')}`);
       return asset.url;
     },
     async fetchApi(route, options = {}) {
@@ -52,10 +81,9 @@ export async function openAdapterEditor(initial, host) {
         // Reusing a display filename must not replace the source of an older sticker.
         const filename = `${crypto.randomUUID()}-${file.name.replace(/[\\/]/g, '_')}`;
         const name = `input/${subfolder}/${filename}`;
-        const bytes = await file.arrayBuffer();
         const mimeType = file.type || 'application/octet-stream';
-        const persisted = await host.call('asset.store', { name, mimeType, bytes });
-        addAsset({ ...persisted, name, bytes, mimeType });
+        const persisted = await host.call('asset.store', { name, mimeType, blob:file });
+        addAsset({ ...persisted, name, blob:file, mimeType });
         return { status: 200, ok: true, json: async () => ({ name: filename, subfolder, type: 'input' }) };
       }
       if (route === '/panorama_suite/file_3d' && options.method === 'POST') {
@@ -63,7 +91,7 @@ export async function openAdapterEditor(initial, host) {
         const original = assets.get(key(source));
         if (!original) throw new Error('3D source does not belong to this document');
         const result = await host.call('operation.run', { serviceId: 'file3d', sourceNames: [original.name], input: { fileName: source.filename } });
-        for (const asset of result.assets) addAsset(asset);
+        for (const asset of result.assets) {addAsset(asset);await ensureAsset(asset.name);}
         const metadata = JSON.parse(result.data.metadataJson);
         const localSource = descriptor => {
           const asset = result.assets.find(asset => asset.role === descriptor.assetRole);
@@ -138,10 +166,10 @@ export async function openAdapterEditor(initial, host) {
     readOnly: protection.readOnly,
     inputs: connected.inputs, graphNodes: connected.nodes,
     app, api, stylesheetUrl: 'preloaded',
-    assetFile: name => {
-      const asset = assets.get(name);
-      if (!asset) throw new Error('Named asset does not belong to this document');
-      return new File([asset.bytes], name.split('/').at(-1), { type: asset.mimeType });
+    assetFile: async name => {
+      if(!assets.has(name))throw new Error('Named asset does not belong to this document');
+      const asset = await ensureAsset(name);
+      return new File([asset.blob], name.split('/').at(-1), { type: asset.mimeType });
     },
     storage: { getItem: key => memory.get(key) ?? null, setItem: (key, value) => {
       value = String(value); memory.set(key, value); pendingPreferences.set(key, value);
@@ -150,6 +178,7 @@ export async function openAdapterEditor(initial, host) {
     } },
     onStateChange: async stateText => {
       if(protection.readOnly)return;
+      await hydrate(JSON.parse(stateText));
       updateGeometryUi(stateText);
       await host.call('document.save', {stateText,assets:[...assets.values()].map(({name,mediaRel,sha256,mimeType})=>({name,mediaRel,sha256,mimeType}))});
       editor?.refreshMedia();
@@ -163,6 +192,7 @@ export async function openAdapterEditor(initial, host) {
     const result = await editor.close();
     await flushPreferences();
     for (const url of urls) URL.revokeObjectURL(url);
+    urls.clear();assets.clear();inputAssets.clear();
     marker.remove();
     toolbar?.remove();
     geometryPanel?.remove();

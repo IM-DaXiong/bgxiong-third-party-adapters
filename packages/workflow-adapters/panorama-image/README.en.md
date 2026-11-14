@@ -45,3 +45,9 @@ Adds the frozen upstream H3/MoGe/CrossView workflow driven by the saved Studio s
 The geometry panel selects either owned images or one owned video and retains the choice on reopen. DA3/MoGe consume every decoded video frame through VHS with format=None and no rate, crop, resize, or frame selection override. Measured frame timestamps must match the saved scene timing; panoramic MoGe requires 2:1 input. The original video and audio remain retained. Preparation and explicit adoption are separate actions.
 
 Adapter behavior checks (28), the production editor selection/reopen path, and SDK package validation pass. Browser fixtures do not verify video decoding. Actual host video geometry, real GPU inference, and large-file transport remain pending. This is a candidate, not the public downloadable release.
+
+# Lazy asset candidate 1.19.0
+
+The companion declares `assetTransport: blob-v1`. Opening receives owned metadata and loads Blob assets referenced by the current scene or preview. Unused source videos, geometry inputs and old results are not eagerly materialized. Import uses the same streaming host owner; inherited assets retain their parent revision. A matching application with the 256 KiB transfer implementation is required; SDK 2.4.0 remains unchanged.
+
+Standard SDK package checks and production companion geometry, repair/adoption and parent-child save/reopen checks pass. Native large-file and actual application deployment checks are still pending. This candidate does not replace the public downloadable release; browser fixtures are not evidence of real video decoding or GPU inference.
