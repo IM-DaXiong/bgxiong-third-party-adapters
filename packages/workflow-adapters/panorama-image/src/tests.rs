@@ -155,14 +155,14 @@ fn scene_submission_uploads_all_views_and_checkpoints_one_qwen_prompt() {
 #[test]
 fn query_uses_public_query_dto_and_only_the_original_prompt() {
     use bgx_adapter_v2_sdk::{Host, host};
-    struct QueueHost { complete: bool, calls: usize }
+    struct QueueHost { complete: bool, calls: usize, video: bool }
     impl Host for QueueHost {
         fn call(&mut self, c:bgx_adapter_v2_sdk::HostPortCallV2)->Result<serde_json::Value,host::HostError> {
             let c=serde_json::to_value(c).unwrap();
             self.calls += 1;
             if c["method"] == "host-media.info" {
                 assert_eq!(c["args"]["handle"], "lease-result");
-                return Ok(json!({"id":"result-id","kind":"image","mime":"image/jpeg","byteLength":"100","sha256":"a".repeat(64),"width":2048,"height":1024,"durationMs":null,"timestampsMs":null,"fileName":"original.jpg"}));
+                return Ok(json!({"id":"result-id","kind":if self.video {"video"} else {"image"},"mime":if self.video {"video/mp4"} else {"image/jpeg"},"byteLength":"100","sha256":"a".repeat(64),"width":2048,"height":1024,"durationMs":if self.video {json!("5042")} else {json!(null)},"timestampsMs":null,"fileName":if self.video {"original.mp4"} else {"original.jpg"}}));
             }
             assert_eq!(c["method"],"host-http.execute");
             assert_eq!(c["args"]["plan"]["method"],"GET");
@@ -173,20 +173,27 @@ fn query_uses_public_query_dto_and_only_the_original_prompt() {
                 return Ok(json!({"status":200,"headers":[],"payload":{"kind":"media","handle":"lease-result"}}));
             }
             let body=if url.ends_with("/queue") {json!({"queue_running":[[1,"original",{},{}]],"queue_pending":[]})}
-                else {assert!(url.ends_with("/history/original")); if self.complete {json!({"original":{"status":{"status_str":"success"},"outputs":{"66":{"images":[{"filename":"original.jpg","subfolder":"","type":"output"}]}}}})} else {json!({})}};
+                else {assert!(url.ends_with("/history/original")); if self.complete {json!({"original":{"status":{"status_str":"success"},"outputs":{"66":{(if self.video {"gifs"} else {"images"}):[{"filename":if self.video {"original.mp4"} else {"original.jpg"},"subfolder":"","type":"output"}]}}}})} else {json!({})}};
             Ok(json!({"status":200,"headers":[],"payload":{"kind":"buffered","bytes":serde_json::to_vec(&body).unwrap()}}))
         }
     }
     let payload=json!({"modelId":MODEL_ID,"capabilityKey":CAPABILITY_KEY,"operationId":OPERATION_ID,"operationVersion":1,"vendorTaskId":"original","resumeToken":{"promptId":"original"},"configuration":{"endpointBaseUrl":"http://127.0.0.1:8188","credentialRef":null}});
     let invocation=serde_json::from_value(json!({"protocolVersion":2,"operation":"query","profileId":"binding","capabilitySlot":"image","requestId":"q","budgetMs":1000,"payloadJson":payload.to_string(),"bindingId":"binding","negotiatedVersion":2,"enabledFeatures":[]})).unwrap();
-    let result=crate::query(&mut QueueHost {complete:false,calls:0},&invocation,&payload).unwrap();
+    let result=crate::query(&mut QueueHost {complete:false,calls:0,video:false},&invocation,&payload).unwrap();
     assert_eq!(result["status"],"running");
     serde_json::from_value::<bgx_adapter_v2_sdk::QueryResult>(result).unwrap();
-    let mut h=QueueHost {complete:true,calls:0};
+    let mut h=QueueHost {complete:true,calls:0,video:false};
     let result=crate::query(&mut h,&invocation,&payload).unwrap();
     assert_eq!(h.calls,4);
     assert_eq!(result["status"],"succeeded");
     assert_eq!(result["data"]["mediaArtifacts"][0]["mediaId"],"result-id");
     assert_eq!(result["outputs"][0]["media"]["mime"],"image/jpeg");
+    serde_json::from_value::<bgx_adapter_v2_sdk::QueryResult>(result).unwrap();
+    let mut video=payload.clone();
+    video["operationId"]=json!(crate::video_workflows::OPERATION);
+    video["modelId"]=json!(crate::video_workflows::MODEL);video["capabilityKey"]=json!("video.generate");
+    let result=crate::query(&mut QueueHost{complete:true,calls:0,video:true},&invocation,&video).unwrap();
+    assert_eq!(result["data"]["mediaArtifacts"][0]["kind"],"video");
+    assert_eq!(result["outputs"][0]["media"]["mime"],"video/mp4");
     serde_json::from_value::<bgx_adapter_v2_sdk::QueryResult>(result).unwrap();
 }

@@ -270,6 +270,10 @@ fn listed(queue: &Value, key: &str, id: &str) -> bool {
 }
 
 pub fn status(h: &mut dyn Host, ctx: &Ctx, id: &str, output_node: &str) -> Result<Remote, Failure> {
+    status_media(h,ctx,id,output_node,"images")
+}
+
+pub fn status_media(h: &mut dyn Host, ctx: &Ctx, id: &str, output_node: &str, output_key: &str) -> Result<Remote, Failure> {
     let queue = exchange(
         h,
         ctx,
@@ -302,7 +306,7 @@ pub fn status(h: &mut dyn Host, ctx: &Ctx, id: &str, output_node: &str) -> Resul
         }
         _ => return Ok(Remote::Running),
     }
-    let files = entry["outputs"][output_node]["images"]
+    let files = entry["outputs"][output_node][output_key]
         .as_array()
         .ok_or_else(malformed)?;
     let mut out = Vec::new();
@@ -328,8 +332,12 @@ pub fn download_projected(
     file: &(String, String, String),
     projection: &str,
 ) -> Result<Value, Failure> {
+    download_projected_kind(h,ctx,file,projection,"image")
+}
+
+pub fn download_projected_kind(h: &mut dyn Host, ctx: &Ctx, file: &(String,String,String), projection: &str, kind: &str) -> Result<Value,Failure> {
     let (artifact, stat) = download_asset(h, ctx, file, "result")?;
-    if stat["kind"] != "image" { return Err(Failure::invalid("ComfyUI output is not an image")); }
+    if stat["kind"] != kind { return Err(Failure::invalid("ComfyUI output kind differs from its declared operation")); }
     let w = stat["width"].as_u64().ok_or_else(malformed)?;
     let height = stat["height"].as_u64().ok_or_else(malformed)?;
     if w == 0 || height == 0 || match projection {"flat"=>false,"equirectangular180"=>w!=height,"equirectangular360"=>height.checked_mul(2)!=Some(w),_=>true} {

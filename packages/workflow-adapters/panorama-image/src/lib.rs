@@ -9,6 +9,7 @@ mod mapping;
 mod scene;
 mod editor_media;
 mod workflows;
+mod video_workflows;
 
 #[cfg(test)]
 mod tests;
@@ -141,7 +142,9 @@ fn submit(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<
         budget_ms: request.r#budget_ms,
     };
     let workflow=workflows::operation(payload["operationId"].as_str().unwrap_or(""));
-    let (graph, applied) = if payload["operationId"] == capability::SCENE_OPERATION || workflow.is_some() {
+    let (graph, applied) = if video_workflows::matches(payload) {
+        video_workflows::graph(input)?
+    } else if payload["operationId"] == capability::SCENE_OPERATION || workflow.is_some() {
         let document = scene::SceneDocument::parse(input["editorDocument"].as_str().ok_or_else(|| Failure::invalid("Missing editor document"))?)?;
         let mut uploads = BTreeMap::new();
         let mut assets = BTreeMap::new();
@@ -190,7 +193,8 @@ fn query(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<V
         ));
     }
     let projection=if workflows::matches(payload) {payload["resumeToken"]["projection"].as_str().filter(|p|matches!(*p,"flat"|"equirectangular180"|"equirectangular360")).ok_or_else(||Failure::invalid("Saved projection is missing"))?} else {"equirectangular360"};
-    match comfy::status(host, &ctx, id, OUTPUT_NODE)? {
+    let video=video_workflows::matches(payload);
+    match comfy::status_media(host, &ctx, id, OUTPUT_NODE, if video {"gifs"} else {"images"})? {
         comfy::Remote::Queued => Ok(json!({
             "status": "queued",
             "resumeToken": payload["resumeToken"],
@@ -210,7 +214,7 @@ fn query(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<V
             "usage": null
         })),
         comfy::Remote::Succeeded(files) => {
-            let artifact = comfy::download_projected(host, &ctx, &files[0],projection)?;
+            let artifact = comfy::download_projected_kind(host, &ctx, &files[0],projection,if video {"video"} else {"image"})?;
             let media_id = artifact["media"]["id"].clone();
             Ok(json!({
                 "status": "succeeded",
@@ -220,7 +224,7 @@ fn query(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<V
                     "mediaArtifacts": [{
                         "mediaId": media_id,
                         "role": "result",
-                        "kind": "image",
+                        "kind": if video {"video"} else {"image"},
                         "projection": projection
                     }]
                 },

@@ -96,6 +96,8 @@ pub fn capabilities() -> Value {
     let workflows=crate::workflows::contracts(&scene);
     result["capabilityContracts"].as_array_mut().expect("contracts").push(scene);
     result["capabilityContracts"].as_array_mut().expect("contracts").extend(workflows);
+    let video=crate::video_workflows::contract(&result["capabilityContracts"][0]);
+    result["capabilityContracts"].as_array_mut().expect("contracts").push(video);
     result["capabilityContracts"].as_array_mut().expect("contracts").push(crate::editor_media::contract(&schema("config", CONFIG_SCHEMA)));
     result
 }
