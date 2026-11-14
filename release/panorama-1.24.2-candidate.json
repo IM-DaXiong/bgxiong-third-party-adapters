@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "status": "public-development-candidate",
+  "pluginId": "local.thirdparty.comfy-panorama-image",
+  "version": "1.24.2",
+  "sourceCommit": "fa0c76ff242fb3bfba83cd748bb34c420af0fd69",
+  "sdkCommit": "ddc91f3c3465863da5b58082292f61583d48b829",
+  "upstreamCommit": "6db991a7ef077170ce51a2f32e29737678285183",
+  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/panorama-1.24.2-candidate/comfy-panorama-image-1.24.2.zip",
+  "sha256": "06c2c0fb2d9b20c6d3c1deeac6a5bda966031e34c41663062fc411a8aa1c792a",
+  "bytes": 2896143,
+  "publicDownloadRestored": true,
+  "files": [
+    {
+      "path": "adapter-install.json",
+      "bytes": 1812,
+      "sha256": "96b9c1cbfb30dca4f6f1419a66be535ff6333e0d2bd6bbcf3195ee7375cf5316"
+    },
+    {
+      "path": "comfy-nodes/bgx_panorama_inputs/__init__.py",
+      "bytes": 6122,
+      "sha256": "97291114658fcb25e1cd164d68302bcbfda5aac030f3a65c9696d4dc13e3090a"
+    },
+    {
+      "path": "editor-bundle.json",
+      "bytes": 7761548,
+      "sha256": "9bf4a35eccdddff87a0f0c7f62a8a9c3534f77e4e67128b09174ad6b5dfedc65"
+    },
+    {
+      "path": "FONT-LICENSE.txt",
+      "bytes": 4495,
+      "sha256": "05831cfb0b8fbbb02633f7c8968684f43a3b25cb9ea7e45db10b24078ddb922f"
+    },
+    {
+      "path": "LICENSE.txt",
+      "bytes": 1506,
+      "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+    },
+    {
+      "path": "package/adapter.wasm",
+      "bytes": 1701626,
+      "sha256": "23376ae1ad805805985a92f8379bda009ba12b27b6d2f37109809c74ca75295f"
+    },
+    {
+      "path": "package/manifest.json",
+      "bytes": 940,
+      "sha256": "3df650345a386231ae5463cefd3cbb9b68873190e7c62bb4b2afe66133c93ab8"
+    },
+    {
+      "path": "package/manifest.sha256",
+      "bytes": 157,
+      "sha256": "93586fe4ab485ddbd18423558b17203d7e89fe9b79c1da28c68f1b99ac324289"
+    },
+    {
+      "path": "PANORAMA-LICENSE.txt",
+      "bytes": 1086,
+      "sha256": "576cd4d129054efd94fb68a65713b88fef660e95a783fc0b474b3b65d7e44903"
+    },
+    {
+      "path": "README.en.md",
+      "bytes": 9028,
+      "sha256": "c0c814ed1b5812a5afdb5cb36bc7f0bea804eb5630b659119e9862e683154bb4"
+    },
+    {
+      "path": "README.zh-CN.md",
+      "bytes": 13062,
+      "sha256": "116a6ed8d1064a03497f9efcddf8c4610f4d04243ac6b7b169af4d7339f48b3b"
+    },
+    {
+      "path": "upstream.lock.json",
+      "bytes": 2348,
+      "sha256": "3adad984412c377501130935855bfa03d0233f5151ea564bf2d34bd06c4c6fec"
+    }
+  ],
+  "acceptance": {
+    "sdkPackage": "build/check/pack/check passed",
+    "browser": "four production pointer drag combinations passed; camera and sticker states checked",
+    "realComfyUI": "not-run"
+  }
+}
