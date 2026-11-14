@@ -8,6 +8,7 @@ mod comfy;
 mod mapping;
 mod scene;
 mod editor_media;
+mod editor_prepare;
 mod workflows;
 mod video_workflows;
 
@@ -134,6 +135,7 @@ fn scene_media(payload: &Value, media_id: &str, name: &str) -> Result<Value, Fai
 }
 
 fn submit(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<Value, Failure> {
+    if payload["operationId"] == editor_prepare::OPERATION { return editor_prepare::submit(host,request,payload); }
     if payload["operationId"] == editor_media::OPERATION { return editor_media::submit(host, request, payload); }
     require_operation(payload)?;
     let input = &payload["input"];
@@ -179,6 +181,7 @@ fn submit(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<
 }
 
 fn query(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<Value, Failure> {
+    if payload["operationId"] == editor_prepare::OPERATION { return editor_prepare::query(host,request,payload); }
     require_operation(payload)?;
     let ctx = comfy::Ctx {
         config: &payload["configuration"],

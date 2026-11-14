@@ -5,6 +5,7 @@ import { createEditorActions } from './actions.js';
 import { loadSceneState, sceneStateText } from '@panorama-upstream/web_src/pano_scene_state.js';
 import { inspectStatePreservation } from './state-preservation.js';
 import { connectedScenes } from './connected-scenes.js';
+import { captureToolbar } from './capture-toolbar.js';
 
 /** Installation companion entry. The product bridge only knows documents and opaque assets;
  * Comfy source naming and route translation belong to this adapter.
@@ -84,7 +85,22 @@ export async function openAdapterEditor(initial, host) {
       if (pendingPreferences.get(key) === value) pendingPreferences.delete(key);
     }
   }
+  const captureTaskKey = `capture.lastTask:${initial.nodeId}`;
+  let toolbar = null;
+  const capture = async (action, args) => {
+    const result = action === 'capture.frame'
+      ? await host.call('operation.run', { serviceId: 'frameCapture', sourceNames: [], input: {
+        outputProjection: 'flat', advanced: { megapixels: args.megapixels, multiple: args.multiple },
+      } })
+      : await host.call('operation.collect', { taskId: args.taskId });
+    for (const asset of result.assets) addAsset(asset);
+    await host.call('preferences.set', { key: captureTaskKey, value: result.taskId });
+    memory.set(captureTaskKey, result.taskId);
+    toolbar?.refresh(result);
+    return { ...result, assets: result.assets.map(({ bytes, ...asset }) => asset) };
+  };
   const editor = await openPanoramaStudio({ nodeId: initial.nodeId, stateText: initial.stateText ?? '',
+    capture,
     readOnly: protection.readOnly,
     inputs: connected.inputs, graphNodes: connected.nodes,
     app: { nodeOutputs: connected.layers.length ? { [initial.nodeId]: { pano_upstream_layers: connected.layers } } : {} }, api, stylesheetUrl: 'preloaded',
@@ -104,11 +120,13 @@ export async function openAdapterEditor(initial, host) {
     }),
     onClosed: () => { void host.call('editor.closed', null).catch(() => {}); },
   });
+  toolbar = protection.readOnly ? null : captureToolbar(editor, () => memory.get(captureTaskKey));
   return { read: editor.read, describe: async () => ({ ...await editor.describe(), protection }), act: editor.act, async flush() { const result = await editor.flush(); await flushPreferences(); return result; }, async close() {
     const result = await editor.close();
     await flushPreferences();
     for (const url of urls) URL.revokeObjectURL(url);
     marker.remove();
+    toolbar?.remove();
     return result;
   } };
 }
@@ -117,7 +135,7 @@ export async function openAdapterEditor(initial, host) {
  * The host owns persistent media and transport; no host credentials enter the editor.
  * api implements the upstream media routes, app supplies actual connected input results.
  */
-export async function openPanoramaStudio({ nodeId, stateText = '', inputs = [], graphNodes = [], app, api, stylesheetUrl, storage, onStateChange, onClosed, readOnly = false, assetFile }) {
+export async function openPanoramaStudio({ nodeId, stateText = '', inputs = [], graphNodes = [], app, api, stylesheetUrl, storage, onStateChange, onClosed, readOnly = false, assetFile, capture }) {
   if (typeof nodeId !== 'string' || !nodeId) throw new Error('A stable scene node identity is required');
   if (typeof stateText !== 'string') throw new Error('Scene state must be JSON text');
   if (!api || typeof api.apiURL !== 'function' || typeof api.fetchApi !== 'function') throw new Error('Persistent media transport is required');
@@ -170,7 +188,7 @@ export async function openPanoramaStudio({ nodeId, stateText = '', inputs = [], 
   }
   return {
     read: () => structuredClone(editor.session.state),
-    ...createEditorActions(editor, flush, { assetFile }),
+    ...createEditorActions(editor, flush, { assetFile, capture }),
     flush,
     async close() {
       if (!closed) { closed = true; editor.close(); }

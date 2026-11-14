@@ -21,21 +21,23 @@ const specifications = {
   'paint.tool': ['tool'], 'paint.option': ['kind', 'key', 'value', 'id', 'color', 'index'],
   'paint.stroke': ['points'], 'paint.clear': [], 'paint.confirmClear': ['confirmed'],
   'asset.add': ['name', 'placement'],
+  'capture.frame': ['megapixels', 'multiple'], 'capture.collect': ['taskId'],
 };
 const clone = value => JSON.parse(JSON.stringify(value));
 const numeric = value => { if (!Number.isFinite(value)) throw new Error('A finite number is required'); return value; };
 const member = (value, values) => { if (!values.includes(value)) throw new Error(`Expected one of ${values.join(', ')}`); return value; };
 
-export function createEditorActions(editor, flush, { assetFile } = {}) {
+export function createEditorActions(editor, flush, { assetFile, capture } = {}) {
   const controller = editor.controller;
   if (!controller || !editor.view) throw new Error('Upstream controller binding is missing');
   let clipboard = null;
+  let service = null;
   const current = () => {
     const view = editor.view();
     return { state: editor.session.state, selection: editor.session.selection, playhead: view.playhead,
       tab: view.tab, readOnly: editor.session.readOnly, upstream: view.upstream, media: view.media,
       fpsLocked: view.fpsLocked, canUndo: editor.session.canUndo, canRedo: editor.session.canRedo,
-      tool: view.tool, paint: view.paint, confirm: view.confirm,
+      tool: view.tool, paint: view.paint, confirm: view.confirm, service,
       inspector: buildInspectorModel({ ...view, state: editor.session.state,
         selection: inspectorSelection(editor.session.selection), upstream: view.upstreamWorking }) };
   };
@@ -55,7 +57,17 @@ export function createEditorActions(editor, flush, { assetFile } = {}) {
     if (typeof expectedStateDigest !== 'string' || expectedStateDigest !== (await describe()).stateDigest) throw new Error('EDITOR_STATE_CONFLICT: reread the active editor');
     const ctx = current(), selection = editor.session.selection;
     if (ctx.readOnly && !['selection.set', 'timeline.seek', 'timeline.jump', 'timeline.loop', 'timeline.play', 'view.tab'].includes(action)) throw new Error('Editor is read-only');
-    if (action === 'selection.set') controller.select({ row: args.row ?? null, keys: args.keys ?? [] });
+    if (action.startsWith('capture.')) {
+      if (!capture) throw new Error('Capture service is unavailable');
+      await flush();
+      if (action === 'capture.frame') {
+        const megapixels = numeric(args.megapixels), multiple = numeric(args.multiple);
+        if (megapixels < 0.1 || megapixels > 16 || multiple < 8 || multiple > 128 || multiple % 4) throw new Error('Invalid capture size');
+        if (ctx.state.camera.projection !== 'perspective') throw new Error('请先将相机切换为 Frame 取景');
+      } else if (typeof args.taskId !== 'string' || !args.taskId) throw new Error('Original capture task is required');
+      service = await capture(action, args);
+    }
+    else if (action === 'selection.set') controller.select({ row: args.row ?? null, keys: args.keys ?? [] });
     else if (action.startsWith('inspector.')) {
       const type = action.slice(10) === 'easingReset' ? 'easing-reset' : action.slice(10);
       if (type === 'field') numeric(args.value);

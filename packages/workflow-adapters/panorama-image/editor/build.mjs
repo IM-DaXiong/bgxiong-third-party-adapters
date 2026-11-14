@@ -75,8 +75,9 @@ await cp(resolve(here, 'upstream.lock.json'), resolve(out, 'upstream.lock.json')
 // A self-contained payload for an opaque-origin frame: no filesystem URL, CDN or
 // executable import from the trusted host is needed when opening the editor.
 await writeFile(resolve(out, 'editor-bundle.json'), JSON.stringify({ schemaVersion: 1, script: await readFile(resolve(out, 'studio.js'), 'utf8'), stylesheet: css,
-  generationBindings: ['scene-to-panorama','studio-render','studio-cutout','studio-3d','studio-moge'].map(operation => ({ operationId: `local.thirdparty.comfy-panorama-image/${operation}`, documentField: 'editorDocument', assetsField: 'references', includeConnectedDocuments: true })),
-  serviceBindings: [{ id: 'file3d', purpose: 'mediaPreparation', operationId: 'local.thirdparty.comfy-panorama-image/editor-3d-preview', modelId: 'panorama-editor-media', assetsField: 'sources' }],
+  generationBindings: ['scene-to-panorama','studio-render','studio-cutout','studio-3d','studio-moge','editor-frame-capture'].map(operation => ({ operationId: `local.thirdparty.comfy-panorama-image/${operation}`, documentField: 'editorDocument', assetsField: 'references', includeConnectedDocuments: true })),
+  serviceBindings: [{ id: 'file3d', purpose: 'mediaPreparation', operationId: 'local.thirdparty.comfy-panorama-image/editor-3d-preview', modelId: 'panorama-editor-media', assetsField: 'sources' },
+    { id: 'frameCapture', purpose: 'mediaPreparation', operationId: 'local.thirdparty.comfy-panorama-image/editor-frame-capture', modelId: 'panorama-editor-capture', assetsField: 'references', revisionField: 'sourceRevision' }],
 }));
 const files = [];
 async function inventory(dir) {
@@ -89,7 +90,7 @@ async function inventory(dir) {
 await inventory(out);
 files.sort((a, b) => a.path.localeCompare(b.path));
 const bridgeSources = [];
-for (const path of ['build.mjs', 'studio.js', 'actions.js', 'state-preservation.js', 'connected-scenes.js', 'embedded.css']) bridgeSources.push({ path, sha256: hash(await readFile(resolve(here, path))) });
+for (const path of ['build.mjs', 'studio.js', 'actions.js', 'capture-toolbar.js', 'state-preservation.js', 'connected-scenes.js', 'embedded.css']) bridgeSources.push({ path, sha256: hash(await readFile(resolve(here, path))) });
 await writeFile(resolve(out, 'editor-build.json'), JSON.stringify({ schemaVersion: 1, upstream: lock,
   upstreamLockSha256: hash(await readFile(resolve(here, 'upstream.lock.json'))), bridgeSources, files }, null, 2) + '\n');
 console.log(JSON.stringify({ output: out, upstream: lock.commit, files: files.length }));

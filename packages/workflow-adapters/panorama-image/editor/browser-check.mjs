@@ -53,6 +53,7 @@ try {
       writes: 0,
       failWrites: false,
       storedAssets,
+      preferences: {},
       async open() {
         window.check.protection = null;
         if (sandbox) {
@@ -60,12 +61,25 @@ try {
           const bundle = await (await fetch('/editor-bundle.json')).json();
           frame = document.createElement('iframe'); frame.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;border:0'; document.body.appendChild(frame);
           const initialAssets = await Promise.all([...assets].map(async ([filename, url]) => ({ name: `input//${filename}`, bytes: await (await fetch(url)).arrayBuffer(), mimeType: 'image/png', mediaRel: `fixtures/${filename}`, sha256: 'test-only' })));
-          editor = await openEditorFrame(frame, bundle, { nodeId: 'test_scene', stateText: saved, assets: [...initialAssets, ...storedAssets.values()],
+          editor = await openEditorFrame(frame, bundle, { nodeId: 'test_scene', stateText: saved, preferences: window.check.preferences, assets: [...initialAssets, ...storedAssets.values()],
             inputNodeIds: window.check.inputNodeIds ?? [], connectedDocuments: (window.check.connectedDocuments ?? []).map(source => ({ ...source, assets: initialAssets })) }, async (method, params) => {
             if (method === 'editor.closed') return;
-            if (method === 'preferences.set') return;
+            if (method === 'preferences.set') { window.check.preferences[params.key] = params.value; return; }
             if (method === 'editor.protection') { window.check.protection = params; return; }
             if (window.check.protection?.readOnly) throw new Error('Protected fixture must not write');
+            if (window.check.captureFixture && method === 'operation.run' && params.serviceId === 'frameCapture') {
+              if (params.sourceNames.length || params.input.editorDocument || params.input.sourceRevision) throw new Error('Companion must not forge host document or revision');
+              window.check.captures = (window.check.captures ?? 0) + 1;
+              return { status: 'pending', taskId: 'capture-original', assets: [], data: null };
+            }
+            if (window.check.captureFixture && method === 'operation.collect') {
+              if (params.taskId !== 'capture-original') throw new Error('Must collect original capture');
+              const png = await (await fetch(assets.get('desk.png'))).arrayBuffer();
+              const pose = JSON.stringify({ sourceRevision: 'original', stickerState: { kind: 'pano_sticker_state', version: 2, fps: 24, camera: {} } });
+              const captured = ['frame','mask','pose'].map((role, index) => ({ role, name: `editor-results/capture-original/${index}`, mediaRel: `fixtures/capture-${index}`, sha256: 'test-only', mimeType: role === 'pose' ? 'application/octet-stream' : 'image/png', bytes: role === 'pose' ? new TextEncoder().encode(pose).buffer : png.slice(0) }));
+              for (const asset of captured) storedAssets.set(asset.name, asset);
+              return { status: 'completed', taskId: params.taskId, assets: captured, data: { sourceRevision: 'original', stickerState: pose } };
+            }
             if (method === 'operation.run' && window.check.conversionFixture) {
               if (params.serviceId !== 'file3d' || params.sourceNames.length !== 1 || !storedAssets.has(params.sourceNames[0])) throw new Error('Conversion source is not owned');
               window.check.conversions = (window.check.conversions ?? 0) + 1;
@@ -111,7 +125,7 @@ try {
     assert.equal(await isolated.evaluate(() => { try { void parent.document.body; return false; } catch { return true; } }), true);
     assert.equal(await isolated.evaluate(() => typeof window.__TAURI_INTERNALS__), 'undefined');
   }
-  if (option('--focus') !== 'inheritance') {
+  if (!['inheritance', 'capture'].includes(option('--focus'))) {
   assert.deepEqual(await page.evaluate(async () => (await window.check.read()).stickers.map(item => item.direction.value.yaw_deg)), [0, -90, 180]);
   await surface.locator('.pano-studio-tl-head[data-head="bedroom"] [data-part="name"]').click();
   const rotation = surface.locator('[data-region="inspector"] [data-row="Rotation"]');
@@ -266,6 +280,31 @@ try {
     await page.evaluate(() => window.check.close());
   }
   } else { await page.evaluate(() => window.check.close()); }
+  if (option('--focus') === 'capture') {
+    if (!option('--frame')) throw new Error('Capture check requires production frame');
+    await page.evaluate(() => {
+      const state = window.check.saved(); state.camera = { ...state.camera, projection: 'perspective' };
+      window.check.replaceSaved(JSON.stringify(state)); window.check.captureFixture = true;
+    });
+    await page.evaluate(() => window.check.open());
+    await surface.getByRole('button', { name: '取景与遮罩', exact: true }).click();
+    await surface.getByRole('status').filter({ hasText: '等待渲染' }).waitFor();
+    assert.equal(await page.evaluate(() => window.check.captures), 1);
+    await page.evaluate(() => window.check.close()); await page.evaluate(() => window.check.open());
+    await surface.getByRole('button', { name: '收取取景', exact: true }).click();
+    await surface.getByRole('status').filter({ hasText: '已收取' }).waitFor();
+    const state = await page.evaluate(() => window.check.describe());
+    assert.equal(state.service.status, 'completed');assert.equal(state.service.assets.length, 3);
+    assert.equal(state.service.data.sourceRevision, 'original');
+    assert.equal(await page.evaluate(() => window.check.captures), 1);
+    await page.screenshot({ path: resolve(results, 'studio-capture-toolbar.png') });
+    await page.evaluate(() => window.check.close());
+    assert.equal(await page.evaluate(() => [...window.check.storedAssets.keys()].filter(name => name.startsWith('editor-results/capture-original/')).length), 3);
+    await page.evaluate(() => window.check.open());
+    await page.evaluate(() => window.check.act('asset.add', { name: 'editor-results/capture-original/0', placement: 'sky' }));
+    await page.evaluate(() => window.check.close());
+    console.log(JSON.stringify({ capturePassed: true, checks: ['UI shared action', 'pending is not completed', 'close/reopen retains original task', 'collect all three assets', 'no resubmit', 'reopened asset usable'] }));
+  }
   if (option('--inheritance')) {
     if (!option('--frame')) throw new Error('Inheritance check requires the production frame');
     const original = await page.evaluate(() => {
@@ -324,8 +363,8 @@ try {
     console.log(JSON.stringify({ preservationPassed: true, checks: ['unknown fields preserve original bytes', 'legacy multi-shot preview does not migrate or save', 'unsupported future version is rejected without mutation'] }));
   }
   assert.deepEqual(problems, []);
-  if (option('--focus') === 'inheritance') {
-    console.log(JSON.stringify({ passed: true, scope: 'connected scene only', screenshots: results }));
+  if (['inheritance', 'capture'].includes(option('--focus'))) {
+    console.log(JSON.stringify({ passed: true, scope: `${option('--focus')} only`, screenshots: results }));
   } else {
   console.log(JSON.stringify({ passed: true, checks: ['built editor opens', 'three images at distinct directions', 'UI yaw edit', 'undo/redo', 'save/reopen preserves directions', 'no redundant save', ...(option('--frame') ? ['same-name asset import/reopen', 'save conflict retains edits and allows retry', 'opaque origin isolation'] : []), ...(option('--actions') ? ['shared controller actions', 'stale active state rejected', 'keyframe move/save/reopen', 'exactly 50 undo operations'] : []), ...(option('--paint') ? ['sphere mask stroke', 'clear cancel/confirm/undo', 'saved asset add'] : []), ...(option('--3d') ? ['GLB managed conversion bridge', '3D source and result save/reopen'] : []), 'no browser errors'], screenshots: results }));
   }

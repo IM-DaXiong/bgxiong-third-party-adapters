@@ -57,6 +57,9 @@ pub fn port(h: &mut dyn Host, method: &str, args: Value) -> Result<Value, Failur
     match method {
         "host-http.execute" => decode!(bgx_adapter_v2_sdk::HostPortCallV2HttpResponse),
         "host-media.info" => decode!(bgx_adapter_v2_sdk::HostPortCallV2MediaStat),
+        "host-media.create" => decode!(bgx_adapter_v2_sdk::HostPortCallV2HostMediaCreateResult),
+        "host-media.write" => decode!(bgx_adapter_v2_sdk::HostPortCallV2HostMediaWriteResult),
+        "host-media.finish" => decode!(bgx_adapter_v2_sdk::HostPortCallV2HostMediaFinishResult),
         "host-checkpoint.read" => decode!(Option<bgx_adapter_v2_sdk::HostPortCallV2CheckpointRead>),
         "host-checkpoint.write" => decode!(bgx_adapter_v2_sdk::HostPortCallV2CheckpointWrite),
         _ => Err(Failure::invalid("Unsupported managed port")),
@@ -185,6 +188,23 @@ fn large_json(h: &mut dyn Host, ctx: &Ctx, path: &str) -> Result<Value, Failure>
         vec![],
         false,
     )
+}
+
+pub fn history_outputs(h:&mut dyn Host,ctx:&Ctx,id:&str)->Result<Value,Failure> {
+    let history=large_json(h,ctx,&format!("/history/{}",encode(id)))?;
+    if history[id]["status"]["status_str"]!="success" || !history[id]["outputs"].is_object() {return Err(malformed());}
+    Ok(history[id]["outputs"].clone())
+}
+
+pub fn json_asset(h:&mut dyn Host,role:&str,value:&Value)->Result<Value,Failure> {
+    let bytes=serde_json::to_vec(value).map_err(|_|malformed())?;
+    let handle=port(h,"host-media.create",json!({"kind":"file","mimeHint":"application/json"}))?;
+    port(h,"host-media.write",json!({"handle":handle,"bytes":bytes}))?;
+    port(h,"host-media.finish",json!({"handle":handle}))?;
+    let stat=port(h,"host-media.info",json!({"handle":handle}))?;
+    if stat["kind"]!="file" {return Err(malformed());}
+    Ok(json!({"kind":"media","role":role,"media":{"id":stat["id"],"kind":stat["kind"],"handle":handle,
+        "mime":stat["mime"],"fileName":stat["fileName"],"byteLength":stat["byteLength"]}}))
 }
 
 pub fn upload(h: &mut dyn Host, ctx: &Ctx, media: &Value) -> Result<String, Failure> {
