@@ -2,6 +2,7 @@ import { loadSceneState, sceneStateText } from '@panorama-upstream/web_src/pano_
 import { applyUpstreamOverrides } from '@panorama-upstream/web_src/pano_scene_inherit.js';
 import { inspectStatePreservation } from './state-preservation.js';
 import { geometryUi } from './geometry-state.js';
+import { inputUi } from './input-state.js';
 
 // Adapt host-owned connected documents to the upstream Scene UI envelope. No parent state
 // is persisted by this editor. Actual generation connects the corresponding Studio nodes.
@@ -44,7 +45,8 @@ export function connectedScenes(initial, addAsset) {
     // Upstream applies a record only to the nearest layer with the same scene id.
     const layers = inherited.map((layer, at) => ({ ...layer, state: inherited.slice(at + 1).some(next => next.state.id === layer.state.id)
       ? layer.state : applyUpstreamOverrides(layer.state, own.upstream.find(record => record.layer === layer.state.id)) }));
-    layers.push({ state: own, ui: geometryUi(state.bgxGeometry,new Map([...names.values()].map(name=>[name,true]))) });
+    const owned=new Map([...names.values()].map(name=>[name,true]));
+    layers.push({state:own,ui:{...geometryUi(state.bgxGeometry,owned),...inputUi(state.bgxInputs,owned)}});
     sources.set(id, layers);
     nodes.push({ id, type: 'PanoramaStudio', title: '上游全景', widgets: [{ name: 'state_json', value: source.document.stateText }], outputs: [{ type: 'PANO_SCENE' }] });
   }

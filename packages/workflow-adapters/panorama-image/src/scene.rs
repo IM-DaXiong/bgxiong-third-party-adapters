@@ -24,6 +24,7 @@ impl SceneDocument {
             .map_err(|_| Failure::invalid("Studio state is not JSON"))?;
         if state["version"] != 2 { return Err(Failure::invalid("This operation requires Studio state version 2")); }
         if let Some(geometry)=state.get(crate::geometry::STATE_KEY) {crate::geometry::validate(geometry)?;}
+        if let Some(inputs)=state.get(crate::inputs::STATE_KEY) {crate::inputs::validate(inputs)?;}
         let mut assets = BTreeMap::new();
         for asset in document["assets"].as_array().ok_or_else(|| Failure::invalid("Editor assets must be an array"))? {
             let name = asset["name"].as_str().filter(|value| !value.is_empty()).ok_or_else(|| Failure::invalid("Missing asset name"))?;
@@ -74,10 +75,12 @@ impl SceneDocument {
             if let Some(parent)=source.inputs.first() {node["inputs"]["scene"]=json!([nodes.get(parent).ok_or_else(||Failure::invalid("Missing parent scene"))?,0]);}
             graph[&id]=node;
             crate::geometry::attach(graph,&id,&source.document.bind(uploads)?)?;
+            crate::inputs::attach(graph,&id,&source.document.bind(uploads)?)?;
             nodes.insert(source.node_id.clone(),id);
         }
         if let Some(parent)=self.input_node_ids.first() {graph[root]["inputs"]["scene"]=json!([nodes.get(parent).ok_or_else(||Failure::invalid("Missing root scene input"))?,0]);}
         crate::geometry::attach(graph,root,&self.bind(uploads)?)?;
+        crate::inputs::attach(graph,root,&self.bind(uploads)?)?;
         Ok(())
     }
 

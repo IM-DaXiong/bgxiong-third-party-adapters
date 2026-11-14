@@ -3,7 +3,7 @@ const object = value => value && typeof value === 'object' && !Array.isArray(val
 const keys = (value, allowed) => object(value) && Object.keys(value).every(key => allowed.includes(key));
 const clone = value => structuredClone(value);
 export function validateGeometry(value) {
-  if (!keys(value, ['version', 'source', 'preview']) || value.version !== 1
+  if (!keys(value, ['version', 'source', 'preview','target']) || value.version !== 1 || (value.target!==undefined&&!['world','sticker'].includes(value.target))
     || !keys(value.source, ['algorithm', 'images', 'video', 'options'])
     || !['da3', 'moge', 'mogePanorama'].includes(value.source.algorithm)
     || Object.hasOwn(value.source,'video') === Object.hasOwn(value.source,'images')
@@ -29,7 +29,10 @@ export function geometrySources(source) {return Object.hasOwn(source,'video') ? 
 export function geometryUi(geometry, assets) {
   if (!geometry?.preview) return {};
   validateGeometry(geometry);
-  const ui=clone(geometry.preview.ui);
+  return resolveOwnedUi(geometry.preview.ui,assets);
+}
+export function resolveOwnedUi(value, assets) {
+  const ui=clone(value);
   function resolve(value) {
     if (!object(value) && !Array.isArray(value)) return value;
     if (object(value) && Object.hasOwn(value,'assetName')) {
@@ -48,8 +51,8 @@ function canonical(value) {
 export async function adoptGeometry(result, assets) {
   if (result.status !== 'completed') throw new Error('请先收取几何成果');
   const metadata=JSON.parse(result.data.metadataJson);
-  if (!keys(metadata,['version','source','sourceAssets','ui']) || metadata.version!==1 || !Array.isArray(metadata.sourceAssets)) throw new Error('几何成果记录无效');
-  const record={version:1,source:clone(metadata.source)};validateGeometry(record);
+  if (!keys(metadata,['version','source','sourceAssets','ui','target']) || metadata.version!==1 || !Array.isArray(metadata.sourceAssets)) throw new Error('几何成果记录无效');
+  const record={version:1,source:clone(metadata.source),...(metadata.target?{target:metadata.target}:{})};validateGeometry(record);
   const names=geometrySources(record.source).map(sourceName);
   if (metadata.sourceAssets.length!==names.length || metadata.sourceAssets.some((source,index)=>source.name!==names[index] || !/^[a-f0-9]{64}$/i.test(source.sha256) || assets.get(source.name)?.sha256!==source.sha256)) throw new Error('几何来源素材已经改变，请保留原成果并重新选择');
   function bind(value) {

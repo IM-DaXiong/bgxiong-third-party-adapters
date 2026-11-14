@@ -30,10 +30,10 @@ $SourceLock = Get-Content -LiteralPath (Join-Path $Project 'editor/upstream.lock
 if ($EditorReceipt.upstream.commit -ne $SourceLock.commit) { throw 'Editor source differs from the pinned upstream.' }
 if ($EditorReceipt.upstreamLockSha256 -ne (Get-FileHash -LiteralPath (Join-Path $Project 'editor/upstream.lock.json') -Algorithm SHA256).Hash.ToLowerInvariant()) { throw 'Editor upstream/patch lock differs from this source batch.' }
 foreach ($source in $EditorReceipt.bridgeSources) {
-    if ($source.path -notin @('build.mjs','studio.js','actions.js','capture-toolbar.js','state-preservation.js','geometry-state.js','geometry-toolbar.js','connected-scenes.js','embedded.css')) { throw 'Unexpected bridge source in editor receipt.' }
+    if ($source.path -notin @('build.mjs','studio.js','actions.js','capture-toolbar.js','state-preservation.js','geometry-state.js','geometry-toolbar.js','input-state.js','input-toolbar.js','connected-scenes.js','embedded.css')) { throw 'Unexpected bridge source in editor receipt.' }
     if ($source.sha256 -ne (Get-FileHash -LiteralPath (Join-Path $Project "editor/$($source.path)") -Algorithm SHA256).Hash.ToLowerInvariant()) { throw "Editor bridge source changed: $($source.path)" }
 }
-if (@($EditorReceipt.bridgeSources).Count -ne 9 -or @($EditorReceipt.bridgeSources.path | Sort-Object -Unique).Count -ne 9) { throw 'Editor bridge source receipt is incomplete or duplicated.' }
+if (@($EditorReceipt.bridgeSources).Count -ne 11 -or @($EditorReceipt.bridgeSources.path | Sort-Object -Unique).Count -ne 11) { throw 'Editor bridge source receipt is incomplete or duplicated.' }
 $EditorFile = Join-Path $EditorDirectory 'editor-bundle.json'
 $EditorEntry = @($EditorReceipt.files | Where-Object { $_.path -eq 'editor-bundle.json' })
 $EditorHash = (Get-FileHash -LiteralPath $EditorFile -Algorithm SHA256).Hash.ToLowerInvariant()
@@ -51,6 +51,12 @@ if ($LASTEXITCODE -ne 0) { throw 'Standard SDK pack failed.' }
 & $Cli check --sdk $Sdk --worker $Worker --project $PackageDirectory
 if ($LASTEXITCODE -ne 0) { throw 'Runtime package validation failed.' }
 $Installation.manifestSha256 = (Get-FileHash -LiteralPath (Join-Path $PackageDirectory 'manifest.json') -Algorithm SHA256).Hash.ToLowerInvariant()
+$NodeRelative = 'comfy-nodes/bgx_panorama_inputs/__init__.py'
+$NodeSource = Join-Path $Project $NodeRelative
+$NodeTarget = Join-Path $OutputDirectory $NodeRelative
+$null = New-Item -ItemType Directory -Path (Split-Path -Parent $NodeTarget) -Force
+Copy-Item -LiteralPath $NodeSource -Destination $NodeTarget
+$Installation.comfyui = @{ customNodes='comfy-nodes'; files=@(@{path=$NodeRelative;sha256=(Get-FileHash -LiteralPath $NodeTarget -Algorithm SHA256).Hash.ToLowerInvariant()}) }
 $Installation | Add-Member -NotePropertyName editor -NotePropertyValue @{ file='editor-bundle.json'; sha256=$EditorHash } -Force
 Copy-Item -LiteralPath $EditorFile -Destination (Join-Path $OutputDirectory 'editor-bundle.json')
 Copy-Item -LiteralPath (Join-Path $EditorDirectory 'UPSTREAM-LICENSE.txt') -Destination (Join-Path $OutputDirectory 'PANORAMA-LICENSE.txt')

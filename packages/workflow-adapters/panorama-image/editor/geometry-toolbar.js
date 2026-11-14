@@ -8,7 +8,7 @@ export function geometryToolbar(editor,assets,lastTask) {
   const toggle=document.createElement('button');toggle.textContent='几何输入';toggle.setAttribute('aria-expanded','false');
   toggle.onclick=()=>{panel.hidden=!panel.hidden;toggle.setAttribute('aria-expanded',String(!panel.hidden));if(!panel.hidden)render();};
   const original=editor.read().bgxGeometry?.source;
-  let algorithm=original?.algorithm??'da3',mode=original?.options.mode??'mono',sourceKind=original?.video?'video':'images',busy=false,models=null;
+  let algorithm=original?.algorithm??'da3',mode=original?.options.mode??'mono',sourceKind=original?.video?'video':'images',busy=false,models=null,target=editor.read().bgxGeometry?.target??'world';
   const selected=new Set(), saved={da3:{},moge:{},mogePanorama:{}};
   if(original){saved[algorithm]={...original.options};for(const file of geometrySources(original))selected.add(`${file.storage}/${file.subfolder}/${file.filename}`);}
   const controls=new Map();let controlsAlgorithm=algorithm;
@@ -48,6 +48,7 @@ export function geometryToolbar(editor,assets,lastTask) {
   }
   function render() {
     remember();controls.clear();controlsAlgorithm=algorithm;panel.replaceChildren();
+    radios(row(),'几何用途','target',[['world','空间'],['sticker','贴图']],target,id=>{target=id;});
     radios(row(),'几何算法','algorithm',[['da3','DA3'],['moge','MoGe'],['mogePanorama','MoGe 全景']],algorithm,id=>{remember();algorithm=id;render();});
     const modelsRow=row();button(modelsRow,'读取模型',()=>run('geometry.models',{}));
     if(!models&&saved[algorithm].modelName){const current=document.createElement('span');current.textContent=saved[algorithm].modelName;modelsRow.append(current);}
@@ -77,7 +78,7 @@ export function geometryToolbar(editor,assets,lastTask) {
       if(algorithm==='moge'){input(extra,'fovXDegrees','源视场角',0,0,170,.1);check(extra,'forceProjection','投影约束',true);check(extra,'applyMask','应用遮罩',true);}
       else{input(extra,'splitResolution','分片分辨率',512,256,1024);input(extra,'mergeResolution','合并分辨率',1920,256,8192);}
     }
-    const actions=row();button(actions,'准备几何',()=>{try{return run('geometry.prepare',{source:source()});}catch(error){status.textContent=String(error.message??error);}});
+    const actions=row();button(actions,'准备几何',()=>{try{return run('geometry.prepare',{source:source(),target});}catch(error){status.textContent=String(error.message??error);}});
     button(actions,'收取成果',()=>run('capture.collect',{taskId:lastTask()})).disabled=busy||!lastTask();
     button(actions,'采用几何',()=>run('geometry.adopt',{taskId:lastTask()})).disabled=busy||!lastTask();
     button(actions,'移除几何',()=>run('geometry.remove',{}));actions.append(status);

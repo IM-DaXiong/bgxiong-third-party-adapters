@@ -61,3 +61,6 @@ All four image workflows expose background color and 180/360 coverage, with the 
 The 1.22.0 candidate additionally declares an empty prompt default for the pure Studio image render. Diffusion operations retain their nonempty prompt requirements. Source/package checks do not establish GPU or installed-product acceptance.
 
 The digest-bound companion explicitly lists readable prior document package versions. A supporting host migrates current document identity atomically while preserving scene text, managed assets and history. Unknown versions are not inferred compatible. Model input contracts and account identity remain independently checked. SDK package validation passed; application upgrade and reopen acceptance are tracked in the product P8 handoff.
+
+
+The 1.23.0 candidate adds owned background/world/sticker inputs, original pose handoff, and world/sticker geometry targets. Its installation envelope includes minimal Comfy file/video loader nodes and a read-only metadata route using the installed upstream implementation. Restart ComfyUI after installation; no additional model is bundled. Lightweight bridge tests do not certify native Comfy decoding or GPU output.

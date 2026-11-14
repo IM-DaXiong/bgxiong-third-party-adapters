@@ -62,7 +62,7 @@ try {
           frame = document.createElement('iframe'); frame.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;border:0'; document.body.appendChild(frame);
           const initialAssets = await Promise.all([...assets].map(async ([filename, url]) => ({ name: `input//${filename}`, bytes: await (await fetch(url)).arrayBuffer(), mimeType: 'image/png', mediaRel: `fixtures/${filename}`, sha256: window.check.geometryFixture ? 'a'.repeat(64) : 'test-only' })));
           const present=asset=>{if(bundle.assetTransport!=='blob-v1')return asset;const {bytes,blob,...metadata}=asset;return {...metadata,assetKey:asset.name};};
-          editor = await openEditorFrame(frame, bundle, { nodeId: 'test_scene', stateText: saved, preferences: window.check.preferences, assets: [...initialAssets, ...storedAssets.values()].map(present),
+          editor = await openEditorFrame(frame, bundle, { nodeId: 'test_scene', stateText: saved, preferences: window.check.preferences, generationDraft:window.check.generationDraft, assets: [...initialAssets, ...storedAssets.values()].map(present),
             inputNodeIds: window.check.inputNodeIds ?? [], connectedDocuments: (window.check.connectedDocuments ?? []).map(source => ({ ...source, assets: initialAssets.map(present) })) }, async (method, params) => {
             if(method==='asset.load'){
               const asset=initialAssets.find(a=>a.name===params.assetKey)??storedAssets.get(params.assetKey);
@@ -71,22 +71,28 @@ try {
               return asset.blob??new Blob([asset.bytes],{type:asset.mimeType});
             }
             if (method === 'editor.closed') return;
+            if(method==='operation.run'&&params.serviceId==='inputPreview'&&window.check.inputFixture){
+              const state=JSON.parse(params.input.stateJson),sticker=state.stickers.find(item=>item.source.kind==='port')??{...structuredClone(state.stickers[0]),id:`sticker_${state.next_sticker_id}`,placement:'sky',source:{kind:'port'}};
+              window.check.inputPreviews=(window.check.inputPreviews??0)+1;
+              return {status:'completed',assets:[],data:{metadataJson:JSON.stringify({sticker,nextStickerId:state.next_sticker_id+1})}};
+            }
             if (method === 'preferences.set') { window.check.preferences[params.key] = params.value; return; }
             if (method === 'editor.protection') { window.check.protection = params; return; }
             if (window.check.protection?.readOnly) throw new Error('Protected fixture must not write');
             if(window.check.geometryFixture && method==='operation.run' && params.serviceId==='geometryModels')return {status:'completed',taskId:'models',assets:[],data:{metadataJson:JSON.stringify({da3:['DA3-BASE.safetensors'],moge:['moge_3_vitg_fp16.safetensors']})}};
             if(window.check.geometryFixture && method==='operation.run' && params.serviceId==='geometry'){
               if(params.input.editorDocument||params.input.sourceRevision||params.sourceNames.length)throw new Error('Geometry cannot forge host document ownership');
-              window.check.geometrySource=JSON.parse(params.input.geometrySourceJson);window.check.geometrySubmits=(window.check.geometrySubmits??0)+1;
+              window.check.geometrySource=JSON.parse(params.input.geometrySourceJson);window.check.geometryTarget=params.input.geometryTarget??'world';window.check.geometrySubmits=(window.check.geometrySubmits??0)+1;
               return {status:'pending',taskId:'geometry-original',assets:[],data:null};
             }
             if(window.check.geometryFixture && method==='operation.collect' && params.taskId==='geometry-original'){
               const asset={role:'geometryFile',name:'editor-results/geometry-original/0',mediaRel:'fixtures/geometry.glb',sha256:'b'.repeat(64),mimeType:'application/octet-stream',bytes:new Uint8Array(window.check.geometryFixture).buffer};
               storedAssets.set(asset.name,asset);
               const source=window.check.geometrySource;
-              return {status:'completed',taskId:params.taskId,assets:[present(asset)],data:{metadataJson:JSON.stringify({version:1,source,
+              const prefix=window.check.geometryTarget==='sticker'?'pano_sticker':'pano_scene';
+              return {status:'completed',taskId:params.taskId,assets:[present(asset)],data:{metadataJson:JSON.stringify({version:1,source,target:window.check.geometryTarget,
                 sourceAssets:(source.video?[source.video]:source.images).map(file=>({name:`${file.storage}/${file.subfolder}/${file.filename}`,sha256:'a'.repeat(64)})),
-                ui:{pano_scene_files:[{assetIndex:0,format:'model/gltf-binary'}],pano_scene_meta:[{kind:'mesh',unlit:true}]}})}};
+                ui:{[`${prefix}_files`]:[{assetIndex:0,format:'model/gltf-binary'}],[`${prefix}_meta`]:[{kind:'mesh',unlit:true}],...(window.check.geometryTarget==='sticker'?{pano_sticker_input_pose:[{placement:'world',position:[0,0,-3],rotation:[0,0,0],scale:1}]}:{})}})}};
             }
             if (window.check.captureFixture && method === 'operation.run' && params.serviceId === 'frameCapture') {
               if (params.sourceNames.length || params.input.editorDocument || params.input.sourceRevision) throw new Error('Companion must not forge host document or revision');
@@ -155,7 +161,7 @@ try {
     assert.equal(await isolated.evaluate(() => { try { void parent.document.body; return false; } catch { return true; } }), true);
     assert.equal(await isolated.evaluate(() => typeof window.__TAURI_INTERNALS__), 'undefined');
   }
-  if (!['inheritance', 'capture', 'geometry'].includes(option('--focus'))) {
+  if (!['inheritance', 'capture', 'geometry','inputs'].includes(option('--focus'))) {
   assert.deepEqual(await page.evaluate(async () => (await window.check.read()).stickers.map(item => item.direction.value.yaw_deg)), [0, -90, 180]);
   await surface.locator('.pano-studio-tl-head[data-head="bedroom"] [data-part="name"]').click();
   const rotation = surface.locator('[data-region="inspector"] [data-row="Rotation"]');
@@ -310,6 +316,41 @@ try {
     await page.evaluate(() => window.check.close());
   }
   } else { await page.evaluate(() => window.check.close()); }
+  if(option('--focus')==='inputs'){
+    if(!option('--frame'))throw new Error('Inputs must exercise the production frame bridge');
+    const glb=await readFile(resolve(option('--source'),'tests/fixtures/gltf_anim/anim.glb'));
+    await page.evaluate(bytes=>{
+      window.check.inputFixture=true;window.check.conversionFixture=bytes;window.check.generationDraft={adapterParameters:{'/advanced/backgroundRange':'180','/advanced/backgroundColor':'#203040'}};
+      window.check.storedAssets.set('input/3d/room.glb',{name:'input/3d/room.glb',mimeType:'model/gltf-binary',mediaRel:'fixtures/room.glb',sha256:'test-only',bytes:new Uint8Array(bytes).buffer});
+    },[...glb]);
+    await page.evaluate(()=>window.check.open());
+    await surface.getByRole('button',{name:'外部输入',exact:true}).click();
+    await surface.getByRole('combobox',{name:'输入素材',exact:true}).selectOption('input//desk.png');
+    await page.waitForFunction(()=>window.check.saved().bgxInputs?.background?.source.filename==='desk.png');
+    await page.evaluate(()=>window.check.act('timeline.fps',{value:29.97}));
+    assert.equal(await page.evaluate(()=>window.check.saved().bgxInputs.background.source.filename),'desk.png');
+    await surface.getByRole('radio',{name:'空间',exact:true}).check();
+    await surface.getByRole('combobox',{name:'输入素材',exact:true}).selectOption('input/3d/room.glb');
+    await page.waitForFunction(()=>window.check.saved().bgxInputs?.world?.preview);
+    await page.evaluate(()=>window.check.act('input.set',{role:'sticker',name:'input//bedroom.png'}));
+    assert.equal(await page.evaluate(async()=>(await window.check.read()).stickers.filter(item=>item.source.kind==='port').length),1);
+    const before=await page.evaluate(()=>window.check.saved().bgxInputs);
+    await page.evaluate(()=>window.check.act('input.remove',{role:'world'}));
+    await page.evaluate(()=>window.check.act('history.undo'));
+    assert.deepEqual(await page.evaluate(()=>window.check.saved().bgxInputs),before);
+    await page.screenshot({path:resolve(results,'external-inputs.png')});
+    await page.evaluate(()=>window.check.close());await page.evaluate(()=>window.check.open());
+    assert.deepEqual(await page.evaluate(async()=>(await window.check.read()).bgxInputs),before);
+    assert.equal(await page.evaluate(()=>window.check.conversions),1);
+    assert.equal(await page.evaluate(()=>window.check.inputPreviews??0),0);
+    await page.evaluate(()=>window.check.close());
+    await page.evaluate(()=>{const state=window.check.saved();state.bgxInputs.future=true;window.check.replaceSaved(JSON.stringify(state));});
+    await page.evaluate(()=>window.check.open());
+    assert.equal((await page.evaluate(()=>window.check.describe())).protection.readOnly,true);
+    await assert.rejects(page.evaluate(()=>window.check.act('input.remove',{role:'background'})),/read-only/);
+    await page.evaluate(()=>window.check.close());assert.equal(await page.evaluate(()=>window.check.saved().bgxInputs.future),true);
+    console.log(JSON.stringify({inputsPassed:true,checks:['background preview uses saved generation parameters','three owned input roles','fps preserves input records','port sticker visible in state','remove undo','all inputs reopen without reconversion','unknown input read-only']}));
+  }
   if(option('--focus')==='geometry'){
     if(!option('--frame'))throw new Error('Geometry must exercise the production frame bridge');
     const glb=await readFile(resolve(option('--source'),'tests/fixtures/gltf_anim/anim.glb'));
@@ -356,6 +397,15 @@ try {
     assert.ok(await page.evaluate(()=>window.check.loadedAssets.includes('editor-results/geometry-original/0')));
     assert.equal(await page.evaluate(()=>window.check.geometrySubmits),2);
     await page.screenshot({path:resolve(results,'geometry-video-panel.png')});
+    await page.evaluate(()=>window.check.act('geometry.remove'));
+    await surface.getByRole('radiogroup',{name:'几何用途',exact:true}).getByRole('radio',{name:'贴图',exact:true}).check();
+    await surface.getByRole('button',{name:'准备几何',exact:true}).click();
+    await page.waitForFunction(()=>window.check.geometrySubmits===3);
+    await surface.getByRole('button',{name:'采用几何',exact:true}).click();
+    await page.waitForFunction(()=>window.check.saved().bgxGeometry?.target==='sticker');
+    assert.equal(await page.evaluate(async()=>(await window.check.read()).stickers.find(s=>s.source.kind==='port').placement),'world');
+    await page.evaluate(()=>window.check.close());await page.evaluate(()=>window.check.open());
+    assert.equal(await page.evaluate(async()=>(await window.check.read()).bgxGeometry.target),'sticker');
     await page.evaluate(()=>window.check.close());
     await page.evaluate(()=>{const saved=window.check.saved();saved.bgxGeometry.version=999;window.check.replaceSaved(JSON.stringify(saved));});
     await page.evaluate(()=>window.check.open());
@@ -474,7 +524,7 @@ try {
     console.log(JSON.stringify({ preservationPassed: true, checks: ['unknown fields preserve original bytes', 'legacy multi-shot preview does not migrate or save', 'unsupported future version is rejected without mutation'] }));
   }
   assert.deepEqual(problems, []);
-  if (['inheritance', 'capture', 'geometry'].includes(option('--focus'))) {
+  if (['inheritance', 'capture', 'geometry','inputs'].includes(option('--focus'))) {
     console.log(JSON.stringify({ passed: true, scope: `${option('--focus')} only`, screenshots: results }));
   } else {
   console.log(JSON.stringify({ passed: true, checks: ['built editor opens', 'three images at distinct directions', 'UI yaw edit', 'undo/redo', 'save/reopen preserves directions', 'no redundant save', ...(option('--frame') ? ['same-name asset import/reopen', 'save conflict retains edits and allows retry', 'opaque origin isolation'] : []), ...(option('--actions') ? ['shared controller actions', 'stale active state rejected', 'keyframe move/save/reopen', 'exactly 50 undo operations'] : []), ...(option('--paint') ? ['sphere mask stroke', 'clear cancel/confirm/undo', 'saved asset add'] : []), ...(option('--3d') ? ['GLB managed conversion bridge', '3D source and result save/reopen'] : []), 'no browser errors'], screenshots: results }));

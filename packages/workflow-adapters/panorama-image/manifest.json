@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "c8b82d5b6b7db695d3970f42333f238340946baf0cc76abc7fb7941dadd3e364",
+  "artifactSha256": "4cb3141b3a8b0f3a1f44e3e41ce9f831f9dbf2552a161ee04054c4d0a812ffe5",
   "displayName": "本地 ComfyUI 全景工作室",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -38,5 +38,5 @@
     "opaque-file-upload-name-v1"
   ],
   "schemaVersion": 2,
-  "version": "1.22.0"
+  "version": "1.23.0"
 }

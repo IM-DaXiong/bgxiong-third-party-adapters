@@ -17,6 +17,8 @@ mod editor_video;
 mod h3_editor_video;
 mod geometry;
 mod editor_geometry;
+mod inputs;
+mod editor_inputs;
 
 #[cfg(test)]
 mod tests;
@@ -146,6 +148,7 @@ fn submit(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<
     if editor_repair::mode(payload).is_some() { return editor_repair::submit(host,request,payload); }
     if payload["operationId"] == editor_prepare::OPERATION { return editor_prepare::submit(host,request,payload); }
     if payload["operationId"] == editor_media::OPERATION { return editor_media::submit(host, request, payload); }
+    if payload["operationId"] == editor_inputs::OPERATION { return editor_inputs::submit(host, request, payload); }
     require_operation(payload)?;
     let input = &payload["input"];
     let ctx = comfy::Ctx {
