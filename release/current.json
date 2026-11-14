@@ -1451,13 +1451,13 @@
       "pluginId": "local.bgx.seedvr2-video",
       "version": "1.0.0",
       "kind": "installable",
-      "validation": "sdk_wasm_capabilities_probe_pack_and_install_tree_hashed",
+      "validation": "official_sdk_build_check_pack_and_install_tree_hashed",
       "sourceManifest": "packages/workflow-adapters/seedvr2-video/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",
           "source": "artifacts/releases/seedvr2-video-1.0.0/local.bgx.seedvr2-video/1.0.0/adapter-install.json",
-          "sha256": "d3b6bfc7a90f814451fdec5c374173971def7cc06c7dc2a61ab3ed4df0fa4697"
+          "sha256": "28a675b046fe0e74ce28dc2e62819576019b713a04c8fffaae342f7e9b0ea6b3"
         },
         {
           "path": "LICENSE",
@@ -1467,17 +1467,17 @@
         {
           "path": "package/adapter.wasm",
           "source": "artifacts/releases/seedvr2-video-1.0.0/local.bgx.seedvr2-video/1.0.0/package/adapter.wasm",
-          "sha256": "db8f73c7736a5d6ebae09d6b5cc18b54bcf6d988c09ecd15cea7d1b9d47f8dfe"
+          "sha256": "3730b1b7546e6b46a1a2ad66a5c7602242e41d50898f163cfb23127e6f6b9784"
         },
         {
           "path": "package/manifest.json",
           "source": "artifacts/releases/seedvr2-video-1.0.0/local.bgx.seedvr2-video/1.0.0/package/manifest.json",
-          "sha256": "f65f42e9fd6c2ce1a4f6e03928ae07590ea4989c9a2a634a148e60a95cc3d5d9"
+          "sha256": "558d3994c142f3875095ce60d9bc6cdd612bf77c77660b10aac3eb750470a696"
         },
         {
           "path": "package/manifest.sha256",
           "source": "artifacts/releases/seedvr2-video-1.0.0/local.bgx.seedvr2-video/1.0.0/package/manifest.sha256",
-          "sha256": "9fcc857440d29402cea988fdd3c21ce4a443b54452ec74cd2a21f9b102013f44"
+          "sha256": "17fb67db65fafe561fe71c9f611e207d7d727b456e9a9d79b08f719d5c8543a9"
         },
         {
           "path": "README.txt",
@@ -1492,7 +1492,7 @@
         {
           "path": "安装说明.txt",
           "source": "artifacts/releases/seedvr2-video-1.0.0/local.bgx.seedvr2-video/1.0.0/安装说明.txt",
-          "sha256": "9e9d9ea275b143bfb7eec0d7187eb6460ef08cf0ed648cff34b241d433a4e7ed"
+          "sha256": "3cac6d48413fa589473f5fa94aa90dd0f274096d77011c1cefbba676b2293b49"
         }
       ]
     }
