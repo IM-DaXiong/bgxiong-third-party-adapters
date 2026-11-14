@@ -28,8 +28,10 @@ pub fn schema(op: &str) -> Value {
         "properties":{
             "megapixels":{"type":"number","minimum":0.1,"maximum":16,"default":2.0,"title":"百万像素"},
             "multiple":{"type":"integer","minimum":8,"maximum":128,"multipleOf":4,"default":8,"title":"尺寸倍数"},
-            "steps":{"type":"integer","minimum":1,"maximum":50,"default":25,"title":"采样步数"}
-        },"required":["megapixels","multiple","steps"],"default":{"megapixels":2.0,"multiple":8,"steps":25}}));
+            "steps":{"type":"integer","minimum":1,"maximum":50,"default":25,"title":"采样步数"},
+            "backgroundColor":{"type":"string","pattern":"^#[0-9a-fA-F]{6}$","default":"#00ff00","title":"背景颜色"},
+            "backgroundRange":{"type":"string","enum":["360","180"],"default":"360","title":"背景范围"}
+        },"required":["megapixels","multiple","steps"],"default":{"megapixels":2.0,"multiple":8,"steps":25,"backgroundColor":"#00ff00","backgroundRange":"360"}}));
     schema["required"].as_array_mut().unwrap().retain(|v|v!="width" && v!="height");
     if op=="studio-render" {
         schema["properties"].as_object_mut().unwrap().remove("seed");
@@ -84,6 +86,15 @@ pub fn graph(op:&str,input:&Value,uploads:&BTreeMap<String,String>)->Result<(Val
     };
     let world=graph[studio]["inputs"].get("world").cloned();
     graph[studio]=render["70"].clone();
+    // Absent fields keep the explicitly declared upstream defaults. Invalid
+    // caller values are never corrected, and parent scenes keep their own inputs.
+    let color=input["advanced"].get("backgroundColor").map_or(Some("#00ff00"),Value::as_str)
+        .filter(|s|s.len()==7&&s.starts_with('#')&&s[1..].bytes().all(|b|b.is_ascii_hexdigit()))
+        .ok_or_else(||Failure::invalid("Invalid background color"))?;
+    let range=input["advanced"].get("backgroundRange").map_or(Some("360"),Value::as_str)
+        .filter(|s|matches!(*s,"180"|"360")).ok_or_else(||Failure::invalid("Invalid background range"))?;
+    graph[studio]["inputs"]["background_color"]=json!(color);
+    graph[studio]["inputs"]["background_range"]=json!(range);
     if let Some(world)=world {graph[studio]["inputs"]["world"]=world;}
     doc.connect_parents(&mut graph,studio,uploads,mp,multiple)?;
     if op=="studio-cutout" {
@@ -130,6 +141,19 @@ mod tests {
                 let (graph,applied)=graph(op,&input,&uploads).unwrap();
                 assert_eq!(graph["66"]["class_type"],"SaveImage");
                 assert_eq!(applied["outputProjection"],input["outputProjection"]);
+                let studio=match op {"studio-render"=>"70","studio-cutout"=>"105","studio-3d"=>"107",_=>"97"};
+                assert_eq!(graph[studio]["inputs"]["background_color"],"#00ff00");
+                assert_eq!(graph[studio]["inputs"]["background_range"],"360");
+                input["advanced"]["backgroundColor"]=json!("#1234ab");
+                input["advanced"]["backgroundRange"]=json!("180");
+                let (configured,receipt)=super::graph(op,&input,&uploads).unwrap();
+                assert_eq!(configured[studio]["inputs"]["background_color"],"#1234ab");
+                assert_eq!(configured[studio]["inputs"]["background_range"],"180");
+                assert_eq!(receipt["advanced"],input["advanced"]);
+                for (field,invalid) in [("backgroundColor",json!("bad")),("backgroundRange",json!("90")),("backgroundColor",Value::Null)] {
+                    let mut rejected=input.clone();rejected["advanced"][field]=invalid;
+                    assert!(super::graph(op,&rejected,&uploads).is_err());
+                }
                 for node in graph.as_object().unwrap().values() {
                     for value in node["inputs"].as_object().unwrap().values() {
                         if let Some(link)=value.as_array().filter(|a|a.len()==2 && a[0].is_string() && a[1].is_number()) {assert!(graph.get(link[0].as_str().unwrap()).is_some(),"{op}: missing input {link:?}");}

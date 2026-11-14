@@ -51,3 +51,7 @@ Adapter behavior checks (28), the production editor selection/reopen path, and S
 The companion declares `assetTransport: blob-v1`. Opening receives owned metadata and loads Blob assets referenced by the current scene or preview. Unused source videos, geometry inputs and old results are not eagerly materialized. Import uses the same streaming host owner; inherited assets retain their parent revision. A matching application with the 256 KiB transfer implementation is required; SDK 2.4.0 remains unchanged.
 
 Standard SDK package checks and production companion geometry, repair/adoption and parent-child save/reopen checks pass. Native large-file and actual application deployment checks are still pending. This candidate does not replace the public downloadable release; browser fixtures are not evidence of real video decoding or GPU inference.
+
+# Image background candidate 1.20.0
+
+All four image workflows expose background color and 180/360 coverage, with the upstream #00ff00/360 defaults. Values bind to the current Studio node and preserve parent scenes and camera settings; invalid values are rejected. Adapter checks (28) and standard SDK package checks pass. Actual application controls and rendered output for these new parameters remain pending.
