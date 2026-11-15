@@ -28,6 +28,28 @@ fn capabilities_declare_projection_feature_contract() {
     assert_eq!(c["operations"][0]["mediaSlots"][0]["minCount"], 1);
     // Feature is on the package manifest; capability payload still uses image.generate.
     assert_eq!(FEATURE_PROJECTION, "media-projection-v1");
+    let mut image_defaults = 0;
+    let mut video_defaults = 0;
+    for contract in caps["capabilityContracts"].as_array().unwrap() {
+        let op = &contract["operations"][0];
+        let schema = contract["schemas"].as_array().unwrap().iter()
+            .find(|s| s["id"] == op["inputSchema"]["id"]).unwrap();
+        let input: serde_json::Value = serde_json::from_str(schema["schemaJson"].as_str().unwrap()).unwrap();
+        let prompt = &input["properties"]["prompt"];
+        let default = prompt["default"].as_str().unwrap_or("");
+        let id = op["id"].as_str().unwrap();
+        if id.ends_with("/studio-render") || id.ends_with("/studio-video") {
+            assert!(default.is_empty(), "raw rendering must not inject AI instructions");
+        } else if prompt["minLength"] == 1 {
+            assert_eq!(prompt["type"], "string");
+            assert!(!default.trim().is_empty(), "missing default: {id}");
+            assert!(default.chars().count() <= prompt["maxLength"].as_u64().unwrap_or(u64::MAX) as usize);
+            if contract["capabilityKey"] == "image.generate" { image_defaults += 1; }
+            if contract["capabilityKey"] == "video.generate" { video_defaults += 1; }
+        }
+    }
+    assert_eq!(image_defaults, 5);
+    assert_eq!(video_defaults, 2);
 }
 
 #[test]

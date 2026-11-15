@@ -17,7 +17,8 @@
       "minLength": 1,
       "maxLength": 8000,
       "title": "提示词原文",
-      "description": "用户确认的完整文字；适配器可追加必要的 ERP outpaint 触发句，原文不丢。"
+      "description": "用户确认的完整文字；适配器可追加必要的 ERP outpaint 触发句，原文不丢。",
+      "default": "依据提供的参考图和当前场景构图生成连贯、真实的环境。保留已有物体、材质、光照和空间关系，补全缺失区域，使不同方向自然衔接，避免重复物体、拼接痕迹、文字或水印。"
     },
     "outputProjection": {
       "type": "string",

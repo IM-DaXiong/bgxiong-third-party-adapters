@@ -13,7 +13,7 @@ pub fn matches(payload:&Value)->bool {
 pub fn contract(base:&Value)->Value {
     let mut c=crate::editor_video::contract(base);
     let mut schema:Value=serde_json::from_str(c["schemas"][0]["schemaJson"].as_str().unwrap()).unwrap();
-    schema["properties"]["prompt"]=json!({"type":"string","minLength":1,"maxLength":8000});
+    schema["properties"]["prompt"]=json!({"type":"string","minLength":1,"maxLength":8000,"default":"依据参考视频和当前场景视角生成连贯的视频。保留主体外观、动作节奏、场景结构和光照，运动自然平滑，不同视角内容一致，避免物体变形、闪烁、文字或水印。"});
     schema["properties"]["seed"]=json!({"type":"integer","minimum":0,"maximum":9007199254740991u64,"default":12345,"title":"随机种子"});
     schema["required"].as_array_mut().unwrap().push(json!("seed"));
     schema["properties"]["advanced"]["properties"]["multiple"]=json!({"type":"integer","minimum":16,"maximum":128,"multipleOf":16,"default":16,"title":"尺寸倍数"});

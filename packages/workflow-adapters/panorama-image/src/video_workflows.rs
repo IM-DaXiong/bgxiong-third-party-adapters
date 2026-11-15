@@ -13,7 +13,7 @@ pub fn matches(payload: &Value) -> bool {
 }
 pub fn contract(base: &Value) -> Value {
     let input = json!({"type":"object","additionalProperties":false,"properties":{
-        "prompt":{"type":"string","minLength":1,"maxLength":8000},
+        "prompt":{"type":"string","minLength":1,"maxLength":8000,"default":"360°等距柱状全景视频：宁静的自然环境，柔和日光下树叶随微风轻轻摆动。视点稳定，场景结构和光照连贯，运动平滑，左右边缘无缝衔接，顶部和底部连续，无文字或水印。"},
         "negativePrompt":{"type":"string","default":""},
         "inputMode":{"type":"string","const":"text_to_video"},
         "outputProjection":{"type":"string","enum":["equirectangular360"],"default":"equirectangular360","title":"视频类型"},

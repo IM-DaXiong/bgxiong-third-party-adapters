@@ -16,7 +16,8 @@
       "minLength": 1,
       "maxLength": 8000,
       "title": "提示词原文",
-      "description": "用户确认的完整文字；适配器可追加必要的 ERP outpaint 触发句，原文不丢。"
+      "description": "用户确认的完整文字；适配器可追加必要的 ERP outpaint 触发句，原文不丢。",
+      "default": "将参考图扩展为完整的360°等距柱状全景。保留参考图中已有物体、材质、光照和空间关系，向四周自然延伸场景，左右边缘无缝衔接，顶部和底部连续，避免新增人物、文字或水印。"
     },
     "outputProjection": {
       "type": "string",
