@@ -3,50 +3,6 @@
   "projectName": "bgxiong-third-party-adapters",
   "packages": [
     {
-      "pluginId": "local.thirdparty.comfy-panorama-image",
-      "version": "1.0.3",
-      "kind": "installable",
-      "validation": "sdk_package_and_install_envelope_validated",
-      "sourceManifest": "packages/workflow-adapters/panorama-image/manifest.json",
-      "files": [
-        {
-          "path": "adapter-install.json",
-          "source": "artifacts/releases/panorama-image-v1.0.3/local.thirdparty.comfy-panorama-image/1.0.3/adapter-install.json",
-          "sha256": "0295d0287d287694323693befe9c7ae80018c4ec8d142d0ddfb0db294be54b73"
-        },
-        {
-          "path": "LICENSE",
-          "source": "artifacts/releases/panorama-image-v1.0.3/local.thirdparty.comfy-panorama-image/1.0.3/LICENSE",
-          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
-        },
-        {
-          "path": "package/adapter.wasm",
-          "source": "artifacts/releases/panorama-image-v1.0.3/local.thirdparty.comfy-panorama-image/1.0.3/package/adapter.wasm",
-          "sha256": "1af05b64934a9b2d692a40b2b7d41e7c9665a8fdb2a167540e9c30996b82941c"
-        },
-        {
-          "path": "package/manifest.json",
-          "source": "artifacts/releases/panorama-image-v1.0.3/local.thirdparty.comfy-panorama-image/1.0.3/package/manifest.json",
-          "sha256": "bedb3f61c9319dee879d4851be7b04eb93b20124cebc37e3361482f5929c8b2c"
-        },
-        {
-          "path": "package/manifest.sha256",
-          "source": "artifacts/releases/panorama-image-v1.0.3/local.thirdparty.comfy-panorama-image/1.0.3/package/manifest.sha256",
-          "sha256": "a297fe87f1fc53c6b81db6a6728c49edc17535a662942150350fcfcc2485cfbb"
-        },
-        {
-          "path": "README.txt",
-          "source": "artifacts/releases/panorama-image-v1.0.3/local.thirdparty.comfy-panorama-image/1.0.3/README.txt",
-          "sha256": "358c9e4fade1b2fd4d329309c1cf6f0c0d409b22c42cf02c1bdf44b4810c9d57"
-        },
-        {
-          "path": "安装说明.txt",
-          "source": "artifacts/releases/panorama-image-v1.0.3/local.thirdparty.comfy-panorama-image/1.0.3/安装说明.txt",
-          "sha256": "a6aaec5a148e7238805ec291d58a5822ba8ea649e0b2c786eb70bbd18a3e84a9"
-        }
-      ]
-    },
-    {
       "pluginId": "local.bgx.seedvr2-image",
       "version": "1.0.3",
       "kind": "installable",
@@ -1252,60 +1208,6 @@
       ]
     },
     {
-      "pluginId": "local.thirdparty.runninghub-qwen-image-21",
-      "version": "0.1.1",
-      "kind": "installable",
-      "validation": "sdk_package_and_install_envelope_validated",
-      "sourceManifest": "records/release-source/local.thirdparty.runninghub-qwen-image-21/0.1.1/manifest.json",
-      "files": [
-        {
-          "path": "adapter-install.json",
-          "source": "artifacts/releases/660679a4971846c087fe548b2d8070ec/local.thirdparty.runninghub-qwen-image-21/0.1.1/adapter-install.json",
-          "sha256": "084c1fb309cd93d10dcde7e39a08cf7b46a433b4ad6fd2b49d53bd05c1a726d7"
-        },
-        {
-          "path": "LICENSE",
-          "source": "artifacts/releases/660679a4971846c087fe548b2d8070ec/local.thirdparty.runninghub-qwen-image-21/0.1.1/LICENSE",
-          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
-        },
-        {
-          "path": "package/adapter.wasm",
-          "source": "artifacts/releases/660679a4971846c087fe548b2d8070ec/local.thirdparty.runninghub-qwen-image-21/0.1.1/package/adapter.wasm",
-          "sha256": "8bfffa426ad1459d00366ef0dc11ae9238036bfdeadc1f0db604e8bd52ec0af7"
-        },
-        {
-          "path": "package/manifest.json",
-          "source": "artifacts/releases/660679a4971846c087fe548b2d8070ec/local.thirdparty.runninghub-qwen-image-21/0.1.1/package/manifest.json",
-          "sha256": "8a173d93af44bcc022276281d67ab11a61e8d82d4e32eab220d0df8d9fe0e26a"
-        },
-        {
-          "path": "package/manifest.sha256",
-          "source": "artifacts/releases/660679a4971846c087fe548b2d8070ec/local.thirdparty.runninghub-qwen-image-21/0.1.1/package/manifest.sha256",
-          "sha256": "d6b3ec5da340664ef051006f27c13257f8122498bff7791b9787bfc9e6c23ac9"
-        },
-        {
-          "path": "README.md",
-          "source": "artifacts/releases/660679a4971846c087fe548b2d8070ec/local.thirdparty.runninghub-qwen-image-21/0.1.1/README.md",
-          "sha256": "8ff279aa579e8681298f8e8ec10775da0234845f117e36605e1ee1697e3635bd"
-        },
-        {
-          "path": "README.txt",
-          "source": "artifacts/releases/660679a4971846c087fe548b2d8070ec/local.thirdparty.runninghub-qwen-image-21/0.1.1/README.txt",
-          "sha256": "5fe311cf0aefff3b61b5e8f3d92d7f0a42c73c9b1a4a4095678165b89db9940f"
-        },
-        {
-          "path": "SHA256SUMS",
-          "source": "artifacts/releases/660679a4971846c087fe548b2d8070ec/local.thirdparty.runninghub-qwen-image-21/0.1.1/SHA256SUMS",
-          "sha256": "fdabaa75e9d493565188e5c85b82c9e77f4990b37da6ac760282577519ea74f1"
-        },
-        {
-          "path": "安装说明.txt",
-          "source": "artifacts/releases/660679a4971846c087fe548b2d8070ec/local.thirdparty.runninghub-qwen-image-21/0.1.1/安装说明.txt",
-          "sha256": "7a93893fe5c37bda5594416cdce1e1605de066d192bc978858b1edf77cd693cf"
-        }
-      ]
-    },
-    {
       "pluginId": "local.bgx.wan22-s2v",
       "version": "0.1.3",
       "kind": "installable",
@@ -1444,6 +1346,144 @@
           "path": "README.md",
           "source": "artifacts/releases/runninghub-h3-all-v1.0.2/local.thirdparty.runninghub-h3-all/1.0.2/README.md",
           "sha256": "49fd18e0d79f8a6c665438f9bc9067ada9b588fed2494ccad66bc1c6359f98f4"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.thirdparty.comfy-panorama-image",
+      "version": "1.24.3",
+      "kind": "installable",
+      "validation": "sdk_package_and_install_envelope_validated",
+      "sourceManifest": "packages/workflow-adapters/panorama-image/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/adapter-install.json",
+          "sha256": "8904a6ffa4b063f8d79b843a4c157ab76ea0ed51fc4b0ac079ba2233e4d7f764"
+        },
+        {
+          "path": "comfy-nodes/bgx_panorama_inputs/__init__.py",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/comfy-nodes/bgx_panorama_inputs/__init__.py",
+          "sha256": "97291114658fcb25e1cd164d68302bcbfda5aac030f3a65c9696d4dc13e3090a"
+        },
+        {
+          "path": "editor-bundle.json",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/editor-bundle.json",
+          "sha256": "9bf4a35eccdddff87a0f0c7f62a8a9c3534f77e4e67128b09174ad6b5dfedc65"
+        },
+        {
+          "path": "FONT-LICENSE.txt",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/FONT-LICENSE.txt",
+          "sha256": "05831cfb0b8fbbb02633f7c8968684f43a3b25cb9ea7e45db10b24078ddb922f"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "LICENSE.txt",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/LICENSE.txt",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/package/adapter.wasm",
+          "sha256": "589dbebbf5c618c53a9d1e95f7df2d1e6b25cd7c7ee4b8eaaa94df1ec350d76b"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/package/manifest.json",
+          "sha256": "1fda336f2c1faf3cbbe40856664310b1d089331a8ebbe88af4142c52790306b2"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/package/manifest.sha256",
+          "sha256": "d4450df7a423fa84fa4601200ac55545df801c693e38c6ec4afefaffbc946378"
+        },
+        {
+          "path": "PANORAMA-LICENSE.txt",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/PANORAMA-LICENSE.txt",
+          "sha256": "576cd4d129054efd94fb68a65713b88fef660e95a783fc0b474b3b65d7e44903"
+        },
+        {
+          "path": "README.en.md",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/README.en.md",
+          "sha256": "c0c814ed1b5812a5afdb5cb36bc7f0bea804eb5630b659119e9862e683154bb4"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/README.txt",
+          "sha256": "8fc621992a0a07f7d1f40662dfcaf66317282a7205ec1dc91edfd2794a678a46"
+        },
+        {
+          "path": "README.zh-CN.md",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/README.zh-CN.md",
+          "sha256": "653f0951e9d550125a3290c042a656454ced968fd494bcaabc6961dd81177dca"
+        },
+        {
+          "path": "upstream.lock.json",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/upstream.lock.json",
+          "sha256": "3adad984412c377501130935855bfa03d0233f5151ea564bf2d34bd06c4c6fec"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/安装说明.txt",
+          "sha256": "9772387b8bb507084cae8cbd85db528c2f2a92a00b4eb81001c88bb6f5f94d1b"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.thirdparty.runninghub-qwen-image-21",
+      "version": "0.1.2",
+      "kind": "installable",
+      "validation": "sdk_package_and_install_envelope_validated",
+      "sourceManifest": "packages/cloud-adapters/runninghub-qwen-image-21/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.runninghub-qwen-image-21/0.1.2/adapter-install.json",
+          "sha256": "6201ec17861420b85de7869c019dc28772703664e20f39c27bcea1382c6b7a88"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.runninghub-qwen-image-21/0.1.2/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.runninghub-qwen-image-21/0.1.2/package/adapter.wasm",
+          "sha256": "9da18fd1ff08c26488c237ff1b256c9869618b250e795743eb9cf548fc559d7f"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.runninghub-qwen-image-21/0.1.2/package/manifest.json",
+          "sha256": "c26ecc774bbbf4340399d05e65827507a12dfb61382625d292f7e6cbb053ef63"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.runninghub-qwen-image-21/0.1.2/package/manifest.sha256",
+          "sha256": "07da6c6c13a8c38ca6fd776cef323be1d51fdaeeaba7973a3d49cc7c4269dcc0"
+        },
+        {
+          "path": "README.md",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.runninghub-qwen-image-21/0.1.2/README.md",
+          "sha256": "a3829574f4bb9ff11bef2275f9b1a7e77e35de33b8616fc863db3140eec3ce49"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.runninghub-qwen-image-21/0.1.2/README.txt",
+          "sha256": "13fe4d8fb8d07299e9296bd40b756ba09d8ce1cd3e7373a47b6365820b2195a8"
+        },
+        {
+          "path": "SHA256SUMS",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.runninghub-qwen-image-21/0.1.2/SHA256SUMS",
+          "sha256": "592bb7b626f57205194f1de61f866eadb9b7f174bcd4df91b6e299329921857d"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.runninghub-qwen-image-21/0.1.2/安装说明.txt",
+          "sha256": "f1631b56413b31f8955e41fd1d8b0b64d4aaeb7c8907ae788e6716aa1d7381b0"
         }
       ]
     }

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "lockSha256": "a91af03d3cd67bcf79e517896851be5fc95497b0102e5bdf936df86eb79186d4",
-  "archiveSha256": "1f0e9469cca3edc096ee1715708a4024bb1fc9a3879e39c38f48094e85696c88",
-  "archiveBytes": 4035739,
-  "fileCount": 244,
-  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/breeze-durable-1.0.1/third-party-frozen-resources-34014c11382e.zip"
+  "lockSha256": "e9180b363badf7f17b6e2f955a3c3167d056876831323dca68ec2560bc2fdff9",
+  "archiveSha256": "9955b3969458582ffca4d6a75ecca36c10ca88b06532ef62aef1dc5bc3028293",
+  "archiveBytes": 6739822,
+  "fileCount": 252,
+  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/installer-0.6.1116/third-party-frozen-resources-e9180b363bad.zip"
 }
