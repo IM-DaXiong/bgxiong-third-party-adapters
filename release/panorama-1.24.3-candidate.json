@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "status": "public-development-candidate",
+  "pluginId": "local.thirdparty.comfy-panorama-image",
+  "version": "1.24.3",
+  "repository": "bgxiong-third-party-adapters",
+  "tag": "panorama-1.24.3-candidate",
+  "sourceCommit": "873424ad379d51f83e5c2a2efadc3844c009b89e",
+  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/panorama-1.24.3-candidate/comfy-panorama-image-1.24.3.zip",
+  "sha256": "a13232d1387e701c4a5a5848d9024a38a2fabc02c819b8c8e3723699cdb4e30d",
+  "bytes": 2897794,
+  "publicDownloadRestored": true,
+  "files": [
+    {
+      "path": "adapter-install.json",
+      "bytes": 1812,
+      "sha256": "8904a6ffa4b063f8d79b843a4c157ab76ea0ed51fc4b0ac079ba2233e4d7f764"
+    },
+    {
+      "path": "comfy-nodes/bgx_panorama_inputs/__init__.py",
+      "bytes": 6122,
+      "sha256": "97291114658fcb25e1cd164d68302bcbfda5aac030f3a65c9696d4dc13e3090a"
+    },
+    {
+      "path": "editor-bundle.json",
+      "bytes": 7761548,
+      "sha256": "9bf4a35eccdddff87a0f0c7f62a8a9c3534f77e4e67128b09174ad6b5dfedc65"
+    },
+    {
+      "path": "FONT-LICENSE.txt",
+      "bytes": 4495,
+      "sha256": "05831cfb0b8fbbb02633f7c8968684f43a3b25cb9ea7e45db10b24078ddb922f"
+    },
+    {
+      "path": "LICENSE.txt",
+      "bytes": 1506,
+      "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+    },
+    {
+      "path": "package/adapter.wasm",
+      "bytes": 1722558,
+      "sha256": "589dbebbf5c618c53a9d1e95f7df2d1e6b25cd7c7ee4b8eaaa94df1ec350d76b"
+    },
+    {
+      "path": "package/manifest.json",
+      "bytes": 940,
+      "sha256": "1fda336f2c1faf3cbbe40856664310b1d089331a8ebbe88af4142c52790306b2"
+    },
+    {
+      "path": "package/manifest.sha256",
+      "bytes": 157,
+      "sha256": "d4450df7a423fa84fa4601200ac55545df801c693e38c6ec4afefaffbc946378"
+    },
+    {
+      "path": "PANORAMA-LICENSE.txt",
+      "bytes": 1086,
+      "sha256": "576cd4d129054efd94fb68a65713b88fef660e95a783fc0b474b3b65d7e44903"
+    },
+    {
+      "path": "README.en.md",
+      "bytes": 9028,
+      "sha256": "c0c814ed1b5812a5afdb5cb36bc7f0bea804eb5630b659119e9862e683154bb4"
+    },
+    {
+      "path": "README.zh-CN.md",
+      "bytes": 13283,
+      "sha256": "653f0951e9d550125a3290c042a656454ced968fd494bcaabc6961dd81177dca"
+    },
+    {
+      "path": "upstream.lock.json",
+      "bytes": 2348,
+      "sha256": "3adad984412c377501130935855bfa03d0233f5151ea564bf2d34bd06c4c6fec"
+    }
+  ],
+  "sdkCommit": "ddc91f3c3465863da5b58082292f61583d48b829",
+  "hostSdkCommit": "4e3609f46e3b927555214d2fc1a854beb535852e",
+  "upstreamCommit": "6db991a7ef077170ce51a2f32e29737678285183",
+  "acceptance": {
+    "sdkPackage": "29 native tests; build/check/pack/check passed",
+    "host": "November 15 prompt-default upgrade fix required; isolated install registered 9 operations with no setup issues",
+    "workbenches": "Actual image/video GUI: empty fill, existing text preservation, clear without repeat fill, old version without defaults, close and persisted readback passed",
+    "preservation": "952 existing node prompts and 2103 history rows unchanged across registration",
+    "realComfyUI": "not-run",
+    "installedRelease": "not-run"
+  }
+}
