@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "pluginId": "local.thirdparty.runninghub-h3-all",
+  "version": "1.0.3",
+  "workflowCount": 9,
+  "sdkCommit": "4e3609f46e3b927555214d2fc1a854beb535852e",
+  "sdkRelease": "2.4.0",
+  "nativeTestsPassed": 20,
+  "nativeTestsIgnored": 1,
+  "sdkSourceAndRuntimeValidated": true,
+  "applicationInstallationVerified": true,
+  "previousOperationContractsMatched": 9,
+  "realVideoTasks": [],
+  "cloudGenerationOnThisBuild": "not_run",
+  "zipSha256": "98ca24586e493bbc802db827357ec7c8eef4af9817440cd09f92ba95618fe4db",
+  "manifestSha256": "96ea39f6657cf759418a6f0959300c1001c1b5cd902c165eeca836931a1197e2",
+  "wasmSha256": "08fc44c18afd78aed37f4874d6689c08357829b272780fd11b5e5e4f659da287"
+}

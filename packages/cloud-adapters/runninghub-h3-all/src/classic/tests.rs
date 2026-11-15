@@ -1,18 +1,10 @@
 use super::*;
 use std::collections::BTreeMap;
 fn input(kind: ModelKind) -> Value {
-    let mut i = json!({"inputMode":"multi_image_to_video","prompt":"第一行完整原词\n<image1> 第二行，不截断","referenceImages":(0..kind.max_refs()).map(|n|json!({"mediaId":format!("image-{n}")})).collect::<Vec<_>>(),"durationSeconds":5,"fps":24,"aspectRatio":"16:9","resolution":"mp:0.4"});
-    if kind.requires_reference_audio() {
-        i["referenceAudios"] = json!([{"mediaId":"audio-0"}]);
-        i["advanced"] = json!({"audioUsage":"soundtrack_copy"});
-    }
-    i
+    json!({"inputMode":"multi_image_to_video","prompt":"第一行完整原词\n<image1> 第二行，不截断","referenceImages":(0..kind.max_refs()).map(|n|json!({"mediaId":format!("image-{n}")})).collect::<Vec<_>>(),"durationSeconds":5,"fps":24,"aspectRatio":"16:9","resolution":"mp:0.4"})
 }
 fn payload(kind: ModelKind) -> Value {
-    let mut media=(0..kind.max_refs()).map(|n|json!({"id":format!("image-{n}"),"kind":"image","handle":format!("image-handle-{n}"),"mime":"image/jpeg","fileName":format!("source-{n}.jpg"),"byteLength":"200"})).collect::<Vec<_>>();
-    if kind.requires_reference_audio() {
-        media.push(json!({"id":"audio-0","kind":"audio","handle":"audio-handle-0","mime":"audio/wav","fileName":"original.wav","byteLength":"200"}));
-    }
+    let media=(0..kind.max_refs()).map(|n|json!({"id":format!("image-{n}"),"kind":"image","handle":format!("image-handle-{n}"),"mime":"image/jpeg","fileName":format!("source-{n}.jpg"),"byteLength":"200"})).collect::<Vec<_>>();
     json!({"schemaVersion":2,"modelId":kind.model_id(),"capabilityKey":"video.generate","operationId":kind.operation_id(),"operationVersion":1,"inputSchemaDigest":schema("input",kind.input_schema())["digest"],"input":input(kind),"media":media,"uploads":[],"configuration":{"endpointBaseUrl":"https://www.runninghub.cn","credentialRef":"user-managed","instanceType":"plus"}})
 }
 fn invocation(op: &str, p: &Value) -> Invocation {
@@ -140,17 +132,10 @@ fn every_workflow_has_its_declared_fixed_media_and_native_timing() {
             schema["properties"]["referenceImages"]["maxItems"],
             kind.max_refs()
         );
-        assert_eq!(
-            schema["properties"].get("referenceAudios").is_some(),
-            kind.requires_reference_audio()
-        );
+        assert!(schema["properties"].get("referenceAudios").is_none());
         assert_eq!(
             c["operations"][0]["mediaSlots"].as_array().unwrap().len(),
-            if kind.requires_reference_audio() {
-                2
-            } else {
-                1
-            }
+            1
         );
     }
 }
@@ -224,11 +209,6 @@ fn all_six_submit_exact_original_assets_prompt_and_workflow_specific_pins() {
                 && v["fieldName"] == *field
                 && v["fieldValue"] == *value));
         }
-        if kind.requires_reference_audio() {
-            assert!(nodes
-                .iter()
-                .any(|v| v["nodeId"] == "142" && v["fieldValue"] == "openapi/original.wav"));
-        }
         for (tier, value) in [
             ("mp:0.25", "0.25"),
             ("mp:0.4", "0.4"),
@@ -242,12 +222,7 @@ fn all_six_submit_exact_original_assets_prompt_and_workflow_specific_pins() {
             let images = (0..kind.max_refs())
                 .map(|n| format!("openapi/source-{n}.jpg"))
                 .collect::<Vec<_>>();
-            let audios = if kind.requires_reference_audio() {
-                vec![String::from("openapi/original.wav")]
-            } else {
-                vec![]
-            };
-            let mapped = node_info(kind, &chosen, &images, &audios).unwrap();
+            let mapped = node_info(kind, &chosen, &images).unwrap();
             let mapped = mapped.as_array().unwrap();
             assert_eq!(
                 mapped

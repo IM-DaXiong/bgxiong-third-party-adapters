@@ -8,7 +8,6 @@ pub const MODEL_ID_3SLOT: &str = "h3.r2v.3slot";
 pub const MODEL_ID_4SLOT: &str = "h3.r2v.4slot";
 pub const MODEL_ID_I2V_TURBO: &str = "h3.i2v.turbo";
 pub const MODEL_ID_FL2VA: &str = "h3.fl2va.s20";
-pub const MODEL_ID_SOUNDTRACK: &str = "h3.soundtrack.1ref";
 
 pub const APP_ID_1SLOT: &str = "2108667855574224898";
 pub const APP_ID_2SLOT: &str = "2101956370017906690";
@@ -16,7 +15,6 @@ pub const APP_ID_3SLOT: &str = "2101957517390737410";
 pub const APP_ID_4SLOT: &str = "2103015554197053441";
 pub const APP_ID_I2V_TURBO: &str = "2101954317581381633";
 pub const APP_ID_FL2VA: &str = "2107978021675294722";
-pub const APP_ID_SOUNDTRACK: &str = "2107982892470198274";
 
 pub const SUBMIT_MODE: &str = "mapped_run";
 
@@ -26,10 +24,7 @@ pub const REF_IMAGE_NODE_IDS_2: [&str; 2] = ["137", "139"];
 pub const REF_IMAGE_NODE_IDS_3: [&str; 3] = ["137", "139", "143"];
 pub const REF_IMAGE_NODE_IDS_4: [&str; 4] = ["137", "139", "143", "144"];
 pub const REF_IMAGE_NODE_IDS_FL2VA: [&str; 1] = ["114"];
-pub const REF_IMAGE_NODE_IDS_SOUNDTRACK: [&str; 1] = ["137"];
 pub const IMAGE_FIELD_NAME: &str = "image";
-pub const AUDIO_NODE_ID_SOUNDTRACK: &str = "142";
-pub const AUDIO_FIELD_NAME: &str = "audio";
 
 pub const ASPECT_FIELD_NAME: &str = "aspect_ratio";
 pub const RESOLUTION_FIELD_NAME: &str = "megapixels";
@@ -118,20 +113,6 @@ pub const FL2VA_WIDGETS: KindWidgetTable = KindWidgetTable {
     resolution_node: "115",
 };
 
-/// Soundtrack / lip-sync App. Node numbers collide with 2-slot; steps are 20.
-pub const SOUNDTRACK_WIDGETS: KindWidgetTable = KindWidgetTable {
-    prompt_node: "138",
-    prompt_field: "value",
-    duration_node: "132",
-    duration_field: "value",
-    fps_node: "",
-    fps_field: "",
-    math_node: "",
-    math_field: "",
-    aspect_node: "115",
-    resolution_node: "115",
-};
-
 /// nodeId / fieldName / fieldValue. Strings only. No fieldData.
 pub type WeightPin = (&'static str, &'static str, &'static str);
 
@@ -204,22 +185,6 @@ pub const FL2VA_WEIGHT_PINS: &[WeightPin] = &[
     ("126", "steps", "20"),
     ("126", "scheduler", "simple"),
     ("126", "denoise", "1"),
-];
-
-pub const SOUNDTRACK_WEIGHT_PINS: &[WeightPin] = &[
-    ("128", "clip_name", CLIP_H3),
-    (
-        "127",
-        "unet_name",
-        "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
-    ),
-    ("127", "weight_dtype", "default"),
-    ("119", "vae_name", VIDEO_VAE),
-    ("120", "vae_name", AUDIO_VAE),
-    ("124", "steps", "20"),
-    ("124", "scheduler", "simple"),
-    ("124", "denoise", "1"),
-    ("136", "ref_image_size", "match"),
 ];
 
 pub fn submit_ai_app_url(app: &str) -> String {

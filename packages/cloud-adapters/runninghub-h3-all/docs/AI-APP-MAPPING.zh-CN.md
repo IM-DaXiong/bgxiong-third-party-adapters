@@ -13,7 +13,6 @@ Query: `/openapi/v2/query`. Upload: `/openapi/v2/media/upload/binary`.
 | `h3.r2v.3slot` | AI App `2101957517390737410` | 137 / 139 / 143 (141 is TurboLoRA) |
 | `h3.r2v.4slot` | AI App `2103015554197053441` | 137 / 139 / 143 / 144 (141 is TurboLoRA) |
 | `h3.fl2va.s20` | AI App `2107978021675294722` | 114 |
-| `h3.soundtrack.1ref` | AI App `2107982892470198274` | 137 (142 is Load Audio) |
 
 ## Widgets (not shared)
 
@@ -58,23 +57,9 @@ Native fps is fixed at 24; no adjustable fps node. Do not write nodes `130`, `13
 
 Native fps is fixed at 24; no adjustable fps node. Node `131` on this App is `noise_seed` and must not be written.
 
-### soundtrack (`h3.soundtrack.1ref`，源码参考)
-
-| SDK v2 input | Node | field |
-|---|---|---|
-| `prompt` | 138 | `value` |
-| `durationSeconds` | 132 | `value` |
-| image | 137 | `image` |
-| `referenceAudios` | 142 | `audio` |
-| `aspect` / `resolution` | 115 | `aspect_ratio` / `megapixels` |
-| closed pin | 136 | `ref_image_size` = `match` |
-
-Native fps is fixed at 24; no adjustable fps node. Steps are `20` on node `124`. Do not reuse the 2-slot steps-`6` table.
-Zero images or zero `referenceAudios` is a submit error.
-
 SDK v2 inputMode is multi_image_to_video on every declared operation.
 SDK v2 mediaSlots carry exact ordered mediaId references and leased originals.
-Each workflow requires exactly its declared image count; soundtrack requires one audio.
+Each workflow requires exactly its declared image count.
 The request uses the submitted media IDs and their leased originals.
 
 ## Weight pins (every submit)
@@ -119,18 +104,8 @@ be sent every time. Do not copy i2v-turbo node ids onto ref2va graphs.
 | 121 / 122 | video / audio `vae_name` |
 | 126 | `steps` `20`, `scheduler` `simple`, `denoise` `1` |
 
-### soundtrack（源码参考）
-
-| Node | fields |
-|---|---|
-| 128 | `clip_name` only |
-| 127 | `unet_name` ref2va, `weight_dtype` `default` |
-| 119 / 120 | video / audio `vae_name` |
-| 124 | `steps` `20`, `scheduler` `simple`, `denoise` `1` |
-| 136 | `ref_image_size` `match` |
-
 Upload `fieldValue` for LoadImage: `data.fileName` unchanged (`openapi/<hash>.ext`). Do not use `download_url` and do not strip `openapi/`.
 
 ## 工作台参数合同
 
-`resolution` 使用 `mp:0.25`、`mp:0.4`、`mp:0.6`、`mp:1` 四个命名档，包内转换到原有 megapixels 节点；不声明连续范围。七个操作不声明 seed，宿主不得注入 seed 或未声明的 advanced，原云端种子策略不变。仅 soundtrack 声明 `advanced.audioUsage=soundtrack_copy`，表示完整原音驱动对口型，提交前校验，不是附加云端节点。其余六项不造音频用途。
+`resolution` 使用 `mp:0.25`、`mp:0.4`、`mp:0.6`、`mp:1` 四个命名档，包内转换到原有 megapixels 节点；不声明连续范围。六个操作不声明 seed，宿主不得注入 seed 或未声明的 advanced，原云端种子策略不变。固定槽位操作接收图片。

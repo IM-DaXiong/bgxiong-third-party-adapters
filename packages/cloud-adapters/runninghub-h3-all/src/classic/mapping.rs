@@ -9,14 +9,13 @@ use serde_json::{json, Value};
 
 use super::config::{
     submit_ai_app_url, KindWidgetTable, WeightPin, APP_ID_1SLOT, APP_ID_2SLOT, APP_ID_3SLOT,
-    APP_ID_4SLOT, APP_ID_FL2VA, APP_ID_I2V_TURBO, APP_ID_SOUNDTRACK, ASPECT_FIELD_NAME,
-    AUDIO_FIELD_NAME, AUDIO_NODE_ID_SOUNDTRACK, FL2VA_WEIGHT_PINS, FL2VA_WIDGETS, IMAGE_FIELD_NAME,
-    MODEL_ID_1SLOT, MODEL_ID_2SLOT, MODEL_ID_3SLOT, MODEL_ID_4SLOT, MODEL_ID_FL2VA,
-    MODEL_ID_I2V_TURBO, MODEL_ID_SOUNDTRACK, REF1_WEIGHT_PINS, REF1_WIDGETS, REF_IMAGE_NODE_IDS_1,
-    REF_IMAGE_NODE_IDS_1REF, REF_IMAGE_NODE_IDS_2, REF_IMAGE_NODE_IDS_3, REF_IMAGE_NODE_IDS_4,
-    REF_IMAGE_NODE_IDS_FL2VA, REF_IMAGE_NODE_IDS_SOUNDTRACK, RESOLUTION_FIELD_NAME,
-    SLOT1_WEIGHT_PINS, SLOT1_WIDGETS, SLOT2_WIDGETS, SLOT3_WIDGETS, SLOT4_WIDGETS,
-    SLOT_REF2VA_WEIGHT_PINS, SOUNDTRACK_WEIGHT_PINS, SOUNDTRACK_WIDGETS, SUBMIT_MODE,
+    APP_ID_4SLOT, APP_ID_FL2VA, APP_ID_I2V_TURBO, ASPECT_FIELD_NAME, FL2VA_WEIGHT_PINS,
+    FL2VA_WIDGETS, IMAGE_FIELD_NAME, MODEL_ID_1SLOT, MODEL_ID_2SLOT, MODEL_ID_3SLOT,
+    MODEL_ID_4SLOT, MODEL_ID_FL2VA, MODEL_ID_I2V_TURBO, REF1_WEIGHT_PINS, REF1_WIDGETS,
+    REF_IMAGE_NODE_IDS_1, REF_IMAGE_NODE_IDS_1REF, REF_IMAGE_NODE_IDS_2, REF_IMAGE_NODE_IDS_3,
+    REF_IMAGE_NODE_IDS_4, REF_IMAGE_NODE_IDS_FL2VA, RESOLUTION_FIELD_NAME, SLOT1_WEIGHT_PINS,
+    SLOT1_WIDGETS, SLOT2_WIDGETS, SLOT3_WIDGETS, SLOT4_WIDGETS, SLOT_REF2VA_WEIGHT_PINS,
+    SUBMIT_MODE,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -27,8 +26,6 @@ pub enum ModelKind {
     Slot4,
     I2vTurbo,
     Fl2va,
-    #[allow(dead_code)] // Mapping is retained for the disabled Spectrum operation.
-    Soundtrack,
 }
 
 impl ModelKind {
@@ -40,21 +37,16 @@ impl ModelKind {
             ModelKind::Slot4 => APP_ID_4SLOT,
             ModelKind::I2vTurbo => APP_ID_I2V_TURBO,
             ModelKind::Fl2va => APP_ID_FL2VA,
-            ModelKind::Soundtrack => APP_ID_SOUNDTRACK,
         }
     }
 
     pub fn max_refs(self) -> usize {
         match self {
-            ModelKind::Ref1 | ModelKind::I2vTurbo | ModelKind::Fl2va | ModelKind::Soundtrack => 1,
+            ModelKind::Ref1 | ModelKind::I2vTurbo | ModelKind::Fl2va => 1,
             ModelKind::Slot2 => 2,
             ModelKind::Slot3 => 3,
             ModelKind::Slot4 => 4,
         }
-    }
-
-    pub fn requires_reference_audio(self) -> bool {
-        matches!(self, ModelKind::Soundtrack)
     }
 
     pub fn ref_node_ids(self) -> &'static [&'static str] {
@@ -65,7 +57,6 @@ impl ModelKind {
             ModelKind::Slot4 => &REF_IMAGE_NODE_IDS_4,
             ModelKind::I2vTurbo => &REF_IMAGE_NODE_IDS_1,
             ModelKind::Fl2va => &REF_IMAGE_NODE_IDS_FL2VA,
-            ModelKind::Soundtrack => &REF_IMAGE_NODE_IDS_SOUNDTRACK,
         }
     }
 
@@ -77,7 +68,6 @@ impl ModelKind {
             ModelKind::Slot4 => SLOT4_WIDGETS,
             ModelKind::I2vTurbo => SLOT1_WIDGETS,
             ModelKind::Fl2va => FL2VA_WIDGETS,
-            ModelKind::Soundtrack => SOUNDTRACK_WIDGETS,
         }
     }
 
@@ -87,7 +77,6 @@ impl ModelKind {
             ModelKind::Slot2 | ModelKind::Slot3 | ModelKind::Slot4 => SLOT_REF2VA_WEIGHT_PINS,
             ModelKind::I2vTurbo => SLOT1_WEIGHT_PINS,
             ModelKind::Fl2va => FL2VA_WEIGHT_PINS,
-            ModelKind::Soundtrack => SOUNDTRACK_WEIGHT_PINS,
         }
     }
 
@@ -103,7 +92,6 @@ impl ModelKind {
             ModelKind::Slot4 => MODEL_ID_4SLOT,
             ModelKind::I2vTurbo => MODEL_ID_I2V_TURBO,
             ModelKind::Fl2va => MODEL_ID_FL2VA,
-            ModelKind::Soundtrack => MODEL_ID_SOUNDTRACK,
         }
     }
 }
@@ -116,7 +104,6 @@ pub fn parse_model_kind(model: Option<&str>) -> Result<ModelKind, String> {
         Some(m) if m == MODEL_ID_4SLOT => Ok(ModelKind::Slot4),
         Some(m) if m == MODEL_ID_I2V_TURBO => Ok(ModelKind::I2vTurbo),
         Some(m) if m == MODEL_ID_FL2VA => Ok(ModelKind::Fl2va),
-        // Some(m) if m == MODEL_ID_SOUNDTRACK => Ok(ModelKind::Soundtrack),
         Some(m) => Err(format!(
             "unknown model {m}; expected {MODEL_ID_1SLOT}, {MODEL_ID_2SLOT}, {MODEL_ID_3SLOT}, {MODEL_ID_4SLOT}, {MODEL_ID_I2V_TURBO} or {MODEL_ID_FL2VA}"
         )),
@@ -207,7 +194,6 @@ pub fn mapped_node_info(
     resolution: Option<&str>,
     aspect: Option<&str>,
     uploaded: &[&str],
-    uploaded_audio: Option<&str>,
 ) -> Result<Value, String> {
     if SUBMIT_MODE != "mapped_run" {
         return Ok(json!([]));
@@ -283,31 +269,7 @@ pub fn mapped_node_info(
                 kind.model_id()
             ));
         }
-        if node_id == AUDIO_NODE_ID_SOUNDTRACK && kind == ModelKind::Soundtrack {
-            return Err(format!(
-                "{} graph must not write image onto Load Audio node {AUDIO_NODE_ID_SOUNDTRACK}",
-                kind.model_id()
-            ));
-        }
-        if kind == ModelKind::Soundtrack && n.to_ascii_lowercase().ends_with(".wav") {
-            return Err("wav must not be written as a reference image".into());
-        }
         push_node_str(&mut list, node_id, IMAGE_FIELD_NAME, n);
-    }
-    if kind.requires_reference_audio() {
-        let Some(audio) = uploaded_audio.map(str::trim).filter(|s| !s.is_empty()) else {
-            return Err("soundtrack requires one referenceAudios item".into());
-        };
-        let lower = audio.to_ascii_lowercase();
-        if lower.ends_with(".png")
-            || lower.ends_with(".jpg")
-            || lower.ends_with(".jpeg")
-            || lower.ends_with(".webp")
-            || lower.ends_with(".gif")
-        {
-            return Err("image file must not be written as soundtrack audio".into());
-        }
-        push_node_str(&mut list, AUDIO_NODE_ID_SOUNDTRACK, AUDIO_FIELD_NAME, audio);
     }
     if kind == ModelKind::I2vTurbo && list.iter().any(|n| n["nodeId"] == "138") {
         return Err("i2v turbo nodeInfoList must not contain node 138".into());

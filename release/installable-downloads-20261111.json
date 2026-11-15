@@ -337,10 +337,10 @@
     },
     {
       "pluginId": "local.thirdparty.runninghub-h3-all",
-      "version": "1.0.2",
-      "file": "local.thirdparty.runninghub-h3-all-1.0.2.zip",
-      "sha256": "399c63d22c04c99e62a4e3b2c1b00473c747f53fbf294c57cad948eded01d7f4",
-      "bytes": 292817,
+      "version": "1.0.3",
+      "file": "local.thirdparty.runninghub-h3-all-1.0.3.zip",
+      "sha256": "98ca24586e493bbc802db827357ec7c8eef4af9817440cd09f92ba95618fe4db",
+      "bytes": 291635,
       "files": [
         "adapter-install.json",
         "LICENSE",
@@ -349,8 +349,8 @@
         "package/manifest.sha256",
         "README.md"
       ],
-      "validation": "sdk_package_real_audio_upload_and_three_routes_cloud_generation_verified",
-      "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.2/local.thirdparty.runninghub-h3-all-1.0.2.zip",
+      "validation": "sdk_source_runtime_app_install_and_nine_unchanged_contracts_verified",
+      "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.3/local.thirdparty.runninghub-h3-all-1.0.3.zip",
       "displayName": "RunningHub H3 全工作流",
       "service": "RunningHub",
       "purpose": "九项 RunningHub H3 视频工作流，支持多图参考、固定图数、首帧和保留原音。"

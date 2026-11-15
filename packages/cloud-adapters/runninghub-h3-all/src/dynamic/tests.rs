@@ -655,10 +655,11 @@ fn all_dynamic_routes_preserve_graph_audio_and_exact_identity() {
             graph["124"]["inputs"]["steps"],
             if route.slug == "r2v-turbo" { 6 } else { 20 }
         );
-        assert_eq!(
-            graph["141"]["class_type"] == "SpectrumApplyMiniMaxH3",
-            route.slug == "r2v-spectrum"
-        );
+        assert!(graph
+            .as_object()
+            .unwrap()
+            .values()
+            .all(|node| node["class_type"] != "SpectrumApplyMiniMaxH3"));
         p["operationId"] = json!("local.thirdparty.runninghub-h3-all/not-the-selected-operation");
         let mut h = Fixture::for_payload(&p);
         let response = crate::RunningHubH3::invoke(invocation("submit", &p), &mut h);

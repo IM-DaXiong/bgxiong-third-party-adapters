@@ -15,7 +15,6 @@ UI dumps + the official `/openapi/v2/run/ai-app/{id}` apiCallDemo.
 | `h3.r2v.3slot` | `2101957517390737410` | `h3.r2v.3slot.ui.json` |
 | `h3.r2v.4slot` | AI App `2103015554197053441` | `h3.r2v.4slot.ui.json` |
 | `h3.fl2va.s20` | `2107978021675294722` | apiCallDemo (no local dump in this crate) |
-| `h3.soundtrack.1ref` | `2107982892470198274` | source name `video_minimax_h3_r2v_spectrum_soundtrack_1ref.json`; node ids from apiCallDemo |
 
 `h3.r2v.4slot` submits to `/openapi/v2/run/ai-app/2103015554197053441`. LoadImage nodes are `137`, `139`, `143`, `144`.
 

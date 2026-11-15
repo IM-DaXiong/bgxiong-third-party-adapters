@@ -1312,40 +1312,40 @@
     },
     {
       "pluginId": "local.thirdparty.runninghub-h3-all",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "kind": "installable",
-      "validation": "sdk_package_real_audio_upload_and_three_routes_cloud_generation_verified",
+      "validation": "sdk_source_runtime_app_install_and_nine_unchanged_contracts_verified",
       "sourceManifest": "packages/cloud-adapters/runninghub-h3-all/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",
-          "source": "artifacts/releases/runninghub-h3-all-v1.0.2/local.thirdparty.runninghub-h3-all/1.0.2/adapter-install.json",
-          "sha256": "d011f5423a0dd7feef0888597d348fb1e1192e22c1cd28cff98ccd1b62331672"
+          "source": "artifacts/releases/runninghub-h3-all-v1.0.3/local.thirdparty.runninghub-h3-all/1.0.3/adapter-install.json",
+          "sha256": "e5aa8d54569d4891a46b453165992404ad5690de80cf8ae81b6ac42ccac80f9c"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/releases/runninghub-h3-all-v1.0.2/local.thirdparty.runninghub-h3-all/1.0.2/LICENSE",
+          "source": "artifacts/releases/runninghub-h3-all-v1.0.3/local.thirdparty.runninghub-h3-all/1.0.3/LICENSE",
           "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/releases/runninghub-h3-all-v1.0.2/local.thirdparty.runninghub-h3-all/1.0.2/package/adapter.wasm",
-          "sha256": "623378d2455ef4229298ed82a948d3e1052f98686f830a39a77f7479a3003f1a"
+          "source": "artifacts/releases/runninghub-h3-all-v1.0.3/local.thirdparty.runninghub-h3-all/1.0.3/package/adapter.wasm",
+          "sha256": "08fc44c18afd78aed37f4874d6689c08357829b272780fd11b5e5e4f659da287"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/releases/runninghub-h3-all-v1.0.2/local.thirdparty.runninghub-h3-all/1.0.2/package/manifest.json",
-          "sha256": "191b0b186e498842507891901e86ab4b1845b4c0b98888713e7748c6d4155152"
+          "source": "artifacts/releases/runninghub-h3-all-v1.0.3/local.thirdparty.runninghub-h3-all/1.0.3/package/manifest.json",
+          "sha256": "96ea39f6657cf759418a6f0959300c1001c1b5cd902c165eeca836931a1197e2"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/releases/runninghub-h3-all-v1.0.2/local.thirdparty.runninghub-h3-all/1.0.2/package/manifest.sha256",
-          "sha256": "65a6b8beefd12c1e8974738770be7afde70a7eb598111c3ff79a4e0b32f08ad1"
+          "source": "artifacts/releases/runninghub-h3-all-v1.0.3/local.thirdparty.runninghub-h3-all/1.0.3/package/manifest.sha256",
+          "sha256": "50548a9be6651c5f472ce2c1bd160d5c3dfc5da8b8c6518dafc3b7c2348b54da"
         },
         {
           "path": "README.md",
-          "source": "artifacts/releases/runninghub-h3-all-v1.0.2/local.thirdparty.runninghub-h3-all/1.0.2/README.md",
-          "sha256": "49fd18e0d79f8a6c665438f9bc9067ada9b588fed2494ccad66bc1c6359f98f4"
+          "source": "artifacts/releases/runninghub-h3-all-v1.0.3/local.thirdparty.runninghub-h3-all/1.0.3/README.md",
+          "sha256": "62be1150d9b24f3d7c00d59bf57162e9b353edcb89bf70ef1d4c67fa6852f019"
         }
       ]
     },

@@ -91,7 +91,6 @@ const MODELS: [ModelKind; 6] = [
     ModelKind::Slot4,
     ModelKind::Fl2va,
     ModelKind::I2vTurbo,
-    // ModelKind::Soundtrack, // Spectrum lip-sync is disabled.
 ];
 impl ModelKind {
     fn slug(self) -> &'static str {
@@ -102,7 +101,6 @@ impl ModelKind {
             Self::Slot4 => "slot4",
             Self::I2vTurbo => "i2v",
             Self::Fl2va => "fl2va",
-            Self::Soundtrack => "soundtrack",
         }
     }
     fn label(self) -> &'static str {
@@ -113,7 +111,6 @@ impl ModelKind {
             Self::Slot4 => "固定4图参考 · Turbo",
             Self::I2vTurbo => "首帧生视频 · Turbo",
             Self::Fl2va => "首帧生视频 · 官方原生",
-            Self::Soundtrack => "参考音对口型 · Spectrum（1图）",
         }
     }
     fn operation_id(self) -> String {
@@ -127,15 +124,13 @@ impl ModelKind {
             Self::Slot4 => include_str!("../../schemas/classic/input-slot4.json"),
             Self::I2vTurbo => include_str!("../../schemas/classic/input-i2v.json"),
             Self::Fl2va => include_str!("../../schemas/classic/input-fl2va.json"),
-            Self::Soundtrack => include_str!("../../schemas/classic/input-soundtrack.json"),
         }
     }
 }
 pub fn capabilities() -> Value {
     let contracts:Vec<Value>=MODELS.iter().map(|&kind|{
   let i=schema("input",kind.input_schema());let o=schema("output",include_str!("../../schemas/classic/output.json"));let c=schema("configuration",include_str!("../../schemas/classic/config.json"));let r=schema("resume",include_str!("../../schemas/classic/resume.json"));
-  let mut media=alloc::vec![json!({"role":"reference_image","inputPointer":"/referenceImages","mediaKind":"image","minCount":kind.max_refs(),"maxCount":kind.max_refs()})];
-  if kind.requires_reference_audio(){media.push(json!({"role":"reference_audio","inputPointer":"/referenceAudios","mediaKind":"audio","minCount":1,"maxCount":1}));}
+  let media=alloc::vec![json!({"role":"reference_image","inputPointer":"/referenceImages","mediaKind":"image","minCount":kind.max_refs(),"maxCount":kind.max_refs()})];
   let controls:Vec<Value>=[("prompt","multiline","提示词原文"),("aspectRatio","select","画幅"),("resolution","select","清晰度（MP）"),("durationSeconds","number","时长（1～15秒）")].iter().map(|(f,w,l)|json!({"fieldPointer":format!("/{f}"),"widget":w,"label":l,"description":"用户实际值原样提交，平台拒绝显式回传","group":"视频输入"})).collect();
   json!({"schemaVersion":2,"localId":kind.slug(),"capabilityKey":"video.generate","transportSlot":"video","modelIds":[kind.model_id()],"configurationSchema":{"id":"configuration","digest":c["digest"]},"schemas":[i.clone(),o.clone(),c,r.clone()],"operations":[{"id":kind.operation_id(),"version":1,"label":kind.label(),"inputSchema":{"id":"input","digest":i["digest"]},"outputSchema":{"id":"output","digest":o["digest"]},"resumeSchema":{"id":"resume","digest":r["digest"]},"uiSchema":{"controls":controls},"mediaSlots":media,"outputSlots":[{"role":"video","kind":"video","minCount":1,"maxCount":1}],"execution":{"mode":"asynchronous","streaming":false,"cancellation":"unsupported","resumable":true,"remoteIdempotency":false}}]})
  }).collect();
@@ -190,25 +185,13 @@ fn validate_input(kind: ModelKind, i: &Value) -> Result<()> {
         "resolution",
     ];
     let o = i.as_object().ok_or_else(|| invalid("input须为对象"))?;
-    if o.len() != allowed.len() + 2 * usize::from(kind.requires_reference_audio())
-        || o.keys().any(|k| {
-            !allowed.contains(&k.as_str())
-                && !(kind.requires_reference_audio()
-                    && matches!(k.as_str(), "referenceAudios" | "advanced"))
-        })
-    {
+    if o.len() != allowed.len() || o.keys().any(|key| !allowed.contains(&key.as_str())) {
         return Err(invalid("输入字段缺失或未声明"));
     }
     if i["inputMode"] != "multi_image_to_video" || text(i, "prompt")?.is_empty() {
         return Err(invalid("输入模式或提示词无效"));
     }
     refs(i, "referenceImages", kind.max_refs())?;
-    if kind.requires_reference_audio() {
-        refs(i, "referenceAudios", 1)?;
-        if i["advanced"] != json!({"audioUsage":"soundtrack_copy"}) {
-            return Err(invalid("本工作流仅支持原音驱动对口型 soundtrack_copy"));
-        }
-    }
     if i["durationSeconds"]
         .as_u64()
         .is_none_or(|v| !(1..=15).contains(&v))
@@ -222,41 +205,27 @@ fn validate_input(kind: ModelKind, i: &Value) -> Result<()> {
     }
     Ok(())
 }
-fn selected<'a>(p: &'a Value) -> Result<Vec<(&'static str, &'a Value)>> {
+fn selected(p: &Value) -> Result<Vec<&Value>> {
     let kind = identity(p, true)?;
     validate_input(kind, &p["input"])?;
     let media = p["media"]
         .as_array()
         .ok_or_else(|| invalid("媒体租约缺失"))?;
     let mut result = Vec::new();
-    for (f, k, n) in [
-        ("referenceImages", "image", kind.max_refs()),
-        (
-            "referenceAudios",
-            "audio",
-            if kind.requires_reference_audio() {
-                1
-            } else {
-                0
-            },
-        ),
-    ] {
-        if n == 0 {
-            continue;
+    for reference in refs(&p["input"], "referenceImages", kind.max_refs())? {
+        let found: Vec<_> = media
+            .iter()
+            .filter(|m| m["id"] == reference["mediaId"])
+            .collect();
+        if found.len() != 1 || found[0]["kind"] != "image" {
+            return Err(invalid("媒体身份或分类不匹配"));
         }
-        for r in refs(&p["input"], f, n)? {
-            let found: Vec<_> = media.iter().filter(|m| m["id"] == r["mediaId"]).collect();
-            if found.len() != 1 || found[0]["kind"] != k {
-                return Err(invalid("媒体身份或分类不匹配"));
-            }
-            let m = found[0];
-            crate::media_input::validate(m, k).map_err(|message| invalid(&message))?;
-            result.push((k, m));
-        }
+        crate::media_input::validate(found[0], "image").map_err(|message| invalid(&message))?;
+        result.push(found[0]);
     }
     if media
         .iter()
-        .any(|m| !result.iter().any(|(_, n)| n["id"] == m["id"]))
+        .any(|m| !result.iter().any(|selected| selected["id"] == m["id"]))
     {
         return Err(invalid("存在未被引用的媒体"));
     }
@@ -383,7 +352,7 @@ fn persist(h: &mut dyn Host, r: &Invocation, a: &Value) -> Result<()> {
     Ok(())
 }
 
-fn node_info(kind: ModelKind, i: &Value, images: &[String], audios: &[String]) -> Result<Value> {
+fn node_info(kind: ModelKind, i: &Value, images: &[String]) -> Result<Value> {
     validate_input(kind, i)?;
     let names: Vec<&str> = images.iter().map(String::as_str).collect();
     let fps = if kind.widgets().fps_node.is_empty() {
@@ -399,7 +368,6 @@ fn node_info(kind: ModelKind, i: &Value, images: &[String], audios: &[String]) -
         Some(text(i, "resolution")?),
         Some(text(i, "aspectRatio")?),
         &names,
-        audios.first().map(String::as_str),
     )
     .map_err(|e| fail("INVALID_INPUT", e))
 }
@@ -417,35 +385,19 @@ fn submit(h: &mut dyn Host, r: &Invocation, p: &Value) -> Result<Value> {
     let preview_images = (0..kind.max_refs())
         .map(|_| String::from("pending.png"))
         .collect::<Vec<_>>();
-    let preview_audios = if kind.requires_reference_audio() {
-        alloc::vec![String::from("pending.wav")]
-    } else {
-        Vec::new()
-    };
     let body_for = |nodes: Value| json!({"nodeInfoList":nodes,"instanceType":c["instanceType"],"usePersonalQueue":false});
-    json_body(&body_for(node_info(
-        kind,
-        &p["input"],
-        &preview_images,
-        &preview_audios,
-    )?))?;
-    let mut images = Vec::new();
-    let mut audios = Vec::new();
-    for (k, m) in chosen {
-        let n = upload(h, r, c, m)?;
-        if k == "image" {
-            images.push(n)
-        } else {
-            audios.push(n)
-        }
-    }
+    json_body(&body_for(node_info(kind, &p["input"], &preview_images)?))?;
+    let images = chosen
+        .into_iter()
+        .map(|media| upload(h, r, c, media))
+        .collect::<Result<Vec<_>>>()?;
     let response = http(
         h,
         r,
         c,
         "POST",
         kind.submit_url(),
-        json_body(&body_for(node_info(kind, &p["input"], &images, &audios)?))?,
+        json_body(&body_for(node_info(kind, &p["input"], &images)?))?,
         false,
     )
     .map_err(|e| {

@@ -15,10 +15,10 @@
       "sources": [
         {
           "path": "sdk/rust/src/generated.rs",
-          "sha256": "fc0f25e689d269ac0569ab977057b6bd40603939100a60595d590054796aa325"
+          "sha256": "418a9ec2dc844592ece5ac26684440668a1236f27787701706da295781052c95"
         }
       ],
-      "sha256": "fc0f25e689d269ac0569ab977057b6bd40603939100a60595d590054796aa325",
+      "sha256": "418a9ec2dc844592ece5ac26684440668a1236f27787701706da295781052c95",
       "transform": "byte-copy"
     },
     {
@@ -96,7 +96,7 @@
       "sources": [
         {
           "path": "Cargo.lock",
-          "sha256": "f8f578d83daf75edaf5f486bcf4e13aec9fd6e4a7459ff044c7f1e74f6489fdf"
+          "sha256": "43d7a97e5c85b1ea0aec5585e1be82bee7576a52b9c78a65cd08f36f6d45cb48"
         },
         {
           "path": "sdk/rust/Cargo.toml",

@@ -48,20 +48,6 @@ pub const ROUTES: [Route; 3] = [
         output_schema: include_str!("../../schemas/dynamic/turbo/output.json"),
         resume_schema: include_str!("../../schemas/dynamic/turbo/resume.json"),
     },
-    /* RunningHub has withdrawn this workflow. Keep the route and graph for reference.
-    Route {
-        slug: "r2v-spectrum",
-        model: "runninghub-h3-r2v-spectrum-dynamic",
-        operation: "local.thirdparty.runninghub-h3-all/r2v-spectrum",
-        workflow: "2116576147646533634",
-        label: "多图参考 · Spectrum 均衡（1–9图）",
-        copy_audio: false,
-        graph: include_str!("graphs/spectrum.json"),
-        input_schema: include_str!("../../schemas/dynamic/spectrum/input.json"),
-        output_schema: include_str!("../../schemas/dynamic/spectrum/output.json"),
-        resume_schema: include_str!("../../schemas/dynamic/spectrum/resume.json"),
-    },
-    */
     Route {
         slug: "r2v-native",
         model: "runninghub-h3-r2v-dynamic",
