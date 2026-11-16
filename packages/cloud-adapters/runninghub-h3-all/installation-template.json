@@ -32,7 +32,7 @@
       "revokedKeys": [],
       "denylistedHosts": [],
       "isFresh": false,
-      "supportedFeatures": []
+      "supportedFeatures": ["operation-input-preflight-v2"]
     },
     "mediaTtlMs": 3600000,
     "transport": {

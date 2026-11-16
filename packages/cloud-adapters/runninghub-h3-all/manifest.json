@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "3d5bd4d657fcc3ddd008228c56844be36fc40e5b37a13d88c52dff725f9b1039",
+  "artifactSha256": "8874a429a611f234187895171efdf49c2ee41e22917f48c5b2317f8f9e35764b",
   "displayName": "runninghub-h3-all",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -38,5 +38,5 @@
     "operation-input-preflight-v2"
   ],
   "schemaVersion": 2,
-  "version": "1.0.4"
+  "version": "1.0.5"
 }

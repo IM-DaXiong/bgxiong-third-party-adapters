@@ -15,10 +15,10 @@
       "sources": [
         {
           "path": "sdk/rust/src/generated.rs",
-          "sha256": "418a9ec2dc844592ece5ac26684440668a1236f27787701706da295781052c95"
+          "sha256": "2ad0f4f20b4792d17ff4819b5a2bb80bbd81c2e51f76e137853da202420f344e"
         }
       ],
-      "sha256": "418a9ec2dc844592ece5ac26684440668a1236f27787701706da295781052c95",
+      "sha256": "2ad0f4f20b4792d17ff4819b5a2bb80bbd81c2e51f76e137853da202420f344e",
       "transform": "byte-copy"
     },
     {
@@ -48,10 +48,10 @@
       "sources": [
         {
           "path": "sdk/rust/src/lib.rs",
-          "sha256": "b81d939cf51c023ac473f78d5fb4a4da330963e773c161d00ac620ba2f46b4c3"
+          "sha256": "bdf2a1aea6dff741bddff5c660f0328cf4bff8254948e4c1fbc8ba378df4e8a4"
         }
       ],
-      "sha256": "b81d939cf51c023ac473f78d5fb4a4da330963e773c161d00ac620ba2f46b4c3",
+      "sha256": "bdf2a1aea6dff741bddff5c660f0328cf4bff8254948e4c1fbc8ba378df4e8a4",
       "transform": "byte-copy"
     },
     {
@@ -70,10 +70,10 @@
       "sources": [
         {
           "path": "wit/vendor-adapter.wit",
-          "sha256": "c1bf96aa89f35378f05684919c5e0ecac740092761066ce222dde4267b2d892a"
+          "sha256": "e7c09cf055e83e0a64f7b7c866c8d1d5f7837146e403664e42dd81720137015d"
         }
       ],
-      "sha256": "c1bf96aa89f35378f05684919c5e0ecac740092761066ce222dde4267b2d892a",
+      "sha256": "e7c09cf055e83e0a64f7b7c866c8d1d5f7837146e403664e42dd81720137015d",
       "transform": "byte-copy"
     },
     {
@@ -96,7 +96,7 @@
       "sources": [
         {
           "path": "Cargo.lock",
-          "sha256": "43d7a97e5c85b1ea0aec5585e1be82bee7576a52b9c78a65cd08f36f6d45cb48"
+          "sha256": "3da2e0bb954bc10a6933b81ee5e5d5865e97204ae0bbc7ae1a2716ed7212cf00"
         },
         {
           "path": "sdk/rust/Cargo.toml",
