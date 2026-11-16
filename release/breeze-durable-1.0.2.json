@@ -56,8 +56,37 @@
       "path": "HTTP /v1/audio/speech on official cu128 GPU runtime 1.0.3; not bgx-adapter-v2 submit"
     },
     "sdkAdapterSubmit": {
-      "status": "not_run",
-      "entry": "packages/tts-adapters/breeze/scripts/prove-s1.ps1 / proof-s3-b.ps1 against packaged 1.0.2 + installed 1.0.3"
+      "status": "passed",
+      "when": "2026-11-16T23:23:13+08:00",
+      "mode": "plain",
+      "text": "你好。",
+      "cli": "bgx-adapter-v2 submit then query (official development CLI, receipt cc60a6bd / sdkRelease 2.4.0)",
+      "plugin": "1.0.2 slim runtime package (adapter.wasm + manifest.json + manifest.sha256 from archived adapter-pack)",
+      "runtime": "E:/bgxiong/data/runtimes/managed-speech/local.tts.breeze/1.0.3 via official start-managed.ps1 / host-config.speechManaged.json",
+      "submit": {
+        "exitCode": 0,
+        "elapsedMs": 30899,
+        "kind": "accepted",
+        "requestId": "sdk-plain-1.0.2-1",
+        "vendorTaskId": "sdk-plain-1.0.2-1",
+        "storeId": "0e59b3690d1a4324bc73378d9ac808ad"
+      },
+      "query": {
+        "exitCode": 0,
+        "elapsedMs": 11596,
+        "status": "succeeded",
+        "requestId": "sdk-plain-1.0.2-1-query-1",
+        "originalRequestId": "sdk-plain-1.0.2-1",
+        "wavBytes": 76844,
+        "sampleRate": 24000,
+        "durationSec": 1.6,
+        "peak": 14378,
+        "rms": 1497.79,
+        "nonzero": "12757/38400",
+        "sha256": "2f95d5d4fce1701ae6b5e06813965492644eec7d0bebfab69b0741bfe326e45e",
+        "sample": "C:/Users/24733/agent-tools/breeze-tts-impl-20261116/sdk-plain-accept/out/sdk_plain.wav"
+      },
+      "note": "Not host GUI. Voice design / reference clone were previously proven on sidecar HTTP only; this entry is the official SDK submit/query path for shortest plain."
     },
     "hostGuiNativeAcceptance": {
       "status": "not_run"

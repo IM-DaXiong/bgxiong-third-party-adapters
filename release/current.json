@@ -310,7 +310,7 @@
       "pluginId": "local.tts.breeze",
       "version": "1.0.2",
       "kind": "speechManaged",
-      "validation": "sdk_package_check_and_gpu_sidecar_three_mode_verified_cdn_upload_sdk_submit_and_host_gui_acceptance_pending",
+      "validation": "sdk_package_check_gpu_three_mode_and_sdk_submit_plain_verified_cdn_upload_and_host_gui_acceptance_pending",
       "sourceManifest": "packages/tts-adapters/breeze/adapter/manifest.json",
       "files": [
         {
