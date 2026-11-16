@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["endpointBaseUrl", "credentialRef"],
+  "properties": {
+    "endpointBaseUrl": {"type": "string", "minLength": 1, "default": "https://visual.volcengineapi.com"},
+    "credentialRef": {"type": "string", "minLength": 1}
+  }
+}

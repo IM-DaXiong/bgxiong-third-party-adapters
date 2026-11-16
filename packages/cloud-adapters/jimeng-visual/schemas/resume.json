@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["taskId", "requestKey"],
+  "properties": {
+    "taskId": {"type": "string", "minLength": 1},
+    "requestKey": {"type": "string", "minLength": 1}
+  }
+}

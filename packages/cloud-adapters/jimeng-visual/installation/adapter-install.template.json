@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "packageDirectory": "package",
+  "manifestSha256": "BUILD_GENERATED_MANIFEST_SHA256",
+  "hostConfig": {
+    "bindingId": "jimeng-visual",
+    "bindingRevision": 1,
+    "configurationRef": "jimeng-visual-v1",
+    "configuration": {
+      "endpointBaseUrl": "https://visual.volcengineapi.com",
+      "credentialRef": "jimeng-visual-key"
+    },
+    "network": {
+      "origins": ["https://visual.volcengineapi.com"],
+      "allowPrivate": false,
+      "allowEmbeddedAuthorization": false,
+      "deniedHosts": [],
+      "deniedNetworks": []
+    },
+    "credentials": [],
+    "trust": {
+      "publishers": [],
+      "revokedPlugins": [],
+      "revokedVersions": [],
+      "revokedKeys": [],
+      "denylistedHosts": [],
+      "isFresh": false,
+      "supportedFeatures": ["derived-hmac-credential-v1", "operation-input-preflight-v2"]
+    },
+    "mediaTtlMs": 3600000,
+    "transport": {
+      "handshakeTimeoutMs": 10000,
+      "writeTimeoutMs": 60000,
+      "shutdownTimeoutMs": 10000,
+      "cancelGraceMs": 100
+    },
+    "budgetMs": {
+      "capabilities": 60000,
+      "probe": 60000,
+      "submit": 180000,
+      "query": 180000,
+      "cancel": 60000
+    },
+    "probe": null
+  },
+  "authentication": {
+    "source": "userInput",
+    "fields": [{
+      "reference": "jimeng-visual-key",
+      "label": "火山智能视觉 Access Key / Secret Key",
+      "mode": "hmac-sha256-credential",
+      "origins": ["https://visual.volcengineapi.com"],
+      "customHeader": null
+    }]
+  },
+  "managedMediaProbe": true
+}

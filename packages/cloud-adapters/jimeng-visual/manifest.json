@@ -1,0 +1,44 @@
+{
+  "artifactSha256": "fd902794a8469373c57b93ade1a640c8e925eed6f97fd63a1a8fed25df63162c",
+  "displayName": "火山智能视觉 · 即梦",
+  "entry": "adapter.wasm",
+  "language": "rust",
+  "limits": {
+    "fuel": 20000000000,
+    "memoryBytes": 268435456,
+    "outputBytes": 1048576,
+    "wallMs": 180000
+  },
+  "optionalFeatures": [],
+  "pluginId": "local.bgx.jimeng-visual",
+  "protocolRange": {
+    "max": 2,
+    "min": 2
+  },
+  "publisherId": null,
+  "publisherKeyId": null,
+  "requestedCapabilities": {
+    "allowPrivateNetwork": true,
+    "auth": [
+      "hmac-sha256-credential"
+    ],
+    "embeddedHeaders": [],
+    "endpointPolicy": [
+      "userConfigurable",
+      "allowPrivateNetwork"
+    ],
+    "mediaSlots": [
+      "file",
+      "image",
+      "video"
+    ],
+    "networkHosts": [],
+    "stateBytes": 0
+  },
+  "requiredFeatures": [
+    "derived-hmac-credential-v1",
+    "operation-input-preflight-v2"
+  ],
+  "schemaVersion": 2,
+  "version": "1.0.4"
+}
