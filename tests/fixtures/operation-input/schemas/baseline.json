@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["prompt", "inkTone", "glossEnabled"],
+  "properties": {
+    "prompt": {"type": "string", "minLength": 1, "title": "提示词"},
+    "inkTone": {"type": "string", "enum": ["clay", "ash"], "title": "墨色"},
+    "glossEnabled": {"type": "boolean", "title": "启用光泽"}
+  }
+}
