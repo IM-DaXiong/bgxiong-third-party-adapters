@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "artifactSha256": "d4390467d22e52869a7285323c4a37111f94b17e098fdef06889dfc9b861935a",
   "displayName": "LTX 2.3",
   "entry": "adapter.wasm",
   "language": "rust",
