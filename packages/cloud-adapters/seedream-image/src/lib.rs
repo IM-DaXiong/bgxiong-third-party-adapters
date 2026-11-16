@@ -1,18 +1,21 @@
 #![cfg_attr(target_arch = "wasm32", no_std)]
 extern crate alloc;
+mod parameters;
 use alloc::{format, string::{String, ToString}, vec::Vec};
 use base64::{engine::general_purpose::STANDARD, Engine};
 use bgx_adapter_v2_sdk::{guest, host, Adapter, Host, Invocation, Response};
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
 const PLUGIN: &str = "local.bgx.seedream-image";
-const OP: &str = "local.bgx.seedream-image/generate";
+const OP_GENERATE: &str = "local.bgx.seedream-image/generate";
+const OP_EDIT: &str = "local.bgx.seedream-image/edit";
+const OP_VERSION: u64 = 2;
 const MODEL: &str = "doubao-seedream-5-0-pro-260628";
 const CHUNK: usize = 16384;
 const MAX_OBJECT: usize = 32 * 1024 * 1024;
-const INPUT: &str = r#"{"type":"object","properties":{"prompt":{"type":"string","minLength":1},"size":{"type":"string","enum":["2K","2048x2048","2720x1530","1530x2720"]},"watermark":{"type":"boolean"},"responseFormat":{"type":"string","enum":["url","b64_json"]},"referenceImages":{"type":"array","maxItems":10,"items":{"type":"object","properties":{"mediaId":{"type":"string","minLength":1}},"required":["mediaId"],"additionalProperties":false}}},"required":["prompt","referenceImages"],"additionalProperties":false}"#;
+const INPUT: &str = include_str!("../schemas/input.json");
 const CONFIG: &str = r#"{"type":"object","properties":{"endpointBaseUrl":{"type":"string","minLength":1},"credentialRef":{"type":"string","minLength":1}},"required":["endpointBaseUrl","credentialRef"],"additionalProperties":false}"#;
-const OUTPUT: &str = r#"{"type":"object","properties":{"model":{"type":"string"},"providerRequestId":{"type":["string","null"]},"imageCount":{"type":"integer","minimum":1},"reportedUsageJson":{"type":["string","null"]}},"required":["model","providerRequestId","imageCount","reportedUsageJson"],"additionalProperties":false}"#;
+const OUTPUT: &str = include_str!("../schemas/output.json");
 #[derive(Debug)]
 struct Failure {code:&'static str,message:String,vendor:Option<String>,request:Option<String>}
 fn fail(code:&'static str,message:impl Into<String>)->Failure{Failure{code,message:message.into(),vendor:None,request:None}}
@@ -22,17 +25,37 @@ fn text<'a>(v:&'a Value,k:&str)->Result<&'a str,Failure>{v[k].as_str().ok_or_els
 fn port(h:&mut dyn Host,m:&str,args:Value)->Result<Value,Failure>{host::call(h,m,&args).map_err(|e|{
     let denied=serde_json::to_value(&e).ok().is_some_and(|v|v["code"]=="PERMISSION_DENIED");
     fail(if denied{"PERMISSION_DENIED"}else{"UPSTREAM_ERROR"},format!("Managed port {m}: {}; no retry attempted",host::diagnostic(&e)))})}
-fn schema(id:&str,s:&str)->Value{let d:String=Sha256::digest(s.as_bytes()).iter().map(|b|format!("{b:02x}")).collect();json!({"id":id,"digest":d,"schemaJson":s})}
-pub fn capabilities()->Value{
-    let i=schema("input",INPUT);let c=schema("config",CONFIG);let o=schema("output",OUTPUT);
-    json!({"schemaVersion":2,"pluginId":PLUGIN,"pluginVersion":env!("CARGO_PKG_VERSION"),"capabilityContracts":[{
-        "schemaVersion":2,"localId":"image","capabilityKey":"image.generate","transportSlot":"image","modelIds":[MODEL],
+fn schema(id:&str,value:&str)->Value{let s=value.replace("\r\n","\n");let d:String=Sha256::digest(s.as_bytes()).iter().map(|b|format!("{b:02x}")).collect();json!({"id":id,"digest":d,"schemaJson":s})}
+
+pub fn capabilities() -> Value {
+    json!({"schemaVersion":2,"pluginId":PLUGIN,"pluginVersion":env!("CARGO_PKG_VERSION"),"capabilityContracts":[
+        capability("image", OP_GENERATE, "Seedream 5.0 Pro 文生图", 0, 0),
+        capability("image-edit", OP_EDIT, "Seedream 5.0 Pro 参考图生图", 1, 10),
+    ]})
+}
+
+fn capability(local_id: &str, operation_id: &str, label: &str, minimum: usize, maximum: usize) -> Value {
+    let mut definition: Value = serde_json::from_str(INPUT).expect("Seedream input schema");
+    definition["properties"]["referenceImages"]["minItems"] = json!(minimum);
+    definition["properties"]["referenceImages"]["maxItems"] = json!(maximum);
+    let i=schema("input",&definition.to_string());let c=schema("config",CONFIG);let o=schema("output",OUTPUT);
+    let mut controls = alloc::vec![
+        json!({"fieldPointer":"/prompt","widget":"multiline","label":"提示词","description":"","group":"输入","displayRole":"prompt"}),
+        json!({"fieldPointer":"/size","widget":"select","label":"输出规格","description":"","group":"参数"}),
+        json!({"fieldPointer":"/watermark","widget":"toggle","label":"水印","description":"","group":"参数"}),
+        json!({"fieldPointer":"/responseFormat","widget":"select","label":"响应格式","description":"","group":"参数"}),
+    ];
+    if maximum > 0 {
+        controls.push(json!({"fieldPointer":"/referenceImages","widget":"media","label":"参考图","description":"","group":"输入","displayRole":"referenceImage"}));
+    }
+    json!({"schemaVersion":2,"localId":local_id,"capabilityKey":"image.generate","transportSlot":"image","modelIds":[MODEL],
         "configurationSchema":{"id":"config","digest":c["digest"]},"schemas":[i,c,o],"operations":[{
-        "id":OP,"version":1,"label":"Seedream 5.0 Pro 单次图片生成预览","inputSchema":{"id":"input","digest":i["digest"]},"outputSchema":{"id":"output","digest":o["digest"]},"resumeSchema":null,
-        "uiSchema":{"controls":[{"fieldPointer":"/prompt","widget":"multiline","label":"提示词","description":"原样提交","group":"输入"},{"fieldPointer":"/referenceImages","widget":"media","label":"有序参考图","description":"0至10张原件","group":"输入"},{"fieldPointer":"/size","widget":"select","label":"输出规格","description":"省略为2K","group":"参数"},{"fieldPointer":"/watermark","widget":"toggle","label":"水印","description":"省略为false","group":"参数"},{"fieldPointer":"/responseFormat","widget":"select","label":"响应格式","description":"省略为url","group":"参数"}]},
-        "mediaSlots":[{"role":"reference","inputPointer":"/referenceImages","mediaKind":"image","minCount":0,"maxCount":10}],
+        "id":operation_id,"version":OP_VERSION,"label":label,"inputProfile":"operation-input-v1",
+        "inputSchema":{"id":"input","digest":i["digest"]},"outputSchema":{"id":"output","digest":o["digest"]},"resumeSchema":null,
+        "uiSchema":{"controls":controls},
+        "mediaSlots":[{"role":"reference","inputPointer":"/referenceImages","mediaKind":"image","minCount":minimum,"maxCount":maximum}],
         "outputSlots":[{"role":"artifact","kind":"image","minCount":1,"maxCount":null},{"role":"provider-response","kind":"file","minCount":1,"maxCount":1}],
-        "execution":{"mode":"synchronous","streaming":true,"cancellation":"unsupported","resumable":false,"remoteIdempotency":false}}]}]})
+        "execution":{"mode":"synchronous","streaming":true,"cancellation":"unsupported","resumable":false,"remoteIdempotency":false}}]})
 }
 fn read(h:&mut dyn Host,handle:&str)->Result<Vec<u8>,Failure>{
     let s=port(h,"host-media.info",json!({"handle":handle}))?;let n=text(&s,"byteLength")?.parse::<usize>().map_err(|_|malformed())?;
@@ -67,11 +90,11 @@ fn emit_media(h:&mut dyn Host,r:&Invocation,sequence:&mut u64,output:&Value)->Re
     emit(h,r,sequence,"media_chunk",json!({"role":output["role"],"media":output["media"]}))
 }
 fn body(h:&mut dyn Host,p:&Value)->Result<Value,Failure>{
-    if p["modelId"]!=MODEL||p["operationId"]!=OP{return Err(invalid("Unknown explicit model or operation"));}
-    let input=p["input"].as_object().ok_or_else(||invalid("input must be an object"))?;
-    if input.keys().any(|k|!["prompt","size","watermark","responseFormat","referenceImages"].contains(&k.as_str())){return Err(invalid("Unsupported field; nothing was discarded"));}
-    let prompt=text(&p["input"],"prompt")?;if prompt.is_empty(){return Err(invalid("prompt is empty"));}
-    let mut b=json!({"model":p["modelId"],"prompt":prompt,"stream":false,"watermark":input.get("watermark").cloned().unwrap_or(json!(false)),"size":input.get("size").cloned().unwrap_or(json!("2K")),"response_format":input.get("responseFormat").cloned().unwrap_or(json!("url"))});
+    let minimum=parameters::operation(p).ok_or_else(|| invalid("Unknown explicit model or operation"))?;
+    let applied=parameters::material(&p["input"],minimum).map_err(|(_,message)|invalid(message))?;
+    if p["preparation"]["material"] != applied { return Err(invalid("The frozen Seedream preparation does not match this request")); }
+    let prompt=text(&p["input"],"prompt")?;
+    let mut b=json!({"model":p["modelId"],"prompt":prompt,"stream":false,"watermark":applied["watermark"],"size":applied["size"],"response_format":applied["responseFormat"]});
     let refs=p["input"]["referenceImages"].as_array().filter(|a|a.len()<=10).ok_or_else(||invalid("referenceImages requires 0..10 items"))?;
     let media=p["media"].as_array().ok_or_else(||invalid("media requires an array"))?;
     if media.len()!=refs.len(){return Err(invalid("Every media lease needs exactly one ordered input reference"));}
@@ -97,7 +120,7 @@ fn usage(v:&Value)->Result<Value,Failure>{
 fn submit(h:&mut dyn Host,r:&Invocation,p:&Value)->Result<Value,Failure>{
     let b=body(h,p)?;let bytes=serde_json::to_vec(&b).map_err(|_|invalid("Invalid request JSON"))?;
     let handle=write(h,"file","application/octet-stream",&bytes)?;
-    let url=format!("{}/images/generations",text(&p["configuration"],"endpointBaseUrl")?.trim_end_matches('/'));
+    let url=parameters::endpoint_url(text(&p["configuration"],"endpointBaseUrl")?);
     let w=http(h,"POST",&url,json!({"kind":"media","handle":handle}),Some(text(&p["configuration"],"credentialRef")?),r.r#budget_ms).map_err(|mut e|{if e.code=="UPSTREAM_ERROR"{e.code="ACCEPTANCE_UNKNOWN";e.message=format!("Submit acceptance is unknown: {}",e.message);}e})?;
     let raw=text(&w["payload"],"handle")?.to_string();
     let mut sequence=0;
@@ -194,7 +217,9 @@ fn retain_failure(first:&mut Option<Failure>,error:Failure){
 pub struct Seedream;
 impl Adapter for Seedream{fn invoke(request:Invocation,h:&mut dyn Host)->Response{
     let result=(||{let p:Value=serde_json::from_str(&request.r#payload_json).map_err(|_|invalid("Payload is not JSON"))?;let op=serde_json::to_value(&request.r#operation).expect("operation");match op.as_str(){
-        Some("capabilities")=>Ok(capabilities()),Some("probe")if p["kind"]=="package_validation"=>Ok(json!({"packageValid":true,"connection":"not_checked","authentication":"not_checked","resources":"not_checked","issues":[]})),Some("submit")=>submit(h,&request,&p),_=>Err(fail("UNSUPPORTED_FEATURE","This synchronous preview has no upload/query/cancel lifecycle"))}})();
+        Some("capabilities")=>Ok(capabilities()),Some("probe")if p["kind"]=="package_validation"=>Ok(json!({"packageValid":true,"connection":"not_checked","authentication":"not_checked","resources":"not_checked","issues":[]})),
+        Some("probe") if p["kind"]=="operation_input_preflight" => Ok(parameters::preflight(&p)),
+        Some("submit")=>submit(h,&request,&p),_=>Err(fail("UNSUPPORTED_FEATURE","This synchronous image operation has no upload/query/cancel lifecycle"))}})();
     match result{Ok(v)=>guest::completed_response(&request,&v).expect("response"),Err(e)=>serde_json::from_value(json!({"protocolVersion":2,"operation":request.r#operation,"error":{"code":e.code,"message":e.message,"retryable":false,"vendorCode":e.vendor,"vendorRequestId":e.request}})).expect("error")}
 }}
 bgx_adapter_v2_sdk::export_adapter!(Seedream);

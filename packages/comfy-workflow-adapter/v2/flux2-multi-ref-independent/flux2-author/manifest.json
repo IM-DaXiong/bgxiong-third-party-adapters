@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "5027dc5729c241b9774fd3110d42d9e5c498d86c7489de70ead898e7350090ea",
+  "artifactSha256": "85451e9d8d58a13290238f0bdc4ca38f4703a5b87042242d93a1369999a0f236",
   "displayName": "Independent FLUX.2 ordered reference author package",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -31,7 +31,9 @@
     "networkHosts": [],
     "stateBytes": 0
   },
-  "requiredFeatures": [],
+  "requiredFeatures": [
+    "operation-input-preflight-v2"
+  ],
   "schemaVersion": 2,
-  "version": "1.0.2"
+  "version": "1.0.4"
 }

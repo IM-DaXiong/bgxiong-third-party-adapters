@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schemaVersion": 1,
+  "title": "Model-neutral video resolution value and capability",
+  "definitions": {
+    "value": {
+      "oneOf": [{
+        "type": "object", "additionalProperties": false,
+        "required": ["kind", "value"],
+        "properties": { "kind": {"const": "megapixels"}, "value": {"type": "number", "exclusiveMinimum": 0} }
+      }]
+    },
+    "valueCaps": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "min", "max", "step"],
+      "properties": {
+        "kind": {"const": "megapixels"},
+        "min": {"type": "number", "minimum": 0},
+        "max": {"type": "number", "exclusiveMinimum": 0},
+        "step": {"type": "number", "exclusiveMinimum": 0, "description": "Input increment only; not a validity modulus."},
+        "multipleOf": {"type": "number", "exclusiveMinimum": 0, "description": "Only present when the executing node has a proven hard alignment requirement."}
+      }
+    },
+    "selection": {
+      "type": "object", "additionalProperties": false, "required": [],
+      "properties": {
+        "resolution": {"type": "string", "minLength": 1},
+        "resolutionValue": {"$ref": "#/definitions/value"}
+      },
+      "not": {"required": ["resolution", "resolutionValue"]}
+    }
+  }
+}

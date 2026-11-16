@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["status", "value", "diagnostics"],
+  "properties": {
+    "status": { "enum": ["ready", "blocked"] },
+    "value": { "type": ["object", "null"], "additionalProperties": {} },
+    "diagnostics": { "type": "array", "items": { "type": "object", "additionalProperties": {} } }
+  },
+  "oneOf": [
+    { "properties": { "status": { "const": "ready" }, "value": { "type": "object", "additionalProperties": {} }, "diagnostics": { "maxItems": 0 } } },
+    { "properties": { "status": { "const": "blocked" }, "value": { "type": "null" }, "diagnostics": { "minItems": 1 } } }
+  ],
+  "additionalProperties": false
+}

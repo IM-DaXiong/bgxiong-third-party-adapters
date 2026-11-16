@@ -7,7 +7,7 @@
     "bindingRevision": 1,
     "configurationRef": "seedream-image-v1",
     "configuration": {
-      "endpointBaseUrl": "https://ark.cn-beijing.volces.com",
+      "endpointBaseUrl": "https://ark.cn-beijing.volces.com/api/v3",
       "credentialRef": "seedream-image-user-key"
     },
     "network": {

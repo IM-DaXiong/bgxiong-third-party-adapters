@@ -104,6 +104,7 @@
       "properties": {
         "audioUsage": {
           "type": "string",
+          "const": "voice_timbre",
           "enum": [
             "voice_timbre"
           ],

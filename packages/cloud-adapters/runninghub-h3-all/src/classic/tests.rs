@@ -5,7 +5,7 @@ fn input(kind: ModelKind) -> Value {
 }
 fn payload(kind: ModelKind) -> Value {
     let media=(0..kind.max_refs()).map(|n|json!({"id":format!("image-{n}"),"kind":"image","handle":format!("image-handle-{n}"),"mime":"image/jpeg","fileName":format!("source-{n}.jpg"),"byteLength":"200"})).collect::<Vec<_>>();
-    json!({"schemaVersion":2,"modelId":kind.model_id(),"capabilityKey":"video.generate","operationId":kind.operation_id(),"operationVersion":1,"inputSchemaDigest":schema("input",kind.input_schema())["digest"],"input":input(kind),"media":media,"uploads":[],"configuration":{"endpointBaseUrl":"https://www.runninghub.cn","credentialRef":"user-managed","instanceType":"plus"}})
+    json!({"schemaVersion":2,"modelId":kind.model_id(),"capabilityKey":"video.generate","operationId":kind.operation_id(),"operationVersion":crate::OPERATION_VERSION,"inputSchemaDigest":schema("input",kind.input_schema())["digest"],"input":input(kind),"media":media,"uploads":[],"configuration":{"endpointBaseUrl":"https://www.runninghub.cn","credentialRef":"user-managed","instanceType":"plus"},"preparation":{"material":{"instanceType":"plus"}}})
 }
 fn invocation(op: &str, p: &Value) -> Invocation {
     serde_json::from_value(json!({"protocolVersion":2,"operation":op,"profileId":"test-binding","capabilitySlot":"video","requestId":"test-request","budgetMs":10000,"payloadJson":p.to_string(),"bindingId":"test-binding","negotiatedVersion":2,"enabledFeatures":[]})).unwrap()

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["status", "value", "diagnostics"],
+  "additionalProperties": false,
+  "properties": {
+    "status": {"enum": ["ready", "blocked"]},
+    "diagnostics": {"type": "array", "items": {"type": "object", "additionalProperties": {}}},
+    "value": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["sourceDigest", "compiledGraphDigest", "outputNodeId", "referenceImage", "selectedInputs"],
+      "properties": {
+        "sourceDigest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+        "compiledGraphDigest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+        "outputNodeId": {"type": "string", "minLength": 1},
+        "selectedInputs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "referenceImage": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["consumerNodeId", "parentKey", "minCount", "maxCount", "slots"],
+          "properties": {
+            "consumerNodeId": {"type": "string", "minLength": 1},
+            "parentKey": {"type": "string", "minLength": 1},
+            "minCount": {"type": "integer", "minimum": 0},
+            "maxCount": {"type": "integer", "minimum": 1},
+            "slots": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["inputName", "existingLink"],
+                "properties": {
+                  "inputName": {"type": "string", "minLength": 1},
+                  "existingLink": {
+                    "type": ["object", "null"],
+                    "additionalProperties": false,
+                    "required": ["nodeId", "outputIndex"],
+                    "properties": {
+                      "nodeId": {"type": "string", "minLength": 1},
+                      "outputIndex": {"type": "integer", "minimum": 0}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "oneOf": [
+    {"properties": {"status": {"const": "ready"}, "value": {"type": "object", "additionalProperties": {}}, "diagnostics": {"maxItems": 0}}},
+    {"properties": {"status": {"const": "blocked"}, "value": {"type": "null"}, "diagnostics": {"minItems": 1}}}
+  ]
+}

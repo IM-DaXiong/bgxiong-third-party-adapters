@@ -12,7 +12,7 @@
     "revokedKeys": [],
     "denylistedHosts": [],
     "isFresh": false,
-    "supportedFeatures": []
+    "supportedFeatures": ["operation-input-preflight-v2"]
   },
   "network": {
     "origins": [

@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "08fc44c18afd78aed37f4874d6689c08357829b272780fd11b5e5e4f659da287",
+  "artifactSha256": "3d5bd4d657fcc3ddd008228c56844be36fc40e5b37a13d88c52dff725f9b1039",
   "displayName": "runninghub-h3-all",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -34,7 +34,9 @@
     "networkHosts": [],
     "stateBytes": 0
   },
-  "requiredFeatures": [],
+  "requiredFeatures": [
+    "operation-input-preflight-v2"
+  ],
   "schemaVersion": 2,
-  "version": "1.0.3"
+  "version": "1.0.4"
 }

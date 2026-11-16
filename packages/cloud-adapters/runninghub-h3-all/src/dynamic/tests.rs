@@ -30,7 +30,7 @@ fn prepared(n: usize, a: usize) -> Value {
             media.push(json!({"id":format!("{prefix}{i}"),"kind":kind,"handle":format!("{prefix}{i}"),"fileName":format!("original-{prefix}{i}.{ext}"),"mime":mime,"byteLength":"17"}));
         }
     }
-    json!({"schemaVersion":2,"modelId":MODEL,"capabilityKey":"video.generate","operationId":OP,"operationVersion":1,"inputSchemaDigest":capabilities(&ROUTES[0])["capabilityContracts"][0]["operations"][0]["inputSchema"]["digest"],"input":input(n,a),"media":media,"uploads":[],"configuration":{"endpointBaseUrl":"https://www.runninghub.cn","credentialRef":"user-managed","instanceType":"plus"}})
+    json!({"schemaVersion":2,"modelId":MODEL,"capabilityKey":"video.generate","operationId":OP,"operationVersion":crate::OPERATION_VERSION,"inputSchemaDigest":capabilities(&ROUTES[0])["capabilityContracts"][0]["operations"][0]["inputSchema"]["digest"],"input":input(n,a),"media":media,"uploads":[],"configuration":{"endpointBaseUrl":"https://www.runninghub.cn","credentialRef":"user-managed","instanceType":"plus"},"preparation":{"material":{"instanceType":"plus"}}})
 }
 fn invocation(op: &str, p: &Value) -> Invocation {
     serde_json::from_value(json!({"protocolVersion":2,"operation":op,"profileId":"test-binding","capabilitySlot":"video","requestId":"test-request","budgetMs":10000,"payloadJson":p.to_string(),"bindingId":"test-binding","negotiatedVersion":2,"enabledFeatures":[]})).unwrap()
@@ -359,8 +359,8 @@ fn capabilities_declare_input_mode_media_roles_and_no_fixed_aspect() {
     assert_eq!(op["mediaSlots"][1]["role"], "reference_audio");
     assert_eq!(op["mediaSlots"][0]["inputPointer"], "/referenceImages");
     let controls = op["uiSchema"]["controls"].as_array().unwrap();
-    assert!(controls.iter().any(|c| c["fieldPointer"] == "/inputMode"));
-    assert!(controls.iter().any(|c| c["fieldPointer"] == "/fps"));
+    assert!(!controls.iter().any(|c| c["fieldPointer"] == "/inputMode" || c["fieldPointer"] == "/fps"));
+    assert_eq!(op["inputProfile"], "operation-input-v1");
     assert_eq!(
         caps["capabilityContracts"][0]["operations"][0]["inputSchema"]["digest"],
         op["inputSchema"]["digest"]

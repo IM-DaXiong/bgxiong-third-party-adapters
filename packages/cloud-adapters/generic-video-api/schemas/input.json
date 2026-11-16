@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["inputMode", "prompt"],
+  "properties": {
+    "inputMode": { "type": "string" },
+    "prompt": { "type": "string", "minLength": 1 },
+    "providerParameters": { "type": "object", "additionalProperties": true }
+  }
+}

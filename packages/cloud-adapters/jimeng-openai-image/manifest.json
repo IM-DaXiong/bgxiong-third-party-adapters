@@ -1,0 +1,43 @@
+{
+  "artifactSha256": "83a0aee5eb767bf911bc2fa5416fc16a818f1d530433bd35abc5346f517f8dc2",
+  "displayName": "OpenAI 兼容图像网关",
+  "entry": "adapter.wasm",
+  "language": "rust",
+  "limits": {
+    "fuel": 20000000000,
+    "memoryBytes": 268435456,
+    "outputBytes": 1048576,
+    "wallMs": 180000
+  },
+  "optionalFeatures": [],
+  "pluginId": "local.bgx.jimeng-openai-image",
+  "protocolRange": {
+    "max": 2,
+    "min": 2
+  },
+  "publisherId": null,
+  "publisherKeyId": null,
+  "requestedCapabilities": {
+    "allowPrivateNetwork": true,
+    "auth": [
+      "bearer"
+    ],
+    "embeddedHeaders": [],
+    "endpointPolicy": [
+      "userConfigurable",
+      "allowPrivateNetwork"
+    ],
+    "mediaSlots": [
+      "image",
+      "file"
+    ],
+    "networkHosts": [],
+    "stateBytes": 0
+  },
+  "requiredFeatures": [
+    "operation-input-preflight-v2",
+    "stream-events-v1"
+  ],
+  "schemaVersion": 2,
+  "version": "1.0.2"
+}

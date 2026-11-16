@@ -1,0 +1,43 @@
+{
+  "artifactSha256": "4d0512015c7bdbe56d3719bda6de29ba76ca1e99b45ac7fa49a50502816cb1d4",
+  "displayName": "Seedance 2.5",
+  "entry": "adapter.wasm",
+  "language": "rust",
+  "limits": {
+    "fuel": 20000000000,
+    "memoryBytes": 268435456,
+    "outputBytes": 1048576,
+    "wallMs": 180000
+  },
+  "optionalFeatures": [],
+  "pluginId": "local.bgx.seedance-video",
+  "protocolRange": {
+    "max": 2,
+    "min": 2
+  },
+  "publisherId": null,
+  "publisherKeyId": null,
+  "requestedCapabilities": {
+    "allowPrivateNetwork": false,
+    "auth": [
+      "bearer"
+    ],
+    "embeddedHeaders": [],
+    "endpointPolicy": [
+      "userConfigurable"
+    ],
+    "mediaSlots": [
+      "audio",
+      "file",
+      "image",
+      "video"
+    ],
+    "networkHosts": [],
+    "stateBytes": 0
+  },
+  "requiredFeatures": [
+    "operation-input-preflight-v2"
+  ],
+  "schemaVersion": 2,
+  "version": "0.1.2"
+}

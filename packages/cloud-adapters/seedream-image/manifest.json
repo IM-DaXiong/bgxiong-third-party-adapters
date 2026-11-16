@@ -1,6 +1,6 @@
 {
-  "artifactSha256": "4c4afaa562f928ea668ba4202a76be8d0f85fa060cd62034c06de2e4fccf1bf6",
-  "displayName": "Seedream 5.0 Pro 独立图片预览",
+  "artifactSha256": "9d6cc470fd48ec889eaa2a4be6c0798bab323499bf10dc0821888c95242f06d8",
+  "displayName": "Seedream 5.0 Pro",
   "entry": "adapter.wasm",
   "language": "rust",
   "limits": {
@@ -35,8 +35,9 @@
     "stateBytes": 0
   },
   "requiredFeatures": [
-    "stream-events-v1"
+    "stream-events-v1",
+    "operation-input-preflight-v2"
   ],
   "schemaVersion": 2,
-  "version": "1.0.6"
+  "version": "1.0.8"
 }

@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "9da18fd1ff08c26488c237ff1b256c9869618b250e795743eb9cf548fc559d7f",
+  "artifactSha256": "5408ee26c8a52d37610397c6e776ef96e454f7eb982b83ec192b7df0536e480f",
   "displayName": "RunningHub Qwen Image 2.1",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -33,8 +33,9 @@
     "stateBytes": 0
   },
   "requiredFeatures": [
-    "submission-rejection-v1"
+    "submission-rejection-v1",
+    "operation-input-preflight-v2"
   ],
   "schemaVersion": 2,
-  "version": "0.1.2"
+  "version": "0.1.3"
 }

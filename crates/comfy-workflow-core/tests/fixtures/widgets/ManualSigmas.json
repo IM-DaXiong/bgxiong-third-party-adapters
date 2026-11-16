@@ -1,0 +1,56 @@
+{
+  "fixtureVersion": 1,
+  "ruleRegistryVersion": 6,
+  "ledgerItem": "CW38.18",
+  "classType": "ManualSigmas",
+  "status": "verified",
+  "genericProfileCheck": "genericProfileProven",
+  "evidence": {
+    "package": "comfy_extras.nodes_custom_sampler",
+    "version": "0.39.2",
+    "commit": null,
+    "definitionDigest": "72f63bbab8d783af2604635a98f2f6b45d9023f14ddc4f0d68773d486d8378ed",
+    "frontendVersion": "1.53.10",
+    "comfyuiVersion": "0.39.2",
+    "oracleApiRef": "src-tauri/tests/fixtures/comfy_import_v2/oracle/fe-1.53.10-cw38/api/ManualSigmas.positive.json",
+    "uOccurrences": []
+  },
+  "positiveCases": [
+    {
+      "caseId": "ManualSigmas-positive",
+      "source": "src-tauri/tests/fixtures/comfy_import_v2/oracle/fe-1.53.10-cw38/src/ManualSigmas.positive.json",
+      "api": "src-tauri/tests/fixtures/comfy_import_v2/oracle/fe-1.53.10-cw38/api/ManualSigmas.positive.json",
+      "expectedOutcome": "matchesOracle"
+    }
+  ],
+  "negativeCases": [
+    {
+      "caseId": "ManualSigmas-version-mismatch",
+      "kind": "versionMismatch",
+      "status": "active",
+      "frontendVersions": [
+        "1.53.9",
+        "1.53.11"
+      ],
+      "source": "src-tauri/tests/fixtures/comfy_import_v2/oracle/fe-1.53.10-cw38/src/ManualSigmas.positive.json",
+      "expectedOutcome": "matchesOracle",
+      "api": "src-tauri/tests/fixtures/comfy_import_v2/oracle/fe-1.53.10-cw38/api/ManualSigmas.positive.json",
+      "description": "The positive source served by another frontend version (no exact verified profile) compiles with the closest profile generation and must equal the 1.53.10 export: a workflow that runs in native ComfyUI is not refused by version (2026-10-15)."
+    },
+    {
+      "caseId": "ManualSigmas-leftover-widget",
+      "kind": "leftoverWidget",
+      "status": "active",
+      "source": "src-tauri/tests/fixtures/comfy_import_v2/oracle/fe-1.53.10-cw38/src/ManualSigmas.leftover.json",
+      "api": "src-tauri/tests/fixtures/comfy_import_v2/oracle/fe-1.53.10-cw38/api/ManualSigmas.leftover.json",
+      "expectedOutcome": "matchesOracle",
+      "description": "Frontend 1.53.10 LGraphNode.configure drops the surplus saved value (official export); the core matches it and records the value as UI-only ignoredByFrontend."
+    },
+    {
+      "caseId": "ManualSigmas-bad-enum",
+      "kind": "badEnum",
+      "status": "notApplicable",
+      "reason": "The class has no COMBO widget."
+    }
+  ]
+}

@@ -103,6 +103,7 @@
       "properties": {
         "audioUsage": {
           "type": "string",
+          "const": "soundtrack_copy",
           "enum": [
             "soundtrack_copy"
           ],

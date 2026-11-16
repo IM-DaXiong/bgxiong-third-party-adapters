@@ -1,0 +1,43 @@
+{
+  "artifactSha256": "1dc3705f95ad489fece2106821bf27fe8fe5470923fdf31f9271be2d5721b47b",
+  "displayName": "百炼图像与万相视频",
+  "entry": "adapter.wasm",
+  "language": "rust",
+  "limits": {
+    "fuel": 20000000000,
+    "memoryBytes": 268435456,
+    "outputBytes": 1048576,
+    "wallMs": 180000
+  },
+  "optionalFeatures": [],
+  "pluginId": "local.bgx.dashscope-media",
+  "protocolRange": {
+    "max": 2,
+    "min": 2
+  },
+  "publisherId": null,
+  "publisherKeyId": null,
+  "requestedCapabilities": {
+    "allowPrivateNetwork": false,
+    "auth": [
+      "bearer"
+    ],
+    "embeddedHeaders": [],
+    "endpointPolicy": [
+      "userConfigurable"
+    ],
+    "mediaSlots": [
+      "image",
+      "video",
+      "audio",
+      "file"
+    ],
+    "networkHosts": [],
+    "stateBytes": 0
+  },
+  "requiredFeatures": [
+    "operation-input-preflight-v2"
+  ],
+  "schemaVersion": 2,
+  "version": "1.1.0"
+}

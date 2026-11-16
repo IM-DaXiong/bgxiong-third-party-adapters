@@ -3,7 +3,7 @@ members = ["."]
 exclude = ["vendor-sdk/sdk/rust"]
 [package]
 name = "bgx-seedvr2-image"
-version = "1.0.3"
+version = "1.0.4"
 edition = "2021"
 license = "LicenseRef-Proprietary"
 publish = false

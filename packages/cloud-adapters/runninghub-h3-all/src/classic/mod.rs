@@ -131,8 +131,8 @@ pub fn capabilities() -> Value {
     let contracts:Vec<Value>=MODELS.iter().map(|&kind|{
   let i=schema("input",kind.input_schema());let o=schema("output",include_str!("../../schemas/classic/output.json"));let c=schema("configuration",include_str!("../../schemas/classic/config.json"));let r=schema("resume",include_str!("../../schemas/classic/resume.json"));
   let media=alloc::vec![json!({"role":"reference_image","inputPointer":"/referenceImages","mediaKind":"image","minCount":kind.max_refs(),"maxCount":kind.max_refs()})];
-  let controls:Vec<Value>=[("prompt","multiline","提示词原文"),("aspectRatio","select","画幅"),("resolution","select","清晰度（MP）"),("durationSeconds","number","时长（1～15秒）")].iter().map(|(f,w,l)|json!({"fieldPointer":format!("/{f}"),"widget":w,"label":l,"description":"用户实际值原样提交，平台拒绝显式回传","group":"视频输入"})).collect();
-  json!({"schemaVersion":2,"localId":kind.slug(),"capabilityKey":"video.generate","transportSlot":"video","modelIds":[kind.model_id()],"configurationSchema":{"id":"configuration","digest":c["digest"]},"schemas":[i.clone(),o.clone(),c,r.clone()],"operations":[{"id":kind.operation_id(),"version":1,"label":kind.label(),"inputSchema":{"id":"input","digest":i["digest"]},"outputSchema":{"id":"output","digest":o["digest"]},"resumeSchema":{"id":"resume","digest":r["digest"]},"uiSchema":{"controls":controls},"mediaSlots":media,"outputSlots":[{"role":"video","kind":"video","minCount":1,"maxCount":1}],"execution":{"mode":"asynchronous","streaming":false,"cancellation":"unsupported","resumable":true,"remoteIdempotency":false}}]})
+  let controls:Vec<Value>=[("prompt","multiline","提示词原文","prompt"),("aspectRatio","select","画幅","aspectRatio"),("resolution","select","清晰度（MP）","resolution"),("durationSeconds","number","时长（1～15秒）","duration"),("referenceImages","media","参考图","referenceImage")].iter().map(|(f,w,l,role)|json!({"fieldPointer":format!("/{f}"),"widget":w,"label":l,"displayRole":role,"description":"用户实际值原样提交，平台拒绝显式回传","group":"视频输入"})).collect();
+  json!({"schemaVersion":2,"localId":kind.slug(),"capabilityKey":"video.generate","transportSlot":"video","modelIds":[kind.model_id()],"configurationSchema":{"id":"configuration","digest":c["digest"]},"schemas":[i.clone(),o.clone(),c,r.clone()],"operations":[{"id":kind.operation_id(),"version":crate::OPERATION_VERSION,"inputProfile":"operation-input-v1","label":kind.label(),"inputSchema":{"id":"input","digest":i["digest"]},"outputSchema":{"id":"output","digest":o["digest"]},"resumeSchema":{"id":"resume","digest":r["digest"]},"uiSchema":{"controls":controls},"mediaSlots":media,"outputSlots":[{"role":"video","kind":"video","minCount":1,"maxCount":1}],"execution":{"mode":"asynchronous","streaming":false,"cancellation":"unsupported","resumable":true,"remoteIdempotency":false}}]})
  }).collect();
     json!({"schemaVersion":2,"pluginId":PLUGIN,"pluginVersion":env!("CARGO_PKG_VERSION"),"capabilityContracts":contracts})
 }
@@ -142,7 +142,7 @@ fn identity(p: &Value, submit: bool) -> Result<ModelKind> {
     if p["schemaVersion"] != 2
         || p["capabilityKey"] != "video.generate"
         || p["operationId"] != kind.operation_id()
-        || p["operationVersion"] != 1
+        || p["operationVersion"] != crate::OPERATION_VERSION
     {
         return Err(invalid("模型、能力或操作身份不匹配"));
     }
@@ -382,10 +382,11 @@ fn submit(h: &mut dyn Host, r: &Invocation, p: &Value) -> Result<Value> {
     let kind = identity(p, true)?;
     let chosen = selected(p)?;
     let c = configuration(p)?;
+    let instance = crate::prepared_instance(p).ok_or_else(|| invalid("缺少当前配置的准备回执"))?;
     let preview_images = (0..kind.max_refs())
         .map(|_| String::from("pending.png"))
         .collect::<Vec<_>>();
-    let body_for = |nodes: Value| json!({"nodeInfoList":nodes,"instanceType":c["instanceType"],"usePersonalQueue":false});
+    let body_for = |nodes: Value| json!({"nodeInfoList":nodes,"instanceType":instance,"usePersonalQueue":false});
     json_body(&body_for(node_info(kind, &p["input"], &preview_images)?))?;
     let images = chosen
         .into_iter()
@@ -604,6 +605,11 @@ impl Adapter for RunningHubH3 {
             {
                 "capabilities" => Ok(capabilities()),
                 "probe" => match p["kind"].as_str() {
+                    Some("operation_input_preflight") => Ok(crate::prepare_operation(&p, |selection| {
+                        let kind = identity(selection, true).map_err(|e| e.message)?;
+                        configuration(&p).map_err(|e| e.message)?;
+                        validate_input(kind, &p["input"]).map_err(|e| e.message)
+                    })),
                     Some("package_validation") => Ok(
                         json!({"packageValid":true,"connection":"not_checked","authentication":"not_checked","resources":"not_checked","issues":[]}),
                     ),

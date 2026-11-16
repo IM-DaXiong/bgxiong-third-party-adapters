@@ -26,10 +26,8 @@ fn max_buffer() -> u64 {
     policy_limit("maxBufferedHttpBytes")
 }
 fn policy_limit(key: &str) -> u64 {
-    let p: Value = serde_json::from_str(include_str!(
-        "../protocol/schema-policy.json"
-    ))
-    .expect("published SDK policy");
+    let p: Value = serde_json::from_str(include_str!("../protocol/schema-policy.json"))
+        .expect("published SDK policy");
     p["limits"][key].as_u64().expect("published SDK budget")
 }
 
@@ -308,11 +306,27 @@ pub fn status(h: &mut dyn Host, ctx: &Ctx, id: &str, output_node: &str) -> Resul
 }
 
 /// Downloads an output into managed media and returns the standard artifact.
+pub struct DownloadedImage {
+    pub output: Value,
+    pub width: u64,
+    pub height: u64,
+}
+
+pub fn image_dimensions(stat: &Value) -> Option<(u64, u64)> {
+    if stat["kind"] != "image" {
+        return None;
+    }
+    stat["width"]
+        .as_u64()
+        .zip(stat["height"].as_u64())
+        .filter(|(width, height)| *width > 0 && *height > 0)
+}
+
 pub fn download(
     h: &mut dyn Host,
     ctx: &Ctx,
     file: &(String, String, String),
-) -> Result<Value, Failure> {
+) -> Result<DownloadedImage, Failure> {
     let path = format!(
         "/view?filename={}&subfolder={}&type={}",
         encode(&file.0),
@@ -339,16 +353,15 @@ pub fn download(
     let handle = text(&response["payload"], "handle")?;
     let stat =
         port(h, "host-media.info", json!({"handle": handle})).map_err(upstream_media_error)?;
-    if stat["kind"] != "image" {
-        return Err(Failure::new(
-            "UPSTREAM_ERROR",
-            "ComfyUI output is not an image",
-        ));
-    }
-    Ok(
-        json!({"kind": "media", "role": "image", "media": {"id": stat["id"], "kind": "image", "handle": handle,
-        "mime": stat["mime"], "fileName": stat["fileName"], "byteLength": stat["byteLength"]}}),
-    )
+    let (width, height) = image_dimensions(&stat)
+        .ok_or_else(|| Failure::new("UPSTREAM_ERROR", "SDK 无法从 ComfyUI 图片原件读出宽高"))?;
+    let output = json!({"kind": "media", "role": "image", "media": {"id": stat["id"], "kind": "image", "handle": handle,
+        "mime": stat["mime"], "fileName": stat["fileName"], "byteLength": stat["byteLength"]}});
+    Ok(DownloadedImage {
+        output,
+        width,
+        height,
+    })
 }
 
 /// Connectivity probe: `/system_stats` answers without side effects.

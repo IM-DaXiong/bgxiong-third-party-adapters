@@ -26,10 +26,8 @@ fn max_buffer() -> u64 {
     policy_limit("maxBufferedHttpBytes")
 }
 fn policy_limit(key: &str) -> u64 {
-    let p: Value = serde_json::from_str(include_str!(
-        "../protocol/schema-policy.json"
-    ))
-    .expect("published SDK policy");
+    let p: Value = serde_json::from_str(include_str!("../protocol/schema-policy.json"))
+        .expect("published SDK policy");
     p["limits"][key].as_u64().expect("published SDK budget")
 }
 
@@ -308,12 +306,31 @@ pub fn status(h: &mut dyn Host, ctx: &Ctx, id: &str, output_node: &str) -> Resul
     Ok(Remote::Succeeded(out))
 }
 
-/// Downloads an output into managed media and returns the standard artifact.
+pub struct DownloadedVideo {
+    pub output: Value,
+    pub measurement: Value,
+}
+
+pub fn video_measurement(stat: &Value) -> Option<Value> {
+    if stat["kind"] != "video" {
+        return None;
+    }
+    let width = stat["width"].as_u64().filter(|value| *value > 0)?;
+    let height = stat["height"].as_u64().filter(|value| *value > 0)?;
+    let duration = stat["durationMs"]
+        .as_str()?
+        .parse::<u64>()
+        .ok()
+        .filter(|value| *value > 0)?;
+    Some(json!({"width":width,"height":height,"durationMs":duration.to_string()}))
+}
+
+/// Downloads the source-bound result and probes its original bytes.
 pub fn download(
     h: &mut dyn Host,
     ctx: &Ctx,
     file: &(String, String, String),
-) -> Result<Value, Failure> {
+) -> Result<DownloadedVideo, Failure> {
     let path = format!(
         "/view?filename={}&subfolder={}&type={}",
         encode(&file.0),
@@ -340,16 +357,18 @@ pub fn download(
     let handle = text(&response["payload"], "handle")?;
     let stat =
         port(h, "host-media.info", json!({"handle": handle})).map_err(upstream_media_error)?;
-    if stat["kind"] != "video" {
-        return Err(Failure::new(
+    let measurement = video_measurement(&stat).ok_or_else(|| {
+        Failure::new(
             "UPSTREAM_ERROR",
-            "ComfyUI output is not a video",
-        ));
-    }
-    Ok(
-        json!({"kind": "media", "role": "video", "media": {"id": stat["id"], "kind": "video", "handle": handle,
-        "mime": stat["mime"], "fileName": stat["fileName"], "byteLength": stat["byteLength"]}}),
-    )
+            "SDK 无法从 ComfyUI 视频原件读出分辨率和时长",
+        )
+    })?;
+    let output = json!({"kind": "media", "role": "video", "media": {"id": stat["id"], "kind": "video", "handle": handle,
+        "mime": stat["mime"], "fileName": stat["fileName"], "byteLength": stat["byteLength"]}});
+    Ok(DownloadedVideo {
+        output,
+        measurement,
+    })
 }
 
 /// Connectivity probe: `/system_stats` answers without side effects.

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["source", "context"],
+  "properties": {
+    "source": { "type": "string", "minLength": 1 },
+    "context": {
+      "type": "object",
+      "required": ["sourceFormatVersion", "sourceDigest", "definitions", "serializerProfileVersion", "ruleSetVersion"],
+      "properties": {
+        "sourceFormatVersion": { "type": "string", "minLength": 1 },
+        "sourceDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "definitions": { "type": "object", "additionalProperties": {} },
+        "serializerProfileVersion": { "type": "string", "minLength": 1 },
+        "ruleSetVersion": { "type": "integer", "minimum": 1 },
+        "bridgeEvidence": { "type": ["object", "null"], "additionalProperties": {} },
+        "capabilityPlan": { "type": ["object", "null"], "additionalProperties": {} }
+      },
+      "additionalProperties": false
+    },
+    "selection": {
+      "type": "object",
+      "required": ["outputKeys"],
+      "properties": {
+        "outputKeys": { "type": "array", "minItems": 1, "items": { "type": "object", "additionalProperties": {} } }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

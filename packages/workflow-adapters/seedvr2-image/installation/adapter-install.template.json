@@ -5,7 +5,7 @@
   "hostConfig": {
     "bindingId": "seedvr2-image-local",
     "bindingRevision": 1,
-    "configurationRef": "seedvr2-image-v1",
+    "configurationRef": "seedvr2-image-v2",
     "configuration": {
       "endpointBaseUrl": "http://127.0.0.1:8188",
       "credentialRef": null
@@ -29,7 +29,8 @@
       "denylistedHosts": [],
       "isFresh": false,
       "supportedFeatures": [
-        "image-upscale-v1"
+        "image-upscale-v1",
+        "operation-input-preflight-v2"
       ]
     },
     "mediaTtlMs": 3600000,

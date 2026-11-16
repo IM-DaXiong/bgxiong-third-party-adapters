@@ -1,1 +1,23 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","additionalProperties":false,"required":["promptId"],"properties":{"promptId":{"type":"string","minLength":1}}}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["promptId", "source", "result"],
+  "properties": {
+    "promptId": {"type": "string", "minLength": 1},
+    "source": {"$ref": "#/$defs/videoMeasurement"},
+    "result": {"$ref": "#/$defs/videoMeasurement"}
+  },
+  "$defs": {
+    "videoMeasurement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height", "durationMs"],
+      "properties": {
+        "width": {"type": "integer", "minimum": 1},
+        "height": {"type": "integer", "minimum": 1},
+        "durationMs": {"type": "string", "pattern": "^[1-9][0-9]*$"}
+      }
+    }
+  }
+}

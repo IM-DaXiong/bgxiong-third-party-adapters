@@ -16,6 +16,8 @@ use sha2::{Digest, Sha256};
 const PLUGIN_ID: &str = "local.independent.flux2-ordered-reference";
 const MODEL_ID: &str = "flux2-dev-ordered-two-reference";
 const OPERATION: &str = "local.independent.flux2-ordered-reference/flux2-multi-ref";
+const OPERATION_VERSION: u64 = 3;
+const PREVIEW_REFERENCES: [&str; 2] = ["pending-1", "pending-2"];
 /// Native ComfyUI Export (API) graph; exact file digest is recorded in SOURCE.json.
 const GRAPH: &str = include_str!("workflow-api.json");
 const PROMPT_NODE: &str = "62:6";
@@ -29,7 +31,7 @@ const REFERENCE_NODES: [&str;2] = ["42", "46"];
 const MAX_PROMPT: usize = 8000;
 const MAX_SEED: u64 = 9007199254740991;
 const INPUT_SCHEMA: &str = include_str!("../schemas/input.json");
-const OUTPUT_SCHEMA: &str = r#"{"type":"object","properties":{"description":{"type":"string"}},"required":["description"],"additionalProperties":false}"#;
+const OUTPUT_SCHEMA: &str = r#"{"type":"object","properties":{"description":{"type":"string"},"width":{"type":"integer","minimum":1},"height":{"type":"integer","minimum":1}},"required":["description"],"additionalProperties":false}"#;
 const CONFIG_SCHEMA: &str = r#"{"type":"object","properties":{"endpointBaseUrl":{"type":"string","minLength":1}},"required":["endpointBaseUrl"],"additionalProperties":false}"#;
 const RESUME_SCHEMA: &str = include_str!("../schemas/resume.json");
 
@@ -93,13 +95,13 @@ fn capabilities() -> Value {
     json!({"schemaVersion":2,"pluginId":PLUGIN_ID,"pluginVersion":env!("CARGO_PKG_VERSION"),"capabilityContracts":[{
         "schemaVersion":2,"localId":"flux2-multi-ref","capabilityKey":"image.generate","transportSlot":"image","modelIds":[MODEL_ID],
         "configurationSchema":{"id":"config","digest":config["digest"]},
-        "operations":[{"id":OPERATION,"version":1,"label":"FLUX.2 ordered two-image reference generation",
+        "operations":[{"id":OPERATION,"version":OPERATION_VERSION,"inputProfile":"operation-input-v1","label":"FLUX.2 ordered two-image reference generation",
             "inputSchema":{"id":"input","digest":input["digest"]},"outputSchema":{"id":"output","digest":output["digest"]},
             "resumeSchema":{"id":"resume","digest":resume["digest"]},
             "uiSchema":{"controls":[
                 {"fieldPointer":"/referenceImages","widget":"repeat","label":"Ordered references","description":"Exactly two originals, bound in the original workflow image_1/image_2 order","group":"Input"},
-                {"fieldPointer":"/prompt","widget":"multiline","label":"Prompt","description":"","group":"Input"},
-                {"fieldPointer":"/seed","widget":"number","label":"Seed","description":"","group":"Input"},
+                {"fieldPointer":"/prompt","widget":"multiline","label":"Prompt","description":"","group":"Input","displayRole":"prompt"},
+                {"fieldPointer":"/seed","widget":"integer","label":"Seed","description":"","group":"Input","displayRole":"seed"},
                 {"fieldPointer":"/width","widget":"number","label":"Width","description":"","group":"Input"},
                 {"fieldPointer":"/height","widget":"number","label":"Height","description":"","group":"Input"},
                 {"fieldPointer":"/advanced/steps","widget":"integer","label":"采样步数","description":"Confirmed explicit step count for either model branch","group":"Advanced"},
@@ -170,6 +172,7 @@ fn get_json(h: &mut dyn Host, url: String, budget: u64) -> Outcome<Value> {
 }
 fn probe(h: &mut dyn Host, p: &Value, budget: u64) -> Outcome<Value> {
     match text(p, "kind")? {
+        "operation_input_preflight" => Ok(preflight(p)),
         "package_validation" => Ok(
             json!({"packageValid":true,"connection":"not_checked","authentication":"not_checked","resources":"not_checked","issues":[]}),
         ),
@@ -187,6 +190,46 @@ fn probe(h: &mut dyn Host, p: &Value, budget: u64) -> Outcome<Value> {
             )
         }
         _ => Err(fail("INVALID_INPUT", "Unknown probe kind")),
+    }
+}
+
+fn selected_operation(selection: &Value) -> bool {
+    selection["operationId"] == OPERATION
+        && selection["operationVersion"] == OPERATION_VERSION
+        && selection["capabilityKey"] == "image.generate"
+        && selection["modelId"] == MODEL_ID
+}
+
+fn preparation_material(input: &Value, graph: &Value) -> Value {
+    let bytes = serde_json::to_vec(graph).expect("serializable workflow graph");
+    let graph_digest: String = Sha256::digest(bytes)
+        .iter()
+        .map(|byte| format!("{byte:02x}"))
+        .collect();
+    json!({"graphDigest":graph_digest,"references":input["referenceImages"]})
+}
+
+fn preflight(payload: &Value) -> Value {
+    let input = &payload["input"];
+    let request_digest = &payload["requestDigest"];
+    let rejected = |pointer: &str, message: &str| json!({
+        "kind":"operation_input_preflight","status":"rejected","requestDigest":request_digest,
+        "diagnostics":[{"code":"local.independent.flux2-ordered-reference/invalid_input",
+            "fieldPointer":pointer,"message":message}]
+    });
+    if !selected_operation(&payload["selection"]) || payload["environment"]["ready"] != true {
+        return rejected("", "The selected FLUX.2 operation is unavailable");
+    }
+    if let Err(failure) = base(&payload["configuration"]) {
+        return rejected("", failure.message);
+    }
+    if let Err(failure) = reference_ids(input) {
+        return rejected("/referenceImages", failure.message);
+    }
+    match build_graph(input, &PREVIEW_REFERENCES) {
+        Ok(graph) => json!({"kind":"operation_input_preflight","status":"ready","requestDigest":request_digest,
+            "material":preparation_material(input, &graph)}),
+        Err(failure) => rejected("", failure.message),
     }
 }
 /// Validates confirmed values before any network effect; prompt bytes are not rewritten.
@@ -319,11 +362,13 @@ fn persist_accepted(h: &mut dyn Host, request: &Invocation, accepted: &Value) ->
     Ok(())
 }
 fn submit(h: &mut dyn Host, request: &Invocation, p: &Value) -> Outcome<Value> {
-    if text(p, "operationId")? != OPERATION || text(p, "modelId")? != MODEL_ID {
+    if !selected_operation(p) {
         return Err(fail("INVALID_INPUT", "Unknown operation or model"));
     }
-    // Validate confirmed values and both leases before network effects; preserve role order.
-    let mut graph = build_graph(&p["input"], &["pending-1", "pending-2"])?;
+    let mut graph = build_graph(&p["input"], &PREVIEW_REFERENCES)?;
+    if p["preparation"]["material"] != preparation_material(&p["input"], &graph) {
+        return Err(fail("INVALID_INPUT", "FLUX.2 input differs from its frozen preparation"));
+    }
     let ids = reference_ids(&p["input"])?;
     let media = reference_media(p, &ids)?;
     for (node, original) in REFERENCE_NODES.iter().zip(media) {
@@ -361,10 +406,10 @@ fn submit(h: &mut dyn Host, request: &Invocation, p: &Value) -> Outcome<Value> {
     if status != 200 {
         let vendor = v["error"]["type"].as_str().map(str::to_string);
         return Err(Failure {
-            code: if (400..500).contains(&status) {
-                "INVALID_INPUT"
-            } else {
-                "UPSTREAM_ERROR"
+            code: match status {
+                429 => "RATE_LIMITED",
+                400..=499 => "INVALID_INPUT",
+                _ => "ACCEPTANCE_UNKNOWN",
             },
             message: "ComfyUI rejected the prompt",
             vendor,
@@ -434,16 +479,14 @@ fn png_dims(bytes: &[u8]) -> Option<(u64, u64)> {
     }
     let w = u32::from_be_bytes([bytes[16], bytes[17], bytes[18], bytes[19]]) as u64;
     let hgt = u32::from_be_bytes([bytes[20], bytes[21], bytes[22], bytes[23]]) as u64;
-    Some((w, hgt))
+    (w != 0 && hgt != 0).then_some((w, hgt))
 }
 fn download(
     h: &mut dyn Host,
     base: &str,
     image: &Value,
     budget: u64,
-    width: u64,
-    height: u64,
-) -> Outcome<Value> {
+) -> Outcome<(Value, (u64, u64))> {
     if image["type"] != "output" {
         return Err(fail(
             "UPSTREAM_ERROR",
@@ -481,24 +524,20 @@ fn download(
             "Downloaded output is not a PNG image",
         ));
     };
-    if (w, hgt) != (width, height) {
-        return Err(fail(
-            "UPSTREAM_ERROR",
-            "Downloaded image size differs from the accepted input dimensions",
-        ));
-    }
     if stat["kind"] != "image" || stat["byteLength"] == "0" {
         return Err(fail(
             "UPSTREAM_ERROR",
             "Downloaded media is not a non-empty image",
         ));
     }
-    Ok(
-        json!({"kind":"media","role":"artifact","media":{"id":stat["id"],"kind":stat["kind"],"handle":handle,"mime":stat["mime"],"fileName":stat["fileName"],"byteLength":stat["byteLength"]}}),
-    )
+    let output = json!({"kind":"media","role":"artifact","media":{
+        "id":stat["id"],"kind":stat["kind"],"handle":handle,
+        "mime":stat["mime"],"fileName":stat["fileName"],"byteLength":stat["byteLength"]
+    }});
+    Ok((output, (w, hgt)))
 }
 fn query(h: &mut dyn Host, request: &Invocation, p: &Value) -> Outcome<Value> {
-    if text(p, "operationId")? != OPERATION {
+    if !selected_operation(p) {
         return Err(fail("INVALID_INPUT", "Unknown operation"));
     }
     let base = base(&p["configuration"])?;
@@ -547,22 +586,18 @@ fn query(h: &mut dyn Host, request: &Invocation, p: &Value) -> Outcome<Value> {
                     request: Some(id),
                 });
             }
-            let media = download(
-                h,
-                &base,
-                &images[0],
-                budget,
-                number(&token, "width")?,
-                number(&token, "height")?,
-            )?;
-            Ok(query_result(
+            let (media, (width, height)) = download(h, &base, &images[0], budget)?;
+            let mut result = query_result(
                 "succeeded",
                 vec![media],
                 format!("ComfyUI prompt {id}: success"),
                 token,
                 None,
                 json!({"promptId":id,"outputNode":OUTPUT_NODE}),
-            ))
+            );
+            result["data"]["width"] = json!(width);
+            result["data"]["height"] = json!(height);
+            Ok(result)
         }
         "error" => {
             let vendor = entry["status"]["messages"]
@@ -686,6 +721,29 @@ mod tests {
         assert_eq!(leases[1]["handle"], "lease1");
         assert!(reference_media(&json!({"media":[p["media"][0]]}),&ids).is_err());
         assert!(reference_media(&json!({"media":[p["media"][0],p["media"][0]]}),&ids).is_err());
+    }
+
+    #[test]
+    fn preparation_freezes_the_graph_and_ordered_originals() {
+        let mut request = json!({
+            "requestDigest":"sample-digest",
+            "selection":{"operationId":OPERATION,"operationVersion":OPERATION_VERSION,
+                "modelId":MODEL_ID,"capabilityKey":"image.generate"},
+            "configuration":{"endpointBaseUrl":"http://127.0.0.1:8188"},
+            "environment":{"ready":true},
+            "input":input()
+        });
+        let initial = preflight(&request);
+        assert_eq!(initial["status"], "ready");
+        assert_eq!(initial["material"]["references"], input()["referenceImages"]);
+        request["input"]["referenceImages"].as_array_mut().unwrap().swap(0, 1);
+        let reversed = preflight(&request);
+        assert_eq!(reversed["material"]["graphDigest"], initial["material"]["graphDigest"]);
+        assert_ne!(reversed["material"], initial["material"]);
+        request["input"]["advanced"]["steps"] = json!(13);
+        assert_ne!(preflight(&request)["material"]["graphDigest"], initial["material"]["graphDigest"]);
+        request["input"]["referenceImages"][1] = request["input"]["referenceImages"][0].clone();
+        assert_eq!(preflight(&request)["diagnostics"][0]["fieldPointer"], "/referenceImages");
     }
     #[test]
     fn png_header_matches_real_dimensions() {

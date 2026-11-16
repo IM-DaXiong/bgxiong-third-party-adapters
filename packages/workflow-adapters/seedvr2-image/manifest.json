@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "eed53a0b087e5370a380325304de146489577ace479334740a1f8dd6809a2fc4",
+  "artifactSha256": "ef7ac537825b3132fa281fbb22650f260b132930b0a5a210735af7923082d33e",
   "displayName": "SeedVR2 单张图片高清放大",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -33,7 +33,9 @@
     "networkHosts": [],
     "stateBytes": 0
   },
-  "requiredFeatures": [],
+  "requiredFeatures": [
+    "operation-input-preflight-v2"
+  ],
   "schemaVersion": 2,
-  "version": "1.0.3"
+  "version": "1.0.4"
 }

@@ -230,6 +230,7 @@ impl Adapter for RunningHubQwen {
                     Some("package_validation") => Ok(
                         json!({"packageValid":true,"connection":"not_checked","authentication":"not_checked","resources":"not_checked","issues":[]}),
                     ),
+                    Some("operation_input_preflight") => Ok(preflight(&r, &p)),
                     Some("connectivity") => Err(fail(
                         "UNSUPPORTED_FEATURE",
                         "不以计费生成冒充连通探测，请由用户手动测试",
@@ -256,6 +257,7 @@ bgx_adapter_v2_sdk::export_adapter!(RunningHubQwen);
 
 const API: &str = "https://www.runninghub.cn";
 const EDIT_GRAPH: &str = include_str!("edit-api.json");
+const OPERATION_VERSION: u64 = 2;
 const MAX_PROMPT_BYTES: usize = 32768;
 const MAX_SEED: u64 = 9007199254740991;
 const MIN_MEGAPIXELS: f64 = 0.1;
@@ -348,13 +350,13 @@ impl Workflow {
                 "像素量（MP）",
                 "范围 0.1～16，默认 1",
             ),
-            ("seed", "number", "随机种子", "-1 由平台随机分配"),
+            ("seed", "integer", "随机种子", "-1 由适配器随机分配"),
         ]
         .iter()
-        .map(|(field, widget, label, description)| {
+        .map(|(field, widget, label, _)| {
             json!({
                 "fieldPointer":format!("/{field}"),"widget":widget,"label":label,
-                "description":description,"group":"生图"
+                "description":"","group":"生图","displayRole":if *field == "megapixels" {"size"} else {*field}
             })
         })
         .collect();
@@ -373,7 +375,8 @@ impl Workflow {
             "configurationSchema":{"id":"configuration","digest":config["digest"]},
             "schemas":[input,config,output,resume],
             "operations":[{
-                "id":self.operation(),"version":1,"label":self.label,
+                "id":self.operation(),"version":OPERATION_VERSION,"label":self.label,
+                "inputProfile":"operation-input-v1",
                 "inputSchema":{"id":"input","digest":input["digest"]},
                 "outputSchema":{"id":"output","digest":output["digest"]},
                 "resumeSchema":{"id":"resume","digest":resume["digest"]},
@@ -398,9 +401,43 @@ fn workflow(p: &Value) -> Result<Workflow> {
         .filter(|_| {
             p["schemaVersion"] == 2
                 && p["capabilityKey"] == "image.generate"
-                && p["operationVersion"] == 1
+                && p["operationVersion"] == OPERATION_VERSION
         })
         .ok_or_else(|| invalid("模型、能力或操作身份不匹配"))
+}
+
+fn preflight(invocation: &Invocation, request: &Value) -> Value {
+    let rejected = |code: &str, message: &str, pointer: &str| {
+        json!({"kind":"operation_input_preflight","status":"rejected","requestDigest":request["requestDigest"],
+            "diagnostics":[{"code":format!("{PLUGIN}/{code}"),"message":message,"fieldPointer":pointer}]})
+    };
+    if request["environment"]["ready"] != true {
+        return rejected("environment_unavailable", "当前运行配置未就绪", "");
+    }
+    let mut selection = request["selection"].clone();
+    selection["schemaVersion"] = json!(2);
+    let Ok(selected) = workflow(&selection) else {
+        return rejected("selection_changed", "模型或操作已变化", "");
+    };
+    if selection["inputSchemaDigest"] != selected.input_schema()["digest"] {
+        return rejected("selection_changed", "参数声明已变化", "");
+    }
+    let input = match Input::parse(&request["input"]) {
+        Ok(input) => input,
+        Err(error) => return rejected("invalid_parameter", &error.message, ""),
+    };
+    if request["mediaMetadata"].as_array().is_none_or(|items|
+        items.iter().any(|item| item["kind"] != "image" || !image_mime(item))) {
+        return rejected("invalid_reference", "参考图须为 PNG、JPEG 或 WebP 原件", "/referenceImages");
+    }
+    let effective_seed = input.seed.unwrap_or_else(|| {
+        // Unique preparation invocation produces a fresh seed; the SDK seals it
+        // before a submission is possible, so retries use the same value.
+        let hash = Sha256::digest(invocation.r#request_id.as_bytes());
+        u64::from_be_bytes(hash[..8].try_into().expect("SHA-256 prefix")) & MAX_SEED
+    });
+    json!({"kind":"operation_input_preflight","status":"ready","requestDigest":request["requestDigest"],
+        "material":{"effectiveSeed":effective_seed}})
 }
 
 struct Input<'a> {
@@ -631,7 +668,11 @@ fn submit(h: &mut dyn Host, r: &Invocation, p: &Value) -> Result<Value> {
     if c["credentialRef"].as_str().is_none_or(str::is_empty) {
         return Err(invalid("缺少 RunningHub 凭据引用"));
     }
-    let input = Input::parse(&p["input"])?;
+    let mut input = Input::parse(&p["input"])?;
+    let seed = p["preparation"]["material"]["effectiveSeed"].as_u64()
+        .filter(|seed| *seed <= MAX_SEED && input.seed.is_none_or(|requested| *seed == requested))
+        .ok_or_else(|| invalid("缺少或错误的已准备种子"))?;
+    input.seed = Some(seed);
     let chosen = selected_images(p, w)?;
     let mut images = Vec::new();
     for m in chosen {

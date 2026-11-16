@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 2,
+  "pluginId": "local.thirdparty.comfy-workflow",
+  "displayName": "ComfyUI 工作流",
+  "version": "0.1.7",
+  "protocolRange": { "min": 2, "max": 2 },
+  "requiredFeatures": ["operation-input-preflight-v2", "websocket-v1"],
+  "optionalFeatures": [],
+  "language": "rust",
+  "entry": "adapter.wasm",
+  "artifactSha256": "066eee290c7eada60b77e9123b1c4566dac0519bd9eb4e2b30fc3cb9fd559b86",
+  "publisherId": null,
+  "publisherKeyId": null,
+  "requestedCapabilities": {
+    "endpointPolicy": ["userConfigurable", "allowPrivateNetwork"],
+    "networkHosts": [],
+    "allowPrivateNetwork": true,
+    "auth": ["bearer"],
+    "mediaSlots": ["image", "video", "audio", "file"],
+    "stateBytes": 0,
+    "embeddedHeaders": []
+  },
+  "limits": {
+    "memoryBytes": 268435456,
+    "fuel": 20000000000,
+    "wallMs": 30000,
+    "outputBytes": 1048576
+  }
+}

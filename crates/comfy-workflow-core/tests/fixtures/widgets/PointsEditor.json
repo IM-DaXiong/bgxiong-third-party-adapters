@@ -1,0 +1,81 @@
+{
+  "fixtureVersion": 1,
+  "ruleRegistryVersion": 6,
+  "ledgerItem": "CW38.23",
+  "classType": "PointsEditor",
+  "status": "blocked",
+  "blockedOn": [
+    "CW35"
+  ],
+  "blockedReason": "Generic profile refuted by the 1.53.10 oracle: the KJNodes points-editor extension re-encodes points_store/coordinates/neg_coordinates, derives bboxes from bbox_store and replaces unparsable stores with defaults, so widgets_values do not determine the API inputs. Needs the offscreen bridge (CW35) or a reviewed special rule; the core refuses the class (workflowSerializerEvidenceRequired, reason frontendExtensionRewritesValues).",
+  "genericProfileCheck": "genericProfileRefuted",
+  "evidence": {
+    "package": "custom_nodes.ComfyUI-KJNodes",
+    "version": "1.5.2",
+    "commit": null,
+    "definitionDigest": "54eeee9f9c64807fa1ac711ca20540b8a5c43bf28f6f5cb1ccce4d171b957aad",
+    "frontendVersion": "1.53.10",
+    "comfyuiVersion": "0.39.2",
+    "oracleApiRef": "src-tauri/tests/fixtures/comfy_import_v2/oracle/fe-1.53.10-cw38/api/PointsEditor.positive.json",
+    "uOccurrences": []
+  },
+  "positiveCases": [],
+  "refutingCases": [
+    {
+      "caseId": "PointsEditor-positive",
+      "source": "src-tauri/tests/fixtures/comfy_import_v2/oracle/fe-1.53.10-cw38/src/PointsEditor.positive.json",
+      "api": "src-tauri/tests/fixtures/comfy_import_v2/oracle/fe-1.53.10-cw38/api/PointsEditor.positive.json",
+      "expectedCode": "workflowSerializerEvidenceRequired"
+    },
+    {
+      "caseId": "PointsEditor-valid",
+      "source": "src-tauri/tests/fixtures/comfy_import_v2/oracle/fe-1.53.10-cw38/src/PointsEditor.valid.json",
+      "api": "src-tauri/tests/fixtures/comfy_import_v2/oracle/fe-1.53.10-cw38/api/PointsEditor.valid.json",
+      "expectedCode": "workflowSerializerEvidenceRequired"
+    },
+    {
+      "caseId": "PointsEditor-leftover",
+      "source": "src-tauri/tests/fixtures/comfy_import_v2/oracle/fe-1.53.10-cw38/src/PointsEditor.leftover.json",
+      "api": "src-tauri/tests/fixtures/comfy_import_v2/oracle/fe-1.53.10-cw38/api/PointsEditor.leftover.json",
+      "expectedCode": "workflowSerializerEvidenceRequired"
+    },
+    {
+      "caseId": "PointsEditor-badEnum",
+      "source": "src-tauri/tests/fixtures/comfy_import_v2/oracle/fe-1.53.10-cw38/src/PointsEditor.badEnum.json",
+      "api": "src-tauri/tests/fixtures/comfy_import_v2/oracle/fe-1.53.10-cw38/api/PointsEditor.badEnum.json",
+      "expectedCode": "workflowSerializerEvidenceRequired"
+    }
+  ],
+  "negativeCases": [
+    {
+      "caseId": "PointsEditor-version-mismatch",
+      "kind": "versionMismatch",
+      "status": "active",
+      "frontendVersions": [
+        "1.53.9",
+        "1.53.11"
+      ],
+      "source": "src-tauri/tests/fixtures/comfy_import_v2/oracle/fe-1.53.10-cw38/src/PointsEditor.positive.json",
+      "expectedCode": "workflowSerializerEvidenceRequired",
+      "description": "Served by another frontend version the source compiles with the closest profile generation and stops at the same class refusal as under 1.53.10 (frontend extension rewrites the values; 2026-10-15)."
+    },
+    {
+      "caseId": "PointsEditor-leftover-widget",
+      "kind": "leftoverWidget",
+      "status": "active",
+      "source": "src-tauri/tests/fixtures/comfy_import_v2/oracle/fe-1.53.10-cw38/src/PointsEditor.leftover.json",
+      "api": "src-tauri/tests/fixtures/comfy_import_v2/oracle/fe-1.53.10-cw38/api/PointsEditor.leftover.json",
+      "expectedCode": "workflowSerializerEvidenceRequired",
+      "description": "Refused before widget binding."
+    },
+    {
+      "caseId": "PointsEditor-bad-enum",
+      "kind": "badEnum",
+      "status": "active",
+      "source": "src-tauri/tests/fixtures/comfy_import_v2/oracle/fe-1.53.10-cw38/src/PointsEditor.badEnum.json",
+      "api": "src-tauri/tests/fixtures/comfy_import_v2/oracle/fe-1.53.10-cw38/api/PointsEditor.badEnum.json",
+      "expectedCode": "workflowSerializerEvidenceRequired",
+      "description": "Refused before widget binding."
+    }
+  ]
+}

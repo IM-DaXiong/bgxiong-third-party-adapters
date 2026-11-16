@@ -1,0 +1,21 @@
+{
+  "1": {
+    "class_type": "EmptyImage",
+    "inputs": {"width": 48, "height": 32, "batch_size": 1, "color": 3455385}
+  },
+  "2": {
+    "class_type": "ImageScale",
+    "inputs": {
+      "image": ["1", 0],
+      "upscale_method": "lanczos",
+      "width": 64,
+      "height": 64,
+      "crop": "center"
+    }
+  },
+  "3": {
+    "class_type": "SaveImage",
+    "inputs": {"images": ["2", 0], "filename_prefix": "bgx_author_scale_example"}
+  },
+  "bgxiongOutputSelection": {"version": 1, "nodeId": "3"}
+}

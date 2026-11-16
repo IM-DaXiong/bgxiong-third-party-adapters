@@ -89,23 +89,21 @@ pub fn capabilities(route: &Route) -> Value {
     );
     let r = schema("resume", route.resume_schema);
     let controls: Vec<Value> = [
-        ("inputMode", "text", "输入模式（固定 multi_image_to_video）"),
-        ("prompt", "multiline", "提示词原文"),
-        ("referenceImages", "media", "有序参考图（1～9张）"),
-        ("referenceAudios", "media", if route.copy_audio { "原音（1段）" } else { "参考音（0～3段）" }),
-        ("aspectRatio", "select", "画幅"),
-        ("resolutionValue/value", "number", "清晰度（0.1～16 MP）"),
-        ("durationSeconds", "number", "目标秒数（1～30）"),
-        ("fps", "number", "帧率（固定24）"),
-        ("seed", "number", "随机种子"),
-        ("advanced/audioUsage", "select", if route.copy_audio { "原音成片" } else { "音色条件" }),
+        ("prompt", "multiline", "提示词原文", "prompt"),
+        ("referenceImages", "media", "有序参考图（1～9张）", "referenceImage"),
+        ("referenceAudios", "media", if route.copy_audio { "原音（1段）" } else { "参考音（0～3段）" }, "referenceAudio"),
+        ("aspectRatio", "select", "画幅", "aspectRatio"),
+        ("resolutionValue/value", "number", "清晰度（0.1～16 MP）", "megapixels"),
+        ("durationSeconds", "number", "目标秒数（1～30）", "duration"),
+        ("seed", "number", "随机种子", "seed"),
     ]
     .iter()
-    .map(|(f, w, l)| {
+    .map(|(f, w, l, role)| {
         json!({
             "fieldPointer": format!("/{f}"),
             "widget": w,
             "label": l,
+            "displayRole": role,
             "description": "工作台实际值原样提交；画幅和MP写入官方尺寸节点；平台拒绝显式回传，不静默改参数",
             "group": "视频输入"
         })
@@ -114,7 +112,7 @@ pub fn capabilities(route: &Route) -> Value {
     json!({"schemaVersion":2,"pluginId":PLUGIN,"pluginVersion":env!("CARGO_PKG_VERSION"),"capabilityContracts":[{
         "schemaVersion":2,"localId":route.slug,"capabilityKey":"video.generate","transportSlot":"video","modelIds":[route.model],
         "configurationSchema":{"id":"configuration","digest":c["digest"]},"schemas":[i.clone(),o.clone(),c,r.clone()],
-        "operations":[{"id":route.operation,"version":1,"label":route.label,"inputSchema":{"id":"input","digest":i["digest"]},"outputSchema":{"id":"output","digest":o["digest"]},"resumeSchema":{"id":"resume","digest":r["digest"]},"uiSchema":{"controls":controls},
+        "operations":[{"id":route.operation,"version":crate::OPERATION_VERSION,"inputProfile":"operation-input-v1","label":route.label,"inputSchema":{"id":"input","digest":i["digest"]},"outputSchema":{"id":"output","digest":o["digest"]},"resumeSchema":{"id":"resume","digest":r["digest"]},"uiSchema":{"controls":controls},
         "mediaSlots":[
             {"role":"reference_image","inputPointer":"/referenceImages","mediaKind":"image","minCount":1,"maxCount":9},
             {"role":"reference_audio","inputPointer":"/referenceAudios","mediaKind":"audio","minCount":route.audio_min(),"maxCount":route.audio_max()}
@@ -127,7 +125,7 @@ fn identity(route: &Route, p: &Value, submit: bool) -> Result<()> {
         || p["modelId"] != route.model
         || p["capabilityKey"] != "video.generate"
         || p["operationId"] != route.operation
-        || p["operationVersion"] != 1
+        || p["operationVersion"] != crate::OPERATION_VERSION
     {
         return Err(invalid("模型、能力或操作身份不匹配"));
     }
@@ -493,6 +491,7 @@ fn reject_before_submission(
 fn submit(route: &Route, h: &mut dyn Host, r: &Invocation, p: &Value) -> Result<Value> {
     let chosen = selected(route, p)?;
     let c = configuration(p)?;
+    let instance = crate::prepared_instance(p).ok_or_else(|| invalid("缺少当前配置的准备回执"))?;
     let ni = refs(&p["input"], "referenceImages", 1, 9)?.len();
     let na = refs(
         &p["input"],
@@ -503,7 +502,7 @@ fn submit(route: &Route, h: &mut dyn Host, r: &Invocation, p: &Value) -> Result<
     .len();
     let placeholders = |n| (0..n).map(|_| String::from("pending")).collect::<Vec<_>>();
     let preview = build_graph(route, &p["input"], &placeholders(ni), &placeholders(na))?;
-    let body_for = |g: &Value| json!({"workflow":g.to_string(),"nodeInfoList":[],"addMetadata":true,"instanceType":c["instanceType"],"usePersonalQueue":false});
+    let body_for = |g: &Value| json!({"workflow":g.to_string(),"nodeInfoList":[],"addMetadata":true,"instanceType":instance,"usePersonalQueue":false});
     json_body(&body_for(&preview))?;
     let mut images = Vec::new();
     let mut audios = Vec::new();
@@ -775,6 +774,11 @@ pub fn invoke(route: &Route, r: Invocation, h: &mut dyn Host) -> Response {
         {
             "capabilities" => Ok(capabilities(route)),
             "probe" => match p["kind"].as_str() {
+                Some("operation_input_preflight") => Ok(crate::prepare_operation(&p, |selection| {
+                    identity(route, selection, true).map_err(|e| e.message)?;
+                    configuration(&p).map_err(|e| e.message)?;
+                    validate_input(route, &p["input"]).map_err(|e| e.message)
+                })),
                 Some("package_validation") => Ok(
                     json!({"packageValid":true,"connection":"not_checked","authentication":"not_checked","resources":"not_checked","issues":[]}),
                 ),

@@ -5,7 +5,7 @@
   "hostConfig": {
     "bindingId": "seedvr2-video-local",
     "bindingRevision": 1,
-    "configurationRef": "seedvr2-video-v1",
+    "configurationRef": "seedvr2-video-v2",
     "configuration": {
       "endpointBaseUrl": "http://127.0.0.1:8188",
       "credentialRef": null
@@ -28,7 +28,8 @@
       "denylistedHosts": [],
       "isFresh": false,
       "supportedFeatures": [
-        "video-upscale-v1"
+        "video-upscale-v1",
+        "operation-input-preflight-v2"
       ]
     },
     "mediaTtlMs": 3600000,

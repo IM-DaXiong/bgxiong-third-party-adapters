@@ -3,6 +3,7 @@ extern crate alloc;
 use bgx_adapter_v2_sdk::{guest, Adapter, Host, Invocation, Response};
 use serde_json::{json, Value};
 pub const PLUGIN: &str = "local.thirdparty.runninghub-h3-all";
+const OPERATION_VERSION: u64 = 2;
 mod classic;
 mod dynamic;
 mod media_input;
@@ -33,9 +34,14 @@ impl Adapter for RunningHubH3 {
             return guest::completed_response(&r, &capabilities()).expect("capabilities response");
         }
         if let Ok(p) = serde_json::from_str::<Value>(&r.r#payload_json) {
+            let model = if p["kind"] == "operation_input_preflight" {
+                &p["selection"]["modelId"]
+            } else {
+                &p["modelId"]
+            };
             if let Some(route) = dynamic::ROUTES
                 .iter()
-                .find(|route| p["modelId"] == route.model)
+                .find(|route| *model == route.model)
             {
                 return dynamic::invoke(route, r, h);
             }
@@ -44,6 +50,31 @@ impl Adapter for RunningHubH3 {
     }
 }
 bgx_adapter_v2_sdk::export_adapter!(RunningHubH3);
+
+fn prepare_operation(request: &Value, validate: impl FnOnce(&Value) -> Result<(), alloc::string::String>) -> Value {
+    let reject = |code: &str, message: &str| json!({
+        "kind":"operation_input_preflight", "status":"rejected", "requestDigest":request["requestDigest"],
+        "diagnostics":[{"code":alloc::format!("{PLUGIN}/{code}"),"message":message,"fieldPointer":""}]
+    });
+    if request["environment"]["ready"] != true {
+        return reject("environment_unavailable", "当前运行配置未就绪");
+    }
+    let mut selection = request["selection"].clone();
+    if !selection.is_object() {
+        return reject("selection_changed", "操作选择无效");
+    }
+    selection["schemaVersion"] = json!(2);
+    if let Err(message) = validate(&selection) {
+        return reject("invalid_parameter", &message);
+    }
+    json!({"kind":"operation_input_preflight","status":"ready","requestDigest":request["requestDigest"],
+        "material":{"instanceType":request["configuration"]["instanceType"]}})
+}
+
+fn prepared_instance(request: &Value) -> Option<&str> {
+    let configured = request["configuration"]["instanceType"].as_str()?;
+    (request["preparation"]["material"]["instanceType"] == configured).then_some(configured)
+}
 #[cfg(test)]
 mod tests;
 

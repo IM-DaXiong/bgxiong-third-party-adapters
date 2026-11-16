@@ -20,6 +20,10 @@ def digest(data):
     return hashlib.sha256(data).hexdigest()
 
 
+def canonical_digest(value):
+    return digest(json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode())
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for field in ('cli', 'sdk', 'worker', 'package', 'output'):
@@ -31,7 +35,12 @@ def main():
     if any(not v.is_absolute() for v in vars(args).values() if isinstance(v, Path)):
         parser.error('All paths must be absolute')
     args.output.mkdir(parents=True, exist_ok=False)
-    required_features = json.loads((args.package / 'manifest.json').read_text(encoding='utf-8-sig'))['requiredFeatures']
+    manifest = json.loads((args.package / 'manifest.json').read_text(encoding='utf-8-sig'))
+    required_features = manifest['requiredFeatures']
+    stream_events = 'stream-events-v1' in required_features
+    invocation_features = ['stream-events-v1'] if stream_events else []
+    pinned = {'pluginId': manifest['pluginId'], 'version': manifest['version'],
+              'digest': digest((args.package / 'manifest.sha256').read_bytes())}
     fixtures = args.output / 'fixtures'
     fixtures.mkdir()
     rng = random.Random(20261025)
@@ -165,7 +174,7 @@ def main():
 
     def invoke(operation, payload, label):
         config_file.write_text(json.dumps(config), encoding='utf8')
-        request = {'protocolVersion': 2, 'operation': operation, 'profileId': config['bindingId'], 'capabilitySlot': 'generic' if operation == 'capabilities' else 'image', 'requestId': str(uuid.uuid4()), 'budgetMs': 120000, 'payloadJson': json.dumps(payload, ensure_ascii=False), 'bindingId': config['bindingId'], 'negotiatedVersion': 2, 'enabledFeatures': required_features}
+        request = {'protocolVersion': 2, 'operation': operation, 'profileId': config['bindingId'], 'capabilitySlot': 'generic' if operation == 'capabilities' else 'image', 'requestId': str(uuid.uuid4()), 'budgetMs': 120000, 'payloadJson': json.dumps(payload, ensure_ascii=False), 'bindingId': config['bindingId'], 'negotiatedVersion': 2, 'enabledFeatures': invocation_features}
         source = args.output / (label + '.input.json')
         target = workspace / 'receipts' / (label + '.output.json')
         source.write_text(json.dumps(request, ensure_ascii=False), encoding='utf8')
@@ -181,13 +190,13 @@ def main():
     try:
         run, response, _ = invoke('capabilities', {}, 'capabilities')
         assert run.returncode == 0 and response and 'dataJson' in response, (run.returncode, run.stderr)
-        op = json.loads(response['dataJson'])['capabilityContracts'][0]['operations'][0]
+        contracts = json.loads(response['dataJson'])['capabilityContracts']
         # The public development host only imports sources inside its marked workspace.
         workspace_inputs = workspace / 'inputs'
         workspace_inputs.mkdir()
         for filename, path in paths.items():
             shutil.copyfile(path, workspace_inputs / filename)
-        payload = {'schemaVersion': 2, 'modelId': 'doubao-seedream-5-0-pro-260628', 'capabilityKey': 'image.generate', 'operationId': op['id'], 'operationVersion': op['version'], 'inputSchemaDigest': op['inputSchema']['digest'], 'input': {'prompt': original, 'referenceImages': []}, 'media': [], 'uploads': [], 'configuration': config['configuration']}
+        payload = {'schemaVersion': 2, 'modelId': 'doubao-seedream-5-0-pro-260628', 'capabilityKey': 'image.generate', 'input': {'prompt': original, 'referenceImages': []}, 'media': [], 'uploads': [], 'configuration': config['configuration']}
         cases = [] if args.extended_only else [('large-url', None), ('large-b64', None)]
         if not args.minimal:
             cases += [('aliases-and-duplicates', None), ('single-reference', None), ('large-reference', None), ('ordered-references', None), ('ten-references', None), ('no-usage', None), ('native-image-count', None), ('unauthorized', 'UNAUTHORIZED'), ('rate-limit', 'RATE_LIMITED'), ('insufficient-balance', 'UPSTREAM_ERROR'), ('business-error', 'UPSTREAM_ERROR'), ('malformed', 'UPSTREAM_ERROR'), ('empty-output', 'UPSTREAM_ERROR'), ('not-an-image', 'UPSTREAM_ERROR'), ('unsupported-negative', 'INVALID_INPUT'), ('eleven-references', 'INVALID_INPUT'), ('denied-cdn', 'PERMISSION_DENIED'), ('partial-output-failure', 'UPSTREAM_ERROR')]
@@ -218,13 +227,41 @@ def main():
             if name == 'unsupported-negative':
                 p['input']['negativePrompt'] = 'unsupported by current native contract'
             before, before_cdn = len(calls), len(cdn_calls)
-            run, response, command = invoke('submit', p, name)
-            actual_request = json.loads((args.output / (name + '.input.json')).read_text(encoding='utf8'))
+            contract = next(c for c in contracts if c['localId'].endswith('-edit') == bool(p['media']))
+            op = contract['operations'][0]
+            identity = {'modelId': p['modelId'], 'capabilityKey': p['capabilityKey'], 'operationId': op['id'],
+                        'operationVersion': op['version'], 'inputSchemaDigest': op['inputSchema']['digest']}
+            selection = {'package': pinned, 'bindingId': config['bindingId'], 'bindingRevision': config['bindingRevision'],
+                         'capabilityId': canonical_digest([pinned, config['bindingId'], contract['localId'], p['modelId'], p['capabilityKey'], op['id'], op['version']]),
+                         'configurationDigest': canonical_digest(config['configuration']), 'contractDigest': canonical_digest(contract), **identity}
+            metadata = sorted(({'mediaId': media['id'], 'kind': media['kind'], 'mime': media['mime'],
+                                'sha256': Path(media['fileName']).stem} for media in p['media']),
+                              key=lambda item: item['mediaId'])
+            environment = {'revisionDigest': 'f' * 64, 'ready': True}
+            preflight = {'schemaVersion': 2, 'kind': 'operation_input_preflight', 'selection': selection,
+                         'configuration': config['configuration'], 'environment': environment, 'input': p['input'], 'mediaMetadata': metadata}
+            preflight['requestDigest'] = canonical_digest(preflight)
+            media_config, config['media'] = config['media'], []
+            label = name + '-prepare'
+            run, response, command = invoke('probe', preflight, label)
+            config['media'] = media_config
+            assert len(calls) == before and len(cdn_calls) == before_cdn
+            if response and 'dataJson' in response and json.loads(response['dataJson'])['status'] == 'ready':
+                request = json.loads((args.output / (label + '.input.json')).read_text(encoding='utf8'))
+                proof_path = workspace / 'cli' / digest(request['requestId'].encode()) / 'operation-preparation.json'
+                p.update(identity, preparation=json.loads(proof_path.read_text(encoding='utf8')),
+                         environmentRevisionDigest=environment['revisionDigest'])
+                label = name
+                run, response, command = invoke('submit', p, label)
+            elif expected_error == 'INVALID_INPUT' and response and 'dataJson' in response:
+                assert json.loads(response['dataJson'])['status'] == 'rejected', (name, response)
+                response = {'error': {'code': 'INVALID_INPUT'}}
+            actual_request = json.loads((args.output / (label + '.input.json')).read_text(encoding='utf8'))
             event_file = workspace / 'cli' / digest(actual_request['requestId'].encode()) / 'events.jsonl'
             events = [json.loads(line) for line in event_file.read_text(encoding='utf8').splitlines()] if event_file.exists() else []
             media_events = [e for e in events if e.get('type') == 'media_chunk']
             usage_events = [e for e in events if e.get('type') == 'usage']
-            if required_features:
+            if stream_events:
                 assert [e['sequence'] for e in events] == list(range(1, len(events) + 1))
                 assert all(e['requestId'] == actual_request['requestId'] for e in events)
                 for event in media_events:
@@ -276,7 +313,7 @@ def main():
                     # Explicitly record the contract limitation: raw object survives,
                     # but failed Response has no usable structured output references.
                     artifact_events = [e for e in media_events if e['payload']['role'] == 'artifact']
-                    if required_features:
+                    if stream_events:
                         assert len(artifact_events) == 1 and len(usage_events) == 1
                         assert artifact_events[0]['payload']['media']['fileName'] == retained[0].name
                         assert (workspace / 'objects' / artifact_events[0]['payload']['media']['fileName']).read_bytes() == binaries['partial.png']
@@ -302,7 +339,7 @@ def main():
                     if name == 'native-image-count':
                         measure = next(m for m in result['usage']['measurements'] if m['metric'] == 'local.bgx.seedream-image/image_count')
                         assert measure['amount'] == '1'
-                if required_features:
+                if stream_events:
                     assert len(media_events) == len(output_media) + 1
                     assert len(usage_events) == (0 if name == 'no-usage' else 1)
                     assert {e['payload']['media']['id'] for e in media_events} == {o['media']['id'] for o in result['outputs']}

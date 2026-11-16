@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["prompt"],
+  "properties": {
+    "prompt": {"type": "string", "minLength": 1},
+    "size": {"type": "string", "minLength": 1},
+    "responseFormat": {"type": "string", "enum": ["url", "b64_json"], "default": "url"}
+  }
+}

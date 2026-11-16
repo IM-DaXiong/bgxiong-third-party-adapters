@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Private ComfyUI workflow mapping limits and closed sets. Consumer: bgx-comfy-workflow/build.rs. contractVersion 2 (CW11): adds diagnosticId/candidateId, typed mapping targets, evidence kinds, advanced parameter value types and the compile diagnostic severity closed set; contracts frozen at version 1 are stale and need re-analysis.",
+  "contractVersion": 2,
+  "maxWorkflowJsonBytes": 4194304,
+  "maxNodes": 4096,
+  "maxEdges": 16384,
+  "maxBindings": 128,
+  "maxTargetsPerBinding": 16,
+  "maxDiagnostics": 256,
+  "maxTraversalDepth": 256,
+  "sourceKinds": ["comfyUserData", "localFile", "clientLibrary"],
+  "contractStatuses": ["ready", "needsConfirmation", "unsupported", "stale"],
+  "confirmationKinds": ["automatic", "userConfirmed"],
+  "semanticRoles": ["positivePrompt", "negativePrompt", "seed", "width", "height", "aspect", "resolution", "duration", "fps", "firstFrame", "lastFrame", "referenceImage", "referenceAudio", "referenceVideo", "mask", "steps", "cfg", "denoise"],
+  "valueTypes": ["string", "integer", "number", "boolean", "mediaRef"],
+  "transformKinds": ["identity", "secondsToFrames", "framesToSeconds", "aspectSelector", "resolutionSelector"],
+  "assetSlotFamilies": ["named", "indexed", "explicitNames", "flat"],
+  "diagnosticSeverities": ["info", "warning", "blocking"],
+  "compileDiagnosticSeverities": ["blocking", "nonBlocking"],
+  "mappingTargets": ["positivePrompt", "negativePrompt", "seed", "steps", "cfg", "denoise", "width", "height", "aspectRatio", "resolution", "durationSeconds", "fps", "firstFrame", "lastFrame", "referenceImage", "referenceVideo", "referenceAudio", "mask", "outputImage", "outputVideo", "outputAudio", "advanced"],
+  "evidenceKinds": ["outputAncestry", "consumerPortType", "reviewedSemanticRule", "nameHint", "noteHint"],
+  "paramValueTypes": ["int", "float", "boolean", "string", "combo"],
+  "definitions": {
+    "promptProjectionOrigin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "confirmation",
+        "evidence",
+        "sourceDigest"
+      ],
+      "properties": {
+        "confirmation": {
+          "$ref": "#/definitions/confirmationKind"
+        },
+        "evidence": {
+          "$ref": "#/definitions/evidenceKind"
+        },
+        "sourceDigest": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

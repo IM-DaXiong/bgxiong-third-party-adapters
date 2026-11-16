@@ -82,6 +82,11 @@
     "maxTableElements": 1048576,
     "maxInstances": 4096,
     "maxMemories": 16,
-    "maxTables": 16
+    "maxTables": 16,
+    "maxOperationInputBytes": 1048576,
+    "maxOperationInputNodes": 65536,
+    "maxOperationInputDepth": 64,
+    "maxWebSocketMessageBytes": 1048576,
+    "maxWebSocketConnections": 4
   }
 }

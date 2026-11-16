@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "prompt": { "type": "string", "minLength": 1 },
+    "size": { "type": "string", "enum": ["2K", "2048x2048", "2720x1530", "1530x2720"], "default": "2K" },
+    "watermark": { "type": "boolean", "default": false },
+    "responseFormat": { "type": "string", "enum": ["url", "b64_json"], "default": "url" },
+    "referenceImages": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "properties": { "mediaId": { "type": "string", "minLength": 1 } },
+        "required": ["mediaId"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["prompt", "referenceImages"],
+  "additionalProperties": false
+}

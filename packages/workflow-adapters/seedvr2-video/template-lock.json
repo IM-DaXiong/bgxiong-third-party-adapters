@@ -15,10 +15,10 @@
       "sources": [
         {
           "path": "sdk/rust/src/generated.rs",
-          "sha256": "fc0f25e689d269ac0569ab977057b6bd40603939100a60595d590054796aa325"
+          "sha256": "cf714f7047044dd234294b52b17f654417607ae1f5a138b6dca8ae8789bc719a"
         }
       ],
-      "sha256": "fc0f25e689d269ac0569ab977057b6bd40603939100a60595d590054796aa325",
+      "sha256": "cf714f7047044dd234294b52b17f654417607ae1f5a138b6dca8ae8789bc719a",
       "transform": "byte-copy"
     },
     {
@@ -48,10 +48,10 @@
       "sources": [
         {
           "path": "sdk/rust/src/lib.rs",
-          "sha256": "b81d939cf51c023ac473f78d5fb4a4da330963e773c161d00ac620ba2f46b4c3"
+          "sha256": "bdf2a1aea6dff741bddff5c660f0328cf4bff8254948e4c1fbc8ba378df4e8a4"
         }
       ],
-      "sha256": "b81d939cf51c023ac473f78d5fb4a4da330963e773c161d00ac620ba2f46b4c3",
+      "sha256": "bdf2a1aea6dff741bddff5c660f0328cf4bff8254948e4c1fbc8ba378df4e8a4",
       "transform": "byte-copy"
     },
     {
@@ -70,10 +70,10 @@
       "sources": [
         {
           "path": "wit/vendor-adapter.wit",
-          "sha256": "c1bf96aa89f35378f05684919c5e0ecac740092761066ce222dde4267b2d892a"
+          "sha256": "0d89ce368a1cf81ea41342b046b0c3cd2f47a5b27efe82ba106e7838eb1b8319"
         }
       ],
-      "sha256": "c1bf96aa89f35378f05684919c5e0ecac740092761066ce222dde4267b2d892a",
+      "sha256": "0d89ce368a1cf81ea41342b046b0c3cd2f47a5b27efe82ba106e7838eb1b8319",
       "transform": "byte-copy"
     },
     {
@@ -81,7 +81,7 @@
       "sources": [
         {
           "path": "Cargo.toml",
-          "sha256": "982226c1fdbd3669d7689d1c8d1bc1a6e667edafa9e8185bb60e5af051ed705e"
+          "sha256": "aca34fa5106fd15c1bf049efe6ade3e6e6479cdd707ef29c44e4b09547851b07"
         },
         {
           "path": "sdk/rust/Cargo.toml",
@@ -96,7 +96,7 @@
       "sources": [
         {
           "path": "Cargo.lock",
-          "sha256": "91a0d379c98fbb25b6cd348c8100850147e3a832d02818b645f8f287e648fe89"
+          "sha256": "3da2e0bb954bc10a6933b81ee5e5d5865e97204ae0bbc7ae1a2716ed7212cf00"
         },
         {
           "path": "sdk/rust/Cargo.toml",

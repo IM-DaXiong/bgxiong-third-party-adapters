@@ -1,8 +1,8 @@
-# Seedream 5.0 Pro 独立图片 SDK 预览
+# Seedream 5.0 Pro 图片适配器
 
-当前版本1.0.4，精确模型 `doubao-seedream-5-0-pro-260628`，操作 `local.bgx.seedream-image/generate`。只依赖随包公开SDK镜像及锁定registry，不引用应用、native provider或文本包。SDK、CLI、worker保持冻结。
+模型 `doubao-seedream-5-0-pro-260628` 使用操作输入 v1。文生图 `local.bgx.seedream-image/generate` 接收零张参考图，图生图 `local.bgx.seedream-image/edit` 接收一至十张有序参考图。两项操作的版本均为 2，使用同一方舟图片端点。
 
-可用运行包：`E:/CodexWork/seedvr2-image-v2-20261025/seedream-image-p1-20261025/package-v104-candidate`。标准build/check/pack和预编译目录check通过；SDK CLI本地HTTP已形成可用预览。软件提交/历史/保存、安装版、真实厂商均未验，不代表主仓全部云端API完整迁移。
+1.0.7 候选在固定 SDK 上通过真实方舟文生图和单图参考测试，两次均返回可解码的 2048×2048 JPEG 和用量回执。1.0.8 用 SDK 作者构建重新生成去除本机构建路径的 Wasm，保留该输入和执行合同。应用原生入口切换和历史写回由主仓联验。
 
 ## 输入与HTTP
 
