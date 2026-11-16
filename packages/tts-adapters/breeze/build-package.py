@@ -42,8 +42,8 @@ def main():
                     "--manifest-path", str(SOURCE / "adapter/Cargo.toml")], check=True)
     wasm = SOURCE / "adapter/target/wasm32-wasip2/release/bgx_breeze_speech.wasm"
     manifest = read(SOURCE / "adapter/manifest.json")
-    if manifest["version"] != "1.0.1" or "submission-resolution-v1" not in manifest["requiredFeatures"]:
-        raise RuntimeError("This producer requires the durable 1.0.1 package contract")
+    if manifest["version"] != "1.0.2" or "submission-resolution-v1" not in manifest["requiredFeatures"]:
+        raise RuntimeError("This producer requires the durable 1.0.2 package contract")
     manifest["artifactSha256"] = sha(wasm)
     write(SOURCE / "adapter/manifest.json", manifest)
     shutil.copyfile(wasm, SOURCE / "adapter/adapter.wasm")

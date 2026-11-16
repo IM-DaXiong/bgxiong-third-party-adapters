@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
   "packageId": "local.tts.breeze",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "displayName": "Breeze TTS 2",
   "adapter": {
     "path": "adapter/adapter.wasm",
-    "sha256": "dee7f3d0f97d54be7b13ddb13b549084227d6c58be8fe921bbc6d95f831e7a05"
+    "sha256": "39d34db82618d297ca1017995a9662a36852a775f59eb24f7e5171ff6e95d59b"
   },
   "runtimes": [
     {
       "id": "breeze-companion-windows-x64",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "os": "windows",
       "arch": "x86_64",
       "code": {
         "path": "companion/files.json",
-        "sha256": "92aa3858e1f5512a4ddf3f4e54b0c13fe569f1f9bf4f9e830428a46e691dda4e"
+        "sha256": "126b438a9ceb9187041919bff63cf3fabb1bbd2f98b11ac5c9ee686c4f510e0a"
       },
       "executable": {
         "source": "code",

@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "dee7f3d0f97d54be7b13ddb13b549084227d6c58be8fe921bbc6d95f831e7a05",
+  "artifactSha256": "39d34db82618d297ca1017995a9662a36852a775f59eb24f7e5171ff6e95d59b",
   "displayName": "Breeze TTS 2",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -38,5 +38,5 @@
     "submission-resolution-v1"
   ],
   "schemaVersion": 2,
-  "version": "1.0.1"
+  "version": "1.0.2"
 }

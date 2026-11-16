@@ -1,0 +1,75 @@
+{
+  "pluginId": "local.tts.breeze",
+  "pluginVersion": "1.0.2",
+  "runtimeVersion": "1.0.3",
+  "kind": "speechManaged",
+  "packageDirectory": "artifacts/releases/breeze-durable-1.0.2/local.tts.breeze/1.0.2",
+  "packageZip": "artifacts/releases/breeze-durable-1.0.2/local.tts.breeze/1.0.2.zip",
+  "packageZipSha256": "7d43c15a6ebdf89527502222f6d14687651b069db4620fcd92cfd029cc37ccd2",
+  "packageZipBytes": 418507,
+  "adapterSha256": "39d34db82618d297ca1017995a9662a36852a775f59eb24f7e5171ff6e95d59b",
+  "runtimeZip": "breeze-tts-h1-1.0.3.zip",
+  "runtimeZipSha256": "8c633909912ec28f49b9442ceb108fa98eaff60f9cc2fc3f9365e408b18ee146",
+  "runtimeZipBytes": 159651,
+  "modelRevision": "3e28c5151381a722f1d8661b4118c298caa77aa4",
+  "upstreamCommit": "daa6cb2efe5471f09369229f322d20bb956cb3c3",
+  "sdkPackageCheck": "passed",
+  "modelInferenceAcceptance": "pending-sdk-adapter-submit-and-host-gui",
+  "acceptance": {
+    "officialSdkPackageCheck": "passed",
+    "packageCheckStatus": "VALIDATED",
+    "unitAndContractTests": {
+      "requestMap": 32,
+      "durableJobs": 7,
+      "rustAdapter": 2,
+      "officialGenerationContract": 13,
+      "total": 54,
+      "failed": 0
+    },
+    "gpuSidecarThreeMode": {
+      "status": "passed",
+      "when": "2026-11-16T23:02:40+08:00",
+      "device": "NVIDIA GeForce RTX 4060 Laptop GPU 8188 MiB",
+      "minVramGbDeclared": 12,
+      "note": "Short-sentence proof only; 8GB ran near capacity (~7941 MiB used / 16 MiB free). Do not lower the 12GB floor. Long text and default maxOutputTokens=1500 not accepted.",
+      "sampleRate": 24000,
+      "samples": [
+        {
+          "mode": "plain",
+          "file": "s5_plain.wav",
+          "durationSec": 4.0,
+          "peak": 16038
+        },
+        {
+          "mode": "voice_design",
+          "file": "s5_voice_design.wav",
+          "durationSec": 1.76,
+          "peak": 11417
+        },
+        {
+          "mode": "reference_clone",
+          "file": "s5_reference_clone.wav",
+          "durationSec": 1.92,
+          "peak": 17054
+        }
+      ],
+      "path": "HTTP /v1/audio/speech on official cu128 GPU runtime 1.0.3; not bgx-adapter-v2 submit"
+    },
+    "sdkAdapterSubmit": {
+      "status": "not_run",
+      "entry": "packages/tts-adapters/breeze/scripts/prove-s1.ps1 / proof-s3-b.ps1 against packaged 1.0.2 + installed 1.0.3"
+    },
+    "hostGuiNativeAcceptance": {
+      "status": "not_run"
+    },
+    "cdnRuntimeUpload": {
+      "status": "blocked",
+      "intendedUrl": "https://r.bgxiong.com/client/ai-story/runtimes/BreezeTTS/breeze-tts-h1-1.0.3.zip",
+      "head": "HTTP 404 as of 2026-11-16 23:09 Asia/Shanghai",
+      "doNotClaimDownloadable": true,
+      "rebuild": "From packages/tts-adapters/breeze/companion via scripts/stage-breeze-release.py archive(); sha256 must equal 8c633909912ec28f49b9442ceb108fa98eaff60f9cc2fc3f9365e408b18ee146 / 159651 bytes"
+    },
+    "mainApplicationInstallationVerified": false,
+    "publicDownloadVerified": false
+  }
+}

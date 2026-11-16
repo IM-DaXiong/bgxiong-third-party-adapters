@@ -138,7 +138,7 @@ Releases one temp lease early. Missing id returns `{deleted:false}`.
 After upload, `POST /v1/audio/speech` with `mode=reference_clone` uses the returned `audioPath` plus required `reference.promptText` (and optional `styleControl` for direction).
 
 
-## Durable speech jobs (adapter 1.0.1, runtime stays 1.0.2)
+## Durable speech jobs (adapter 1.0.2, runtime 1.0.3)
 
 `GET /v1/store-identity` returns a persistent `storeId` and this process's `instanceId`.
 `POST /v1/jobs` accepts `{requestId, requestDigest, expectedStoreId, speech, receipt}` only after durable queue insertion; duplicate identity/digest returns the original receipt. The uploaded reference is privately snapshotted before acceptance.

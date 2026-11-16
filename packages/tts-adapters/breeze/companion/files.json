@@ -3,8 +3,8 @@
   "files": [
     {
       "path": "CONTRACT.md",
-      "sha256": "225254fc0c0c45b69bf0fb0bda95009b686383e36051f3acda197525bda9d4b9",
-      "byteLength": "6493"
+      "sha256": "fcf9a9b01006c81ed8f50b594523a6d9911c380e57b7ec845c069f1b265fe8b8",
+      "byteLength": "6487"
     },
     {
       "path": "_shared/bgx_remote_fetch.py",
@@ -33,7 +33,7 @@
     },
     {
       "path": "manifest.json",
-      "sha256": "927b3e286876b68133c8cde0b5c132d0ad8ac7e8b782f711e8e514ad8f4b7f59",
+      "sha256": "9c745a6d0a9f83b4f1a4255c11fb589bbe70cd7ea3d6937e41472cf335415017",
       "byteLength": "3316"
     },
     {
@@ -43,18 +43,18 @@
     },
     {
       "path": "requirements.lock.txt",
-      "sha256": "10ab75aea39454b56fae589ff9c473aa16850c84f1ab1d7adec006a7f5585e97",
-      "byteLength": "1567"
+      "sha256": "72efc56de588a7076664d5568928aaff8688a1774ae68a3cabf4da9cf8e6c9dc",
+      "byteLength": "1659"
     },
     {
       "path": "requirements.txt",
-      "sha256": "1df2128892297032c017f22d5c1d0ea5ccde0443cd9260691f13c68454d8d280",
-      "byteLength": "472"
+      "sha256": "eca3e8948776a5c352eaac27e81b1001ad8614f476b3986a20415353ce655efd",
+      "byteLength": "486"
     },
     {
       "path": "s0_prove.ps1",
-      "sha256": "66602ba1b35c7b194fa36cec5c8f499b13ae822ace5aa1e326e149b9c3f69dae",
-      "byteLength": "5512"
+      "sha256": "d444575faf65c5d08d6cf0fdd27ed590ee04373978e3be993ced0965208e073b",
+      "byteLength": "5599"
     },
     {
       "path": "sidecar_server.py",
@@ -63,33 +63,33 @@
     },
     {
       "path": "start-managed.ps1",
-      "sha256": "a9c0755266bacbddd543b6c593c635ff316631068efe81632c33ff431405907a",
-      "byteLength": "405"
+      "sha256": "44d267e2936101f9d2a0646aa95f427d43a33dea4bbd52cafb7da1cd75c10c66",
+      "byteLength": "413"
     },
     {
       "path": "start-sidecar.ps1",
-      "sha256": "24de81dfcb20da3b7fed742f8b6ae642169f2b5afea0592c220ce3738e5b0d89",
-      "byteLength": "7966"
+      "sha256": "9b24b98b9ec5413230571749ce85450b888df8e864fe9ff7cb61ef214ec896e0",
+      "byteLength": "8162"
     },
     {
       "path": "start-sidecar.sh",
-      "sha256": "d2b3ff90d324d6d1054271e7436d541be79ba8ef7cc9ba3580aa1ebb95c937bb",
-      "byteLength": "4961"
+      "sha256": "d8458b7181abb92babf39aa2dc0e219454001b054b6d486cfe77ba95730fdf0e",
+      "byteLength": "5194"
     },
     {
       "path": "upstream-snapshot.json",
-      "sha256": "a524ada712a1d2809b5e4ff04f523f519ac1ff496ca0619573a4793e89a2c76c",
-      "byteLength": "6306"
+      "sha256": "9b8b326af7f06a38b499c7ebc5884475da2a8cf7ad4f001e1e37a75b16dfdb58",
+      "byteLength": "6674"
     },
     {
       "path": "upstream/LICENSE",
-      "sha256": "c8858a5a76440bbca484e134cf7df46385d090dd18b2c58e650f939258802e5b",
-      "byteLength": "10141"
+      "sha256": "1e143299a45ec5fd9ebe700fc2e8690aafb33865abce6e036944fc6c127148d4",
+      "byteLength": "10315"
     },
     {
       "path": "upstream/README.md",
-      "sha256": "a6e4456cc2cb0114ec88b017782027f9c2cf2788de1698bdfa7aa8e07e071545",
-      "byteLength": "12621"
+      "sha256": "dc053c2ce2e1bfb80ea760745c162448ebc96fe6e573f6cd1cb0c3d1ab210d46",
+      "byteLength": "13716"
     },
     {
       "path": "upstream/breeze_infer/__init__.py",
@@ -188,8 +188,8 @@
     },
     {
       "path": "upstream/models/generation_breeze.py",
-      "sha256": "ebc55c27b896423f7a3464cb6dcf1df0918c78bda6b0236235f0f0f4c4d04e84",
-      "byteLength": "64287"
+      "sha256": "fca4c2d134ab1438f63dd7cf7cc1077e2745394db6a90534c9aafcb47c5f9e1f",
+      "byteLength": "64429"
     },
     {
       "path": "upstream/models/logits_process.py",
@@ -263,8 +263,13 @@
     },
     {
       "path": "upstream/requirements.txt",
-      "sha256": "1274174e9e53afd4db15c4728fb981c6e8071f9fa867605b6426222c31fc4f3e",
-      "byteLength": "194"
+      "sha256": "02f904387360cb50fcfc31e42ec15a60d1753d8c6dc01db8e4ba3fa6b1ea0052",
+      "byteLength": "206"
+    },
+    {
+      "path": "upstream/tests/test_generation_contract.py",
+      "sha256": "83deb086ee9e7d8d34459712933b2367414b36e5b3d9359357f8fa0b3f358c24",
+      "byteLength": "4235"
     }
   ]
 }

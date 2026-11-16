@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "pluginId": "local.tts.breeze",
-  "pluginVersion": "1.0.1",
+  "pluginVersion": "1.0.2",
   "capabilityContracts": [
     {
       "schemaVersion": 2,

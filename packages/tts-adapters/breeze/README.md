@@ -1,6 +1,6 @@
 # Breeze TTS 2 托管语音适配器
 
-当前源码版本 `1.0.1`，实现 `plain`、`voice_design`、`reference_clone`，保留原中英文文本、参考音、文字控制、随机种子和参数回执。SDK 协议仍为当前独立 SDK 的 v2，新增依赖正式语义能力 `submission-resolution-v1`。当前源码与本地候选不等于已发布或真实宿主验收通过；正式下载状态以仓库 `release/` 记录为准。
+当前源码版本 `1.0.2`，实现 `plain`、`voice_design`、`reference_clone`，保留原中英文文本、参考音、文字控制、随机种子和参数回执。SDK 协议仍为当前独立 SDK 的 v2，新增依赖正式语义能力 `submission-resolution-v1`。当前源码与本地候选不等于已发布或真实宿主验收通过；正式下载状态以仓库 `release/` 记录为准。
 
 ## 持久任务
 
@@ -12,7 +12,7 @@
 
 源码仅在此目录维护。`build-package.py --cli <当前SDK CLI> --worker <当前SDK worker> --sdk <本批完整SDK目录> --out <新的候选目录>` 从同级 SDK 编译 WASM，执行正式 package check，生成完整 ZIP、SHA256SUMS、构建回执、companion、provisioning 和许可。输出必须是新目录；不得覆盖已发布版本。
 
-这是托管语音资源包，不是普通云端 adapter-install 信封。ZIP 根包含 `provisioning.json`、`prepare-resources.ps1` 与 `adapter-pack/`，由比格熊当前的托管语音安装 owner 准备资源和登记能力。已有资源沿版本 `1.0.2` 原始 URL、长度及 SHA256 复用，应用脚本由包内清单同步，不提高开源运行时版本。新装所需 Python、模型、依赖与 SoX 完整归档及公开地址均在 provisioning 中声明；ZIP 不重复包含约 11 GB 模型和依赖。
+这是托管语音资源包，不是普通云端 adapter-install 信封。ZIP 根包含 `provisioning.json`、`prepare-resources.ps1` 与 `adapter-pack/`，由比格熊当前的托管语音安装 owner 准备资源和登记能力。已有资源沿依赖/模型原包装 `1.0.1`/`3e28c515` 原始 URL、长度及 SHA256 复用，应用脚本由包内清单同步，不提高开源运行时版本。新装所需 Python、模型、依赖与 SoX 完整归档及公开地址均在 provisioning 中声明；ZIP 不重复包含约 11 GB 模型和依赖。
 
 安装升级通过统一 owner 迁移当前选择；历史任务、已生成音频及其冻结包身份保留。不要直接修改任务库、覆盖同版本包，或删除 jobs-v1 存储。
 
