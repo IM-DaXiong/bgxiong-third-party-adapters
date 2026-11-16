@@ -1486,6 +1486,50 @@
           "sha256": "f1631b56413b31f8955e41fd1d8b0b64d4aaeb7c8907ae788e6716aa1d7381b0"
         }
       ]
+    },
+    {
+      "pluginId": "local.bgx.ltx23",
+      "version": "0.1.0",
+      "kind": "installable",
+      "validation": "sdk_package_validated",
+      "sourceManifest": "packages/workflow-adapters/ltx23/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/ltx23-0.1.0-20261116/local.bgx.ltx23/0.1.0/adapter-install.json",
+          "sha256": "6f6e3d47b9825a9b074348cfae1055691a3a19353c5370d84ccc1e3731440511"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/ltx23-0.1.0-20261116/local.bgx.ltx23/0.1.0/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/ltx23-0.1.0-20261116/local.bgx.ltx23/0.1.0/package/adapter.wasm",
+          "sha256": "d4390467d22e52869a7285323c4a37111f94b17e098fdef06889dfc9b861935a"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/ltx23-0.1.0-20261116/local.bgx.ltx23/0.1.0/package/manifest.json",
+          "sha256": "2d49d1a27a116ea2fe3d551828dce82cb401b89967edcef2c96c5503f6aa8875"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/ltx23-0.1.0-20261116/local.bgx.ltx23/0.1.0/package/manifest.sha256",
+          "sha256": "beccb6804e50ec5b31297e79bb5d67fbe1a4195654926e81c1a7f2ed07d656a7"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/ltx23-0.1.0-20261116/local.bgx.ltx23/0.1.0/README.txt",
+          "sha256": "27cca6cd428770e0453567bfe7fe33b1a7ff128e0905e0701640ad973026715a"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/ltx23-0.1.0-20261116/local.bgx.ltx23/0.1.0/安装说明.txt",
+          "sha256": "86eefb9156fe47cceef81a2925ac5b34343f9bb63b2638026b692111f8fe430f"
+        }
+      ]
     }
   ],
   "unpublishable": [
