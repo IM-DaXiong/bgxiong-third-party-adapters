@@ -4,10 +4,10 @@
   "type": "object",
   "properties": {
     "analysis": {
-      "$ref": "analysis-receipt.schema.json"
+      "$ref": "read-only-analysis-receipt.schema.json"
     },
     "selection": {
-      "$ref": "selection.schema.json"
+      "$ref": "read-only-selection.schema.json"
     }
   },
   "required": [

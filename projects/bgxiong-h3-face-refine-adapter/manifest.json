@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "05ac530bf265d6709504523a694985fad652a22fa933ff989987c74cd1489611",
+  "artifactSha256": "15af351954731448432c33a3fd3c1142e6898afd3e1108a46edace0ff660fd56",
   "displayName": "H3-face-refine",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -36,8 +36,9 @@
   },
   "requiredFeatures": [
     "media-target-selection-v1",
+    "operation-input-preflight-v2",
     "submission-rejection-v1"
   ],
   "schemaVersion": 2,
-  "version": "1.0.0-a31"
+  "version": "1.0.0-a33"
 }

@@ -44,12 +44,28 @@ fn invalid(s: &str) -> Failure {
     fail("INVALID_INPUT", s)
 }
 
-fn schema(id: &str, s: &str) -> Value {
-    let d: String = Sha256::digest(s.as_bytes())
+const REFINE_INPUT_SCHEMA: &str = include_str!("../schemas/refine.input.schema.json");
+
+fn text_digest(s: &str) -> String {
+    Sha256::digest(s.as_bytes())
         .iter()
         .map(|b| format!("{b:02x}"))
-        .collect();
-    json!({"id": id, "digest": d, "schemaJson": s})
+        .collect()
+}
+
+fn schema(id: &str, text: &str) -> Value {
+    let text = text.replace("\r\n", "\n");
+    json!({"id": id, "digest": text_digest(&text), "schemaJson": text})
+}
+
+fn read_only_schema(id: &str, text: &str) -> Value {
+    let mut doc: Value = serde_json::from_str(text).expect("embedded profile schema");
+    let (base, file) = doc["$id"].as_str().and_then(|uri| uri.rsplit_once('/'))
+        .expect("embedded profile schema URI");
+    let uri = format!("{base}/read-only-{file}");
+    doc["$id"] = json!(uri);
+    doc["readOnly"] = json!(true);
+    schema(id, &doc.to_string())
 }
 
 fn port(h: &mut dyn Host, method: &str, args: Value) -> Result<Value> {
@@ -127,16 +143,21 @@ pub fn capabilities() -> Value {
     let analyze_out = schema("analyze_out", include_str!("../schemas/analyze.output.schema.json"));
     let preview_in = schema("preview_in", include_str!("../schemas/preview.input.schema.json"));
     let preview_out = schema("preview_out", include_str!("../schemas/preview.output.schema.json"));
-    let refine_in = schema("refine_in", include_str!("../schemas/refine.input.schema.json"));
+    let refine_in = schema("refine_in", REFINE_INPUT_SCHEMA);
     let refine_out = schema("refine_out", include_str!("../schemas/refine.output.schema.json"));
     let config = schema("configuration", include_str!("../schemas/configuration.schema.json"));
     let resume = schema("resume", include_str!("../schemas/resume.schema.json"));
+    let source_read_only = read_only_schema("source_read_only", include_str!("../schemas/media-target-selection-v1/source-identity.schema.json"));
+    let analysis_read_only = read_only_schema("analysis_read_only", include_str!("../schemas/media-target-selection-v1/analysis-receipt.schema.json"));
+    let selection_read_only = read_only_schema("selection_read_only", include_str!("../schemas/media-target-selection-v1/selection.schema.json"));
+    let tracking_read_only = read_only_schema("tracking_read_only", include_str!("../schemas/media-target-selection-v1/tracking-receipt.schema.json"));
 
     let mk_op = |id: &str, label: &str, i: &Value, o: &Value, controls: Vec<Value>, media: Vec<Value>, outs: Vec<Value>, mode: &str| {
         json!({
             "id": id,
             "version": 1,
             "label": label,
+            "inputProfile": "operation-input-v1",
             "inputSchema": {"id": i["id"], "digest": i["digest"]},
             "outputSchema": {"id": o["id"], "digest": o["digest"]},
             "resumeSchema": {"id": "resume", "digest": resume["digest"]},
@@ -154,22 +175,17 @@ pub fn capabilities() -> Value {
     };
 
     let analyze_controls = vec![
-        // Analyze input schema uses detectionParams (not /detection).
-        // ui-schema.schema.json allows only fieldPointer/widget/label/description/group.
         json!({"fieldPointer":"/detectionParams/detector","widget":"text","label":"检测器","description":"ultralytics 相对名；默认 bbox/face_yolov8m.pt","group":"检测"}),
-        json!({"fieldPointer":"/detectionParams/confidence","widget":"number","label":"置信度","description":"0-1；默认 0.35","group":"检测"}),
+        json!({"fieldPointer":"/detectionParams/confidence","widget":"number","label":"置信度","description":"","group":"检测"}),
         json!({"fieldPointer":"/detectionParams/cutDetection","widget":"select","label":"切镜检测","description":"none|auto；默认 auto","group":"检测"}),
+        json!({"fieldPointer":"/detectionParams/cutThreshold","widget":"number","label":"切镜阈值","description":"","group":"检测"}),
         json!({"fieldPointer":"/detectionParams/selectHint","widget":"select","label":"候选编号提示","description":"仅影响编号，不代替用户选择；默认 largest_face","group":"检测"}),
-    ];
-    let preview_controls = vec![
-        json!({"fieldPointer":"/preview/includeLostMarkers","widget":"checkbox","label":"丢失帧标记","description":"预览中标红丢失/未解析帧","group":"预览"}),
+        json!({"fieldPointer":"/detectionParams/force","widget":"checkbox","label":"重新检测","description":"","group":"检测"}),
     ];
     let refine_controls = vec![
         json!({"fieldPointer":"/freeze/referenceMediaIds","widget":"media","label":"外观参考图","description":"提供希望采用的外观参考","group":"素材"}),
         json!({"fieldPointer":"/freeze/userParams/identityMediaIds","widget":"media","label":"身份参考图","description":"用于确认人物身份","group":"素材"}),
-        // Pointers must resolve into public freeze fields (prompt / userParams / referenceMediaIds).
-        // ui-schema.schema.json allows only fieldPointer/widget/label/description/group.
-        json!({"fieldPointer":"/freeze/prompt","widget":"multiline","label":"提示词","description":"用户原文","group":"精修"}),
+        json!({"fieldPointer":"/freeze/prompt","widget":"multiline","label":"提示词","description":"用户原文","group":"精修","displayRole":"prompt"}),
         json!({"fieldPointer":"/freeze/userParams/denoise","widget":"number","label":"去噪","description":"0-1；旧对照约0.45","group":"精修"}),
         json!({"fieldPointer":"/freeze/userParams/smallFaceStrength","widget":"number","label":"小脸强度","description":"小脸使用的精修强度比例，数值越大增强越明显","group":"精修"}),
         json!({"fieldPointer":"/freeze/userParams/largeFaceStrength","widget":"number","label":"大脸强度","description":"大脸使用的精修强度比例，数值越小越保留细节","group":"精修"}),
@@ -189,13 +205,15 @@ pub fn capabilities() -> Value {
             "transportSlot": "videoFaceRefine",
             "modelIds": [MODEL],
             "configurationSchema": {"id": "configuration", "digest": config["digest"]},
-            "schemas": [analyze_in.clone(), analyze_out.clone(), preview_in.clone(), preview_out.clone(), refine_in.clone(), refine_out.clone(), config, resume.clone()],
+            "schemas": [analyze_in.clone(), analyze_out.clone(), preview_in.clone(), preview_out.clone(),
+                refine_in.clone(), refine_out.clone(), config, resume.clone(), source_read_only,
+                analysis_read_only, selection_read_only, tracking_read_only],
             "operations": [
                 mk_op(OP_ANALYZE, "分析镜头与候选脸", &analyze_in, &analyze_out, analyze_controls,
                     vec![json!({"role":"source_video","inputPointer":"/source/mediaId","mediaKind":"video","minCount":1,"maxCount":1})],
                     vec![],
                     "synchronous"),
-                mk_op(OP_PREVIEW, "跟踪预览", &preview_in, &preview_out, preview_controls,
+                mk_op(OP_PREVIEW, "跟踪预览", &preview_in, &preview_out, vec![],
                     vec![json!({"role":"source_video","inputPointer":"/analysis/source/mediaId","mediaKind":"video","minCount":1,"maxCount":1})],
                     vec![json!({"role":"preview","kind":"image","minCount":1,"maxCount":1})],
                     "asynchronous"),
@@ -675,6 +693,65 @@ fn run_refine(h: &mut dyn Host, payload: &Value, phase: &mut Phase) -> Result<Va
     }))
 }
 
+fn frozen_input_problem(operation: &str, input: &Value) -> Option<(&'static str, String)> {
+    let source_pointer = match operation {
+        OP_ANALYZE => "/source",
+        OP_PREVIEW => "/analysis/source",
+        OP_REFINE => "/freeze/source",
+        _ => return None,
+    };
+    let source = input.pointer(source_pointer).unwrap_or(&Value::Null);
+    let refine_digest = text_digest(&REFINE_INPUT_SCHEMA.replace("\r\n", "\n"));
+    if source["packageId"] != PLUGIN || source["operationId"] != OP_REFINE
+        || source["schemaDigest"] != refine_digest.as_str()
+    {
+        return Some((source_pointer, "Source identity does not match the selected refine operation".into()));
+    }
+    let analysis = match operation {
+        OP_PREVIEW => &input["analysis"],
+        OP_REFINE => &input["freeze"]["analysis"],
+        _ => return None,
+    };
+    let selection = &input["selection"];
+    if selection["analysisId"] != analysis["analysisId"]
+        || selection["analysisRevision"] != analysis["revision"]
+        || selection["analysisDigest"] != analysis["digest"]
+        || selection["selectionDigest"].as_str().is_none_or(str::is_empty)
+    {
+        return Some(("/selection", "Selection does not match the frozen analysis".into()));
+    }
+    if operation == OP_PREVIEW {
+        return selection_bindings(selection, analysis).err().map(|failure| ("/selection/shots", failure.message));
+    }
+    let freeze = &input["freeze"];
+    if freeze["packageVersion"] != env!("CARGO_PKG_VERSION") || freeze["operationId"] != OP_REFINE
+        || freeze["schemaDigest"] != refine_digest.as_str()
+    {
+        return Some(("/freeze", "Refine package, operation or schema changed".into()));
+    }
+    if freeze["selectionDigest"] != selection["selectionDigest"] {
+        return Some(("/freeze/selectionDigest", "Refine selection digest does not match".into()));
+    }
+    let user = &freeze["userParams"];
+    if user["samEnabled"] == true && user["samModel"].as_str().is_none_or(|name| name.trim().is_empty()) {
+        return Some(("/freeze/userParams/samModel", "Select a SAM model when enabling its mask".into()));
+    }
+    None
+}
+
+fn prepare_operation_input(payload: &Value) -> Value {
+    let operation = payload["selection"]["operationId"].as_str().unwrap_or_default();
+    match frozen_input_problem(operation, &payload["input"]) {
+        Some((field, message)) => json!({
+            "kind":"operation_input_preflight","status":"rejected","requestDigest":payload["requestDigest"],
+            "diagnostics":[{"code":"h3-face-refine.invalid-input","fieldPointer":field,"message":message}]
+        }),
+        None => json!({
+            "kind":"operation_input_preflight","status":"ready","requestDigest":payload["requestDigest"],"material":{}
+        }),
+    }
+}
+
 pub struct H3FaceRefine;
 
 impl Adapter for H3FaceRefine {
@@ -683,14 +760,21 @@ impl Adapter for H3FaceRefine {
         let result = match operation.as_str().expect("operation string") {
             "capabilities" => capabilities(),
             "probe" => {
-                // Soft probe: packageValid always; connection checked only if endpoint configured via empty payload.
-                json!({
-                    "packageValid": true,
-                    "connection": "not_checked",
-                    "authentication": "not_checked",
-                    "resources": "not_checked",
-                    "issues": []
-                })
+                let payload = match submit_payload(&request) {
+                    Ok(value) => value,
+                    Err(failure) => return response_fail(&request, failure),
+                };
+                if payload["kind"] == "operation_input_preflight" {
+                    prepare_operation_input(&payload)
+                } else {
+                    json!({
+                        "packageValid": true,
+                        "connection": "not_checked",
+                        "authentication": "not_checked",
+                        "resources": "not_checked",
+                        "issues": []
+                    })
+                }
             }
             "submit" => {
                 let payload = match submit_payload(&request) {
@@ -702,14 +786,18 @@ impl Adapter for H3FaceRefine {
                     .and_then(Value::as_str)
                     .unwrap_or("");
                 let mut phase = Phase::BeforeSubmission;
-                let run = match op_id {
-                    OP_ANALYZE => run_analyze(host, &payload, &mut phase),
-                    OP_PREVIEW => run_preview(host, &payload, &mut phase),
-                    OP_REFINE => run_refine(host, &payload, &mut phase),
-                    _ => Err(fail(
-                        "UNSUPPORTED_FEATURE",
-                        format!("unknown operationId: {op_id}"),
-                    )),
+                let run = if let Some((field, message)) = frozen_input_problem(op_id, &payload["input"]) {
+                    Err(invalid(&format!("{field}: {message}")))
+                } else {
+                    match op_id {
+                        OP_ANALYZE => run_analyze(host, &payload, &mut phase),
+                        OP_PREVIEW => run_preview(host, &payload, &mut phase),
+                        OP_REFINE => run_refine(host, &payload, &mut phase),
+                        _ => Err(fail(
+                            "UNSUPPORTED_FEATURE",
+                            format!("unknown operationId: {op_id}"),
+                        )),
+                    }
                 };
                 match run {
                     Ok(v) => v,
@@ -857,6 +945,36 @@ mod tests {
         assert_eq!(wf["tracking_receipt"]["class_type"],"H3FaceTrackingReceipt");
         assert_eq!(wf["3"]["inputs"]["fps"],json!(["1",6]));
         assert_eq!(wf["tracking_receipt"]["inputs"]["analysis_json"],analysis.to_string());
+    }
+    #[test]
+    fn frozen_input_keeps_operation_roles_and_rejects_stale_source_or_sam() {
+        let declared = capabilities();
+        let ops = declared["capabilityContracts"][0]["operations"].as_array().unwrap();
+        assert_eq!(ops.len(), 3);
+        assert_eq!(ops.iter().map(|op| op["id"].as_str().unwrap()).collect::<Vec<_>>(), [OP_ANALYZE, OP_PREVIEW, OP_REFINE]);
+        assert!(ops.iter().all(|op| op["version"] == 1 && op["inputProfile"] == "operation-input-v1"));
+        assert_eq!(ops[1]["uiSchema"]["controls"], json!([]));
+        assert_eq!(ops[2]["mediaSlots"].as_array().unwrap().iter().map(|slot| slot["role"].as_str().unwrap()).collect::<Vec<_>>(),
+            ["source_video", "appearance_ref", "identity_ref"]);
+        let digest = &ops[2]["inputSchema"]["digest"];
+        let source = json!({"packageId":PLUGIN,"operationId":OP_REFINE,"schemaDigest":digest});
+        let mut input = json!({
+            "freeze":{"source":source,"packageVersion":env!("CARGO_PKG_VERSION"),"operationId":OP_REFINE,
+                "schemaDigest":digest,"analysis":{"analysisId":"a","revision":"1","digest":"analysis-digest"},
+                "selectionDigest":"selection-digest","userParams":{"samEnabled":false}},
+            "selection":{"analysisId":"a","analysisRevision":"1","analysisDigest":"analysis-digest","selectionDigest":"selection-digest"}
+        });
+        assert!(frozen_input_problem(OP_REFINE, &input).is_none());
+        input["freeze"]["userParams"]["samEnabled"] = json!(true);
+        assert_eq!(frozen_input_problem(OP_REFINE, &input).unwrap().0, "/freeze/userParams/samModel");
+        input["freeze"]["source"]["schemaDigest"] = json!("old-schema");
+        assert_eq!(frozen_input_problem(OP_REFINE, &input).unwrap().0, "/freeze/source");
+        let response = prepare_operation_input(&json!({
+            "selection":{"operationId":OP_REFINE},"input":input,"requestDigest":"input-digest"
+        }));
+        assert_eq!(response["requestDigest"], "input-digest");
+        assert_eq!(response["status"], "rejected");
+        assert_eq!(response["diagnostics"][0]["fieldPointer"], "/freeze/source");
     }
     #[test]
     fn analysis_missing_nodes_never_uploads_and_http_router_rejection_is_terminal() {

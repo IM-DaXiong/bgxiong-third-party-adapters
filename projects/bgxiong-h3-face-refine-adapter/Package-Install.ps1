@@ -44,7 +44,7 @@ $descriptor = @{
         bindingId='h3-face-refine-saved-comfy'; bindingRevision=1; configurationRef='h3-face-refine-saved-comfy-v1'
         configuration=@{timeoutMs=600000}
         network=@{origins=@(); allowPrivate=$true; allowEmbeddedAuthorization=$false; deniedHosts=@(); deniedNetworks=@()}
-        credentials=@(); trust=@{publishers=@(); revokedPlugins=@(); revokedVersions=@(); revokedKeys=@(); denylistedHosts=@(); isFresh=$false; supportedFeatures=@('media-target-selection-v1','submission-rejection-v1')}
+        credentials=@(); trust=@{publishers=@(); revokedPlugins=@(); revokedVersions=@(); revokedKeys=@(); denylistedHosts=@(); isFresh=$false; supportedFeatures=@('media-target-selection-v1','operation-input-preflight-v2','submission-rejection-v1')}
         mediaTtlMs=3600000; transport=@{handshakeTimeoutMs=10000; writeTimeoutMs=60000; shutdownTimeoutMs=10000; cancelGraceMs=100}
         budgetMs=@{capabilities=60000; probe=60000; submit=600000; query=600000; cancel=60000}; probe=$null
     }

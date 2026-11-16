@@ -8,6 +8,7 @@
       "properties": {
         "source": {
           "type": "object",
+          "readOnly": true,
           "properties": {
             "mediaId": {
               "type": "string",
@@ -103,6 +104,7 @@
         },
         "analysis": {
           "type": "object",
+          "readOnly": true,
           "properties": {
             "analysisId": {
               "type": "string",
@@ -126,9 +128,11 @@
         },
         "selectionDigest": {
           "type": "string",
+          "readOnly": true,
           "minLength": 1
         },
         "trackingDigest": {
+          "readOnly": true,
           "type": [
             "string",
             "null"
@@ -137,10 +141,12 @@
         },
         "packageVersion": {
           "type": "string",
+          "readOnly": true,
           "minLength": 1
         },
         "dependencyVersions": {
           "type": "object",
+          "readOnly": true,
           "additionalProperties": {
             "type": "string",
             "minLength": 1
@@ -152,10 +158,12 @@
         },
         "operationId": {
           "type": "string",
+          "readOnly": true,
           "minLength": 1
         },
         "schemaDigest": {
           "type": "string",
+          "readOnly": true,
           "minLength": 1
         },
         "referenceMediaIds": {
@@ -249,10 +257,10 @@
       "additionalProperties": false
     },
     "selection": {
-      "$ref": "selection.schema.json"
+      "$ref": "read-only-selection.schema.json"
     },
     "tracking": {
-      "$ref": "tracking-receipt.schema.json"
+      "$ref": "read-only-tracking-receipt.schema.json"
     }
   },
   "required": [
