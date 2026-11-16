@@ -58,7 +58,7 @@ pub fn digest(bytes: &[u8]) -> String {
         .collect()
 }
 
-fn schema(id: &str, raw: &str) -> Value {
+pub(crate) fn schema(id: &str, raw: &str) -> Value {
     let normalized = raw.replace("\r\n", "\n");
     json!({"id":id,"digest":digest(normalized.as_bytes()),"schemaJson":normalized})
 }
@@ -101,8 +101,10 @@ fn contract(mode: Mode) -> Value {
 }
 
 pub fn capabilities() -> Value {
+    let mut contracts = alloc::vec![contract(Mode::Text), contract(Mode::ReferenceImages)];
+    contracts.extend(crate::image::capabilities());
     json!({"schemaVersion":2,"pluginId":PLUGIN,"pluginVersion":env!("CARGO_PKG_VERSION"),
-        "capabilityContracts":[contract(Mode::Text),contract(Mode::ReferenceImages)]})
+        "capabilityContracts":contracts})
 }
 
 pub fn mode(payload: &Value, submit: bool) -> Option<Mode> {

@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["prompt"],
+  "properties": {
+    "prompt": {"type":"string","minLength":1,"maxLength":2500},
+    "negativePrompt": {"type":"string","maxLength":2500},
+    "size": {"type":"string","enum":["1k","2k"],"default":"1k"},
+    "aspectRatio": {"type":"string","enum":["16:9","9:16","1:1","4:3","3:4","3:2","2:3","21:9"],"default":"16:9"}
+  }
+}

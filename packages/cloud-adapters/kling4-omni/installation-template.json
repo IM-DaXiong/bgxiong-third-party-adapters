@@ -8,7 +8,8 @@
     "configurationRef": "kling4-omni",
     "configuration": {
       "endpointBaseUrl": "https://api-beijing.klingai.com",
-      "credentialRef": "kling4-user-key"
+      "credentialRef": "kling4-user-key",
+      "credentialMode": "jwt-hs256"
     },
     "network": {
       "origins": [
@@ -29,7 +30,9 @@
       "denylistedHosts": [],
       "isFresh": false,
       "supportedFeatures": [
-        "submission-rejection-v1"
+        "submission-rejection-v1",
+        "operation-input-preflight-v2",
+        "jwt-host-time-v1"
       ]
     },
     "mediaTtlMs": 3600000,
@@ -53,8 +56,8 @@
     "fields": [
       {
         "reference": "kling4-user-key",
-        "label": "可灵 API Key",
-        "mode": "bearer",
+        "label": "可灵 Access Key / Secret Key",
+        "mode": "jwt-hs256",
         "origins": [
           "https://api-beijing.klingai.com"
         ],

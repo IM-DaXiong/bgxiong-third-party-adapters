@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["taskId","modelId"],
+  "properties": {
+    "taskId": {"type":"string","minLength":1},
+    "modelId": {"type":"string","const":"kling-v3"}
+  }
+}

@@ -1,7 +1,9 @@
 #![cfg_attr(target_arch = "wasm32", no_std)]
 extern crate alloc;
 
+mod authentication;
 mod contracts;
+mod image;
 mod media;
 
 use alloc::{
@@ -9,6 +11,7 @@ use alloc::{
     string::{String, ToString},
     vec::Vec,
 };
+use authentication::{authorization, Authorization};
 use bgx_adapter_v2_sdk::{guest, host, submission_rejection, Adapter, Host, Invocation, Response};
 use contracts::Mode;
 use serde_json::{json, Value};
@@ -59,34 +62,41 @@ fn port(h: &mut dyn Host, method: &str, args: Value) -> Result<Value> {
     })
 }
 
-fn configuration(payload: &Value) -> Result<&str> {
-    let config = &payload["configuration"];
-    if config.as_object().is_none_or(|obj| obj.len() != 2) || config["endpointBaseUrl"] != API {
-        return Err(invalid("可灵仅支持已声明的北京 API"));
-    }
-    config["credentialRef"]
-        .as_str()
-        .filter(|s| !s.is_empty())
-        .ok_or_else(|| invalid("请配置可灵 API Key"))
-}
-
 fn http(
     h: &mut dyn Host,
     r: &Invocation,
     method: &str,
     url: String,
     body: Value,
-    credential: Option<&str>,
+    authorization: Option<Authorization<'_>>,
 ) -> Result<Value> {
-    let download = credential.is_none();
+    let download = authorization.is_none();
+    let mut headers = Vec::new();
+    let mut generated_headers = Vec::new();
+    if method == "POST" {
+        headers.push(json!({"name":"Content-Type","value":"application/json"}));
+    }
+    let credential = match authorization {
+        Some(Authorization::Bearer(reference)) => {
+            generated_headers.push(
+                json!({"name":"Authorization","kind":"bearer","targetField":"Authorization"}),
+            );
+            Some(reference)
+        }
+        Some(Authorization::SignedJwt { reference, token }) => {
+            headers.push(json!({"name":"Authorization","value":format!("Bearer {token}")}));
+            Some(reference)
+        }
+        None => None,
+    };
     port(
         h,
         "host-http.execute",
         json!({
             "plan":{
                 "method":method,"url":url,
-                "headers":if method=="POST" {json!([{"name":"Content-Type","value":"application/json"}])} else {json!([])},
-                "generatedHeaders":if download {json!([])} else {json!([{"name":"Authorization","kind":"bearer","targetField":"Authorization"}])},
+                "headers":headers,
+                "generatedHeaders":generated_headers,
                 "body":body,"sink":if download {json!({"kind":"media"})} else {json!({"kind":"buffer","maxBytes":1048576})},
                 "timeoutMs":r.r#budget_ms
             },
@@ -184,8 +194,8 @@ fn validate_settings(mode: Mode, input: &Value) -> Result<()> {
 fn submit(h: &mut dyn Host, r: &Invocation, p: &Value) -> Result<Value> {
     let prepare = (|| {
         let mode = contracts::mode(p, true).ok_or_else(|| invalid("模型、操作或参数合同已改变"))?;
-        let credential = configuration(p)?;
         validate_settings(mode, &p["input"])?;
+        let credential = authorization(h, p)?;
         let external_id = contracts::digest(r.r#request_id.as_bytes());
         let body = media::body(h, mode, p, &external_id[..32])?;
         Ok((mode, credential, body))
@@ -279,13 +289,14 @@ fn query(h: &mut dyn Host, r: &Invocation, p: &Value) -> Result<Value> {
             }
         })
         .collect();
+    let credential = authorization(h, p)?;
     let response = http(
         h,
         r,
         "GET",
         format!("{API}/tasks?task_ids={encoded}"),
         json!({"kind":"none"}),
-        Some(configuration(p)?),
+        Some(credential),
     )?;
     let value = response_json(&response)?;
     let status = response["status"].as_u64().ok_or_else(malformed)?;
@@ -363,6 +374,13 @@ impl Adapter for KlingOmni {
                 Some("probe") if p["kind"] == "package_validation" => Ok(
                     json!({"packageValid":true,"connection":"not_checked","authentication":"not_checked","resources":"not_checked","issues":[]}),
                 ),
+                Some("probe") if p["kind"] == "operation_input_preflight" => {
+                    Ok(image::preflight(&p))
+                }
+                Some("submit") if p["capabilityKey"] == "image.generate" => {
+                    image::submit(h, &r, &p)
+                }
+                Some("query") if p["capabilityKey"] == "image.generate" => image::query(h, &r, &p),
                 Some("submit") => submit(h, &r, &p),
                 Some("query") => query(h, &r, &p),
                 Some("cancel") => Ok(json!({"outcome":"unsupported"})),

@@ -1,13 +1,18 @@
+use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine};
 use bgx_adapter_v2_reference_host::{credential::*, http::*, media::*, policy::*};
 use bgx_adapter_v2_reference_host::before_send::{BeforeSendSink, PersistFuture};
 use bgx_adapter_v2_ports::wire::HostPortCallV2HttpRequest;
 use bgx_adapter_v2_transport::Control;
 use bgx_adapter_v2_validator::{hash_bytes, package::*};
 use serde_json::{json, Value};
-use std::{collections::BTreeMap, sync::{Arc,Mutex}, time::Duration};
+use std::{collections::{BTreeMap,BTreeSet}, sync::{Arc,Mutex}, time::{Duration,SystemTime,UNIX_EPOCH}};
 use tokio::{io::{AsyncReadExt,AsyncWriteExt},net::TcpListener};
 fn broker(origin: &str) -> (tempfile::TempDir, Arc<HttpBroker>) {
-    let manifest = json!({"schemaVersion":2,"pluginId":"local.stream","displayName":"Stream test","version":"1.0.0","protocolRange":{"min":2,"max":2},"requiredFeatures":["stream-events-v1"],"optionalFeatures":[],"language":"rust","entry":"adapter.wasm","artifactSha256":hash_bytes(b"test"),"publisherId":null,"publisherKeyId":null,"requestedCapabilities":{"endpointPolicy":["userConfigurable","allowPrivateNetwork"],"networkHosts":[],"allowPrivateNetwork":true,"auth":["none"],"mediaSlots":[],"stateBytes":0,"embeddedHeaders":[]},"limits":{"memoryBytes":33554432,"fuel":1000,"wallMs":100,"outputBytes":1048576}});
+    let (directory,http,_,_) = broker_for(&[origin], &["none"]);
+    (directory,http)
+}
+fn broker_for(origins: &[&str], auth: &[&str]) -> (tempfile::TempDir, Arc<HttpBroker>, NetworkPolicy, Arc<Mutex<CredentialVault>>) {
+    let manifest = json!({"schemaVersion":2,"pluginId":"local.stream","displayName":"Stream test","version":"1.0.0","protocolRange":{"min":2,"max":2},"requiredFeatures":["stream-events-v1"],"optionalFeatures":["jwt-host-time-v1"],"language":"rust","entry":"adapter.wasm","artifactSha256":hash_bytes(b"test"),"publisherId":null,"publisherKeyId":null,"requestedCapabilities":{"endpointPolicy":["userConfigurable","allowPrivateNetwork"],"networkHosts":[],"allowPrivateNetwork":true,"auth":auth,"mediaSlots":[],"stateBytes":0,"embeddedHeaders":[]},"limits":{"memoryBytes":33554432,"fuel":1000,"wallMs":100,"outputBytes":1048576}});
     let bytes = serde_json::to_vec(&manifest).unwrap();
     let hashes = BTreeMap::from([
         ("manifest.json".into(), hash_bytes(&bytes)),
@@ -19,6 +24,7 @@ fn broker(origin: &str) -> (tempfile::TempDir, Arc<HttpBroker>) {
         .collect::<String>();
     let mut trust = TrustContext::default();
     trust.supported_features.insert("stream-events-v1".into());
+    trust.supported_features.insert("jwt-host-time-v1".into());
     let package = verify_package(
         &PackageContents {
             manifest_bytes: &bytes,
@@ -38,7 +44,7 @@ fn broker(origin: &str) -> (tempfile::TempDir, Arc<HttpBroker>) {
         &package,
         scope.clone(),
         DevelopmentNetworkGrant {
-            origins: vec![origin.into()],
+            origins: origins.iter().map(|&origin| origin.into()).collect(),
             allow_private: true,
             allow_embedded_authorization: false,
             denied_hosts: vec![],
@@ -55,13 +61,9 @@ fn broker(origin: &str) -> (tempfile::TempDir, Arc<HttpBroker>) {
         )),
         scope,
     };
-    let http = HttpBroker::new(
-        policy,
-        Arc::new(Mutex::new(CredentialVault::new().unwrap())),
-        media,
-    )
-    .unwrap();
-    (directory, Arc::new(http))
+    let credentials = Arc::new(Mutex::new(CredentialVault::new().unwrap()));
+    let http = HttpBroker::new(policy.clone(), Arc::clone(&credentials), media).unwrap();
+    (directory, Arc::new(http),policy,credentials)
 }
 struct Capture(Arc<Mutex<Vec<Value>>>);
 impl BeforeSendSink for Capture {
@@ -110,4 +112,54 @@ async fn ordinary_http_preserves_query_and_records_before_send() {
     assert_eq!(serde_json::to_value(result).unwrap()["status"],200);
     assert!(server.await.unwrap().contains("task_ids=fake-task"));
     assert_eq!(records.lock().unwrap().len(),1);
+}
+
+#[tokio::test]
+async fn kling_host_timed_jwt_uses_bound_issuer_and_one_exact_api_origin() {
+    let (origin, server) = serve().await;
+    let foreign_socket = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let foreign = format!("http://{}", foreign_socket.local_addr().unwrap());
+    let (_work, http, policy, credentials) = broker_for(&[&origin, &foreign], &["jwt-hs256"]);
+    let utc = || SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
+    let before = utc();
+    let (handle, token) = {
+        let mut vault = credentials.lock().unwrap();
+        let handle = vault.insert(
+            &policy,
+            DevelopmentSecret {
+                bytes: b"synthetic-kling-signing-key".to_vec().into(),
+                public_id: Some("synthetic-kling-access-key".into()),
+                custom_header: None,
+            },
+            BTreeSet::from(["jwt-hs256".into()]),
+            vec![origin.clone()],
+            Duration::from_secs(60),
+        ).unwrap();
+        let spec = json!({"version":1,"kind":"jwt-hs256","claimsJson":"{}",
+            "hostTime":{"lifetimeSeconds":1800,"notBeforeLeewaySeconds":5}});
+        let token = vault.sign(&policy, &handle, &spec.to_string()).unwrap();
+        (handle, token)
+    };
+    let after = utc();
+    let segments: Vec<_> = token.split('.').collect();
+    assert_eq!(segments.len(), 3);
+    let claims: Value = serde_json::from_slice(&URL_SAFE_NO_PAD.decode(segments[1]).unwrap()).unwrap();
+    assert_eq!(claims["iss"], "synthetic-kling-access-key");
+    let not_before = claims["nbf"].as_u64().unwrap();
+    let expiration = claims["exp"].as_u64().unwrap();
+    assert!(((before - 5)..=(after - 5)).contains(&not_before));
+    assert_eq!(expiration - not_before, 1805);
+    let authorization = format!("Bearer {token}");
+    let request = |url:String| serde_json::from_value(json!({
+        "method":"GET","url":url,"headers":[{"name":"Authorization","value":authorization}],
+        "generatedHeaders":[],"body":{"kind":"none"},"sink":{"kind":"buffer","maxBytes":1024},"timeoutMs":3000
+    })).unwrap();
+    let result = http.execute(&request(format!("{origin}/v1/images/generations/mock-original")), Some(&handle), &Control::new(None)).await.unwrap();
+    assert_eq!(serde_json::to_value(result).unwrap()["status"], 200);
+    assert!(server.await.unwrap().lines().any(|header| {
+        header.split_once(':').is_some_and(|(key, value)| key.eq_ignore_ascii_case("authorization") && value.trim() == authorization)
+    }));
+    let failure = http.execute(&request(format!("{foreign}/v1/images/generations/mock-original")), Some(&handle), &Control::new(None)).await.unwrap_err();
+    assert_eq!(serde_json::to_value(failure).unwrap()["code"], "PERMISSION_DENIED");
+    assert!(!serde_json::to_string(&http.audit().unwrap()).unwrap().contains(&token));
 }

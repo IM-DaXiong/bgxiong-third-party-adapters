@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["remoteTaskId","imageCount"],
+  "properties": {
+    "remoteTaskId": {"type":["string","null"],"minLength":1},
+    "imageCount": {"type":"integer","minimum":1}
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "eab46eca9293e230d963d1600286db296acc47ed254c723981c5369f31aca494",
+  "artifactSha256": "c54681865800985cfad472faa3f5be8915387029a56712356e64735db16cc6bd",
   "displayName": "可灵",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -9,7 +9,9 @@
     "outputBytes": 1048576,
     "wallMs": 540000
   },
-  "optionalFeatures": [],
+  "optionalFeatures": [
+    "jwt-host-time-v1"
+  ],
   "pluginId": "local.thirdparty.kling4-omni",
   "protocolRange": {
     "max": 2,
@@ -20,7 +22,8 @@
   "requestedCapabilities": {
     "allowPrivateNetwork": false,
     "auth": [
-      "bearer"
+      "bearer",
+      "jwt-hs256"
     ],
     "embeddedHeaders": [],
     "endpointPolicy": [
@@ -38,8 +41,9 @@
     "stateBytes": 0
   },
   "requiredFeatures": [
-    "submission-rejection-v1"
+    "submission-rejection-v1",
+    "operation-input-preflight-v2"
   ],
   "schemaVersion": 2,
-  "version": "0.1.0"
+  "version": "0.1.3"
 }

@@ -8,6 +8,7 @@ publish = false
 name = "sdk_transport"
 path = "sdk_transport.rs"
 [dependencies]
+base64 = "=0.22.1"
 bgx-adapter-v2-reference-host = { path = "../../../../../../bgxiong-adapter-sdk/crates/reference-host" }
 bgx-adapter-v2-validator = { path = "../../../../../../bgxiong-adapter-sdk/crates/validator" }
 bgx-adapter-v2-ports = { path = "../../../../../../bgxiong-adapter-sdk/crates/ports" }

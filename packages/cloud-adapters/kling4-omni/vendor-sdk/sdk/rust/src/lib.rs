@@ -29,6 +29,13 @@ pub mod __bindings {
 mod generated;
 pub use generated::*;
 
+pub const OPERATION_INPUT_PREFLIGHT_KIND: &str = "operation_input_preflight";
+
+/// Both metadata-only probe kinds may log but must not use execution ports.
+pub fn is_metadata_only_probe(payload: &serde_json::Value) -> bool {
+    payload["kind"] == OPERATION_INPUT_PREFLIGHT_KIND || payload["kind"] == "operation_preflight"
+}
+
 /// Required nullable fields must be present even when their value is null.
 fn required_nullable<'de, D, T>(deserializer: D) -> Result<Option<T>, D::Error>
 where

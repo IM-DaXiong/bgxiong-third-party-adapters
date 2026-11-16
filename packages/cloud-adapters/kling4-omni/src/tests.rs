@@ -33,6 +33,7 @@ struct Fixture {
     checkpoint: Option<Value>,
     unknown_submit: bool,
     deny_download: bool,
+    signatures: usize,
 }
 
 fn buffered(body: Value) -> Value {
@@ -45,6 +46,10 @@ impl Host for Fixture {
         let args = &request["args"];
         self.calls.push(request.clone());
         Ok(match request["method"].as_str().unwrap() {
+            "host-credential.sign" => {
+                self.signatures += 1;
+                json!(format!("synthetic.video.{}", self.signatures))
+            }
             "host-checkpoint.read" => json!({"revision":"0","valueJson":json!({
                 "revision":"0","requestId":"test-request","requestDigest":"fixture",
                 "state":"acceptance_unknown","vendorTaskId":null,"resumeToken":null,"result":null
@@ -81,7 +86,6 @@ impl Host for Fixture {
                 if plan["method"] == "POST" {
                     assert_eq!(plan["url"], format!("{API}{CREATE}"));
                     assert_eq!(args["credential"], "managed-test-key");
-                    assert_eq!(plan["generatedHeaders"][0]["kind"], "bearer");
                     let bytes = if plan["body"]["kind"] == "media" {
                         assert_eq!(plan["body"]["handle"], "staged-json");
                         self.staged.clone()
@@ -120,6 +124,10 @@ fn submit_and_query_use_frozen_task_and_never_send_key_to_media_origin() {
     assert_eq!(accepted["vendorTaskId"], "task-71");
     assert_eq!(host.checkpoint.as_ref().unwrap()["state"], "accepted");
     assert_eq!(
+        host.calls[0]["args"]["plan"]["generatedHeaders"][0]["kind"],
+        "bearer"
+    );
+    assert_eq!(
         host.posted.as_ref().unwrap()["contents"][0]["text"],
         p["input"]["prompt"]
     );
@@ -143,6 +151,51 @@ fn submit_and_query_use_frozen_task_and_never_send_key_to_media_origin() {
             .count(),
         1
     );
+}
+
+#[test]
+fn jwt_video_keeps_the_existing_create_query_and_download_contract() {
+    let mut host = Fixture::default();
+    let mut p = payload(Mode::Text);
+    p["configuration"]["credentialMode"] = json!("jwt-hs256");
+    let accepted = submit(&mut host, &invocation("submit", &p), &p).unwrap();
+    assert_eq!(accepted["vendorTaskId"], "task-71");
+    assert!(!host
+        .checkpoint
+        .as_ref()
+        .unwrap()
+        .to_string()
+        .contains("synthetic.video."));
+    p["vendorTaskId"] = accepted["vendorTaskId"].clone();
+    p["resumeToken"] = accepted["resumeToken"].clone();
+    assert_eq!(
+        query(&mut host, &invocation("query", &p), &p).unwrap()["status"],
+        "succeeded"
+    );
+    assert_eq!(host.signatures, 2);
+    let requests: Vec<_> = host
+        .calls
+        .iter()
+        .filter(|call| call["method"] == "host-http.execute")
+        .collect();
+    for (index, url) in [
+        format!("{API}{CREATE}"),
+        format!("{API}/tasks?task_ids=task-71"),
+    ]
+    .iter()
+    .enumerate()
+    {
+        let args = &requests[index]["args"];
+        assert_eq!(args["credential"], "managed-test-key");
+        assert_eq!(args["plan"]["url"], *url);
+        assert_eq!(args["plan"]["generatedHeaders"], json!([]));
+        assert_eq!(
+            args["plan"]["headers"].as_array().unwrap().last().unwrap(),
+            &json!({"name":"Authorization","value":format!("Bearer synthetic.video.{}", index + 1)})
+        );
+    }
+    assert!(requests[2]["args"]["credential"].is_null());
+    assert_eq!(requests[2]["args"]["plan"]["headers"], json!([]));
 }
 
 #[test]

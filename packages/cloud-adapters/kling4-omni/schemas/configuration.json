@@ -13,6 +13,11 @@
     "credentialRef": {
       "type": "string",
       "minLength": 1
+    },
+    "credentialMode": {
+      "type": "string",
+      "enum": ["bearer", "jwt-hs256"],
+      "default": "bearer"
     }
   }
 }
