@@ -1,0 +1,6 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["promptId"],
+  "properties": { "promptId": { "type": "string", "minLength": 1 } }
+}

@@ -57,6 +57,18 @@ pub struct CapabilityContractV2OperationsItem {
     pub r#execution: CapabilityContractV2OperationsItemExecution,
     #[serde(rename = "outputSlots")]
     pub r#output_slots: Vec<CapabilityContractV2OperationsItemOutputSlotsItem>,
+    #[serde(rename = "promptProjection")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub r#prompt_projection: Option<CapabilityContractV2OperationsItemPromptProjection>,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct CapabilityContractV2OperationsItemPromptProjection {
+    #[serde(rename = "profileId")]
+    pub r#profile_id: String,
+    #[serde(rename = "version")]
+    pub r#version: u64,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
