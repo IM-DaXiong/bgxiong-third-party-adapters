@@ -5,7 +5,11 @@ use alloc::{
 use bgx_adapter_v2_sdk::Host;
 use serde_json::{json, Value};
 
-use crate::{media, parameters::Operation, provider, Failure};
+use crate::{
+    media,
+    parameters::{Mode, Operation},
+    provider, Failure,
+};
 
 pub(crate) fn task_id(raw: &Value) -> Option<String> {
     [
@@ -126,9 +130,10 @@ pub(crate) fn query(
         ));
     }
     let kind = operation.mode.output_kind();
+    let request_inline_image = operation.mode == Mode::SeedEdit;
     let mut body = json!({"req_key":operation.request_key,"task_id":id});
     if kind == "image" {
-        body["req_json"] = json!(json!({"return_url":true}).to_string());
+        body["req_json"] = json!(json!({"return_url":!request_inline_image}).to_string());
     }
     let (raw, handle) = provider::exchange(
         host,
@@ -180,7 +185,7 @@ pub(crate) fn query(
     let mut outputs = Vec::new();
     let mut data = Value::Null;
     if status == "succeeded" {
-        if urls.is_empty() {
+        if urls.is_empty() || (request_inline_image && !inline.is_empty()) {
             for image in inline {
                 outputs.push(media::inline_image(host, image)?);
             }

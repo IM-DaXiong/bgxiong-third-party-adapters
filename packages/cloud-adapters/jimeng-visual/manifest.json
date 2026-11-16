@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "fd902794a8469373c57b93ade1a640c8e925eed6f97fd63a1a8fed25df63162c",
+  "artifactSha256": "d1b02b5f23e60ca6b8a915e084f7055672e8260fdd10989940b4cd61346d3947",
   "displayName": "火山智能视觉 · 即梦",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -40,5 +40,5 @@
     "operation-input-preflight-v2"
   ],
   "schemaVersion": 2,
-  "version": "1.0.4"
+  "version": "1.0.5"
 }
