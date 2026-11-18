@@ -15,10 +15,10 @@
       "sources": [
         {
           "path": "sdk/rust/src/generated.rs",
-          "sha256": "cf714f7047044dd234294b52b17f654417607ae1f5a138b6dca8ae8789bc719a"
+          "sha256": "2ad0f4f20b4792d17ff4819b5a2bb80bbd81c2e51f76e137853da202420f344e"
         }
       ],
-      "sha256": "cf714f7047044dd234294b52b17f654417607ae1f5a138b6dca8ae8789bc719a",
+      "sha256": "2ad0f4f20b4792d17ff4819b5a2bb80bbd81c2e51f76e137853da202420f344e",
       "transform": "byte-copy"
     },
     {
@@ -70,10 +70,10 @@
       "sources": [
         {
           "path": "wit/vendor-adapter.wit",
-          "sha256": "0d89ce368a1cf81ea41342b046b0c3cd2f47a5b27efe82ba106e7838eb1b8319"
+          "sha256": "e7c09cf055e83e0a64f7b7c866c8d1d5f7837146e403664e42dd81720137015d"
         }
       ],
-      "sha256": "0d89ce368a1cf81ea41342b046b0c3cd2f47a5b27efe82ba106e7838eb1b8319",
+      "sha256": "e7c09cf055e83e0a64f7b7c866c8d1d5f7837146e403664e42dd81720137015d",
       "transform": "byte-copy"
     },
     {
