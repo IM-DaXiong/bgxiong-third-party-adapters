@@ -11,3 +11,12 @@ This is a source/freeze checkpoint, not a binary publication or host/cloud accep
 - Complete local archive: third-party-frozen-resources-c1d00010170c.zip; 7069048 bytes; SHA256 5ba4f7d4fe59be86ce3229596fe411862606faa7e751b56e1297cdc3539b6da2. An empty isolated restore using the unchanged official restore tool restored and verified all 262 files.
 - Archive upload/public Release creation was NOT authorized in this task and has NOT occurred. release/current-artifact.json intentionally remains the historical published receipt. The official download gate currently FAILS because that historical receipt does not match the new lock. No download URL, published status, host acceptance or credential certification has been fabricated.
 - The local-only receipt and prepared-lock scratch file are not public source deliverables. Source push, artifact publication and installer acceptance are separate stages.
+## Publication and download verification completed
+
+The user subsequently explicitly authorized the resource Release/tag release-inputs-0.6.1119-20261118 and this exact ZIP. It was created at source commit 50d52721db972df55773e46cddce70ae1fc083f2 without changing any historical release or latest-release designation.
+
+Release: https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/release-inputs-0.6.1119-20261118
+
+Asset: https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/release-inputs-0.6.1119-20261118/third-party-frozen-resources-c1d00010170c.zip
+
+GitHub reports the asset uploaded, 7069048 bytes, SHA256 5ba4f7d4fe59be86ce3229596fe411862606faa7e751b56e1297cdc3539b6da2. It was downloaded again from that release; its size, archive digest and all 262 locked file digests matched. The unchanged official verify-release-downloads.py adapters entry then independently downloaded and restored/verified the archive successfully. current-artifact.json now records the real published URL and verified size/digests/counts. This resolves the previous publication blocker, not installer acceptance, new model inference acceptance or upgrade-tool certification.
