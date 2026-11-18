@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "15af351954731448432c33a3fd3c1142e6898afd3e1108a46edace0ff660fd56",
+  "artifactSha256": "a453779224c9cc4dce3c782fbcfab5400a8252aa9639601bac0c76c8f3af7865",
   "displayName": "H3-face-refine",
   "entry": "adapter.wasm",
   "language": "rust",

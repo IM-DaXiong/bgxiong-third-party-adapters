@@ -3,7 +3,7 @@
   "version": "1.0.3",
   "pluginId": "local.tts.breeze",
   "pluginVersion": "1.0.2",
-  "adapterSha256": "39d34db82618d297ca1017995a9662a36852a775f59eb24f7e5171ff6e95d59b",
+  "adapterSha256": "b853dce80fbbb224e137422b268ad827e2371504b60ba0044a00652155c9b58e",
   "runtimeRoot": "runtimes/managed-speech/local.tts.breeze/1.0.3/runtime",
   "storeRoot": "runtimes/managed-speech/local.tts.breeze/1.0.3/store",
   "managedPython": "runtimes/managed-speech/local.tts.breeze/1.0.3/python/python.exe",
