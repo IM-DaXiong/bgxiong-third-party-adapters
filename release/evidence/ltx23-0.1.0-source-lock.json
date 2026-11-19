@@ -1,0 +1,1542 @@
+{
+  "schemaVersion": 1,
+  "projectName": "bgxiong-third-party-adapters",
+  "packages": [
+    {
+      "pluginId": "local.bgx.seedvr2-image",
+      "version": "1.0.3",
+      "kind": "installable",
+      "validation": "sdk_package_and_install_envelope_validated",
+      "sourceManifest": "packages/workflow-adapters/seedvr2-image/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedvr2-image/1.0.3/adapter-install.json",
+          "sha256": "45be916fed7b58b63ea50c6edf87f5eb3ec4ffcf3bc65676c0b96501e666b9f3"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedvr2-image/1.0.3/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedvr2-image/1.0.3/package/adapter.wasm",
+          "sha256": "eed53a0b087e5370a380325304de146489577ace479334740a1f8dd6809a2fc4"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedvr2-image/1.0.3/package/manifest.json",
+          "sha256": "21ed0574a44ad78a6a909f37a6707a6bfb1a7dc9d48c9dde78c7ed42f5f9d029"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedvr2-image/1.0.3/package/manifest.sha256",
+          "sha256": "189b0d846a0266cef13b9c48bd16a7b485c238efeb9ea74a844ad37f0c74630a"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedvr2-image/1.0.3/README.txt",
+          "sha256": "b9666df8a64edac4acdf60beeb7933a00708084db9d3e6521eaf18529b2162f7"
+        },
+        {
+          "path": "workflow-templates.json",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedvr2-image/1.0.3/workflow-templates.json",
+          "sha256": "a3599998720e84656b947bc225941211cc4d112f7dc7602cff6a67b48beaa404"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedvr2-image/1.0.3/安装说明.txt",
+          "sha256": "6b667852dac8f7d10290776f2ccc7ddcd7a5cab57fdf9974c53c5862602c82f5"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.bgx.wan-animate2",
+      "version": "0.1.2",
+      "kind": "installable",
+      "validation": "sdk_package_and_install_envelope_validated",
+      "sourceManifest": "packages/workflow-adapters/wan-animate2/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.wan-animate2/0.1.2/adapter-install.json",
+          "sha256": "f0f77bb2d885f1c7f694ef6c111dd7c467c05fe2f8bbe4e18e2354ddddb07bab"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.wan-animate2/0.1.2/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.wan-animate2/0.1.2/package/adapter.wasm",
+          "sha256": "08b07b7acbbf03d93628890a97de4aa58d7b81daf8b08961ef1b6ef4257d378e"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.wan-animate2/0.1.2/package/manifest.json",
+          "sha256": "7a571d6172898381d36f4c8109f0aab86387a6e65f350a0165b972d9a69cdf91"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.wan-animate2/0.1.2/package/manifest.sha256",
+          "sha256": "d08d5016f65e25a25c13c2377ab700aaf2e18fdd1cb40862015165f51a8c8d65"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.wan-animate2/0.1.2/README.txt",
+          "sha256": "c4dc71151936ef305363645b779a54977aa4c718aeef83b9dedcad1f3991069e"
+        },
+        {
+          "path": "workflow-templates.json",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.wan-animate2/0.1.2/workflow-templates.json",
+          "sha256": "b13be2dc6e20194a56be70cb6c8fc737084cfc6ea78a73a52ec46bc11479a237"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.wan-animate2/0.1.2/安装说明.txt",
+          "sha256": "35b7e3b0bcde310ed899d5274cd377cb95b0ca4e624ddd1a342ab997b72b94a9"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.bgx.wan22-animate",
+      "version": "0.2.13",
+      "kind": "installable",
+      "validation": "sdk_package_and_install_envelope_validated",
+      "sourceManifest": "packages/workflow-adapters/wan22-animate/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/20261106-wan-rejection/local.bgx.wan22-animate/0.2.13/adapter-install.json",
+          "sha256": "2de8d6ed45757a7180b8e6123c9a492641001c247f8a5da002026c145e12cb2b"
+        },
+        {
+          "path": "ASSETS.zh-CN.md",
+          "source": "artifacts/releases/20261106-wan-rejection/local.bgx.wan22-animate/0.2.13/ASSETS.zh-CN.md",
+          "sha256": "d9509feb8426523246e2c9cc6eff56182e251e29680eb4cc85102f26ae930247"
+        },
+        {
+          "path": "comfy-nodes/BGXAnimateTracking/__init__.py",
+          "source": "artifacts/releases/20261106-wan-rejection/local.bgx.wan22-animate/0.2.13/comfy-nodes/BGXAnimateTracking/__init__.py",
+          "sha256": "dfb9106fb7febf6af0cae884a1717a8d92ab2b666c52c337841bcd31e62a3995"
+        },
+        {
+          "path": "comfy-nodes/BGXAnimateTracking/reference.py",
+          "source": "artifacts/releases/20261106-wan-rejection/local.bgx.wan22-animate/0.2.13/comfy-nodes/BGXAnimateTracking/reference.py",
+          "sha256": "88d620f7e388d7ae0eb535cdb2ea9e1a66a089518133baf876e4ba3c7fc43e63"
+        },
+        {
+          "path": "comfy-nodes/BGXAnimateTracking/sequence.py",
+          "source": "artifacts/releases/20261106-wan-rejection/local.bgx.wan22-animate/0.2.13/comfy-nodes/BGXAnimateTracking/sequence.py",
+          "sha256": "28d5d768c843eb9ca9dd130f7691de9e88b1c286169fba28f1b0b256e9b39ccf"
+        },
+        {
+          "path": "comfy-nodes/BGXAnimateTracking/tracking.py",
+          "source": "artifacts/releases/20261106-wan-rejection/local.bgx.wan22-animate/0.2.13/comfy-nodes/BGXAnimateTracking/tracking.py",
+          "sha256": "dac4faf0e7138fca496a9685c0215f1fb47001d2f97126d191914642a7a59587"
+        },
+        {
+          "path": "comfy-nodes/BGXAnimateTracking/tracking_artifacts.py",
+          "source": "artifacts/releases/20261106-wan-rejection/local.bgx.wan22-animate/0.2.13/comfy-nodes/BGXAnimateTracking/tracking_artifacts.py",
+          "sha256": "e6254f4b43758a42f7c31a364a15287238ed9f24d52834e6aeff66fe17d38c6e"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/20261106-wan-rejection/local.bgx.wan22-animate/0.2.13/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/20261106-wan-rejection/local.bgx.wan22-animate/0.2.13/package/adapter.wasm",
+          "sha256": "5597d6e997fdae14bc6442184231f41d46f7602794ec062b8fe81ae4009a0be8"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/20261106-wan-rejection/local.bgx.wan22-animate/0.2.13/package/manifest.json",
+          "sha256": "0ea9bf1840e623e1c9b411cfb7edb927b990fb47abb6d1a071e175f7b5cba150"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/20261106-wan-rejection/local.bgx.wan22-animate/0.2.13/package/manifest.sha256",
+          "sha256": "f8baa88ce043165bc00ad733f77aa5cf884f930ddcf68f681427c56782972c12"
+        },
+        {
+          "path": "README.zh-CN.md",
+          "source": "artifacts/releases/20261106-wan-rejection/local.bgx.wan22-animate/0.2.13/README.zh-CN.md",
+          "sha256": "18d6da7a15b95d082be862105669d110676cea67f9159155103901c9e347be8a"
+        },
+        {
+          "path": "SHA256SUMS.txt",
+          "source": "artifacts/releases/20261106-wan-rejection/local.bgx.wan22-animate/0.2.13/SHA256SUMS.txt",
+          "sha256": "c50af316bf4d8d2947277636dad1494a743d8269e6f914c5de3ae0caa019ae7d"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.bgx.deepseek-text",
+      "version": "1.0.1",
+      "kind": "installable",
+      "validation": "sdk_package_and_install_envelope_validated",
+      "sourceManifest": "packages/cloud-adapters/deepseek-text/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.deepseek-text/1.0.1/adapter-install.json",
+          "sha256": "c31769e31dd20e4252b3170c3d22ff72ce3ffe10bce6ddead1483e39bee8af2b"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.deepseek-text/1.0.1/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.deepseek-text/1.0.1/package/adapter.wasm",
+          "sha256": "40cb8a3ea2d0872e043cd667500d97648e2c491b0b89cf58c487ef466659573d"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.deepseek-text/1.0.1/package/manifest.json",
+          "sha256": "a3cede0abceecd68a19debfd288260295c61ecd0d98fa74acaeb3fd37a55e103"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.deepseek-text/1.0.1/package/manifest.sha256",
+          "sha256": "c132aed926e47041b4dd5ab965e834e3797c9a2a761b6821c7ce04077c182a85"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.deepseek-text/1.0.1/README.txt",
+          "sha256": "ffdf0aca75cb286fd8f1ea149fed97d041d6b0741b769ef4e6da8eb1df49acd0"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.deepseek-text/1.0.1/安装说明.txt",
+          "sha256": "c1eb553bc423f45cbcc853e0a29de3d2bac3746923246f6e0db51da148336e11"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.bgx.minimax-m3",
+      "version": "1.0.3",
+      "kind": "installable",
+      "validation": "sdk_package_and_install_envelope_validated",
+      "sourceManifest": "packages/cloud-adapters/minimax-m3/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.minimax-m3/1.0.3/adapter-install.json",
+          "sha256": "803a9529afd82628cb6225be4871d6b17089cbe12f94d044b5b901c9142327a6"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.minimax-m3/1.0.3/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.minimax-m3/1.0.3/package/adapter.wasm",
+          "sha256": "0808dc1bb8ad259c4202b3b3ffcf28e0dc9b12cd83fb21147ce5116b23debfed"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.minimax-m3/1.0.3/package/manifest.json",
+          "sha256": "2b9aba94d4df69ec846c9d37a5ba12004aa89f6a1b625777cddd09d81c2a6bee"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.minimax-m3/1.0.3/package/manifest.sha256",
+          "sha256": "b47c7cdf4a57f5724b8c848808a4a1ad9703daf133c01b205809ebb90d642da4"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.minimax-m3/1.0.3/README.txt",
+          "sha256": "7e04afd1bc18bf4ac51bee3123651d5bd08a549e49a16d6f8a9a547f649d6084"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.minimax-m3/1.0.3/安装说明.txt",
+          "sha256": "1b3b915f728d30d833281c9c4d1cb3ce256bdbd3c891463ee217df6682aeac28"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.bgx.seedream-image",
+      "version": "1.0.6",
+      "kind": "installable",
+      "validation": "sdk_package_and_install_envelope_validated",
+      "sourceManifest": "packages/cloud-adapters/seedream-image/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedream-image/1.0.6/adapter-install.json",
+          "sha256": "b700efef9a8d51bcae30c35bfaabc37e221773b2e23ffa918ae785dd0c97e23e"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedream-image/1.0.6/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedream-image/1.0.6/package/adapter.wasm",
+          "sha256": "4c4afaa562f928ea668ba4202a76be8d0f85fa060cd62034c06de2e4fccf1bf6"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedream-image/1.0.6/package/manifest.json",
+          "sha256": "502310eb0e0544b0171226570ca0d74c273a3459fe038296362d6e5dc61540b9"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedream-image/1.0.6/package/manifest.sha256",
+          "sha256": "5ef809810d0e8887c6c332c73072249746b1e89027c7d2cc28bf5940bec8c210"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedream-image/1.0.6/README.txt",
+          "sha256": "43877f81f009d4f08651f4045258b8cf9faf71d2bd4aeedbb57fc573f520c6dd"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/sdk-completion-20261111/local.bgx.seedream-image/1.0.6/安装说明.txt",
+          "sha256": "a3ec518e0a6173b7a081ef08a2dc2f876ca13223988ed830370e79f406574fe8"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.tts.breeze",
+      "version": "1.0.1",
+      "kind": "speechManaged",
+      "validation": "sdk_package_and_real_model_reconciliation_validated",
+      "sourceManifest": "packages/tts-adapters/breeze/adapter/manifest.json",
+      "files": [
+        {
+          "path": "adapter-pack/adapter.wasm",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/adapter.wasm",
+          "sha256": "dee7f3d0f97d54be7b13ddb13b549084227d6c58be8fe921bbc6d95f831e7a05"
+        },
+        {
+          "path": "adapter-pack/companion/_shared/bgx_remote_fetch.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/_shared/bgx_remote_fetch.py",
+          "sha256": "4e1673f58997b62e149d3550b21dad035562fa9fa51798ea6ccafec020b68b2a"
+        },
+        {
+          "path": "adapter-pack/companion/_shared/bgx_sidecar_common.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/_shared/bgx_sidecar_common.py",
+          "sha256": "609b47ae60fcb8b943a4b70fa107e17ed129b4b02095be42a08d52b7480e762a"
+        },
+        {
+          "path": "adapter-pack/companion/_shared/remote_sources.json",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/_shared/remote_sources.json",
+          "sha256": "664171464c504a78e76ca121035a499a6d7e05b483f1847e6b418061ebf7952c"
+        },
+        {
+          "path": "adapter-pack/companion/breeze_runtime.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/breeze_runtime.py",
+          "sha256": "4282fde45ad0b5b88e661074cdf6cb88cbb0c354b7499466149e88c398999ab7"
+        },
+        {
+          "path": "adapter-pack/companion/CONTRACT.md",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/CONTRACT.md",
+          "sha256": "225254fc0c0c45b69bf0fb0bda95009b686383e36051f3acda197525bda9d4b9"
+        },
+        {
+          "path": "adapter-pack/companion/durable_jobs.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/durable_jobs.py",
+          "sha256": "002c066ee591ecad8683f922cc72da7b56daa16204d1957a0537126b5e8bbd01"
+        },
+        {
+          "path": "adapter-pack/companion/files.json",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/files.json",
+          "sha256": "92aa3858e1f5512a4ddf3f4e54b0c13fe569f1f9bf4f9e830428a46e691dda4e"
+        },
+        {
+          "path": "adapter-pack/companion/manifest.json",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/manifest.json",
+          "sha256": "927b3e286876b68133c8cde0b5c132d0ad8ac7e8b782f711e8e514ad8f4b7f59"
+        },
+        {
+          "path": "adapter-pack/companion/request_map.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/request_map.py",
+          "sha256": "492e02f2f41af1ea4bb5f159ef31770d593a081c3c5ce4a91cb420dca5dfb040"
+        },
+        {
+          "path": "adapter-pack/companion/requirements.lock.txt",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/requirements.lock.txt",
+          "sha256": "10ab75aea39454b56fae589ff9c473aa16850c84f1ab1d7adec006a7f5585e97"
+        },
+        {
+          "path": "adapter-pack/companion/requirements.txt",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/requirements.txt",
+          "sha256": "1df2128892297032c017f22d5c1d0ea5ccde0443cd9260691f13c68454d8d280"
+        },
+        {
+          "path": "adapter-pack/companion/s0_prove.ps1",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/s0_prove.ps1",
+          "sha256": "66602ba1b35c7b194fa36cec5c8f499b13ae822ace5aa1e326e149b9c3f69dae"
+        },
+        {
+          "path": "adapter-pack/companion/sidecar_server.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/sidecar_server.py",
+          "sha256": "71fa149efb587b6697effa67c2c4a26235568d70eb09964b3d8505ba4d23372f"
+        },
+        {
+          "path": "adapter-pack/companion/start-managed.ps1",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/start-managed.ps1",
+          "sha256": "a9c0755266bacbddd543b6c593c635ff316631068efe81632c33ff431405907a"
+        },
+        {
+          "path": "adapter-pack/companion/start-sidecar.ps1",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/start-sidecar.ps1",
+          "sha256": "24de81dfcb20da3b7fed742f8b6ae642169f2b5afea0592c220ce3738e5b0d89"
+        },
+        {
+          "path": "adapter-pack/companion/start-sidecar.sh",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/start-sidecar.sh",
+          "sha256": "d2b3ff90d324d6d1054271e7436d541be79ba8ef7cc9ba3580aa1ebb95c937bb"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/breeze_infer/__init__.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/breeze_infer/__init__.py",
+          "sha256": "810141b5e6326542cced736e82763c37300f9de2b531f3ab97921a1aca32328d"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/breeze_infer/api.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/breeze_infer/api.py",
+          "sha256": "acee4503bcdddfef20ab1078d98d2079e15b8c2dd1e5cde65fcc0b7245460910"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/breeze_infer/audio.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/breeze_infer/audio.py",
+          "sha256": "3dc7977d8b1f3097918d4164e5607c20d99491877f3c4723649a36724713cff4"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/breeze_infer/batch.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/breeze_infer/batch.py",
+          "sha256": "2bb0e4999f07f2391a4a5a600e5b95c49110a8d4472601dc7e4609cf55aa6b91"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/breeze_infer/runtime.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/breeze_infer/runtime.py",
+          "sha256": "a257d868b867009edddd8ba53b22d3b66394057801c62f198879b1c992637ab9"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/breeze_infer/templates.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/breeze_infer/templates.py",
+          "sha256": "52057796b74b95e34adf7238cb07ed1484941a5f6c168760632ac54a0bd0ca06"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/configs/fast.json",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/configs/fast.json",
+          "sha256": "879c719966e3cd560e47f7555faacd0073f42b36df5c60a5569d3b8558715900"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/infer.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/infer.py",
+          "sha256": "14d39834056bec63dcb73918c96ca8f5d01f534fc7b0d5eda2f5fecc7d13a4b3"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/LICENSE",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/LICENSE",
+          "sha256": "c8858a5a76440bbca484e134cf7df46385d090dd18b2c58e650f939258802e5b"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/__init__.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/__init__.py",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/breeze.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/breeze.py",
+          "sha256": "9c408b2323f1fb57f7ddc4217cc72e4d9fce82cbf287a0d2ae4578e63f204cc2"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/breeze_backbone_factory.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/breeze_backbone_factory.py",
+          "sha256": "8d8519dccb82f5363d4e4ff64f182906a0f93dd5853619547b54c89ff22f17ef"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/breeze_base_config.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/breeze_base_config.py",
+          "sha256": "6b8aab8979fef27108176d654077e7f1d797a0ca2ed18e6e1460fdf8ab93b7a9"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/breeze_config.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/breeze_config.py",
+          "sha256": "f37fc58792ea936d24925254dfbd75eafb47c2ca85db46b0c371b94550a3fb25"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/cudagraph/__init__.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/cudagraph/__init__.py",
+          "sha256": "ef0418048e1766dfd2efab2f000bcc15f3d75ccfc700e1e5f52d7c540f56bf62"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/cudagraph/backbone_graph.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/cudagraph/backbone_graph.py",
+          "sha256": "942b07eb2c16a31f362e10ecc23e9d1c131fc8cc3116550650010d2ec83fd024"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/cudagraph/backbone_prefill_graph.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/cudagraph/backbone_prefill_graph.py",
+          "sha256": "bd90e34eb8bc4e507af9e222b58db741e913e5c833cd9c5625f4168660d45d82"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/cudagraph/depth_decoder_graph.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/cudagraph/depth_decoder_graph.py",
+          "sha256": "407bb07d0cd610f9c11748655450ad7708f8bab811d2129382925bf729b88acc"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/cudagraph/sampling.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/cudagraph/sampling.py",
+          "sha256": "3dcaa35fd106c730bc630a998d3a6ed3329beb55e8df03d76d3f857346a86623"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/fast_streaming.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/fast_streaming.py",
+          "sha256": "7748cc11fef2a5f54ae82fefc96325673d71b8cb9b1bdd7bb92275c4c100a825"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/generation_breeze.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/generation_breeze.py",
+          "sha256": "ebc55c27b896423f7a3464cb6dcf1df0918c78bda6b0236235f0f0f4c4d04e84"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/logits_process.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/logits_process.py",
+          "sha256": "43bbcc1c85da535aefc757e44716b0e69701c90db660cf14d77da73d31485b9f"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/stream_runtime/__init__.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/stream_runtime/__init__.py",
+          "sha256": "f5f6ff5a5013666069d61bc7d6275fdb4b3feac9d569a1afec3cfacd59dec799"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/stream_runtime/core/__init__.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/stream_runtime/core/__init__.py",
+          "sha256": "c3daf48ca2c409d255ba51bbbeb9f56a66a68e4934b33a77f0714541f0566670"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/stream_runtime/core/compat.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/stream_runtime/core/compat.py",
+          "sha256": "27354ec2e98991579b421f1d24af93786da066532a61ad66462ffcff6a978d97"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/stream_runtime/inference/__init__.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/stream_runtime/inference/__init__.py",
+          "sha256": "01f6c318a7ac1be7df8f78a42d59bac4214126adbd900c649e5ec3a5367e62a3"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/stream_runtime/stream/__init__.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/stream_runtime/stream/__init__.py",
+          "sha256": "c5cad715006f19bb5c097c2556a301252845b31facd4e402b90db2d727886187"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/stream_runtime/stream/kv_cache.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/stream_runtime/stream/kv_cache.py",
+          "sha256": "1162ba9bce3fbb2e64b6fcb2e95e20b9f6efb9dfce541be61ab8346f123c8f41"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/stream_runtime/stream/lane.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/stream_runtime/stream/lane.py",
+          "sha256": "074a88bd1c6ea367993f66b352df48be372a8236c66dbb7a7e151f50bd620486"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/stream_runtime/stream/runtime.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/stream_runtime/stream/runtime.py",
+          "sha256": "6b886844b7e317a4218a9f6f68735e502d8fd853ce41dd8c90648bf1de88c320"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/stream_runtime/stream/state.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/stream_runtime/stream/state.py",
+          "sha256": "05631403bae6b29538b1bba7710854d1fada84033f656e7302e43cf8c7f5eba7"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/stream_runtime/stream/workspace.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/stream_runtime/stream/workspace.py",
+          "sha256": "1607e23cf928febd76efe57f075430a97f8311e1901c1ebe33dde144f3e1c584"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/t5gemma2_compat.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/t5gemma2_compat.py",
+          "sha256": "5902c67fdd3ca28bb13508cb139d0ea96594f118763bc5cd4d940e78d1cf92bf"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/text_encoder_graph.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/text_encoder_graph.py",
+          "sha256": "a8cb9c92b9b13124652e93c0f9a95fe8d70775fec105f3616435b08970cbbddb"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/models/warmup_profile.py",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/models/warmup_profile.py",
+          "sha256": "48faa9be17f740a808946eae5f2724e370b68b3e177e7871563f4ee45a0e85c6"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/README.md",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/README.md",
+          "sha256": "a6e4456cc2cb0114ec88b017782027f9c2cf2788de1698bdfa7aa8e07e071545"
+        },
+        {
+          "path": "adapter-pack/companion/upstream/requirements.txt",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream/requirements.txt",
+          "sha256": "1274174e9e53afd4db15c4728fb981c6e8071f9fa867605b6426222c31fc4f3e"
+        },
+        {
+          "path": "adapter-pack/companion/upstream-snapshot.json",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/companion/upstream-snapshot.json",
+          "sha256": "a524ada712a1d2809b5e4ff04f523f519ac1ff496ca0619573a4793e89a2c76c"
+        },
+        {
+          "path": "adapter-pack/manifest.json",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/manifest.json",
+          "sha256": "16cb06b9085b1bb457b37aedfbd2478f114d5d683e5298a8407dac92f3733e0b"
+        },
+        {
+          "path": "adapter-pack/manifest.sha256",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/manifest.sha256",
+          "sha256": "08676e733498dbe6318908f927e27066be9a509d35f43c6a4c627cc797359dca"
+        },
+        {
+          "path": "adapter-pack/tts-bundle.json",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/adapter-pack/tts-bundle.json",
+          "sha256": "c0a8bb1f96fab8c6762c4b8c4765b9493443a28fac65942f0de35ee00bed0cb4"
+        },
+        {
+          "path": "build-receipt.json",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/build-receipt.json",
+          "sha256": "e77136bb862cc2c483da1531d764d585d0e662d8a37f64738d21dcfa1e5185ca"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package-check.json",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/package-check.json",
+          "sha256": "ded4d152c5203fa77a52b389726f81aac84d813fc40b49ff952d9118dbc86dba"
+        },
+        {
+          "path": "prepare-resources.ps1",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/prepare-resources.ps1",
+          "sha256": "310f2018c3fe1257c4349737b9995a61e835f3b1f5597db78239dd687aae4d1f"
+        },
+        {
+          "path": "provisioning.json",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/provisioning.json",
+          "sha256": "a6b37bb5841878f79e483bea0739f3dd669a94e69a55e6e4d06660f7b3e2d67a"
+        },
+        {
+          "path": "README.md",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/README.md",
+          "sha256": "b7390dda47202a16b2895652b2d042d689b62cad9e1b1c0a55f4d3fbbcdd4191"
+        },
+        {
+          "path": "SHA256SUMS.txt",
+          "source": "artifacts/releases/breeze-durable-1.0.1/local.tts.breeze/1.0.1/SHA256SUMS.txt",
+          "sha256": "fa9f948559a343b8a7d42d14ff9a03f8b23f13e30559a250068c2bcb8cb62974"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.thirdparty.h3-face-refine",
+      "version": "1.0.0-a31",
+      "kind": "installable",
+      "validation": "sdk_package_and_install_envelope_validated",
+      "sourceManifest": "projects/bgxiong-h3-face-refine-adapter/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/adapter-install.json",
+          "sha256": "3c3eec94b93103024c123fdefd7892d6c49a5ab5d43ec39ddc57e13299ecaada"
+        },
+        {
+          "path": "comfy-nodes/BGXFaceRefineContract/__init__.py",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/BGXFaceRefineContract/__init__.py",
+          "sha256": "d0d86f0111177b0e46e8445f1ef505d6910cfe07701b5d16bb3ba2b4deb484d0"
+        },
+        {
+          "path": "comfy-nodes/BGXFaceRefineContract/session_api.py",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/BGXFaceRefineContract/session_api.py",
+          "sha256": "36f7ad463440df3deba007e9098bed57aeb3fb6466e71421dd6cf9a41aec3b96"
+        },
+        {
+          "path": "comfy-nodes/BGXFaceRefineContract/sessions.py",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/BGXFaceRefineContract/sessions.py",
+          "sha256": "fd1b6f2f478ceffbc625dfa8b2d102ff6e2d3e8ef847760d0fda10802a9cdc15"
+        },
+        {
+          "path": "comfy-nodes/BGXFaceRefineContract/tracking.py",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/BGXFaceRefineContract/tracking.py",
+          "sha256": "d6cb97606fee7a0e0b8c2d5cf50d0ded21f4b416913c7b54757e0ffc34a8573a"
+        },
+        {
+          "path": "comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/bug_report.yml",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/bug_report.yml",
+          "sha256": "890bbb41a0df4e6519c012148c9e6204b05fb7833f1a340d1133c5622f57ac58"
+        },
+        {
+          "path": "comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/config.yml",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/config.yml",
+          "sha256": "7cca53eddc3d54dcbe80b600f9295a49d1c6d93fff0ca85ad57620eb8447d759"
+        },
+        {
+          "path": "comfy-nodes/ComfyUI-H3-FaceRefine/.github/workflows/publish.yml",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/.github/workflows/publish.yml",
+          "sha256": "0888358066113715b575e29cb6613bb01845df967bb6c153578867613de3d835"
+        },
+        {
+          "path": "comfy-nodes/ComfyUI-H3-FaceRefine/.gitignore",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/.gitignore",
+          "sha256": "5b7e52bd0188656a2c97a3d511231d03f507d4b974ae90517ad7b1a610a11b80"
+        },
+        {
+          "path": "comfy-nodes/ComfyUI-H3-FaceRefine/__init__.py",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/__init__.py",
+          "sha256": "66327d684adb8768b4be2db8527c45844c72d008a88ccc8c849fb049835a2d92"
+        },
+        {
+          "path": "comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Auto_Select.json",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Auto_Select.json",
+          "sha256": "b75ca7e9c52b41994b0242c742c151ae069b184654169ff765f9923b5366c4d3"
+        },
+        {
+          "path": "comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Manual_Select.json",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Manual_Select.json",
+          "sha256": "233c70e8e570566eee53d63126bde734777c1e1e2e20599197ae78b859a73151"
+        },
+        {
+          "path": "comfy-nodes/ComfyUI-H3-FaceRefine/LICENSE",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/LICENSE",
+          "sha256": "b03d4e31e6bb15940bfa88d3e270653e0925ea01d9828842d2ee22b3ea620bb9"
+        },
+        {
+          "path": "comfy-nodes/ComfyUI-H3-FaceRefine/nodes.py",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/nodes.py",
+          "sha256": "643d186d8471347cba40891a8a0c5ad60a4e0186058373a83c95ee0cf9edd7c7"
+        },
+        {
+          "path": "comfy-nodes/ComfyUI-H3-FaceRefine/picker_api.py",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/picker_api.py",
+          "sha256": "dc70bbe4964bc97566eea58c0794e08651573459897d4423d7213ac7ce1ae635"
+        },
+        {
+          "path": "comfy-nodes/ComfyUI-H3-FaceRefine/pyproject.toml",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/pyproject.toml",
+          "sha256": "b7d944341ef75e73c5a28cd6eba441a90ddb237b35f03e70a9b0b71e637c96e9"
+        },
+        {
+          "path": "comfy-nodes/ComfyUI-H3-FaceRefine/README.md",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/README.md",
+          "sha256": "0685f78860b9e72f6abf6db24b37e9ab8def452d1a6c806c88d2f2ac7d704516"
+        },
+        {
+          "path": "comfy-nodes/ComfyUI-H3-FaceRefine/requirements.txt",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/requirements.txt",
+          "sha256": "44a8f6759579c36dea25aca606b3d48b774e96d88271d1e6c36efda779328489"
+        },
+        {
+          "path": "comfy-nodes/ComfyUI-H3-FaceRefine/web/h3_face_select.js",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/comfy-nodes/ComfyUI-H3-FaceRefine/web/h3_face_select.js",
+          "sha256": "b82e637c3c3149921896dcb3cd9ec48e5910b0fa656e4f1f9714dbe83b0e239e"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "LICENSE-NOTES.md",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/LICENSE-NOTES.md",
+          "sha256": "216df9a5fbd67bc6e3049ceaca6e0bc5cd524fdbdc9ef8a6f75d778e4602cfa1"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/package/adapter.wasm",
+          "sha256": "05ac530bf265d6709504523a694985fad652a22fa933ff989987c74cd1489611"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/package/manifest.json",
+          "sha256": "f70e0babedd87881fdc2660b9825fd01361fa56e254a12b8baefd564e4c1e3f3"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/package/manifest.sha256",
+          "sha256": "a3ec9885c8dd18a20effedd87f6cd89be35686694a8a41e2809b1421dd169e55"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/README.txt",
+          "sha256": "c2bff20022644154136ee06a5115aedbd07aeb43b989061a32ee47bfeec2fa3e"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/sdk-completion-lf-20261111/local.thirdparty.h3-face-refine/1.0.0-a31/安装说明.txt",
+          "sha256": "c45308047d94e5033f3a1bd353a892663a621b4ba9298bcdb8a6fdfd66d520ed"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.independent.flux2-ordered-reference",
+      "version": "1.0.2",
+      "kind": "installable",
+      "validation": "sdk_package_validated",
+      "sourceManifest": "packages/comfy-workflow-adapter/v2/flux2-multi-ref-independent/flux2-author/manifest.json",
+      "files": [
+        {
+          "path": "host-config.example.json",
+          "source": "artifacts/releases/sdk-completion-20261111/local.independent.flux2-ordered-reference/1.0.2/host-config.example.json",
+          "sha256": "e164d632cdb98eab1a6b776a18b90bfc72eb7f4591072b12e07f4dd25c51db63"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/sdk-completion-20261111/local.independent.flux2-ordered-reference/1.0.2/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/sdk-completion-20261111/local.independent.flux2-ordered-reference/1.0.2/package/adapter.wasm",
+          "sha256": "5027dc5729c241b9774fd3110d42d9e5c498d86c7489de70ead898e7350090ea"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/sdk-completion-20261111/local.independent.flux2-ordered-reference/1.0.2/package/manifest.json",
+          "sha256": "89a173ec829d20c4e63422c459d961f03512892033a3a738e1cfe57806f926ef"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/sdk-completion-20261111/local.independent.flux2-ordered-reference/1.0.2/package/manifest.sha256",
+          "sha256": "63d494ff32c3c453eef819f03905b20f701acbc0d5d2a743f2fd84eb9b1642b4"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/sdk-completion-20261111/local.independent.flux2-ordered-reference/1.0.2/README.txt",
+          "sha256": "c8851b351c8e620c3beb1d636f5412cd00526a160d7a13436dec189ba75b7994"
+        },
+        {
+          "path": "workflow-templates.json",
+          "source": "artifacts/releases/sdk-completion-20261111/local.independent.flux2-ordered-reference/1.0.2/workflow-templates.json",
+          "sha256": "29623f29f4d909509e1ca6e140fcb6ce0eaeec8cd6d8f7069399b9f9c644d832"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/sdk-completion-20261111/local.independent.flux2-ordered-reference/1.0.2/安装说明.txt",
+          "sha256": "eeb726e0b5cc5dea8d3672816a087b09e8ae434ebe4789cabf233fa34577913e"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.independent.comfy-h3-continuum",
+      "version": "1.0.3",
+      "kind": "installable",
+      "validation": "sdk_package_and_install_envelope_validated",
+      "sourceManifest": "packages/comfy-workflow-adapter/v2/h3-continuum-independent/author/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/adapter-install.json",
+          "sha256": "d10971ec0a1098c6249437b501e6ed89e8462c6eeecff086b4af1af5f6ae9935"
+        },
+        {
+          "path": "host-config.example.json",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/host-config.example.json",
+          "sha256": "15aa9562d2a90832f733103fba3c944fe98b649aa0fac7223ca062c4403e60cc"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/package/adapter.wasm",
+          "sha256": "897f152b3eb63f22bdbd892ef3d7b892f238e58d4188a60645dfeb61671b77d2"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/package/manifest.json",
+          "sha256": "dbeeb5194ad28f059fb7d168dcee5a82899aecf763b116d090ba5c3ee1da1602"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/package/manifest.sha256",
+          "sha256": "3b224a6f9deff6867264eb7ecbb88fb81337b400cfc4830f7bb09673c0bc3b95"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/README.txt",
+          "sha256": "218834d863c4650f30eb451131087609d3f77d33715fa0a37fb99578de91b1a5"
+        },
+        {
+          "path": "request-continuum.json",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/request-continuum.json",
+          "sha256": "0bce54cc4ba0f04c9d121bec159eb586988e6899249ac5ad9bf1643f57f54e1b"
+        },
+        {
+          "path": "SHA256SUMS",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/SHA256SUMS",
+          "sha256": "f4afbb5944e6d0ab4676555239e82930d2e3278fbde0f760821699eebe846bea"
+        },
+        {
+          "path": "workflow/native-api.original.json",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/workflow/native-api.original.json",
+          "sha256": "8abd8f129d53161a52a622342066d473e52540a0512b5e3fb64955d3572e77ca"
+        },
+        {
+          "path": "workflow/source.json",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/workflow/source.json",
+          "sha256": "79013e52c63efd4cd11e497615f751e54ecb25572d431203ed6e4c1843438b12"
+        },
+        {
+          "path": "workflow/target-node-definitions.json",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/workflow/target-node-definitions.json",
+          "sha256": "d60147e13fd9a60e220834aac29f67866c91a951cb790893db48d56a60b9981b"
+        },
+        {
+          "path": "workflow-templates.json",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.independent.comfy-h3-continuum/1.0.3/workflow-templates.json",
+          "sha256": "eb7e7f83023258831ff4f1d8ece801dd0cbdf8fdbcd6314211acb4f05996ba10"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.example.comfy-h3-r2v",
+      "version": "1.0.1",
+      "kind": "sourceExample",
+      "validation": "source_example_version_checked",
+      "sourceManifest": "packages/comfy-workflow-adapter/v2/h3-r2v/sample-source/manifest.json",
+      "files": [
+        {
+          "path": "example.json",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-r2v/1.0.1/example.json",
+          "sha256": "f770b2b4d8bebe66e232cb30901201a51c615582ccec2a79f35c6415c30afd0c"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-r2v/1.0.1/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-r2v/1.0.1/README.txt",
+          "sha256": "2bad046a197b3275427ac6ba92d3ba90169a20933c298ddb30777f592d9045c8"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-r2v/1.0.1/安装说明.txt",
+          "sha256": "2a9e25c95ed0738cd0d103ae7c4d7b69a8eaf6a0cb61d4ec892d007ec9fb02a2"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.example.comfy-h3-r2v-audio",
+      "version": "1.0.1",
+      "kind": "sourceExample",
+      "validation": "source_example_version_checked",
+      "sourceManifest": "packages/comfy-workflow-adapter/v2/h3-r2v-audio/sample-source/manifest.json",
+      "files": [
+        {
+          "path": "example.json",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-r2v-audio/1.0.1/example.json",
+          "sha256": "de4fa01a9cd71dae095eb4e3bbf661ac5ee1a58cd4ed4451ea0fc2e72d2b8dbc"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-r2v-audio/1.0.1/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-r2v-audio/1.0.1/README.txt",
+          "sha256": "80bf0eb74e4b7880b4b28fdef14e0f91acea407fcf152eb4ca6c2fbb9bf605e2"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-r2v-audio/1.0.1/安装说明.txt",
+          "sha256": "cf8ec054115ca40c8a2681cbaf03365bb0499ebf7e24bfdb97eb106ef8bf80c5"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.example.comfy-h3-t2v",
+      "version": "1.0.1",
+      "kind": "sourceExample",
+      "validation": "source_example_version_checked",
+      "sourceManifest": "packages/comfy-workflow-adapter/v2/h3-t2v/sample-source/manifest.json",
+      "files": [
+        {
+          "path": "example.json",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-t2v/1.0.1/example.json",
+          "sha256": "93d4f2d9fd82afe94d8b80b9e264d79a388ae030dc11a4f082b7d70711b11981"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-t2v/1.0.1/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-t2v/1.0.1/README.txt",
+          "sha256": "9d9ab1d3cf5b23fbea84e5bc5be7e93998cc1eb8c39cd008561fa932c73629c5"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-h3-t2v/1.0.1/安装说明.txt",
+          "sha256": "14c5714de6f6e219cca05ba7654042770957ff7363ebc2898af590d853f92fdd"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.example.comfy-ltx23-ia2v",
+      "version": "1.0.1",
+      "kind": "sourceExample",
+      "validation": "source_example_version_checked",
+      "sourceManifest": "packages/comfy-workflow-adapter/v2/ltx23-ia2v/sample-source/manifest.json",
+      "files": [
+        {
+          "path": "example.json",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-ltx23-ia2v/1.0.1/example.json",
+          "sha256": "7639ce54b9bc045272c22ceeabd31fcdf617a8cc40118a1e6f93ab1ebe200ed9"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-ltx23-ia2v/1.0.1/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-ltx23-ia2v/1.0.1/README.txt",
+          "sha256": "ea141dd309018263ec042778e3dd04738a610e2ab47cded703e85480368b6c52"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-ltx23-ia2v/1.0.1/安装说明.txt",
+          "sha256": "e4619763e99a87191b95779e8455689289998adc36a836ec4df896ea32e5435e"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.example.comfy-ltx25-i2v",
+      "version": "1.0.1",
+      "kind": "sourceExample",
+      "validation": "source_example_version_checked",
+      "sourceManifest": "packages/comfy-workflow-adapter/v2/ltx25-i2v/sample-source/manifest.json",
+      "files": [
+        {
+          "path": "example.json",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-ltx25-i2v/1.0.1/example.json",
+          "sha256": "6ffedfd6d2297e56db882c027cf017173ac73afb0d90cf5061f5d566c75ce3c8"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-ltx25-i2v/1.0.1/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-ltx25-i2v/1.0.1/README.txt",
+          "sha256": "f952690924e591b04019c18f5765ac36345eeed8ad273ef8ecf5d0a422318e60"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/sdk-explicit-mode-20261111/local.example.comfy-ltx25-i2v/1.0.1/安装说明.txt",
+          "sha256": "30a73a89538b910a233d38fb5ec9fe6b7a6dfb5b0c14dd8f36e24d18c671db76"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.example.comfy-qwen-i2i",
+      "version": "1.0.0",
+      "kind": "sourceExample",
+      "validation": "source_example_version_checked",
+      "sourceManifest": "packages/comfy-workflow-adapter/v2/qwen-i2i/sample-source/manifest.json",
+      "files": [
+        {
+          "path": "example.json",
+          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-qwen-i2i/1.0.0/example.json",
+          "sha256": "18430f77de7fa478348c661925643fd642fa14912ebdc33fd9db5681f294fe77"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-qwen-i2i/1.0.0/LICENSE",
+          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-qwen-i2i/1.0.0/README.txt",
+          "sha256": "b8ebb1c661582721241840d6cb7d54b88720a61f44345caa9bb5dc76de4b4910"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-qwen-i2i/1.0.0/安装说明.txt",
+          "sha256": "f6e0b93f2531206d37cce3feb7d7da9f6c729aa750c1fce0181ede13f674369c"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.example.comfy-qwen-multi-ref",
+      "version": "1.0.0",
+      "kind": "sourceExample",
+      "validation": "source_example_version_checked",
+      "sourceManifest": "packages/comfy-workflow-adapter/v2/qwen-multi-ref/sample-source/manifest.json",
+      "files": [
+        {
+          "path": "example.json",
+          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-qwen-multi-ref/1.0.0/example.json",
+          "sha256": "e00c7e7c2eb396df19e47ef8b2000e314f235178c733fed2adc653222c058d4c"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-qwen-multi-ref/1.0.0/LICENSE",
+          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-qwen-multi-ref/1.0.0/README.txt",
+          "sha256": "e1ac1cd8f6dec06e4d9d19e86605af1f6664ee14e839c5068f8c5249ed09cf89"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-qwen-multi-ref/1.0.0/安装说明.txt",
+          "sha256": "8d29cb41aa360353cde203be072a79d1f0725439c8677f79bd1f47154f729897"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.example.comfy-qwen-t2i",
+      "version": "1.0.0",
+      "kind": "sourceExample",
+      "validation": "source_example_version_checked",
+      "sourceManifest": "packages/comfy-workflow-adapter/v2/qwen-t2i/sample-source/manifest.json",
+      "files": [
+        {
+          "path": "example.json",
+          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-qwen-t2i/1.0.0/example.json",
+          "sha256": "ae0b7a12b9f008b2f39fca7b16fc28463b9b64871ace47921aeddafdc13e7455"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-qwen-t2i/1.0.0/LICENSE",
+          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-qwen-t2i/1.0.0/README.txt",
+          "sha256": "21e7b6548fea15c23b901c7db48e82f454869918195201620f2cb3fb4210763d"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-qwen-t2i/1.0.0/安装说明.txt",
+          "sha256": "5ab0ea0c683833ac870b4d9fc40fc97286ea82de6be453a8a7b063443e3a62ed"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.example.comfy-qwen-two-output",
+      "version": "1.0.0",
+      "kind": "sourceExample",
+      "validation": "source_example_version_checked",
+      "sourceManifest": "packages/comfy-workflow-adapter/v2/qwen-two-output/sample-source/manifest.json",
+      "files": [
+        {
+          "path": "example.json",
+          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-qwen-two-output/1.0.0/example.json",
+          "sha256": "d9f973be23c1b6230b638358cecc710a97c3900eb7f87764941a07540adbc1b5"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-qwen-two-output/1.0.0/LICENSE",
+          "sha256": "f939456c603e3edcd629bf51e09bfd8e980e6b20ed778545bb09ff3b6620f5a1"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-qwen-two-output/1.0.0/README.txt",
+          "sha256": "c744c47d6e31512adf3c80c1f9a688223004749be47be52138e9bd751a0cf4f8"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/1b602d2f122145bf9374ccd2d8559572/local.example.comfy-qwen-two-output/1.0.0/安装说明.txt",
+          "sha256": "bad2ccdedd8f07ce8cd8e89d2b293c8fc6a96a92014c803aee759d6bb8cabb30"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.zeroauthor.comfy-zimage-turbo",
+      "version": "1.0.3",
+      "kind": "installable",
+      "validation": "sdk_package_validated",
+      "sourceManifest": "packages/comfy-workflow-adapter/v2/zimage-zero-independent/author/manifest.json",
+      "files": [
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/sdk-completion-20261111/local.zeroauthor.comfy-zimage-turbo/1.0.3/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/sdk-completion-20261111/local.zeroauthor.comfy-zimage-turbo/1.0.3/package/adapter.wasm",
+          "sha256": "6694ee3ecc686db8147884484c1fbd176615bc11d35ea38bb238a76440c456c5"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/sdk-completion-20261111/local.zeroauthor.comfy-zimage-turbo/1.0.3/package/manifest.json",
+          "sha256": "7f54e465d8f6044dc0060430d7d0e1abd33f59c146b718c6528e26c3050e03f4"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/sdk-completion-20261111/local.zeroauthor.comfy-zimage-turbo/1.0.3/package/manifest.sha256",
+          "sha256": "afc85b5c1aac969cb9336b245165e20e7d1aebd11608f33437a444ead1067112"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/sdk-completion-20261111/local.zeroauthor.comfy-zimage-turbo/1.0.3/README.txt",
+          "sha256": "21f7155ef54040ef9027ea26ac060c6d17e49fe9192cfdddf50672cae1170f10"
+        },
+        {
+          "path": "workflow-templates.json",
+          "source": "artifacts/releases/sdk-completion-20261111/local.zeroauthor.comfy-zimage-turbo/1.0.3/workflow-templates.json",
+          "sha256": "4dca73d7bdb36b406b5e5946c08b0e32f2e40bf0cdbd8fe6212a820173db487e"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/sdk-completion-20261111/local.zeroauthor.comfy-zimage-turbo/1.0.3/安装说明.txt",
+          "sha256": "a8dd4a83afbf0681f0d12f185be61cd6894b17d11482510d65c4f1520fdfaacc"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.bgx.wan22-s2v",
+      "version": "0.1.3",
+      "kind": "installable",
+      "validation": "sdk_package_validated",
+      "sourceManifest": "records/release-sources/wan22-s2v/0.1.3/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/f3f98f468b3d4bafa2c43ae53b5812f3/local.bgx.wan22-s2v/0.1.3/adapter-install.json",
+          "sha256": "a75326051f398e192ae9beb83e0143606f7bfd23baccf728b673b65e806501f1"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/f3f98f468b3d4bafa2c43ae53b5812f3/local.bgx.wan22-s2v/0.1.3/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/f3f98f468b3d4bafa2c43ae53b5812f3/local.bgx.wan22-s2v/0.1.3/package/adapter.wasm",
+          "sha256": "55b5c226851317aeef946f052d3d0665503cb8c8e47287d57a15b508c41f79a8"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/f3f98f468b3d4bafa2c43ae53b5812f3/local.bgx.wan22-s2v/0.1.3/package/manifest.json",
+          "sha256": "c96fed9b8508d8c25cfb01ce4391d7234112a5fdc17cb8b69cf62fcecc792e18"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/f3f98f468b3d4bafa2c43ae53b5812f3/local.bgx.wan22-s2v/0.1.3/package/manifest.sha256",
+          "sha256": "5e6f2781caccff8b37616ca52097ffb351bf7c8b5a5f0eccd1fdeb93570daccb"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/f3f98f468b3d4bafa2c43ae53b5812f3/local.bgx.wan22-s2v/0.1.3/README.txt",
+          "sha256": "de6ea7d443d680e0f40a94cae3055de22c3ac85faa6d0e094837f24a0538b86f"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/f3f98f468b3d4bafa2c43ae53b5812f3/local.bgx.wan22-s2v/0.1.3/安装说明.txt",
+          "sha256": "291703dd8252908ad9026c6b36b77f33ef4641a64c7fa153bc0bd2fca5691975"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.bgx.minimax-h3-image-comfy",
+      "version": "1.0.1",
+      "kind": "installable",
+      "validation": "sdk_9_tests_application_install_and_four_reference_gpu_verified",
+      "sourceManifest": "packages/comfy-workflow-adapter/v2/minimax-h3-image/author/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/minimax-h3-image-1.0.1/adapter-install.json",
+          "sha256": "801236aae33f5b5f072b1698730de25a6476adcdb3303c9dfc6e6fdc5cf10486"
+        },
+        {
+          "path": "companion/SOURCE.json",
+          "source": "artifacts/releases/minimax-h3-image-1.0.1/companion/SOURCE.json",
+          "sha256": "d93dad78404545bce334b841bab66081b35ca558d60e0ba3329894cfb32d78b0"
+        },
+        {
+          "path": "companion/workflows/minimax_h3_image_edit.json",
+          "source": "artifacts/releases/minimax-h3-image-1.0.1/companion/workflows/minimax_h3_image_edit.json",
+          "sha256": "8e75e3287123d9b49d2e3d937147b239b9698aeda1191531923dbc08e293dc2c"
+        },
+        {
+          "path": "companion/workflows/minimax_h3_image_t2i.json",
+          "source": "artifacts/releases/minimax-h3-image-1.0.1/companion/workflows/minimax_h3_image_t2i.json",
+          "sha256": "14a080b28ee539e215d110991a5f6bed023e8d6e7c45daaf3510cc0f2e435bf2"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/minimax-h3-image-1.0.1/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/minimax-h3-image-1.0.1/package/adapter.wasm",
+          "sha256": "a5c971fc907c54b1862ffdbb99dea1b4d130ea2cb004314a4311c5d5fd409253"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/minimax-h3-image-1.0.1/package/manifest.json",
+          "sha256": "c293dd6ed66d0770f9b60b9a1d0b2c21d797a31bd195686d03ca49b367446453"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/minimax-h3-image-1.0.1/package/manifest.sha256",
+          "sha256": "0ea67c4858a9c21a9296915064efb0baad484ee7d283a7126281ce66b8183eae"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/minimax-h3-image-1.0.1/README.txt",
+          "sha256": "24e44845445d976095d56b059bd0a7840e7b3144fdd88779ca63e1776d92ce3d"
+        },
+        {
+          "path": "SHA256SUMS",
+          "source": "artifacts/releases/minimax-h3-image-1.0.1/SHA256SUMS",
+          "sha256": "a4fd6e3016ae554a03277a7dcb968963d7f3bb0c269c9588960bcb86116d5d34"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.thirdparty.runninghub-h3-all",
+      "version": "1.0.3",
+      "kind": "installable",
+      "validation": "sdk_source_runtime_app_install_and_nine_unchanged_contracts_verified",
+      "sourceManifest": "packages/cloud-adapters/runninghub-h3-all/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/runninghub-h3-all-v1.0.3/local.thirdparty.runninghub-h3-all/1.0.3/adapter-install.json",
+          "sha256": "e5aa8d54569d4891a46b453165992404ad5690de80cf8ae81b6ac42ccac80f9c"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/runninghub-h3-all-v1.0.3/local.thirdparty.runninghub-h3-all/1.0.3/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/runninghub-h3-all-v1.0.3/local.thirdparty.runninghub-h3-all/1.0.3/package/adapter.wasm",
+          "sha256": "08fc44c18afd78aed37f4874d6689c08357829b272780fd11b5e5e4f659da287"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/runninghub-h3-all-v1.0.3/local.thirdparty.runninghub-h3-all/1.0.3/package/manifest.json",
+          "sha256": "96ea39f6657cf759418a6f0959300c1001c1b5cd902c165eeca836931a1197e2"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/runninghub-h3-all-v1.0.3/local.thirdparty.runninghub-h3-all/1.0.3/package/manifest.sha256",
+          "sha256": "50548a9be6651c5f472ce2c1bd160d5c3dfc5da8b8c6518dafc3b7c2348b54da"
+        },
+        {
+          "path": "README.md",
+          "source": "artifacts/releases/runninghub-h3-all-v1.0.3/local.thirdparty.runninghub-h3-all/1.0.3/README.md",
+          "sha256": "62be1150d9b24f3d7c00d59bf57162e9b353edcb89bf70ef1d4c67fa6852f019"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.thirdparty.comfy-panorama-image",
+      "version": "1.24.3",
+      "kind": "installable",
+      "validation": "sdk_package_and_install_envelope_validated",
+      "sourceManifest": "packages/workflow-adapters/panorama-image/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/adapter-install.json",
+          "sha256": "8904a6ffa4b063f8d79b843a4c157ab76ea0ed51fc4b0ac079ba2233e4d7f764"
+        },
+        {
+          "path": "comfy-nodes/bgx_panorama_inputs/__init__.py",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/comfy-nodes/bgx_panorama_inputs/__init__.py",
+          "sha256": "97291114658fcb25e1cd164d68302bcbfda5aac030f3a65c9696d4dc13e3090a"
+        },
+        {
+          "path": "editor-bundle.json",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/editor-bundle.json",
+          "sha256": "9bf4a35eccdddff87a0f0c7f62a8a9c3534f77e4e67128b09174ad6b5dfedc65"
+        },
+        {
+          "path": "FONT-LICENSE.txt",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/FONT-LICENSE.txt",
+          "sha256": "05831cfb0b8fbbb02633f7c8968684f43a3b25cb9ea7e45db10b24078ddb922f"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "LICENSE.txt",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/LICENSE.txt",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/package/adapter.wasm",
+          "sha256": "589dbebbf5c618c53a9d1e95f7df2d1e6b25cd7c7ee4b8eaaa94df1ec350d76b"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/package/manifest.json",
+          "sha256": "1fda336f2c1faf3cbbe40856664310b1d089331a8ebbe88af4142c52790306b2"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/package/manifest.sha256",
+          "sha256": "d4450df7a423fa84fa4601200ac55545df801c693e38c6ec4afefaffbc946378"
+        },
+        {
+          "path": "PANORAMA-LICENSE.txt",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/PANORAMA-LICENSE.txt",
+          "sha256": "576cd4d129054efd94fb68a65713b88fef660e95a783fc0b474b3b65d7e44903"
+        },
+        {
+          "path": "README.en.md",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/README.en.md",
+          "sha256": "c0c814ed1b5812a5afdb5cb36bc7f0bea804eb5630b659119e9862e683154bb4"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/README.txt",
+          "sha256": "8fc621992a0a07f7d1f40662dfcaf66317282a7205ec1dc91edfd2794a678a46"
+        },
+        {
+          "path": "README.zh-CN.md",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/README.zh-CN.md",
+          "sha256": "653f0951e9d550125a3290c042a656454ced968fd494bcaabc6961dd81177dca"
+        },
+        {
+          "path": "upstream.lock.json",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/upstream.lock.json",
+          "sha256": "3adad984412c377501130935855bfa03d0233f5151ea564bf2d34bd06c4c6fec"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.comfy-panorama-image/1.24.3/安装说明.txt",
+          "sha256": "9772387b8bb507084cae8cbd85db528c2f2a92a00b4eb81001c88bb6f5f94d1b"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.thirdparty.runninghub-qwen-image-21",
+      "version": "0.1.2",
+      "kind": "installable",
+      "validation": "sdk_package_and_install_envelope_validated",
+      "sourceManifest": "packages/cloud-adapters/runninghub-qwen-image-21/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.runninghub-qwen-image-21/0.1.2/adapter-install.json",
+          "sha256": "6201ec17861420b85de7869c019dc28772703664e20f39c27bcea1382c6b7a88"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.runninghub-qwen-image-21/0.1.2/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.runninghub-qwen-image-21/0.1.2/package/adapter.wasm",
+          "sha256": "9da18fd1ff08c26488c237ff1b256c9869618b250e795743eb9cf548fc559d7f"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.runninghub-qwen-image-21/0.1.2/package/manifest.json",
+          "sha256": "c26ecc774bbbf4340399d05e65827507a12dfb61382625d292f7e6cbb053ef63"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.runninghub-qwen-image-21/0.1.2/package/manifest.sha256",
+          "sha256": "07da6c6c13a8c38ca6fd776cef323be1d51fdaeeaba7973a3d49cc7c4269dcc0"
+        },
+        {
+          "path": "README.md",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.runninghub-qwen-image-21/0.1.2/README.md",
+          "sha256": "a3829574f4bb9ff11bef2275f9b1a7e77e35de33b8616fc863db3140eec3ce49"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.runninghub-qwen-image-21/0.1.2/README.txt",
+          "sha256": "13fe4d8fb8d07299e9296bd40b756ba09d8ce1cd3e7373a47b6365820b2195a8"
+        },
+        {
+          "path": "SHA256SUMS",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.runninghub-qwen-image-21/0.1.2/SHA256SUMS",
+          "sha256": "592bb7b626f57205194f1de61f866eadb9b7f174bcd4df91b6e299329921857d"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/db72b3c509d744f89faf1e8fc1aa3541/local.thirdparty.runninghub-qwen-image-21/0.1.2/安装说明.txt",
+          "sha256": "f1631b56413b31f8955e41fd1d8b0b64d4aaeb7c8907ae788e6716aa1d7381b0"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.bgx.ltx23",
+      "version": "0.1.0",
+      "kind": "installable",
+      "validation": "sdk_package_validated",
+      "sourceManifest": "packages/workflow-adapters/ltx23/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/releases/ltx23-0.1.0-20261116/local.bgx.ltx23/0.1.0/adapter-install.json",
+          "sha256": "6f6e3d47b9825a9b074348cfae1055691a3a19353c5370d84ccc1e3731440511"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/releases/ltx23-0.1.0-20261116/local.bgx.ltx23/0.1.0/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/releases/ltx23-0.1.0-20261116/local.bgx.ltx23/0.1.0/package/adapter.wasm",
+          "sha256": "d4390467d22e52869a7285323c4a37111f94b17e098fdef06889dfc9b861935a"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/releases/ltx23-0.1.0-20261116/local.bgx.ltx23/0.1.0/package/manifest.json",
+          "sha256": "2d49d1a27a116ea2fe3d551828dce82cb401b89967edcef2c96c5503f6aa8875"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/releases/ltx23-0.1.0-20261116/local.bgx.ltx23/0.1.0/package/manifest.sha256",
+          "sha256": "beccb6804e50ec5b31297e79bb5d67fbe1a4195654926e81c1a7f2ed07d656a7"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/releases/ltx23-0.1.0-20261116/local.bgx.ltx23/0.1.0/README.txt",
+          "sha256": "27cca6cd428770e0453567bfe7fe33b1a7ff128e0905e0701640ad973026715a"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/releases/ltx23-0.1.0-20261116/local.bgx.ltx23/0.1.0/安装说明.txt",
+          "sha256": "86eefb9156fe47cceef81a2925ac5b34343f9bb63b2638026b692111f8fe430f"
+        }
+      ]
+    }
+  ],
+  "unpublishable": [
+    {
+      "pluginId": "local.tts.voxcpm",
+      "version": "1.0.0-a",
+      "reason": "VoxCPM companion directory inventory is PENDING_DIR_INVENTORY; this scaffold has no closed publishable runtime bundle."
+    }
+  ]
+}

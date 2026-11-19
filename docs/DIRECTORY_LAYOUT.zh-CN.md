@@ -5,7 +5,8 @@
 - `packages/`：当前主线适配器源码。`projects/`：独立工程；不复制到第二个源码根。
 - `contract/`：受控 SDK 消费资料。`community/`、`docs/`、`scripts/`：社区、文档和工具。
 - `release/`：Git 跟踪的当前发行锁、资源恢复回执、逐包安装 ZIP 下载目录与验收记录。
-- `artifacts/current/<pluginId>/<version>/`：唯一当前成品目录。发行锁只指向这里。每个 pluginId 只保留当前版本，旧版本成品不保留。安装信封、`package/` 内的 wasm 与清单、LICENSE 和说明使用同一套布局。
+- `artifacts/current/<pluginId>/<version>/`：唯一当前成品目录，也是以后开发和测试安装、卸载适配包的唯一目录。发行锁只指向这里。每个 pluginId 只保留当前版本。该目录必须包含 `adapter-install.json`。禁止把测试安装包放到缓存、下载、构建目录或 `projects/install-*`。
+- `artifacts/cdn/`：发行上传目录。每个当前可安装包一个 `<pluginId>-<version>.zip`，平铺在同一层，只保留最新版本，并附 `SHA256SUMS.txt`。上传 CDN 或网盘时拖走整个目录。主仓打发行包时自动生成，不由用户手工整理。
 - `artifacts/cache/`：临时构建缓存，不是发行成品，可以清空。
 - 不再使用 `artifacts/releases/`、`artifacts/candidates/` 存放当前或历史成品。公开下载 ZIP 仍由 GitHub Releases 分发；本机不再为同一版本另存一套散列目录。
 - `records/`：仅本地的历史现场、旧工作树和迁移记录；不作为活动源码或用户安装入口。
@@ -33,3 +34,9 @@
 - `release/online-*.json`：在线资格与序号回执；资格只登记有实际升级/首装证据的版本。空资格表示尚未取得正式发行资格；本地 S1 不替代开发 EXE/正式验收，也不代表正式索引可发布。
 
 ZImage 1.0.3 与 FLUX2 1.0.4 现补齐 `installation/adapter-install.template.json`，与宿主现行 `comfyui.serviceOnly` 合同对齐：安装时取软件已经保存的 Comfy 连接，不预设端口、地址或账号。运行包 manifest/WASM 未改；此变更只补齐此前缺失的安装信封，真实 EXE 安装验收单独记录。
+
+### 2026-11-19 正式在线资格与owner归档续修
+
+- `release/evidence/` 保存已实测升级对的可提交记录及历史来源锁/公开owner回执；仅元数据，不另建旧版安装树。首批只有LTX0.1.0→0.1.2，`newInstall=false`，host精确限定实测产品版本0.6.1119（来自BGX_APP_VERSION/tauri.conf.json，非Cargo包版本）。
+- `scripts/archive-current-resources.py --output <临时owner归档ZIP> --receipt <本地候选回执>` 逐文件验证当前锁全部成品并生成聚合归档，在隔离根调用主仓真实restore owner两次验证；不编译、不签名、不上传、不替换正式current-artifact回执。归档文件名使用Git规范LF锁摘要，不能用Windows CRLF工作树摘要命名。ZIP是上传暂存聚合文件，不是第二套可安装目录。
+- `scripts/sign-online-index-interactive.ps1` 仅供用户自己的私密交互终端执行；生成独立key并由智能体绑定公开信任后，先资格检查、再隐藏输入密码，仅传给签名子进程临时环境，不记入参数/文件/持久环境；只实签自验，不自动上传或提交序号回执。不得通过智能体捕获终端运行此脚本。

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "lockSha256": "c1d00010170c87ba930a6c082b02381c7f479105ac047949857978a57335956f",
-  "archiveSha256": "5ba4f7d4fe59be86ce3229596fe411862606faa7e751b56e1297cdc3539b6da2",
-  "archiveBytes": 7069048,
-  "files": 262,
-  "fileCount": 262,
-  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/release-inputs-0.6.1119-20261118/third-party-frozen-resources-c1d00010170c.zip"
+  "lockSha256": "c728408680613b4a534ab16602b5acfe8d41d6f79855de9935eee28970644581",
+  "archiveSha256": "442970e60d304ee75f6151a877dc58748f18c08e1710ba8970db09b55ac11593",
+  "archiveBytes": 7010155,
+  "files": 264,
+  "fileCount": 264,
+  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/release-inputs-0.6.1119-20261119/third-party-frozen-resources-c72840868061.zip"
 }

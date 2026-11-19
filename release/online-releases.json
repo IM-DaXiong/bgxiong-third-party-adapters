@@ -1,4 +1,18 @@
 {
   "schemaVersion": 1,
-  "packages": []
+  "packages": [
+    {
+      "pluginId": "local.bgx.ltx23",
+      "version": "0.1.2",
+      "newInstall": false,
+      "hostVersionRange": "=0.6.1119",
+      "upgradeFrom": [
+        {
+          "version": "0.1.0",
+          "manifestSha256": "2d49d1a27a116ea2fe3d551828dce82cb401b89967edcef2c96c5503f6aa8875"
+        }
+      ],
+      "evidence": "release/evidence/20261119-ltx23-online-owner-integration.json"
+    }
+  ]
 }
