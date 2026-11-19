@@ -2,7 +2,7 @@
 //! Wan S2V: all graph topology, chunk quantization and Comfy mappings live here.
 extern crate alloc;
 mod comfy;
-use alloc::{format, string::{String, ToString}, vec};
+use alloc::{format, string::{String, ToString}, vec, vec::Vec};
 use bgx_adapter_v2_sdk::{guest, Adapter, Host, Invocation, Response};
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
@@ -38,40 +38,92 @@ pub fn capabilities() -> Value {
             "execution":{"mode":"asynchronous","streaming":false,"cancellation":"unsupported","resumable":true,"remoteIdempotency":false},
             "uiSchema":{"controls":[
                 {"fieldPointer":"/instruction","widget":"multiline","label":"动作要求","description":"","group":"输入"},
-                {"fieldPointer":"/parameters/width","widget":"integer","label":"宽","description":"","group":"规格"},
-                {"fieldPointer":"/parameters/height","widget":"integer","label":"高","description":"","group":"规格"},
+                {"fieldPointer":"/parameters/resolution","widget":"select","label":"分辨率","description":"","group":"规格"},
+                {"fieldPointer":"/parameters/fps","widget":"select","label":"帧率","description":"","group":"规格"},
                 {"fieldPointer":"/parameters/seed","widget":"integer","label":"种子","description":"","group":"参数"}]}}],
         "schemas":[i,o,c,r]}]})
 }
 
-/// Certified terminal 168 contains three equal latent chunks, a reference-latent
-/// prefix, and ImageFromBatch removing three decoded frames: 12*N - 2 frames.
-/// Audio is never cut, stretched or padded. The preflight declares the video tail.
-pub fn timing(duration_ms: u64) -> Result<(u64,u64,u64),Failure> {
-    if !(1000..=10000).contains(&duration_ms) { return Err(invalid("Driving audio must be between 1 and 10 seconds")); }
-    let requested=(duration_ms*16).div_ceil(1000);
-    let latent=(requested+2).div_ceil(12);
-    let length=latent*4-3;
-    let frames=latent*12-2;
-    Ok((length,frames,(frames*1000).div_ceil(16)))
+const FPS: u64 = 16;
+const LATENTS_PER_CHUNK: u64 = 20; // ComfyUI's default 77-frame continuation.
+const MAX_OUTPUT_FRAMES: u64 = 4096; // ImageFromBatch's length in the installed ComfyUI node.
+const MAX_AUDIO_MS: u64 = (MAX_OUTPUT_FRAMES - 2) * 1000 / FPS;
+
+/// The reference-latent prefix and removal of the first three decoded frames
+/// leave four frames per sampled latent minus two.
+fn timing(duration_ms: u64) -> Result<(Vec<u64>, u64, u64), Failure> {
+    if !(1..=MAX_AUDIO_MS).contains(&duration_ms) {
+        return Err(invalid("Driving audio exceeds this ComfyUI workflow's 4096-frame output capacity or is empty"));
+    }
+    let requested_frames = (duration_ms * FPS).div_ceil(1000);
+    let requested_latents = (requested_frames + 2).div_ceil(4);
+    let (chunks, latents) = if duration_ms <= 10_000 {
+        (3, requested_latents.div_ceil(3) * 3)
+    } else {
+        (requested_latents.div_ceil(LATENTS_PER_CHUNK).max(3), requested_latents)
+    };
+    let lengths = (0..chunks).map(|index| {
+        let chunk_latents = latents / chunks + u64::from(index < latents % chunks);
+        chunk_latents * 4 - 3
+    }).collect();
+    let frames = latents * 4 - 2;
+    Ok((lengths, frames, (frames * 1000).div_ceil(FPS)))
 }
 fn receipt(input: &Value) -> Value {
     json!({"portraitMediaId":input["portrait"][0]["mediaId"],"drivingAudioMediaId":input["drivingAudio"][0]["mediaId"],
         "drivingAudioSha256":input["audio"]["sha256"],"drivingAudioDurationMs":input["audio"]["durationMs"],"audioPolicy":"preserve_driving_audio"})
 }
+fn output_dimensions(parameters: &Value) -> Result<(u64, u64), Failure> {
+    let params = parameters.as_object().ok_or_else(|| invalid("Operation parameters are required"))?;
+    if params.len() != 3 || !params.contains_key("seed") || params.get("fps").and_then(Value::as_u64) != Some(FPS) {
+        return Err(invalid("Select a supported resolution and the native 16 fps frame rate"));
+    }
+    match params.get("resolution").and_then(Value::as_str) {
+        Some("832x480") => Ok((832, 480)),
+        Some("480x832") => Ok((480, 832)),
+        Some("1280x720") => Ok((1280, 720)),
+        Some("720x1280") => Ok((720, 1280)),
+        _ => Err(invalid("Unsupported Wan speech video resolution")),
+    }
+}
+
 pub fn graph(input: &Value, image: &str, audio: &str) -> Result<Value,Failure> {
     let duration=input["audio"]["durationMs"].as_u64().ok_or_else(||invalid("Measured audio duration is required"))?;
-    let (length,_,_)=timing(duration)?;
-    let params=input["parameters"].as_object().ok_or_else(||invalid("Parameters are required"))?;
-    if params.len()!=3 || params.keys().any(|k| !["width","height","seed"].contains(&k.as_str())) { return Err(invalid("Unknown or missing operation parameters")); }
-    let seed=params["seed"].as_u64().filter(|s|*s<=4294967045).ok_or_else(||invalid("Invalid seed"))?;
-    let mut g:Value=serde_json::from_str(include_str!("../workflows/api.json")).expect("frozen graph");
-    for key in ["width","height"] {
-        let value=params[key].as_u64().filter(|v| (256..=640).contains(v) && v%64==0).ok_or_else(||invalid("Dimensions must be multiples of 64 between 256 and 640"))?;
-        g["153"]["inputs"][key]=json!(value);
+    let (lengths,_,_)=timing(duration)?;
+    let params = &input["parameters"];
+    let (width, height) = output_dimensions(params)?;
+    let seed = params["seed"].as_u64().filter(|value| *value <= 4294967045)
+        .ok_or_else(|| invalid("Invalid seed"))?;
+    let mut g: Value = serde_json::from_str(include_str!("../workflows/api.json")).expect("frozen graph");
+    g["153"]["inputs"]["width"] = json!(width);
+    g["153"]["inputs"]["height"] = json!(height);
+    for (node, length) in ["153", "172:76", "165:76"].into_iter().zip(&lengths) {
+        g[node]["inputs"]["length"] = json!(length);
     }
-    for node in ["153","172:76","165:76"] { g[node]["inputs"]["length"]=json!(length); }
     for (node, offset) in [("152",0),("172:77",1),("165:77",250)] { g[node]["inputs"]["seed"]=json!(seed+offset); }
+    let mut previous = String::from("165:78");
+    for (index, length) in lengths.iter().enumerate().skip(3) {
+        let extend_id = format!("s2v_extend_{index}");
+        let sample_id = format!("s2v_sample_{index}");
+        let concat_id = format!("s2v_concat_{index}");
+        let mut extend = g["165:76"].clone();
+        extend["inputs"]["length"] = json!(length);
+        extend["inputs"]["video_latent"] = json!([previous, 0]);
+        let mut sample = g["165:77"].clone();
+        sample["inputs"]["seed"] = json!((seed + 250 + index as u64 - 2) % (u64::from(u32::MAX) + 1));
+        sample["inputs"]["positive"] = json!([extend_id, 0]);
+        sample["inputs"]["negative"] = json!([extend_id, 1]);
+        sample["inputs"]["latent_image"] = json!([extend_id, 2]);
+        let mut concat = g["165:78"].clone();
+        concat["inputs"]["samples1"] = json!([previous, 0]);
+        concat["inputs"]["samples2"] = json!([sample_id, 0]);
+        g[&extend_id] = extend;
+        g[&sample_id] = sample;
+        g[&concat_id] = concat;
+        previous = concat_id;
+    }
+    g["157"]["inputs"]["samples"] = json!([previous, 0]);
+    g["156"]["inputs"]["samples2"] = json!([previous, 0]);
     g["160"]["inputs"]["image"]=json!(image); g["162"]["inputs"]["audio"]=json!(audio);
     g["159"]["inputs"]["text"]=input["instruction"].clone();
     g["168"]["inputs"]["filename_prefix"]=json!("video/wan22-s2v");
@@ -87,8 +139,9 @@ fn preflight(p:&Value)->Result<Value,Failure> {
     graph(input,"preflight-image","preflight-audio")?;
     let duration=input["audio"]["durationMs"].as_u64().ok_or_else(||invalid("Audio duration is required"))?;
     let (_,frames,video_ms)=timing(duration)?;
+    let (width, height) = output_dimensions(&input["parameters"])?;
     Ok(json!({"kind":"operation_preflight","status":"ready","requestDigest":digest,"specification":{
-        "width":input["parameters"]["width"],"height":input["parameters"]["height"],"fps":16,"frameCount":frames,
+        "width":width,"height":height,"fps":FPS,"frameCount":frames,
         "audioDurationMs":duration,"videoDurationMs":video_ms,"maxTailDifferenceMs":750,"audioPolicy":"preserve_driving_audio"}}))
 }
 
@@ -189,17 +242,58 @@ mod tests {
     use super::*;
     #[test]
     fn timing_preserves_audio_and_bounds_quantization_without_changing_the_frame_rate() {
-        for ms in 1000..=10000 {let (_,frames,video)=timing(ms).unwrap();assert!(frames*1000>=ms*16);assert!(video-ms<=750);}
-        assert!(timing(999).is_err());assert!(timing(10001).is_err());
+        for ms in 1..=MAX_AUDIO_MS {
+            let (lengths,frames,video)=timing(ms).unwrap();
+            assert!(lengths.iter().all(|length| *length > 0 && *length <= 77));
+            assert!(frames <= MAX_OUTPUT_FRAMES);
+            assert!(frames*1000>=ms*FPS);
+            assert!(video-ms<=750);
+        }
+        assert!(timing(0).is_err());assert!(timing(MAX_AUDIO_MS + 1).is_err());
     }
     #[test]
     fn certified_three_chunk_graph_retains_original_audio_and_all_continuation_edges() {
-        let input=json!({"instruction":"","audio":{"durationMs":2000},"parameters":{"width":512,"height":512,"seed":20}});
+        let input=json!({"instruction":"","audio":{"durationMs":2000},"parameters":{"resolution":"832x480","fps":16,"seed":20}});
         let g=graph(&input,"portrait.png","drive.wav").unwrap();
         assert_eq!(g["167"]["inputs"]["audio"],json!(["162",0]));
         assert_eq!(g["162"]["inputs"]["audio"],"drive.wav");
         assert_eq!(g["153"]["inputs"]["length"],9);assert_eq!(g["165:76"]["inputs"]["length"],9);
         assert_eq!(g["165:76"]["inputs"]["video_latent"],json!(["172:78",0]));
         assert_eq!(g["167"]["inputs"]["fps"],16);
+    }
+    #[test]
+    fn resolution_presets_and_long_audio_preflight_match_the_continuation_graph() {
+        for (resolution, width, height) in [
+            ("832x480", 832, 480), ("480x832", 480, 832),
+            ("1280x720", 1280, 720), ("720x1280", 720, 1280),
+        ] {
+            for (duration, extensions) in [(16000, 3), (24000, 4), (30000, 6)] {
+                let input = json!({"instruction":"", "audio":{"durationMs":duration},
+                    "parameters":{"resolution":resolution,"fps":16,"seed":20}});
+                let graph = graph(&input, "portrait.png", "drive.wav").unwrap();
+                assert_eq!(graph["153"]["inputs"]["width"], width);
+                assert_eq!(graph["153"]["inputs"]["height"], height);
+                assert_eq!(graph["167"]["inputs"]["fps"], 16);
+                assert_eq!(graph["167"]["inputs"]["audio"], json!(["162",0]));
+                assert_eq!(graph["s2v_extend_3"]["inputs"]["video_latent"], json!(["165:78",0]));
+                for index in 4..=extensions {
+                    assert_eq!(graph[format!("s2v_extend_{index}")]["inputs"]["video_latent"],
+                        json!([format!("s2v_concat_{}", index - 1),0]));
+                }
+                let final_latent = json!([format!("s2v_concat_{extensions}"),0]);
+                assert_eq!(graph["156"]["inputs"]["samples2"], final_latent);
+                assert_eq!(graph["157"]["inputs"]["samples"], final_latent);
+                let receipt = preflight(&json!({"environmentReady":true,"input":input})).unwrap();
+                assert_eq!(receipt["specification"]["width"], width);
+                assert_eq!(receipt["specification"]["height"], height);
+                assert_eq!(receipt["specification"]["fps"], 16);
+                assert!(receipt["specification"]["videoDurationMs"].as_u64().unwrap() >= duration);
+            }
+        }
+        for fps in [24, 25, 30] {
+            let input = json!({"audio":{"durationMs":16000},
+                "parameters":{"resolution":"832x480","fps":fps,"seed":20}});
+            assert!(preflight(&json!({"environmentReady":true,"input":input})).is_err());
+        }
     }
 }

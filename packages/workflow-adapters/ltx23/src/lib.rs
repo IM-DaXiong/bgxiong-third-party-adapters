@@ -283,6 +283,8 @@ fn persist(host: &mut dyn Host, request: &Invocation, accepted: &Value) -> Resul
     row["state"] = json!("accepted");
     row["vendorTaskId"] = accepted["vendorTaskId"].clone();
     row["resumeToken"] = accepted["resumeToken"].clone();
+    // The SDK accepts the write only when result is the same accepted receipt.
+    row["result"] = accepted.clone();
     comfy::port(host, "host-checkpoint.write", json!({"requestId": request.r#request_id, "expectedRevision": old, "valueJson": row.to_string()})).map_err(|_| unknown())?;
     Ok(())
 }
