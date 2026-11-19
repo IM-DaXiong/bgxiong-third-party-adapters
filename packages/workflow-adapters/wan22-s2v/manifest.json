@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "1ad184bf9ed7467125de26f9fae9b37e30e7dcb2505daa0c2f04625ebe7dc9ae",
+  "artifactSha256": "a681ab49e039ed189ba696a1afb1208866d0e0f8f3926a7219d59f53f56663e7",
   "displayName": "Wan S2V 标准语音驱动",
   "entry": "adapter.wasm",
   "language": "rust",

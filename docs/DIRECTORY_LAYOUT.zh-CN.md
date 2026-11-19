@@ -5,14 +5,13 @@
 - `packages/`：当前主线适配器源码。`projects/`：独立工程；不复制到第二个源码根。
 - `contract/`：受控 SDK 消费资料。`community/`、`docs/`、`scripts/`：社区、文档和工具。
 - `release/`：Git 跟踪的当前发行锁、资源恢复回执、逐包安装 ZIP 下载目录与验收记录。
-- `artifacts/current/<pluginId>/<version>/`：本地唯一当前安装入口，与对应下载 ZIP 解压后的文件树和摘要完全相同。
-- `artifacts/releases/`：发行锁指向的不可变完整文件；从公开发行附件恢复。二进制通过 GitHub Releases 分发，不在 Git 源码中重复堆放。
-- `artifacts/downloads/<release-tag>/`：与 GitHub Releases 附件同名、同字节的 ZIP 与 SHA256SUMS。
-- `artifacts/candidates/`：尚未冻结的候选。`artifacts/cache/`：临时构建缓存。
+- `artifacts/current/<pluginId>/<version>/`：唯一当前成品目录。发行锁只指向这里。每个 pluginId 只保留当前版本，旧版本成品不保留。安装信封、`package/` 内的 wasm 与清单、LICENSE 和说明使用同一套布局。
+- `artifacts/cache/`：临时构建缓存，不是发行成品，可以清空。
+- 不再使用 `artifacts/releases/`、`artifacts/candidates/` 存放当前或历史成品。公开下载 ZIP 仍由 GitHub Releases 分发；本机不再为同一版本另存一套散列目录。
 - `records/`：仅本地的历史现场、旧工作树和迁移记录；不作为活动源码或用户安装入口。
 - `logs/`、`build/` 和各源码目录 `target/`：本地验证或构建输出，不上传。
 
-新机器 clone 后从 `release/current-artifact.json` 下载完整资源归档，按主仓恢复脚本还原 `artifacts/releases/`，再刷新 `artifacts/current/`。用户直接下载单个适配器 ZIP 即可，无需恢复开发全集。托管语音与作者样例不混入通用安装 ZIP。
+新机器需要本地成品时，按 `release/current.json` 把文件放到 `artifacts/current/<pluginId>/<version>/`。用户直接下载单个适配器 ZIP 即可，无需恢复开发全集。托管语音与作者样例不混入通用安装 ZIP。
 
 ## 本次目录整理
 
