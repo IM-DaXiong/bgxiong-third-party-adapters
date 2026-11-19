@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "pluginId": "local.bgx.ltx25",
+  "version": "0.1.0",
+  "displayName": "LTX 2.5",
+  "artifactSha256": "d910f2caa4abac808800fe31738bf6c30fe11464731493f57112becf9369ad18",
+  "manifestSha256": "92c1ac2f5cc97fddee98c762e2f2368f0a113231a27b33d9df71ebc088f61218",
+  "zipFile": "local.bgx.ltx25-0.1.0.zip",
+  "zipSha256": "8154bc7172936a973acbbe75b37e734bb9dfae29332bb6349baaef8b40b22161",
+  "zipBytes": 226639,
+  "checks": [
+    {
+      "command": "python tools/freeze_graphs.py --check",
+      "cwd": "packages/workflow-adapters/ltx25",
+      "exit": 0,
+      "status": "OK"
+    },
+    {
+      "command": "cargo +1.95.0 test --locked --offline",
+      "cwd": "packages/workflow-adapters/ltx25",
+      "exit": 0,
+      "result": "18 passed"
+    },
+    {
+      "command": "packages/workflow-adapters/ltx25/build.ps1 ; official sdk pack --out artifacts/current/local.bgx.ltx25/0.1.0/package",
+      "exit": 0,
+      "status": "PACKED"
+    },
+    {
+      "command": "python scripts/pack-cdn-directory.py --check && python scripts/pack-cdn-directory.py",
+      "exit": 0,
+      "status": "17 installable packages; existing ZIP bytes unchanged"
+    }
+  ],
+  "publicZipUrl": "https://r.bgxiong.com/client/ai-story/bgxiong-third-party-adapters/local.bgx.ltx25-0.1.0.zip",
+  "publicZipReadbackMatchesPublishedBytes": true,
+  "onlineFirstInstallEvidence": "release/evidence/20261119-ltx25-online-first-install.json",
+  "installNote": "For a local install, select artifacts/current/local.bgx.ltx25/0.1.0/ containing adapter-install.json. The adapter uses the application's saved ComfyUI connection. A2V generation requires the declared BF16 weights."
+}

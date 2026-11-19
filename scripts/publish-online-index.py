@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and sign the separate adapter online index; never upload anything.
+"""Prepare an upload directory with locked adapter ZIPs and a signed online index.
 
 Requires cryptography for the same Ed25519/Blake2b minisign verification used
 by the host. Production private keys are read only by cargo tauri signer.
@@ -15,6 +15,7 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import tempfile
 import urllib.request
 import zipfile
 
@@ -22,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 INDEX_URL = 'https://r.bgxiong.com/client/ai-story/bgxiong-third-party-adapters/latest.json'
 KEY_ID = 'adapter-index-20261119'
 MAX_BYTES = 256 << 20
+MAX_INDEX_BYTES = 1 << 20
 SEMVER = re.compile(r'(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?\Z')
 HEX = re.compile(r'[0-9a-f]{64}\Z')
 
@@ -71,13 +73,16 @@ def valid_host_range(value):
     return True
 
 
-def signer_environment(password, source=None):
-    # Never let the application's existing signing identity compete with the
-    # explicitly selected independent index key; never pass the source password on.
+def unsigned_environment(source=None):
     source = os.environ if source is None else source
-    env = {key: value for key, value in source.items()
-           if not key.upper().startswith('TAURI_SIGNING_')
-           and key.upper() != 'BGX_ADAPTER_INDEX_KEY_PASSWORD'}
+    return {key: value for key, value in source.items()
+            if not key.upper().startswith('TAURI_SIGNING_')
+            and key.upper() != 'BGX_ADAPTER_INDEX_KEY_PASSWORD'}
+
+
+def signer_environment(password, source=None):
+    # Use only the independent adapter-index signing identity in the signing child.
+    env = unsigned_environment(source)
     env['TAURI_SIGNING_PRIVATE_KEY_PASSWORD'] = password
     return env
 
@@ -126,13 +131,25 @@ def source_fingerprints(locks):
     return sources
 
 
+def evidence_path(relative):
+    path = (ROOT / relative).resolve()
+    if not path.is_relative_to(ROOT / 'release/evidence'):
+        raise ValueError('Installation evidence must be in release/evidence')
+    return path
+
+
 def validated_packages(args):
     current = read(ROOT/'release/current.json')
     eligible = read(ROOT/'release/online-releases.json')
     fields(eligible, 'schemaVersion packages')
     if eligible['schemaVersion'] != 1 or not isinstance(eligible['packages'], list) or not eligible['packages']:
-        raise ValueError('No measured S1 package pair recorded; online eligibility is not release-ready')
-    sources = source_fingerprints([current] + [read(p) for p in args.source_lock])
+        raise ValueError('No measured installation or upgrade eligibility is recorded')
+    evidence_by_path = {
+        entry['evidence']: read(evidence_path(entry['evidence'])) for entry in eligible['packages']
+    }
+    source_locks = {evidence_path(evidence['sourceLock']) for evidence in evidence_by_path.values()
+                    if evidence.get('sourceLock')}
+    sources = source_fingerprints([current] + [read(p) for p in source_locks.union(args.source_lock)])
     inventory = {(p['pluginId'], p['version']): p for p in current['packages']}
     seen, packages = set(), []
     for entry in eligible['packages']:
@@ -152,9 +169,7 @@ def validated_packages(args):
         host = entry['hostVersionRange']
         if not valid_host_range(host):
             raise ValueError('Invalid hostVersionRange')
-        evidence = (ROOT / entry['evidence']).resolve()
-        if not entry['evidence'] or not evidence.is_file() or not evidence.stat().st_size:
-            raise ValueError('Missing measured installation/upgrade evidence')
+        evidence = evidence_by_path[entry['evidence']]
         for source in entry['upgradeFrom']:
             fields(source, 'version manifestSha256')
             if not HEX.fullmatch(source['manifestSha256']) or sources.get((plugin, source['version'])) != source['manifestSha256']:
@@ -178,73 +193,164 @@ def validated_packages(args):
             manifest = json.loads(z.read('package/manifest.json'))
             if (manifest['pluginId'], manifest['version']) != identity:
                 raise ValueError('ZIP manifest identity differs')
+        sha256 = digest(data)
+        if entry['newInstall'] and (
+            evidence.get('newInstallQualified') is not True or evidence.get('exitCode') != 0
+            or (evidence.get('pluginId'), evidence.get('version')) != identity
+            or evidence.get('targetZipSha256') != sha256 or evidence.get('targetZipBytes') != len(data)
+        ):
+            raise ValueError(f'First-install evidence does not qualify exact ZIP: {plugin}@{version}')
         packages.append({'pluginId':plugin,'version':version,'displayName':manifest['displayName'],
             'newInstall':entry['newInstall'],'hostVersionRange':host,'protocolVersion':2,
-            'upgradeFrom':entry['upgradeFrom'],'dependencies':[],'file':name,'bytes':len(data),'sha256':digest(data)})
+            'upgradeFrom':entry['upgradeFrom'],'dependencies':[],'file':name,'bytes':len(data),'sha256':sha256})
     return sorted(packages, key=lambda p:(p['pluginId'],p['version']))
+
+
+def verified_index(latest, public):
+    if len(latest) > MAX_INDEX_BYTES:
+        raise ValueError('Signed index exceeds maximum size')
+    envelope = json.loads(latest)
+    fields(envelope, 'keyId payloadB64 signatureB64')
+    if envelope['keyId'] != KEY_ID:
+        raise ValueError('Unexpected keyId')
+    payload = base64.b64decode(envelope['payloadB64'], validate=True)
+    verify(payload, envelope['signatureB64'], public)
+    value = json.loads(payload)
+    fields(value, 'schemaVersion sequence publishedAt packages')
+    if value['schemaVersion'] != 1 or type(value['sequence']) is not int or not 1 <= value['sequence'] <= _U64_MAX:
+        raise ValueError('Invalid signed index schema or sequence')
+    return value, digest(payload)
+
+
+def public_index_bytes():
+    request = urllib.request.Request(INDEX_URL, headers={'Cache-Control': 'no-cache'})
+    with urllib.request.urlopen(request, timeout=30) as response:
+        return response.read(MAX_INDEX_BYTES + 1)
+
+
+def prepare_index(packages, receipt, public, latest_path):
+    live = public_index_bytes()
+    live_value, live_sha = verified_index(live, public)
+    sequence = live_value['sequence']
+    if sequence < receipt['sequence'] or (sequence == receipt['sequence'] and live_sha != receipt['payloadSha256']):
+        raise ValueError('Public index does not match the publication receipt or is older')
+    published = {row['file']: row['sha256'] for row in live_value['packages']}
+    for package in packages:
+        if package['file'] in published and published[package['file']] != package['sha256']:
+            raise ValueError(f"Attempt to change published ZIP {package['file']}")
+    if latest_path.is_file():
+        local = latest_path.read_bytes()
+        local_value, local_sha = verified_index(local, public)
+        if local_value['sequence'] == sequence and local_sha != live_sha:
+            raise ValueError('Local and public index have different payloads at the same sequence')
+        if local_value['sequence'] > sequence and local_value['packages'] == packages:
+            return local, local_value['sequence']
+        sequence = max(sequence, local_value['sequence'])
+    if sequence == live_value['sequence'] and live_value['packages'] == packages:
+        return live, sequence
+    return None, sequence + 1
+
+
+def replace_file(path, data):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile(dir=path.parent, delete=False) as temp:
+        temporary = Path(temp.name)
+        temp.write(data)
+    try:
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def sign_index(args, packages, sequence, public, password, workdir):
+    if not args.private_key_path or not args.private_key_path.is_file():
+        raise ValueError('--private-key-path must name the separately managed private key')
+    private_key = args.private_key_path.resolve()
+    if any((parent / '.git').exists() for parent in private_key.parents):
+        raise ValueError('Private key must not be inside any Git repository')
+    value = {'schemaVersion': 1, 'sequence': sequence, 'packages': packages,
+             'publishedAt': dt.datetime.now(dt.timezone(dt.timedelta(hours=8))).isoformat(timespec='seconds')}
+    payload = canonical(value)
+    with tempfile.TemporaryDirectory(dir=workdir, prefix='.sign-') as temporary:
+        path = Path(temporary) / 'payload.json'
+        path.write_bytes(payload)
+        result = subprocess.run(['cargo', 'tauri', 'signer', 'sign', '--private-key-path', str(private_key), str(path)],
+                                cwd=ROOT, env=signer_environment(password), capture_output=True)
+        if result.returncode:
+            raise ValueError('cargo tauri signer sign failed (secret-bearing signer output intentionally suppressed)')
+        signature = path.with_suffix('.json.sig').read_text(encoding='utf-8').strip()
+    envelope = canonical({'keyId': KEY_ID, 'payloadB64': base64.b64encode(payload).decode('ascii'), 'signatureB64': signature})
+    verified_index(envelope, public)
+    return envelope
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check', action='store_true')
     parser.add_argument('--commit-receipt', action='store_true', help='only after approval and successful public read-back')
+    parser.add_argument('--prepare-upload', action='store_true', help='pack, sign when needed and stage one upload directory')
+    parser.add_argument('--require-new-install', action='append', default=[], metavar='pluginId@version')
     parser.add_argument('--source-lock', type=Path, action='append', default=[])
     parser.add_argument('--private-key-path', type=Path)
     parser.add_argument('--pubkey', help='public .pub file path')
     args = parser.parse_args()
     try:
+        if args.require_new_install and not args.prepare_upload:
+            raise ValueError('--require-new-install requires --prepare-upload')
+        if args.prepare_upload and args.commit_receipt:
+            raise ValueError('--prepare-upload and --commit-receipt are separate modes')
+        if args.prepare_upload and not args.check:
+            subprocess.run([sys.executable, str(ROOT/'scripts/pack-cdn-directory.py')],
+                           env=unsigned_environment(), check=True)
         packages = validated_packages(args)
+        new_install = {f'{p["pluginId"]}@{p["version"]}' for p in packages if p['newInstall']}
+        missing = set(args.require_new_install) - new_install
+        if missing:
+            raise ValueError('Missing first-install qualification: ' + ', '.join(sorted(missing)))
         receipt_path = ROOT/'release/online-index-receipt.json'
         receipt = read(receipt_path)
         fields(receipt, 'sequence payloadSha256 publishedAt')
         if type(receipt['sequence']) is not int or receipt['sequence'] < 1:
             raise ValueError('Invalid sequence receipt')
-        if args.check:
-            print(f'Validated {len(packages)} online packages; next sequence {receipt["sequence"]+1}')
+        if args.check and not args.prepare_upload:
+            print(f'Validated {len(packages)} online packages')
             return 0
         if not args.pubkey:
             raise ValueError('--pubkey is required')
         public = Path(args.pubkey).read_text(encoding='utf-8-sig').strip()
         output = ROOT/'artifacts/cdn-index'
+        latest_path = output/'latest.json'
         if args.commit_receipt:
-            latest = (output/'latest.json').read_bytes()
-            envelope = json.loads(latest)
-            fields(envelope, 'keyId payloadB64 signatureB64')
-            if envelope['keyId'] != KEY_ID:
-                raise ValueError('Unexpected keyId')
-            payload = base64.b64decode(envelope['payloadB64'], validate=True)
-            verify(payload, envelope['signatureB64'], public)
-            value = json.loads(payload)
-            if value['sequence'] != receipt['sequence']+1 or value['packages'] != packages:
+            latest = latest_path.read_bytes()
+            value, payload_sha = verified_index(latest, public)
+            if value['sequence'] < receipt['sequence'] or value['packages'] != packages:
                 raise ValueError('Stale signed index; eligibility or receipt changed')
-            with urllib.request.urlopen(INDEX_URL, timeout=30) as response:
-                if response.read((1<<20)+1) != latest:
-                    raise ValueError('Public CDN bytes differ; receipt was not changed')
-            updated={'sequence':value['sequence'],'payloadSha256':digest(payload),'publishedAt':value['publishedAt']}
-            temporary=receipt_path.with_suffix('.json.tmp');temporary.write_bytes(canonical(updated)+b'\n');os.replace(temporary,receipt_path)
+            if public_index_bytes() != latest:
+                raise ValueError('Public CDN bytes differ; receipt was not changed')
+            if value['sequence'] == receipt['sequence'] and payload_sha != receipt['payloadSha256']:
+                raise ValueError('Public payload changed at the same receipt sequence')
+            updated = {'sequence': value['sequence'], 'payloadSha256': payload_sha, 'publishedAt': value['publishedAt']}
+            replace_file(receipt_path, canonical(updated)+b'\n')
             print('Receipt committed after public byte and signature verification')
             return 0
-        password = os.environ.get('BGX_ADAPTER_INDEX_KEY_PASSWORD')
-        if not password:
-            print('BGX_ADAPTER_INDEX_KEY_PASSWORD is required; no index signed',file=sys.stderr)
-            return 3
-        if not args.private_key_path or not args.private_key_path.is_file():
-            raise ValueError('--private-key-path must name the separately managed private key')
-        if any((parent / '.git').exists() for parent in args.private_key_path.resolve().parents):
-            raise ValueError('Private key must not be inside any Git repository')
-        output.mkdir(parents=True,exist_ok=True)
-        value={'schemaVersion':1,'sequence':receipt['sequence']+1,
-            'publishedAt':dt.datetime.now(dt.timezone(dt.timedelta(hours=8))).isoformat(timespec='seconds'),'packages':packages}
-        payload=canonical(value);path=output/'payload.json';path.write_bytes(payload)
-        env=signer_environment(password)
-        result=subprocess.run(['cargo','tauri','signer','sign','--private-key-path',str(args.private_key_path),str(path)],cwd=ROOT,env=env,capture_output=True)
-        if result.returncode:
-            raise ValueError('cargo tauri signer sign failed (secret-bearing signer output intentionally suppressed)')
-        signature=path.with_suffix('.json.sig').read_text(encoding='utf-8').strip()
-        verify(payload,signature,public)
-        envelope={'keyId':KEY_ID,'payloadB64':base64.b64encode(payload).decode('ascii'),'signatureB64':signature}
-        tmp=output/'latest.json.tmp';tmp.write_bytes(canonical(envelope));os.replace(tmp,output/'latest.json')
-        print(f'Index signed and self-verified, sequence {value["sequence"]}; NOT uploaded; receipt unchanged')
+        index, sequence = prepare_index(packages, receipt, public, latest_path)
+        if args.check:
+            print(f'Validated {len(packages)} online packages; sequence {sequence}; signing required: {index is None}')
+            return 0
+        if index is None:
+            password = os.environ.get('BGX_ADAPTER_INDEX_KEY_PASSWORD')
+            if not password:
+                print('BGX_ADAPTER_INDEX_KEY_PASSWORD is required for the new index', file=sys.stderr)
+                return 3
+            output.mkdir(parents=True, exist_ok=True)
+            index = sign_index(args, packages, sequence, public, password, output)
+        replace_file(latest_path, index)
+        print(f'Verified index sequence {sequence}')
+        if args.prepare_upload:
+            stage = [sys.executable, str(ROOT/'scripts/stage-cdn-upload-directory.py')]
+            for identity in args.require_new_install:
+                stage.extend(['--require-new-install', identity])
+            return subprocess.run(stage, env=unsigned_environment()).returncode
         return 0
     except Exception as exc:
         print(f'Online index not published: {exc}',file=sys.stderr)

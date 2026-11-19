@@ -2,7 +2,9 @@
 # The signer password is new input, never an existing environment/vault read.
 [CmdletBinding()]
 param(
-    [switch]$Preflight
+    [switch]$Preflight,
+    [ValidatePattern('^[a-z0-9._-]+@[0-9]+\.[0-9]+\.[0-9]+(?:\+[0-9A-Za-z.-]+)?$')]
+    [string[]]$RequireNewInstall = @()
 )
 $ErrorActionPreference = 'Stop'
 
@@ -79,17 +81,11 @@ function New-ChildStartInfo([string]$FileName, [string]$Arguments, [string]$Work
     return $start
 }
 
-if (-not $Preflight) {
-    if ([Console]::IsInputRedirected -or [Console]::IsOutputRedirected) {
-        throw 'Run directly in your private local terminal; redirected input/output is refused.'
-    }
-}
-
 $root = Split-Path -Parent $PSScriptRoot
 $key = Join-Path ([Environment]::GetFolderPath('UserProfile')) '.tauri\bgxiong-adapter-index'
 $public = $key + '.pub'
-if (-not (Test-Path -LiteralPath $key -PathType Leaf) -or -not (Test-Path -LiteralPath $public -PathType Leaf)) {
-    throw 'Independent signing files are not ready; do not generate or replace them here.'
+if (-not (Test-Path -LiteralPath $public -PathType Leaf)) {
+    throw 'The independent adapter-index public key is missing.'
 }
 $source = Join-Path (Split-Path -Parent $root) 'bgxiong-ai-story\src-tauri\src\comfyui\workflow\adapter_online_update\mod.rs'
 # Only public trust configuration is read. No private-file content is read by this wrapper.
@@ -102,35 +98,36 @@ if (-not $match.Success -or -not $publicText -or $match.Groups[1].Value -cne $pu
 
 $python = Resolve-RealPython
 $cargoBin = Resolve-CargoBin
-$tauri = Join-Path $cargoBin 'cargo-tauri.exe'
-if (-not (Test-Path -LiteralPath $tauri -PathType Leaf)) {
-    throw ('cargo-tauri.exe is missing at ' + $tauri + '. Install the Tauri CLI with: cargo install tauri-cli --locked. No password was requested and nothing was signed.')
-}
 $publisher = Join-Path $PSScriptRoot 'publish-online-index.py'
-$oldLock = Join-Path $root 'release\evidence\ltx23-0.1.0-source-lock.json'
-if (-not (Test-Path -LiteralPath $publisher -PathType Leaf) -or -not (Test-Path -LiteralPath $oldLock -PathType Leaf)) {
-    throw 'Publisher or measured source lock is missing; nothing signed.'
+$arguments = '"' + $publisher + '" --prepare-upload --pubkey "' + $public + '"'
+foreach ($identity in $RequireNewInstall) {
+    $arguments += ' --require-new-install "' + $identity + '"'
 }
 
-$check = New-ChildStartInfo $python ('"' + $publisher + '" --check --source-lock "' + $oldLock + '"') $root $cargoBin
-$checkProcess = [Diagnostics.Process]::Start($check)
-$checkProcess.WaitForExit()
-if ($checkProcess.ExitCode -ne 0) { throw 'Eligibility check failed; no password requested and nothing signed.' }
-Write-Host ('Validated with interpreter: ' + $python)
-Write-Host ('Located cargo/tauri CLI directory: ' + $cargoBin)
 if ($Preflight) {
-    Write-Host 'Preflight passed: real python, cargo-tauri, public trust, and eligibility check are ready. No password was requested and nothing was signed or uploaded.'
-    return
+    $arguments += ' --check'
+}
+$prepare = New-ChildStartInfo $python $arguments $root $cargoBin
+$prepareProcess = [Diagnostics.Process]::Start($prepare)
+$prepareProcess.WaitForExit()
+if ($prepareProcess.ExitCode -eq 0) { return }
+if ($prepareProcess.ExitCode -ne 3 -or $Preflight) {
+    throw 'CDN upload preparation failed. See the publisher output above.'
+}
+if ([Console]::IsInputRedirected -or [Console]::IsOutputRedirected) {
+    throw 'This new index requires signing. Run directly in your private terminal.'
+}
+$tauri = Join-Path $cargoBin 'cargo-tauri.exe'
+if (-not (Test-Path -LiteralPath $tauri -PathType Leaf) -or -not (Test-Path -LiteralPath $key -PathType Leaf)) {
+    throw 'The Tauri signer or independent adapter-index private key is missing.'
 }
 
-Write-Host 'This signs locally only. Nothing is uploaded and the sequence receipt is unchanged.'
-Write-Host 'Enter your separately managed adapter-index password below. Never paste it into chat.'
-$secure = Read-Host 'Adapter-index signing password (hidden)' -AsSecureString
+$secure = Read-Host 'Adapter-index signing password' -AsSecureString
 if ($secure.Length -eq 0) { $secure.Dispose(); throw 'A non-empty password is required; nothing signed.' }
 $pointer = [IntPtr]::Zero
 try {
     $pointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
-    $sign = New-ChildStartInfo $python ('"' + $publisher + '" --source-lock "' + $oldLock + '" --private-key-path "' + $key + '" --pubkey "' + $public + '"') $root $cargoBin
+    $sign = New-ChildStartInfo $python ($arguments + ' --private-key-path "' + $key + '"') $root $cargoBin
     $sign.EnvironmentVariables['BGX_ADAPTER_INDEX_KEY_PASSWORD'] = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($pointer)
     $process = [Diagnostics.Process]::Start($sign)
     $sign.EnvironmentVariables.Remove('BGX_ADAPTER_INDEX_KEY_PASSWORD')
@@ -138,11 +135,9 @@ try {
     $pointer = [IntPtr]::Zero
     $secure.Dispose()
     $process.WaitForExit()
-    if ($process.ExitCode -ne 0) { throw 'Signing failed; no publication or receipt update occurred.' }
+    if ($process.ExitCode -ne 0) { throw 'CDN upload preparation failed. See the publisher output above.' }
 } finally {
     if ($null -ne $sign) { $sign.EnvironmentVariables.Remove('BGX_ADAPTER_INDEX_KEY_PASSWORD') }
     if ($pointer -ne [IntPtr]::Zero) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($pointer) }
     if ($null -ne $secure) { $secure.Dispose() }
 }
-Write-Host 'Index signed and self-verified, sequence 2; NOT uploaded; receipt unchanged'
-Write-Host 'No password was written to command arguments, files, or persistent environment configuration.'

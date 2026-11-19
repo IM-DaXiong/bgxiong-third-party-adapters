@@ -1,0 +1,45 @@
+{
+  "artifactSha256": "2921c49e22ab08e7addb56bd9d0e16b09f8dc54f455e5ab98f1e89b05ed7d339",
+  "displayName": "LTX 2.5",
+  "entry": "adapter.wasm",
+  "language": "rust",
+  "limits": {
+    "fuel": 20000000000,
+    "memoryBytes": 268435456,
+    "outputBytes": 1048576,
+    "wallMs": 180000
+  },
+  "optionalFeatures": [],
+  "pluginId": "local.bgx.ltx25",
+  "protocolRange": {
+    "max": 2,
+    "min": 2
+  },
+  "publisherId": null,
+  "publisherKeyId": null,
+  "requestedCapabilities": {
+    "allowPrivateNetwork": true,
+    "auth": [
+      "none",
+      "bearer"
+    ],
+    "embeddedHeaders": [],
+    "endpointPolicy": [
+      "userConfigurable",
+      "allowPrivateNetwork"
+    ],
+    "mediaSlots": [
+      "image",
+      "audio",
+      "video"
+    ],
+    "networkHosts": [],
+    "stateBytes": 0
+  },
+  "requiredFeatures": [
+    "operation-input-preflight-v2",
+    "operation-preflight-v1"
+  ],
+  "schemaVersion": 2,
+  "version": "0.1.1"
+}

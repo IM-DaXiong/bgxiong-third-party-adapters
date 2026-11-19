@@ -1,0 +1,64 @@
+{
+  "system": {
+    "os": "win32",
+    "ram_total": 134416089088,
+    "ram_free": 91193503744,
+    "comfyui_version": "0.45.0",
+    "required_frontend_version": "1.58.5",
+    "installed_templates_version": "0.11.105",
+    "required_templates_version": "0.11.105",
+    "comfy_package_versions": [
+      {
+        "name": "comfyui-frontend-package",
+        "installed": "1.58.5",
+        "required": "1.58.5"
+      },
+      {
+        "name": "comfyui-workflow-templates",
+        "installed": "0.11.105",
+        "required": "0.11.105"
+      },
+      {
+        "name": "comfyui-embedded-docs",
+        "installed": "0.5.16",
+        "required": "0.5.16"
+      },
+      {
+        "name": "comfy-aimdo",
+        "installed": "0.6.0",
+        "required": "0.6.0"
+      },
+      {
+        "name": "comfy-kitchen",
+        "installed": "0.2.41",
+        "required": "0.2.41"
+      }
+    ],
+    "python_version": "3.13.12 (main, Feb 12 2026, 00:38:53) [MSC v.1944 64 bit (AMD64)]",
+    "pytorch_version": "2.12.1+cu130",
+    "embedded_python": false,
+    "deploy_environment": "local-desktop2-standalone",
+    "argv": [
+      "L:\\AI\\ComfyUI-Installs\\ComfyUI (1)\\ComfyUI\\main.py",
+      "--listen",
+      "0.0.0.0",
+      "--port",
+      "8188",
+      "--extra-model-paths-config",
+      "L:\\00Dev\\bgxiong-ai-story\\data\\adapter-v2\\packages\\local.bgx.wan22-animate\\0.2.13\\comfy-extra-paths.yaml",
+      "L:\\00Dev\\bgxiong-ai-story\\data\\adapter-v2\\packages\\local.thirdparty.comfy-panorama-image\\1.24.3\\comfy-extra-paths.yaml",
+      "L:\\00Dev\\bgxiong-ai-story\\data\\adapter-v2\\packages\\local.thirdparty.h3-face-refine\\1.0.0-a33\\comfy-extra-paths.yaml"
+    ]
+  },
+  "devices": [
+    {
+      "name": "cuda:0 NVIDIA GeForce RTX 4090 : cudaMallocAsync",
+      "type": "cuda",
+      "index": 0,
+      "vram_total": 25756565504,
+      "vram_free": 24119214080,
+      "torch_vram_total": 33554432,
+      "torch_vram_free": 25034752
+    }
+  ]
+}

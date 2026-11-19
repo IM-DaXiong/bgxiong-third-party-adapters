@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "pluginId": "local.bgx.ltx25",
+  "version": "0.1.1",
+  "displayName": "LTX 2.5",
+  "artifactSha256": "2921c49e22ab08e7addb56bd9d0e16b09f8dc54f455e5ab98f1e89b05ed7d339",
+  "manifestSha256": "06a4a1946bddb6a8d6ea19533f0018f531e82b96717f33b54a3bf6f8b73836a8",
+  "zipFile": "local.bgx.ltx25-0.1.1.zip",
+  "zipSha256": "adb41706ebf1dcc075d5c1a88253dce421d7f29c3435e194691fbe627f0337a7",
+  "zipBytes": 227876,
+  "installDirectory": "artifacts/current/local.bgx.ltx25/0.1.1",
+  "cdnDirectory": "artifacts/cdn",
+  "onlineFirstInstallEvidence": "release/evidence/20261119-ltx25-0.1.1-online-first-install.json",
+  "cdnPublished": false,
+  "fix": "Fetch only required ComfyUI node classes instead of full /object_info (1 MiB buffer).",
+  "installNote": "Upload the whole artifacts/cdn directory, including latest.json and local.bgx.ltx25-0.1.1.zip."
+}

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "kind": "measuredAdapterOwnerFirstInstallEvidence",
+  "pluginId": "local.bgx.ltx25",
+  "version": "0.1.0",
+  "applicationBaseCommit": "d0ecd44afcc1d067e9013a7099c66dd1adcbb258",
+  "measuredHostVersion": "0.6.1119",
+  "newInstallQualified": true,
+  "exitCode": 0,
+  "targetZipBytes": 226639,
+  "targetZipSha256": "8154bc7172936a973acbbe75b37e734bb9dfae29332bb6349baaef8b40b22161",
+  "testBinarySha256": "f645035b14fd19e41871dc0b3570e930d019e80d521f4171b37d0a637244dc06",
+  "testLogSha256": "1facad7500300508b63dd7a18e0301ea37612f75e65276fe5a42775fa16a5a38",
+  "registeredVideoModels": 3,
+  "publicZipReadbackMatchesPublishedBytes": true,
+  "recordedAt": "2026-11-19T20:48:16+08:00",
+  "qualificationScope": "Signed loopback HTTP discovery, exact release ZIP download, SDK installation and three registered models in an isolated data root. Desktop acceptance, upgrades and video generation were not tested."
+}

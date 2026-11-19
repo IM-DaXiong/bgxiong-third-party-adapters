@@ -13,6 +13,19 @@
         }
       ],
       "evidence": "release/evidence/20261119-ltx23-online-owner-integration.json"
+    },
+    {
+      "pluginId": "local.bgx.ltx25",
+      "version": "0.1.1",
+      "newInstall": true,
+      "hostVersionRange": "=0.6.1119",
+      "upgradeFrom": [
+        {
+          "version": "0.1.0",
+          "manifestSha256": "92c1ac2f5cc97fddee98c762e2f2368f0a113231a27b33d9df71ebc088f61218"
+        }
+      ],
+      "evidence": "release/evidence/20261119-ltx25-0.1.1-online-first-install.json"
     }
   ]
 }

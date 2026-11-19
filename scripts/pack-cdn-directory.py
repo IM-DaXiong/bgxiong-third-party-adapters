@@ -145,6 +145,10 @@ def publish(packages: list[tuple[str, list[tuple[str, bytes]]]]) -> None:
         if staging.exists() or backup.exists():
             raise PackError("Staging/backup already exists; inspect it rather than overwrite")
         staging.mkdir()
+        carried_index = None
+        index_path = DEST / "latest.json"
+        if index_path.is_file():
+            carried_index = index_path.read_bytes()
         sums = []
         for name, files in packages:
             target = staging / name
@@ -161,6 +165,8 @@ def publish(packages: list[tuple[str, list[tuple[str, bytes]]]]) -> None:
             sums.append(f"{digest}  {name}")
             print(name, digest, flush=True)
         (staging / "SHA256SUMS.txt").write_bytes(("\n".join(sums) + "\n").encode("utf-8"))
+        if carried_index is not None:
+            (staging / "latest.json").write_bytes(carried_index)
         if DEST.exists():
             DEST.rename(backup)
             old_moved = True

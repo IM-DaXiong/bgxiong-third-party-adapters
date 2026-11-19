@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "projectName": "bgxiong-third-party-adapters",
+  "packages": [
+    {
+      "pluginId": "local.bgx.ltx25",
+      "version": "0.1.0",
+      "kind": "installable",
+      "validation": "sdk_package_validated",
+      "sourceManifest": "records/release-sources/ltx25/0.1.0/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/current/local.bgx.ltx25/0.1.0/adapter-install.json",
+          "sha256": "33f0573342955475fbab70f8ad97c059d04a8e58991ff2380d9b09fd3666c0d5"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/current/local.bgx.ltx25/0.1.0/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/current/local.bgx.ltx25/0.1.0/README.txt",
+          "sha256": "cf98e0358897a6116aae2b88ab873f65ac2d7055844a1a7e4fd8f0b0d0e03d38"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/current/local.bgx.ltx25/0.1.0/安装说明.txt",
+          "sha256": "b5f3987e64295758209e001794dd3d4743c70933cbd51bd462cf3be7b3ec9aa6"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/current/local.bgx.ltx25/0.1.0/package/adapter.wasm",
+          "sha256": "d910f2caa4abac808800fe31738bf6c30fe11464731493f57112becf9369ad18"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/current/local.bgx.ltx25/0.1.0/package/manifest.json",
+          "sha256": "92c1ac2f5cc97fddee98c762e2f2368f0a113231a27b33d9df71ebc088f61218"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/current/local.bgx.ltx25/0.1.0/package/manifest.sha256",
+          "sha256": "8b5038042ed71475ea8aa885eaac7f4696cff0ff91fb469511649ce35e818c13"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "kind": "measuredAdapterOwnerFirstInstallEvidence",
+  "pluginId": "local.bgx.ltx25",
+  "version": "0.1.1",
+  "applicationBaseCommit": "d0ecd44afcc1d067e9013a7099c66dd1adcbb258",
+  "measuredHostVersion": "0.6.1119",
+  "newInstallQualified": true,
+  "exitCode": 0,
+  "targetZipBytes": 227876,
+  "targetZipSha256": "adb41706ebf1dcc075d5c1a88253dce421d7f29c3435e194691fbe627f0337a7",
+  "testBinarySha256": "f645035b14fd19e41871dc0b3570e930d019e80d521f4171b37d0a637244dc06",
+  "testLogSha256": "cb10887e00d18805a1c8811f2ca69b490d65b5dec26bbf285107a62564440bd5",
+  "registeredVideoModels": 3,
+  "publicZipReadbackMatchesPublishedBytes": false,
+  "recordedAt": "2026-11-19T21:19:55+08:00",
+  "qualificationScope": "Signed loopback HTTP discovery, exact release ZIP download, SDK installation and three registered models in an isolated data root. Desktop acceptance and video generation were not tested.",
+  "sourceLock": "release/evidence/ltx25-0.1.0-source-lock.json",
+  "sourceLockSha256": "3cad0fb446cdd2ad6cafc402ba3a27db33008c90a1f8a5420a96113395b5d12c",
+  "upgradeFromPrepared": [
+    {
+      "version": "0.1.0",
+      "manifestSha256": "92c1ac2f5cc97fddee98c762e2f2368f0a113231a27b33d9df71ebc088f61218"
+    }
+  ]
+}
