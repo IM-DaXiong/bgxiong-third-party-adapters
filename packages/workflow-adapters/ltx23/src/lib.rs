@@ -141,6 +141,48 @@ fn mode_by_operation(id: &str) -> Result<Mode, Failure> {
     MODES.iter().copied().find(|mode| mode.operation == id).ok_or_else(|| invalid("Unknown LTX 2.3 operation"))
 }
 
+fn user_message(message: &str) -> &'static str {
+    if message.contains("inputMode") { "输入模式与当前操作不一致" }
+    else if message.contains("Prompt is required") { "请填写提示词" }
+    else if message.contains("Duration") { "时长须在 1 到 120 秒之间" }
+    else if message.contains("Frame rate") { "帧率须在 6 到 120 之间" }
+    else if message.contains("multiple of 64") || message.contains(" is required") { "宽高须为 64 的倍数，范围 256 到 2048" }
+    else if message.contains("Seed") { "种子超出范围" }
+    else if message.contains("audio") { "图音频生视频需要一条音频" }
+    else if message.contains("one image") { "这个操作需要一张图片" }
+    else if message.contains("frames") { "首帧和尾帧都要提供" }
+    else if message.contains("Prompt enhance") { "提示词扩写必须保持关闭" }
+    else { "参数不符合 LTX 2.3 的要求" }
+}
+
+fn rejected(digest: &Value, message: &str) -> Value {
+    json!({"kind":"operation_input_preflight","status":"rejected","requestDigest":digest,
+        "diagnostics":[{"code":"local.bgx.ltx23/invalid_input","fieldPointer":"","message":message}]})
+}
+
+/// Preflight reads the operation from selection. Submit and query keep the top-level id.
+fn prepare_input(payload: &Value) -> Value {
+    let digest = &payload["requestDigest"];
+    let Some(id) = payload["selection"]["operationId"].as_str() else {
+        return rejected(digest, "没有匹配的 LTX 2.3 操作");
+    };
+    let mode = match mode_by_operation(id) {
+        Ok(mode) => mode,
+        Err(_) => return rejected(digest, "没有匹配的 LTX 2.3 操作"),
+    };
+    if payload["environment"]["ready"] != true {
+        return rejected(digest, "LTX 2.3 的连接尚未就绪");
+    }
+    if let Err(error) = graph(mode, &payload["input"], &[]) {
+        return rejected(digest, user_message(&error.message));
+    }
+    let input = &payload["input"];
+    json!({"kind":"operation_input_preflight","status":"ready","requestDigest":digest,"material":{
+        "operationId":mode.operation,"durationSeconds":input["durationSeconds"],"fps":input["fps"],
+        "width":input["width"],"height":input["height"],"seed":input["seed"]
+    }})
+}
+
 fn aligned(value: &Value, key: &str) -> Result<u64, Failure> {
     let n = value.get(key).and_then(Value::as_u64).ok_or_else(|| invalid(format!("{key} is required")))?;
     if !(256..=2048).contains(&n) || n % 64 != 0 {
@@ -301,10 +343,11 @@ impl Adapter for Ltx23 {
                 Some("submit") => submit(host, &request, &p),
                 Some("query") => query(host, &request, &p),
                 Some("probe") => match p["kind"].as_str() {
-                    Some("operation_preflight") | Some("operation_input_preflight") => {
+                    Some("operation_input_preflight") => Ok(prepare_input(&p)),
+                    Some("operation_preflight") => {
                         let mode = mode_by_operation(p["operationId"].as_str().unwrap_or(""))?;
                         graph(mode, &p["input"], &[])?;
-                        Ok(json!({"kind":p["kind"],"status":"ready","requestDigest":p["requestDigest"]}))
+                        Ok(json!({"kind":"operation_preflight","status":"ready","requestDigest":p["requestDigest"]}))
                     }
                     Some("package_validation") => Ok(json!({"packageValid":true,"connection":"not_checked","authentication":"not_checked","resources":"not_checked","issues":[]})),
                     Some("connectivity") => {
@@ -392,5 +435,34 @@ mod tests {
         assert_eq!(flf["operations"][0]["inputProfile"], "operation-input-v1");
         assert_eq!(flf["operations"][0]["mediaSlots"][0]["role"], "first_frame");
         assert_eq!(flf["operations"][0]["mediaSlots"][1]["role"], "last_frame");
+    }
+
+    fn preflight_envelope(mode: Mode) -> Value {
+        json!({
+            "schemaVersion": 2,
+            "kind": "operation_input_preflight",
+            "selection": {"operationId": mode.operation, "operationVersion": 1},
+            "environment": {"ready": true},
+            "input": sample(mode),
+            "requestDigest": "6f24b5a8cf89b9508833ddb8bbc9c70e05be5053af6c368ccffba6ca4c9f06aa"
+        })
+    }
+
+    #[test]
+    fn input_preflight_reads_selection_and_returns_material() {
+        let audio = prepare_input(&preflight_envelope(IA2V));
+        assert_eq!(audio["status"], "ready");
+        assert_eq!(audio["material"]["operationId"], IA2V.operation);
+        assert_eq!(audio["material"]["durationSeconds"], 15);
+        assert_eq!(audio["material"]["width"], 1280);
+        assert!(audio.get("operationId").is_none());
+        let text = prepare_input(&preflight_envelope(T2V));
+        assert_eq!(text["status"], "ready");
+        assert_eq!(text["material"]["operationId"], T2V.operation);
+        let mut missing = preflight_envelope(IA2V);
+        missing["selection"].as_object_mut().unwrap().remove("operationId");
+        let rejected = prepare_input(&missing);
+        assert_eq!(rejected["status"], "rejected");
+        assert_eq!(rejected["diagnostics"][0]["message"], "没有匹配的 LTX 2.3 操作");
     }
 }

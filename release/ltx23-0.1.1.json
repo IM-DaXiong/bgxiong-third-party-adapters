@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "pluginId": "local.bgx.ltx23",
+  "version": "0.1.1",
+  "displayName": "LTX 2.3",
+  "artifactSha256": "20d93748c0bd25c46d2a3bc8ab7bede3c88bdc5878d79cd8fda5faa931714bf8",
+  "manifestSha256": "521d89754b0b9e4ca483fe49b77493713f254ad53b75a31a38486bd8411f48f0",
+  "zipFile": "local.bgx.ltx23-0.1.1.zip",
+  "zipSha256": "dae08754c5ddf860198e42471acfdeeb805258955899ffe45c89551c6a7528fa",
+  "zipBytes": 225417,
+  "checks": [
+    {"command": "cargo test --offline --lib", "exit": 0, "result": "5 passed"},
+    {"command": "packages/workflow-adapters/ltx23/build.ps1", "exit": 0, "status": "PACKED"}
+  ],
+  "installNote": "Select the directory that contains adapter-install.json. Nodes that saved 0.1.0 must pick LTX 2.3 again."
+}

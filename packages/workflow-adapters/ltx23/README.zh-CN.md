@@ -1,6 +1,6 @@
 # LTX 2.3
 
-生产包 `local.bgx.ltx23`。四个操作：文生视频、图生视频、图音频生视频、首尾帧生视频。
+生产包 `local.bgx.ltx23` 0.1.1。四个操作：文生视频、图生视频、图音频生视频、首尾帧生视频。0.1.1 的预检按 `selection.operationId` 识别操作。已经选过 0.1.0 的节点，安装后请再选一次。
 
 图来自主仓已关闭 Prompt Enhance 的 `ComfyUI-API/LTX2.3`。教学包 `local.example.comfy-ltx23-ia2v` 的 8 秒 / 768 / 24fps 不是本包的参数表面。
 
