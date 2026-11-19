@@ -316,6 +316,11 @@ fn submit(host: &mut dyn Host, request: &Invocation, p: &Value) -> Result<Value,
     Ok(accepted)
 }
 
+/// Declared output contract is one description string. The video itself stays in outputs.
+fn succeeded_data(media_id: &str) -> Value {
+    json!({"description": media_id})
+}
+
 fn query(host: &mut dyn Host, request: &Invocation, p: &Value) -> Result<Value, Failure> {
     let mode = mode_by_operation(p["operationId"].as_str().unwrap_or(""))?;
     let id = comfy::text(p, "vendorTaskId")?;
@@ -326,7 +331,8 @@ fn query(host: &mut dyn Host, request: &Invocation, p: &Value) -> Result<Value, 
         comfy::Remote::Running => ("running", json!([]), Value::Null, Value::Null),
         comfy::Remote::Succeeded(files) => {
             let output = comfy::download(host, &ctx, &files[0])?;
-            ("succeeded", json!([output.clone()]), json!({"schemaVersion":1,"video":{"mediaId":output["media"]["id"]}}), Value::Null)
+            let media_id = output["media"]["id"].as_str().unwrap_or("");
+            ("succeeded", json!([output.clone()]), succeeded_data(media_id), Value::Null)
         }
         comfy::Remote::Failed(reason) => ("failed", json!([]), Value::Null, json!({"category":"vendorTaskFailed","message":"LTX 2.3 execution failed","vendorCode":reason,"details":{"promptId":id}})),
         comfy::Remote::Lost => ("failed", json!([]), Value::Null, json!({"category":"vendorTaskFailed","message":"Original prompt is absent from queue and history","vendorCode":"PROMPT_NOT_FOUND","details":{"promptId":id}})),
@@ -466,5 +472,14 @@ mod tests {
         let rejected = prepare_input(&missing);
         assert_eq!(rejected["status"], "rejected");
         assert_eq!(rejected["diagnostics"][0]["message"], "没有匹配的 LTX 2.3 操作");
+    }
+
+    #[test]
+    fn succeeded_query_data_is_only_the_declared_description() {
+        let data = succeeded_data("media-1");
+        let object = data.as_object().unwrap();
+        assert_eq!(object.len(), 1);
+        assert_eq!(object["description"], "media-1");
+        assert!(object["description"].as_str().unwrap().chars().any(|c| !c.is_whitespace()));
     }
 }

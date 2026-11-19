@@ -14,13 +14,13 @@
 
 以下安装包来自当前发行清单。所有包均已完成包级校验；实际安装、云端生成和 GPU 验证程度不同，详见每项的验收记录字段，不将“已打包”宣称为全部平台实测通过。H3 Image 1.0.1 已完成应用安装、四参考图真实生成；16 张边界已通过离线行为验证，尚未实测 16 张 GPU 生成。
 
-### LTX 2.3 · 0.1.2
+### LTX 2.3 · 0.1.3
 
-本地文生视频、图生视频、图音频生视频和首尾帧生视频。连接：**本地或局域网 ComfyUI**。0.1.2 修正受理后回执写不上的问题。已经选过 0.1.0 或 0.1.1 的节点，安装后请再选一次 LTX 2.3。模型权重不在包内。
+本地文生视频、图生视频、图音频生视频和首尾帧生视频。连接：**本地或局域网 ComfyUI**。0.1.3 修正成片出来后查询结果对不上输出合同的问题，四种能力一起生效。已经选过更早版本的节点，安装后请再选一次 LTX 2.3。模型权重不在包内。
 
-[下载页面](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/ltx23-0.1.2) · [直接下载 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/ltx23-0.1.2/local.bgx.ltx23-0.1.2.zip) · [SHA256](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/ltx23-0.1.2/SHA256SUMS.txt)
+[下载页面](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/ltx23-0.1.3) · [直接下载 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/ltx23-0.1.3/local.bgx.ltx23-0.1.3.zip) · [SHA256](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/ltx23-0.1.3/SHA256SUMS.txt)
 
-解压后在比格熊 **设置 → 第三方适配器 → 安装适配包** 中选择含 `adapter-install.json` 的目录。摘要 `f0dc8f660d8ee4b13dc24dc3d605e8e1ad84dc91548b0c280516c64ecd407d96`。
+解压后在比格熊 **设置 → 第三方适配器 → 安装适配包** 中选择含 `adapter-install.json` 的目录。摘要 `ab27e4089e128ab62d872bf9154e15f9224da090652fe0259b56d77e51e3e1d8`。
 
 ### 全景图片 · 1.0.3
 
@@ -152,7 +152,7 @@ Breeze TTS 1.0.1 提供[完整托管安装包](https://github.com/IM-DaXiong/bgx
 
 **Breeze 1.0.1 离线安装元数据（新电脑）**：请下载本次的 [安装识别文件](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/breeze-durable-1.0.1/breeze-tts-h1-1.0.2.zip.offline-bundle.json)、[原运行时清单](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/breeze-durable-1.0.1/breeze-tts-h1-1.0.2.json) 和[独立 SHA256 清单](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/breeze-durable-1.0.1/BREEZE-INSTALL-METADATA-SHA256SUMS.txt)。前两个文件与原 [breeze-tts-h1-1.0.2.zip](https://r.bgxiong.com/client/ai-story/runtimes/BreezeTTS/breeze-tts-h1-1.0.2.zip) 放在所选资源目录的 `BreezeTTS/` 内，保留完整文件名；依赖、模型、SoX 归档沿安装包内 `provisioning.json` 的原 URL/文件名放在同目录，Python 归档放在并列 `Python/`。然后在应用的本地离线资源面板选择该资源目录并扫描安装。旧 CDN 识别文件对应旧适配器，不能与 1.0.1 混用；应用不会自动下载或替换这个识别文件。此更新仅补齐元数据，原运行时 1.0.2、完整安装 ZIP 与原 SHA256SUMS 均未覆盖。公开下载字节验证见[元数据回执](release/breeze-durable-1.0.1-metadata.json)。
 
-H3 r2v/r2v-audio/t2v、LTX 2.3 / 2.5 教学样例、Qwen i2i/multi-ref/t2i/two-output 的 `sourceExample` 是 [作者样例](packages/comfy-workflow-adapter/v2)，不列为可直接安装发行包。可安装的 LTX 2.3 生产包是上面的 `local.bgx.ltx23` 0.1.2。源码目录中的候选版本可能高于已冻结版本；用户下载以本页和发行锁为准。
+H3 r2v/r2v-audio/t2v、LTX 2.3 / 2.5 教学样例、Qwen i2i/multi-ref/t2i/two-output 的 `sourceExample` 是 [作者样例](packages/comfy-workflow-adapter/v2)，不列为可直接安装发行包。可安装的 LTX 2.3 生产包是上面的 `local.bgx.ltx23` 0.1.3。源码目录中的候选版本可能高于已冻结版本；用户下载以本页和发行锁为准。
 
 ## 开发与跨机器资源恢复
 
