@@ -22,9 +22,9 @@
 
 包内：WASM、manifest 与摘要、许可及说明。完整文件名见发行清单。
 
-### 全景工作室 · 1.24.2 开发候选
+### 全景工作室 · 1.24.3 开发候选
 
-[完整候选下载](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/panorama-1.24.2-candidate) · [文件摘要与验收边界](release/panorama-1.24.2-candidate.json)。包含离线编辑器、六份上游工作流、三维/视频输入与配套节点，需本批主程序和 SDK 2.4.0。已完成包级及轻量编辑验收；真实 Comfy/GPU 和正式安装版待资源机验证。当前稳定版仍为 1.0.3。
+[完整候选下载](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/panorama-1.24.3-candidate) · [直接下载 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/panorama-1.24.3-candidate/comfy-panorama-image-1.24.3.zip) · [文件摘要与验收边界](release/panorama-1.24.3-candidate.json)。包含离线编辑器、上游工作流与配套节点，需本批主程序和 SDK 2.4.0。包级校验、隔离安装和画布工作台读写已通过；真实 Comfy/GPU 与正式安装版未测。当前稳定版仍为 1.0.3。
 
 ### SeedVR2 图片放大 · 1.0.3
 
@@ -106,11 +106,11 @@ M3 文本生成与对话，需要自己的平台 API Key。 连接：**MiniMax �
 
 包内：WASM、manifest 与摘要、许可及说明；另含 工作流／配置／配套文件。完整文件名见发行清单。
 
-### Qwen Image 2.1 · 0.1.1
+### Qwen Image 2.1 · 0.1.2
 
-千问图像生成与参考图编辑；下载版本以冻结清单为准，源码候选另计。 连接：**RunningHub**。
+千问图像生成与参考图编辑。0.1.2 已随 0.6.1116 安装快照打包校验；云端 4K 输出未测。源码候选可能更高。 连接：**RunningHub**。
 
-[下载页面](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/installable-adapters-20261111-h3-101) · [直接下载 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/installable-adapters-20261111-h3-101/local.thirdparty.runninghub-qwen-image-21-0.1.1.zip)
+[下载页面](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/installer-0.6.1116) · [直接下载 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/installer-0.6.1116/runninghub-qwen-image-21-0.1.2.zip)
 
 包内：WASM、manifest 与摘要、许可及说明。完整文件名见发行清单。
 
@@ -130,13 +130,13 @@ M3 文本生成与对话，需要自己的平台 API Key。 连接：**MiniMax �
 
 包内：WASM、manifest 与摘要、许可及说明；另含 工作流／配置／配套文件。完整文件名见发行清单。
 
-### RunningHub H3 全工作流 · 1.0.2
+### RunningHub H3 全工作流 · 1.0.3
 
 安装 `runninghub-h3-all` 后，在视频工作台的 **RunningHub** 分组选择多图参考、固定图数参考和首帧工作流，共 9 项。安装时绑定 RunningHub API Key。
 
 [完整安装 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.3/local.thirdparty.runninghub-h3-all-1.0.3.zip) · [SHA256](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-h3-all-v1.0.3/SHA256SUMS.txt) · [安装与工作流说明](docs/USAGE.zh-CN.md#runninghub-h3-视频)
 
-1.0.2 修复三条多参路线的音频 MIME 误拒，与 SDK 2.1.3 联合支持常见音频格式。22 组真实音频已通过平台上传与解码，三条路线均已真实出片、下载并完整解码。含非 UTF-8 旧标签的 APE 仍可能被平台解码器拒绝；具体范围见[验收记录](release/runninghub-h3-all-1.0.2.json)。
+1.0.3 使用 SDK 2.4.0，应用安装已验证，本构建未做云端出片。1.0.2 修复三条多参路线的音频 MIME 误拒，与当时的 SDK 2.1.3 联合支持常见音频格式。22 组真实音频已通过平台上传与解码，三条路线均已真实出片、下载并完整解码。含非 UTF-8 旧标签的 APE 仍可能被平台解码器拒绝；具体范围见[1.0.3 记录](release/runninghub-h3-all-1.0.3.json)和[1.0.2 验收](release/runninghub-h3-all-1.0.2.json)。
 
 ## 托管语音、作者样例与候选
 
