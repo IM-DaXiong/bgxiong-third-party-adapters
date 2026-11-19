@@ -25,3 +25,11 @@
 6. 修正独立工程 AGENTS 中过时的 `sources/main/packages` 路径，统一引用当前源码与安装入口。
 
 不移动注册中的工作树，不修改用户安装数据，不清除任务回执或媒体。历史版本和候选不改称当前发行版。
+
+## 在线索引（2026-11-19）
+
+- `artifacts/cdn/`：只放已核对的 ZIP 与 SHA256SUMS.txt，可整目录上传；历史已发 ZIP 按 `release/cdn-published.json` 固定原字节复用，逐文件仍须匹配 `release/current.json`，禁止覆盖同版本。
+- `artifacts/cdn-index/`：独立签名索引，ZIP 上传并回读之后单独上传，不能随 CDN ZIP 目录抢先发布。
+- `release/online-*.json`：在线资格与序号回执；资格只登记有实际升级/首装证据的版本。空资格表示尚未取得正式发行资格；本地 S1 不替代开发 EXE/正式验收，也不代表正式索引可发布。
+
+ZImage 1.0.3 与 FLUX2 1.0.4 现补齐 `installation/adapter-install.template.json`，与宿主现行 `comfyui.serviceOnly` 合同对齐：安装时取软件已经保存的 Comfy 连接，不预设端口、地址或账号。运行包 manifest/WASM 未改；此变更只补齐此前缺失的安装信封，真实 EXE 安装验收单独记录。

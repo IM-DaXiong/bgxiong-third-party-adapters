@@ -561,6 +561,16 @@
           "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
+          "path": "README.txt",
+          "source": "artifacts/current/local.zeroauthor.comfy-zimage-turbo/1.0.3/README.txt",
+          "sha256": "21f7155ef54040ef9027ea26ac060c6d17e49fe9192cfdddf50672cae1170f10"
+        },
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/current/local.zeroauthor.comfy-zimage-turbo/1.0.3/adapter-install.json",
+          "sha256": "4c2bb704ed889203267b33b820f1b2f9f9257f1777b1bfb083514266ab7a12bc"
+        },
+        {
           "path": "package/adapter.wasm",
           "source": "artifacts/current/local.zeroauthor.comfy-zimage-turbo/1.0.3/package/adapter.wasm",
           "sha256": "6694ee3ecc686db8147884484c1fbd176615bc11d35ea38bb238a76440c456c5"
@@ -574,11 +584,6 @@
           "path": "package/manifest.sha256",
           "source": "artifacts/current/local.zeroauthor.comfy-zimage-turbo/1.0.3/package/manifest.sha256",
           "sha256": "afc85b5c1aac969cb9336b245165e20e7d1aebd11608f33437a444ead1067112"
-        },
-        {
-          "path": "README.txt",
-          "source": "artifacts/current/local.zeroauthor.comfy-zimage-turbo/1.0.3/README.txt",
-          "sha256": "21f7155ef54040ef9027ea26ac060c6d17e49fe9192cfdddf50672cae1170f10"
         },
         {
           "path": "workflow-templates.json",
@@ -1456,14 +1461,24 @@
       "sourceManifest": "packages/comfy-workflow-adapter/v2/flux2-multi-ref-independent/flux2-author/manifest.json",
       "files": [
         {
-          "path": "host-config.example.json",
-          "source": "artifacts/current/local.independent.flux2-ordered-reference/1.0.4/host-config.example.json",
-          "sha256": "36650e1fe435051a7d6888e84063afb3b1de48abcde8ec17bfa4aa2eb6ec8ad7"
-        },
-        {
           "path": "LICENSE",
           "source": "artifacts/current/local.independent.flux2-ordered-reference/1.0.4/LICENSE",
           "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/current/local.independent.flux2-ordered-reference/1.0.4/README.txt",
+          "sha256": "f5e4ef142a6a05a2935dd3f1e893b6301f9340b1ed5f89921c4875a52129365d"
+        },
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/current/local.independent.flux2-ordered-reference/1.0.4/adapter-install.json",
+          "sha256": "b69f480d9e45951ebbfdb9bf999efb222537609f8f5210bd566cd9bbc88a830a"
+        },
+        {
+          "path": "host-config.example.json",
+          "source": "artifacts/current/local.independent.flux2-ordered-reference/1.0.4/host-config.example.json",
+          "sha256": "36650e1fe435051a7d6888e84063afb3b1de48abcde8ec17bfa4aa2eb6ec8ad7"
         },
         {
           "path": "package/adapter.wasm",
@@ -1479,11 +1494,6 @@
           "path": "package/manifest.sha256",
           "source": "artifacts/current/local.independent.flux2-ordered-reference/1.0.4/package/manifest.sha256",
           "sha256": "65f221a064ad77757c89a6706891ac119465c7235ff6b54bb1839e0ad0c4cd61"
-        },
-        {
-          "path": "README.txt",
-          "source": "artifacts/current/local.independent.flux2-ordered-reference/1.0.4/README.txt",
-          "sha256": "f5e4ef142a6a05a2935dd3f1e893b6301f9340b1ed5f89921c4875a52129365d"
         },
         {
           "path": "workflow-templates.json",

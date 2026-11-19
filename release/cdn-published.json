@@ -1,0 +1,61 @@
+{
+  "files": {
+    "local.bgx.deepseek-text-1.0.1.zip": {
+      "bytes": 200859,
+      "sha256": "8c6e6fbda4ce67d1f4f6663e3a12e60d0550e451ed2a07d0f2d6ff7a8305442b"
+    },
+    "local.bgx.ltx23-0.1.2.zip": {
+      "bytes": 227056,
+      "sha256": "5497ee6fe6f965a438479e988032e047880b63f3200bac5e3359643fb78278db"
+    },
+    "local.bgx.minimax-h3-image-comfy-1.0.1.zip": {
+      "bytes": 226444,
+      "sha256": "86fda2203f8cba58e93e7a360062c27e6abd5e1a147facdd0c469d5aba9a93ed"
+    },
+    "local.bgx.minimax-m3-1.0.3.zip": {
+      "bytes": 198051,
+      "sha256": "531e3e690ca909c66778f9ec565ea4cc60d01020633fb0de21384e833cc2d073"
+    },
+    "local.bgx.seedream-image-1.0.8.zip": {
+      "bytes": 226442,
+      "sha256": "7b8aa609c6a8d572557170254aaf9c11ff8eba50bb5bbfad2cee4eaa6822f258"
+    },
+    "local.bgx.seedvr2-image-1.0.4.zip": {
+      "bytes": 231508,
+      "sha256": "d275424070d1e27a944469090406f0454f00f37d45e00a603bb68d7f572e9a59"
+    },
+    "local.bgx.wan-animate2-0.1.2.zip": {
+      "bytes": 224192,
+      "sha256": "9a5f94740d67fece3787daa1d17921c0b4cf782a9ab99af1349d03867bad3a3f"
+    },
+    "local.bgx.wan22-animate-0.2.13.zip": {
+      "bytes": 318902,
+      "sha256": "03f84834c5eee77ea3c335df5cfb5c66b8f7c80e13048f32e979601f21904d2f"
+    },
+    "local.bgx.wan22-s2v-0.1.5.zip": {
+      "bytes": 215353,
+      "sha256": "0a72e330d626ba6e10d894c9a3f8efb34f8a1ae15576704dc4c2acb06097d53a"
+    },
+    "local.independent.comfy-h3-continuum-1.0.3.zip": {
+      "bytes": 237280,
+      "sha256": "24c87e697f8e9404ae617a069c626c81d6b3d3b5cc9081fece687a9e20ab3508"
+    },
+    "local.thirdparty.comfy-panorama-image-1.24.3.zip": {
+      "bytes": 2899596,
+      "sha256": "25f03ce30803c060a671b709d8f71e1818bb826dc1493542dfe16ebe929d50f3"
+    },
+    "local.thirdparty.h3-face-refine-1.0.0-a33.zip": {
+      "bytes": 405941,
+      "sha256": "b5b6b50c93fc2cfd9da96799ab0f7ec45c1658a8a662a09330449658ed84adee"
+    },
+    "local.thirdparty.runninghub-h3-all-1.0.5.zip": {
+      "bytes": 308739,
+      "sha256": "f4fd412a19181e5510b0c01970665d085dbf7a53deace9fb534ceda2280c04c8"
+    },
+    "local.thirdparty.runninghub-qwen-image-21-0.1.4.zip": {
+      "bytes": 241225,
+      "sha256": "144b77f165a201def6d1766951178efa223949a518ab23910cff4880995ec468"
+    }
+  },
+  "schemaVersion": 1
+}
