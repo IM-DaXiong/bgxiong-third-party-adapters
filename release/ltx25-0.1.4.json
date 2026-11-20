@@ -67,7 +67,8 @@
     "production CDN upload",
     "official production signing",
     "public release / overwrite artifacts/cdn/latest.json",
-    "real wheels install, isolated real Comfy restart, generation closed loop (not 8188, not comfy_stub)",
+    "host execute_hosted_custom_nodes / LiveMaintenanceRuntime path for wheels+restart (process-wide manager not used, to protect live Comfy)",
+    "adapter wasm / workbench submit of 0.1.4 against isolated Comfy (HTTP prompt closed loop is done)",
     "A18/A19 isolated real-machine UI"
   ]
 }
