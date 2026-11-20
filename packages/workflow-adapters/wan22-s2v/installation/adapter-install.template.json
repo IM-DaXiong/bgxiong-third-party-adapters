@@ -30,7 +30,8 @@
       "isFresh": false,
       "supportedFeatures": [
         "video-speech-v1",
-        "operation-preflight-v1"
+        "operation-preflight-v1",
+        "operation-input-preflight-v2"
       ]
     },
     "mediaTtlMs": 3600000,
