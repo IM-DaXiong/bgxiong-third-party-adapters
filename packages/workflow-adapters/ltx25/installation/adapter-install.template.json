@@ -51,6 +51,120 @@
   },
   "managedMediaProbe": true,
   "comfyui": {
-    "serviceOnly": true
+    "serviceOnly": true,
+    "resourceGuide": {
+      "capabilityId": "comfy.resource_pack",
+      "resourceId": "comfy.resource_pack",
+      "weights": [
+        {
+          "operationId": "t2v",
+          "classType": "LatentUpscaleModelLoader",
+          "input": "model_name",
+          "name": "ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors"
+        },
+        {
+          "operationId": "t2v",
+          "classType": "UNETLoader",
+          "input": "unet_name",
+          "name": "ltx-2.5-22b-distilled-transformer-comfy-int8-convrot.safetensors"
+        },
+        {
+          "operationId": "t2v",
+          "classType": "VAELoader",
+          "input": "vae_name",
+          "name": "ltx-2.5-video-vae-bf16.safetensors"
+        },
+        {
+          "operationId": "t2v",
+          "classType": "VAELoader",
+          "input": "vae_name",
+          "name": "ltx-2.5-audio-vae-bf16.safetensors"
+        },
+        {
+          "operationId": "t2v",
+          "classType": "CLIPLoader",
+          "input": "clip_name",
+          "name": "gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors"
+        },
+        {
+          "operationId": "t2v",
+          "classType": "CLIPLoader",
+          "input": "clip_name",
+          "name": "gemma4_e2b_it_int8_convrot.safetensors"
+        },
+        {
+          "operationId": "i2v",
+          "classType": "CLIPLoader",
+          "input": "clip_name",
+          "name": "gemma4_e2b_it_int8_convrot.safetensors"
+        },
+        {
+          "operationId": "i2v",
+          "classType": "UNETLoader",
+          "input": "unet_name",
+          "name": "ltx-2.5-22b-distilled-transformer-comfy-int8-convrot.safetensors"
+        },
+        {
+          "operationId": "i2v",
+          "classType": "VAELoader",
+          "input": "vae_name",
+          "name": "ltx-2.5-video-vae-bf16.safetensors"
+        },
+        {
+          "operationId": "i2v",
+          "classType": "VAELoader",
+          "input": "vae_name",
+          "name": "ltx-2.5-audio-vae-bf16.safetensors"
+        },
+        {
+          "operationId": "i2v",
+          "classType": "CLIPLoader",
+          "input": "clip_name",
+          "name": "gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors"
+        },
+        {
+          "operationId": "i2v",
+          "classType": "LatentUpscaleModelLoader",
+          "input": "model_name",
+          "name": "ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors"
+        },
+        {
+          "operationId": "a2v",
+          "classType": "VAELoader",
+          "input": "vae_name",
+          "name": "ltx-2.5-audio-vae-bf16.safetensors"
+        },
+        {
+          "operationId": "a2v",
+          "classType": "VAELoader",
+          "input": "vae_name",
+          "name": "ltx-2.5-video-vae-bf16.safetensors"
+        },
+        {
+          "operationId": "a2v",
+          "classType": "UNETLoader",
+          "input": "unet_name",
+          "name": "ltx-2.5-22b-distilled-transformer-comfy-int8-convrot.safetensors"
+        },
+        {
+          "operationId": "a2v",
+          "classType": "LatentUpscaleModelLoader",
+          "input": "model_name",
+          "name": "ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors"
+        },
+        {
+          "operationId": "a2v",
+          "classType": "CLIPLoader",
+          "input": "clip_name",
+          "name": "gemma4_e2b_it_int8_convrot.safetensors"
+        },
+        {
+          "operationId": "a2v",
+          "classType": "CLIPLoader",
+          "input": "clip_name",
+          "name": "gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors"
+        }
+      ]
+    }
   }
 }

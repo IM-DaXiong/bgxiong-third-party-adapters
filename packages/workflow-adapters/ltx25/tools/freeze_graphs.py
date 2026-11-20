@@ -14,6 +14,90 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 EXPORT_DIR = ROOT / "workflows" / "export"
 FROZEN_DIR = ROOT / "workflows"
+
+WEIGHT_EXTS = (".safetensors", ".ckpt", ".pt", ".pth", ".gguf", ".bin", ".onnx", ".sft")
+INSTALL_TEMPLATE = ROOT / "installation" / "adapter-install.template.json"
+RESOURCE_PACK = "comfy.resource_pack"
+
+
+def is_weight_name(value):
+    lower = value.lower()
+    return any(lower.endswith(ext) for ext in WEIGHT_EXTS)
+
+
+def extract_operation_weights(operation_id, graph):
+    rows = []
+    seen = set()
+    for _node_id, node in graph.items():
+        if not isinstance(node, dict):
+            continue
+        class_type = node.get("class_type")
+        inputs = node.get("inputs") or {}
+        if not isinstance(class_type, str) or not isinstance(inputs, dict):
+            continue
+        for field, value in inputs.items():
+            if not isinstance(field, str) or not isinstance(value, str) or not is_weight_name(value):
+                continue
+            normalized = value.replace("\\", "/")
+            if "/" in normalized:
+                declared, name = normalized.rsplit("/", 1)
+                declared = declared.strip("/") or None
+            else:
+                name, declared = value, None
+            key = (operation_id, class_type, field, name, declared)
+            if key in seen:
+                continue
+            seen.add(key)
+            row = {
+                "operationId": operation_id,
+                "classType": class_type,
+                "input": field,
+                "name": name,
+            }
+            if declared:
+                row["declaredDirectory"] = declared
+            rows.append(row)
+    return rows
+
+
+def build_resource_guide(graphs):
+    weights = []
+    for name in ("t2v", "i2v", "a2v"):
+        weights.extend(extract_operation_weights(name, graphs[name]))
+    if not weights:
+        fail("resourceGuide", "weights", "non-empty", "empty")
+    return {
+        "capabilityId": RESOURCE_PACK,
+        "resourceId": RESOURCE_PACK,
+        "weights": weights,
+    }
+
+
+def load_template():
+    if not INSTALL_TEMPLATE.is_file():
+        fail("resourceGuide", "template", str(INSTALL_TEMPLATE), "missing")
+    return json.loads(INSTALL_TEMPLATE.read_text(encoding="utf-8"))
+
+
+def write_resource_guide(guide):
+    doc = load_template()
+    comfy = doc.setdefault("comfyui", {})
+    comfy["resourceGuide"] = guide
+    data = (json.dumps(doc, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+    INSTALL_TEMPLATE.write_bytes(data)
+    print("adapter-install.template.json resourceGuide weights=%s bytes=%s sha256=%s" % (
+        len(guide["weights"]), len(data), sha256_bytes(data)))
+
+
+def check_resource_guide(guide):
+    doc = load_template()
+    actual = (doc.get("comfyui") or {}).get("resourceGuide")
+    if actual != guide:
+        print("CHECK FAILED resourceGuide.weights stale versus frozen graphs", file=sys.stderr)
+        return 1
+    print("resourceGuide: weights=%s CHECK OK" % len(guide["weights"]))
+    return 0
+
 REMOVED_CLASSES = {"GemmaAPITextEncode", "StringContains", "ResolutionSelector"}
 SHANGHAI = timezone(timedelta(hours=8), name="Asia/Shanghai")
 
@@ -303,9 +387,11 @@ def main(argv=None):
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args(argv)
     frozen = {}
+    graphs = {}
     for name in ("t2v", "i2v", "a2v"):
         graph, data = freeze_one(name)
         frozen[name] = data
+        graphs[name] = graph
         target = FROZEN_DIR / ("%s.api.json" % name)
         print("%s: nodes=%s bytes=%s sha256=%s -> %s" % (name, len(graph), len(data), sha256_bytes(data), target))
         if args.check:
@@ -319,10 +405,14 @@ def main(argv=None):
         else:
             FROZEN_DIR.mkdir(parents=True, exist_ok=True)
             target.write_bytes(data)
-    if not args.check:
-        write_source_json(frozen, None)
-    else:
+    guide = build_resource_guide(graphs)
+    if args.check:
+        if check_resource_guide(guide) != 0:
+            return 1
         print("CHECK OK")
+    else:
+        write_resource_guide(guide)
+        write_source_json(frozen, None)
     return 0
 
 if __name__ == "__main__":
