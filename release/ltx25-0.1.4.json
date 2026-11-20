@@ -52,6 +52,14 @@
       "command": "verify packed operations, resourceGuide weights against frozen graphs, and 0.1.3 receipts",
       "exit": 0,
       "result": "wasm contains t2v/i2v/a2v; envelope resourceGuide 6+6+6 weights match frozen graph classType/input/name; comfyui.serviceOnly with no extra customNodes pack; 0.1.3 receipts and live-evidence files remain readable"
+    },
+    {
+      "command": "bgx-adapter-v2.exe check --sdk <release-windows>/runtime/adapter-sdk-v2 --worker <that-dir>/bgx-adapter-v2-worker.exe --project artifacts/current/local.bgx.ltx25/0.1.4/package",
+      "exit": 0,
+      "status": "VALIDATED; checks=inventory,schema,signature-policy,wasm-capabilities,wasm-package-validation; elapsedMs=3992; network=disabled",
+      "rootCause": "WorkerClient requires --sdk to be the directory that contains protocol/schema-policy.json, and --worker to be a file inside that directory. The snapshot root and passing the worker directory itself are invalid.",
+      "log": "L:/00Dev/_logs/custom-nodes-20261120/a20-sdk-check-runtimesdk-20261121T0314+0800.log",
+      "at": "2026-11-21 03:15:20 Asia/Shanghai (UTC+8)"
     }
   ],
   "installNote": "Local staging only. Do not upload the 0.1.4 zip or overwrite production latest.json without a separate production-publish authorization. A21 may use a local debug-signed index. Old 0.1.3 install directory remains at artifacts/current/local.bgx.ltx25/0.1.3/; exact 0.1.3 zip is at artifacts/archive/local.bgx.ltx25-0.1.3.zip.",
@@ -59,8 +67,7 @@
     "production CDN upload",
     "official production signing",
     "public release / overwrite artifacts/cdn/latest.json",
-    "isolated first install / upgrade (A21)",
-    "live Comfy / generation closed loop (not 8188, not comfy_stub)",
-    "official sdk check --worker (attempted against this snapshot worker exe and runtime/adapter-sdk-v2 dir; both returned INVALID_INPUT /worker; official ltx25 build.ps1 only packs and was PACKED)"
+    "real wheels install, isolated real Comfy restart, generation closed loop (not 8188, not comfy_stub)",
+    "A18/A19 isolated real-machine UI"
   ]
 }
