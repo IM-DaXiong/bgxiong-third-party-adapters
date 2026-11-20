@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "pluginId": "local.bgx.ltx25",
+  "version": "0.1.3",
+  "displayName": "LTX 2.5",
+  "artifactSha256": "5c95dd5d5baaa77ae356c76d170d1aef11fbbc279842744cd18d9f75361308b8",
+  "manifestSha256": "0f22774ab6c796775376af3cf00b428e0cd3557356f1069a9618d816c7102b02",
+  "zipFile": "local.bgx.ltx25-0.1.3.zip",
+  "zipSha256": "103d46857f1e46d924918ed27f9e7d7621348fa36968f0d0797e9b764da2b057",
+  "zipBytes": 228438,
+  "installDirectory": "artifacts/current/local.bgx.ltx25/0.1.3",
+  "cdnDirectory": "artifacts/cdn",
+  "cdnPublished": false,
+  "fix": "Switch A2V from official BF16 transformer/text-encoder weights to the same INT8 ConvRot stack used by T2V/I2V, and fill required ComfyUI dynamic-combo subfields so the frozen graphs pass server validation.",
+  "checks": [
+    {
+      "command": "python tools/freeze_graphs.py --check",
+      "cwd": "packages/workflow-adapters/ltx25",
+      "exit": 0,
+      "status": "OK"
+    },
+    {
+      "command": "cargo +1.95.0 test --locked --offline",
+      "cwd": "packages/workflow-adapters/ltx25",
+      "exit": 0,
+      "result": "24 passed"
+    },
+    {
+      "command": "packages/workflow-adapters/ltx25/build.ps1 ; official sdk pack --out artifacts/current/local.bgx.ltx25/0.1.3/package",
+      "exit": 0,
+      "status": "PACKED"
+    },
+    {
+      "command": "python scripts/pack-cdn-directory.py --check && python scripts/pack-cdn-directory.py",
+      "exit": 0,
+      "status": "17 installable packages; existing ZIP bytes unchanged except local.bgx.ltx25-0.1.3.zip replacing 0.1.2"
+    },
+    {
+      "command": "python L:/00Dev/bgxiong-ai-story/scripts/test-adapter-online-first-install.py artifacts/cdn/local.bgx.ltx25-0.1.3.zip --video-models 3",
+      "cwd": "L:/00Dev/bgxiong-ai-story",
+      "exit": 0,
+      "result": "real_online_first_install passed; host 0.6.1119; 3 video models; ZIP SHA-256 103d46857f1e46d924918ed27f9e7d7621348fa36968f0d0797e9b764da2b057"
+    },
+    {
+      "command": "ComfyUI live A2V INT8 at http://127.0.0.1:8188/prompt",
+      "exit": 0,
+      "result": "prompt_id 69173e7a-b9e9-4ed1-b4ca-5205e55c7ced; status_str=success; 57.05s; output L:/AI/ComfyUI-Installs/ComfyUI (1)/ComfyUI/output/video/LTX_2.5_a2v_00001_.mp4; 233328 bytes"
+    }
+  ],
+  "installNote": "Upload local.bgx.ltx25-0.1.3.zip and SHA256SUMS.txt first, then overwrite latest.json. Other ZIP files are unchanged.",
+  "onlineFirstInstallEvidence": "release/evidence/20261120-ltx25-0.1.3-online-first-install.json",
+  "comfyLiveEvidence": "release/evidence/20261120-ltx25-a2v-int8-comfy-live.json"
+}

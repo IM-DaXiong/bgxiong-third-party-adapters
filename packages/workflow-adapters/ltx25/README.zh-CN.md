@@ -1,6 +1,10 @@
 # LTX 2.5 第三方适配器
 
-`pluginId=local.bgx.ltx25`，版本 `0.1.1`。一个包提供三个操作，在视频工作台里选择对应模型即可。
+`pluginId=local.bgx.ltx25`，版本 `0.1.3`。一个包提供三个操作，在视频工作台里选择对应模型即可。
+
+0.1.2 修复了资源预检：ComfyUI `SaveVideo` 的 `COMFY_DYNAMICCOMBO_V3`（`format`/`codec` 为 `{"key":"auto"}`）不再被误报为缺少 `auto`；预检只核对模型/权重文件下拉项，并去掉「LTX 2.5 LTX 2.5」重复前缀。
+
+0.1.3 将音频生视频改为与文生/图生共用同一套 INT8 权重，不再要求官方 BF16 主模型和文本编码器；并补齐当前 ComfyUI 对动态下拉必填子字段的默认值，使冻结图可通过服务端校验。
 
 ## 三个模式
 
@@ -10,18 +14,18 @@
 
 ## 模型文件与目录
 
-权重不随包提供，需放到本机 ComfyUI 的 `models/` 惯例目录。提示词扩写在本包中固定关闭，但增强器权重仍必须放置（校验会覆盖未使用的分支）。
+权重不随包提供，需放到本机 ComfyUI 的 `models/` 惯例目录。三个模式共用同一套 INT8 权重（0.1.3 起音频生视频不再要求官方 BF16 主模型和文本编码器）。提示词扩写在本包中固定关闭，但增强器权重仍必须放置（校验会覆盖未使用的分支）。
 
-| 用途 | 目录 | T2V / I2V（INT8） | A2V（官方 BF16） |
-|---|---|---|---|
-| 主模型 | `models/diffusion_models/` | `ltx-2.5-22b-distilled-transformer-comfy-int8-convrot.safetensors` | `ltx-2.5-22b-distilled-transformer-bf16.safetensors` |
-| 文本编码 | `models/text_encoders/` | `gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors` | `gemma4-12b-with-proj-ltx-2.5-bf16.safetensors` |
-| 增强器 | `models/text_encoders/` | `gemma4_e2b_it_int8_convrot.safetensors` | `gemma4_e2b_it_bf16.safetensors` |
-| Video VAE | `models/vae/` | `ltx-2.5-video-vae-bf16.safetensors` | 同名 |
-| Audio VAE | `models/vae/` | `ltx-2.5-audio-vae-bf16.safetensors` | 同名 |
-| 空间上采样 | `models/latent_upscale_models/` | `ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors` | 同名 |
+| 用途 | 目录 | 文件（T2V / I2V / A2V 共用） |
+|---|---|---|
+| 主模型 | `models/diffusion_models/` | `ltx-2.5-22b-distilled-transformer-comfy-int8-convrot.safetensors` |
+| 文本编码 | `models/text_encoders/` | `gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors` |
+| 增强器 | `models/text_encoders/` | `gemma4_e2b_it_int8_convrot.safetensors` |
+| Video VAE | `models/vae/` | `ltx-2.5-video-vae-bf16.safetensors` |
+| Audio VAE | `models/vae/` | `ltx-2.5-audio-vae-bf16.safetensors` |
+| 空间上采样 | `models/latent_upscale_models/` | `ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors` |
 
-三模式不得互换权重栈。本机若缺少某模式的文件，连通性与提交会按该模式显式报告，不会静默改用另一套权重。
+本机若缺少上表文件，连通性与提交会按该模式显式报告。
 
 节点：较新的官方 ComfyUI（含 LTX 2.5 原生节点）即可；剪掉 Gemma API 分支后不需要额外自定义节点包。A2V 无首帧时还会用到内置 `EmptyImage`。
 
@@ -30,6 +34,7 @@
 - 提示词扩写固定关闭（官方默认开启 Enhance positive prompt）。
 - 删除 Gemma API 分支，固定走本地文本编码。
 - 默认输出尺寸为 1280×704（官方成片默认约 1920×1088，本包不采用）。
+- 三个模式共用 INT8 ConvRot 权重栈（官方 A2V 示例使用 BF16 主模型与文本编码器；0.1.3 起改为与 T2V/I2V 相同的本机 INT8 文件）。
 
 ## A2V 默认提示词
 
@@ -58,7 +63,7 @@ The person shown in the first frame remains the same person and talks while look
 
 ## 安装
 
-只从本仓库 `artifacts/current/local.bgx.ltx25/0.1.1/` 选择安装（目录内有 `adapter-install.json`）。安装后把它登记为视频模型，并在软件里配置本机 ComfyUI 服务地址。本包安装信封使用 `comfyui.serviceOnly`，不再写死 `127.0.0.1:8188`。
+只从本仓库 `artifacts/current/local.bgx.ltx25/0.1.3/` 选择安装（目录内有 `adapter-install.json`）。安装后把它登记为视频模型，并在软件里配置本机 ComfyUI 服务地址。本包安装信封使用 `comfyui.serviceOnly`，不再写死 `127.0.0.1:8188`。
 
 安装包校验或离线合同检查通过，不代表真机生成已经通过。
 

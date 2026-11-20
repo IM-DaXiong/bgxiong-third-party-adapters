@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "pluginId": "local.bgx.ltx25",
+  "version": "0.1.2",
+  "displayName": "LTX 2.5",
+  "artifactSha256": "2233d05cbde72415f6630e83e7024746e0d3c5d111c7ecd63c1e4e5fbc19226a",
+  "manifestSha256": "0717fea590c0e869ff33a644a2436d8b42172fe260411dd65212b8aa08662466",
+  "zipFile": "local.bgx.ltx25-0.1.2.zip",
+  "zipSha256": "c9b384b06a7be31a1a64f6f4cf1ce034081ee67559f9c83925d22590c36fe7b4",
+  "zipBytes": 227705,
+  "installDirectory": "artifacts/current/local.bgx.ltx25/0.1.2",
+  "cdnDirectory": "artifacts/cdn",
+  "cdnPublished": false,
+  "fix": "Accept ComfyUI COMFY_DYNAMICCOMBO_V3 option keys, preflight only model/weight combos, and stop repeating the LTX 2.5 prefix in missing-resource errors.",
+  "checks": [
+    {
+      "command": "python tools/freeze_graphs.py --check",
+      "cwd": "packages/workflow-adapters/ltx25",
+      "exit": 0,
+      "status": "OK"
+    },
+    {
+      "command": "cargo +1.95.0 test --locked --offline",
+      "cwd": "packages/workflow-adapters/ltx25",
+      "exit": 0,
+      "result": "24 passed"
+    },
+    {
+      "command": "packages/workflow-adapters/ltx25/build.ps1 ; official sdk pack --out artifacts/current/local.bgx.ltx25/0.1.2/package",
+      "exit": 0,
+      "status": "PACKED"
+    },
+    {
+      "command": "python scripts/pack-cdn-directory.py --check && python scripts/pack-cdn-directory.py",
+      "exit": 0,
+      "status": "17 installable packages; existing ZIP bytes unchanged except local.bgx.ltx25-0.1.2.zip replacing 0.1.1"
+    },
+    {
+      "command": "python L:/00Dev/bgxiong-ai-story/scripts/test-adapter-online-first-install.py artifacts/cdn/local.bgx.ltx25-0.1.2.zip --video-models 3",
+      "cwd": "L:/00Dev/bgxiong-ai-story",
+      "exit": 0,
+      "result": "real_online_first_install passed; host 0.6.1119; 3 video models; ZIP SHA-256 c9b384b06a7be31a1a64f6f4cf1ce034081ee67559f9c83925d22590c36fe7b4"
+    }
+  ],
+  "installNote": "Upload the whole artifacts/cdn directory, including latest.json and local.bgx.ltx25-0.1.2.zip.",
+  "onlineFirstInstallEvidence": "release/evidence/20261120-ltx25-0.1.2-online-first-install.json"
+}

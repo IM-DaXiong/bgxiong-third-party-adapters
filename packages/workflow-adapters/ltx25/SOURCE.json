@@ -20,25 +20,25 @@
   "export": {
     "comfyVersion": "0.45.0",
     "frontendVersion": "1.58.5",
-    "exportedAt": "2026-11-19T19:52:36+08:00",
+    "exportedAt": "2026-11-20T08:36:51+08:00",
     "comfyRoot": "L:/AI/ComfyUI-Installs/ComfyUI (1)/ComfyUI",
     "endpoint": "http://127.0.0.1:8188",
     "method": "tools/export_graphs.py headless expander using live /object_info (no server Export(API) route)",
     "files": {
       "t2v": {
         "path": "workflows/export/t2v.export.json",
-        "sha256": "b29090e601bcfce7bb2385bc74389348f2f6782aaa7dca088790fbd0b27cd350",
-        "bytes": 8112
+        "sha256": "19f3c15c99ab586d6546716f81a1428b53653c17a26ba1b1999c020325b53863",
+        "bytes": 8263
       },
       "i2v": {
         "path": "workflows/export/i2v.export.json",
-        "sha256": "7c04855b58c95a42f7654c45bf6fe58d4da0224a7555dbb3357ee3a529e220f1",
-        "bytes": 8731
+        "sha256": "d30d1724bc802760de43a812c82dc3332497df29b765cff33371988979717ec1",
+        "bytes": 8912
       },
       "a2v": {
         "path": "workflows/export/a2v.export.json",
-        "sha256": "a74e08764d580a5fe0459fc9c0faf9e6a5da46bc330c009dcc2b90a292263eb9",
-        "bytes": 9701
+        "sha256": "db5f60f3d4c9c42095fbc3b8267549d8f66a51d82fc8363d8a8bc40617f559b1",
+        "bytes": 10097
       }
     }
   },
@@ -47,18 +47,18 @@
     "files": {
       "t2v": {
         "path": "workflows/t2v.api.json",
-        "sha256": "42642aeac67316922215cb29c1f4ac3a13fc07c5cff9f311caac7547775511f1",
-        "bytes": 7943
+        "sha256": "eb58ada6316eec5744ce12d1e70c36723dc27431aa5223f102300f10f1a703c7",
+        "bytes": 8094
       },
       "i2v": {
         "path": "workflows/i2v.api.json",
-        "sha256": "7b7fa5cda2255f813aefe72364920e1619d7044e63ebd54f2a169301a7e1e75a",
-        "bytes": 8553
+        "sha256": "c81f6f9260231f4858671f2c69bd6a6e2391263fa34ab0c6711879f15979d9ed",
+        "bytes": 8734
       },
       "a2v": {
         "path": "workflows/a2v.api.json",
-        "sha256": "350ba3a5d1270010fd30def44990c5eb5e290c5792a903470cde25c8ad150041",
-        "bytes": 8664
+        "sha256": "b744c59b30d414d335acd4338ac2972b7920a7a0693b1a9225696939d1f84b35",
+        "bytes": 9032
       }
     }
   },

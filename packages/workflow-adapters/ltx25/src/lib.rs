@@ -93,12 +93,13 @@ impl Failure {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Fault {
-    UnknownOperation, ModeMismatch, PromptEmpty, SizeInvalid, DurationInvalid, FpsInvalid, SeedInvalid,
+    NegativePromptInvalid, UnknownOperation, ModeMismatch, PromptEmpty, SizeInvalid, DurationInvalid, FpsInvalid, SeedInvalid,
     A2vTooFewFrames, ImageRequired, AudioRequired, AudioTooShort, ResourceMissing, ComfyRejected, FrozenGraphDrift,
 }
 impl Fault {
     fn code(self) -> &'static str {
         match self {
+            Self::NegativePromptInvalid => "INVALID_INPUT",
             Fault::ResourceMissing => "RESOURCE_UNAVAILABLE",
             Fault::ComfyRejected | Fault::FrozenGraphDrift => "UPSTREAM_ERROR",
             _ => "INVALID_INPUT",
@@ -106,6 +107,7 @@ impl Fault {
     }
     fn message(self) -> &'static str {
         match self {
+            Self::NegativePromptInvalid => "negativePrompt must be a string when present",
             Fault::UnknownOperation => "所选操作不属于 LTX 2.5",
             Fault::ModeMismatch => "所选模式与操作不一致",
             Fault::PromptEmpty => "请填写提示词",
@@ -124,13 +126,14 @@ impl Fault {
     }
     fn failure(self) -> Failure { Failure::new(self.code(), self.message()) }
     fn resource(mode_label: &str, missing: &str) -> Failure {
-        Failure::new("RESOURCE_UNAVAILABLE", format!("LTX 2.5 {mode_label}缺少 {missing}"))
+        Failure::new("RESOURCE_UNAVAILABLE", format!("{mode_label}缺少 {missing}"))
     }
 }
 
 #[derive(Debug)]
 struct Input {
     prompt: String,
+    negative_prompt: Option<String>,
     duration: u64,
     fps: u64,
     width: u64,
@@ -157,6 +160,11 @@ fn validate_input(mode: &Mode, input: &Value) -> Result<Input, Fault> {
     }
     let prompt = input.get("prompt").and_then(Value::as_str).unwrap_or("").trim();
     if prompt.is_empty() { return Err(Fault::PromptEmpty); }
+    let negative_prompt = match input.get("negativePrompt") {
+        None => None,
+        Some(Value::String(text)) => Some(if text.trim().is_empty() { String::new() } else { text.clone() }),
+        Some(_) => return Err(Fault::NegativePromptInvalid),
+    };
     let duration = input.get("durationSeconds").and_then(Value::as_u64).ok_or(Fault::DurationInvalid)?;
     if !(1..=120).contains(&duration) { return Err(Fault::DurationInvalid); }
     let fps = input.get("fps").and_then(Value::as_u64).ok_or(Fault::FpsInvalid)?;
@@ -186,7 +194,7 @@ fn validate_input(mode: &Mode, input: &Value) -> Result<Input, Fault> {
         return Err(Fault::ModeMismatch);
     }
     Ok(Input {
-        prompt: prompt.to_string(), duration, fps, width, height, seed, audio_start,
+        prompt: prompt.to_string(), negative_prompt, duration, fps, width, height, seed, audio_start,
         image: images.into_iter().next(), audio: audios.into_iter().next(),
     })
 }
@@ -215,6 +223,57 @@ fn assert_baked(mode: &Mode, graph: &Value) -> Result<(), Fault> {
         let actual = graph.get(baked.node).and_then(|n| n.get("inputs")).and_then(|i| i.get(baked.field));
         if actual != Some(&json!(baked.value)) { return Err(Fault::FrozenGraphDrift); }
     }
+    Ok(())
+}
+
+
+// Request-local transformation; frozen workflow files remain byte-for-byte immutable.
+const NAG_NODE: &str = "bgx_ltx25_negative_guidance";
+struct NegativePorts {
+    sha: &'static str, guiders: [&'static str; 2], model: &'static str,
+    conditioning: &'static str, encoder: &'static str, text: Patch,
+}
+fn negative_ports(mode: &Mode) -> Result<NegativePorts, Fault> {
+    Ok(match mode.id {
+        "t2v" => NegativePorts { sha:"eb58ada6316eec5744ce12d1e70c36723dc27431aa5223f102300f10f1a703c7", guiders:["419","427"], model:"439", conditioning:"430", encoder:"433", text:Patch{node:"433",field:"text"} },
+        "i2v" => NegativePorts { sha:"c81f6f9260231f4858671f2c69bd6a6e2391263fa34ab0c6711879f15979d9ed", guiders:["427","445"], model:"411", conditioning:"415", encoder:"419", text:Patch{node:"419",field:"text"} },
+        "a2v" => NegativePorts { sha:"b744c59b30d414d335acd4338ac2972b7920a7a0693b1a9225696939d1f84b35", guiders:["5516:4828","5517:4964"], model:"5575:5569", conditioning:"5014:1241", encoder:"5014:2612", text:Patch{node:"5509",field:"value"} },
+        _ => return Err(Fault::UnknownOperation),
+    })
+}
+fn apply_negative_prompt(mode: &Mode, graph: &mut Value, negative: Option<&str>) -> Result<(), Fault> {
+    let Some(text) = negative else { return Ok(()); };
+    let ports = negative_ports(mode)?;
+    let digest: String = Sha256::digest(mode.graph.as_bytes()).iter().map(|b| format!("{b:02x}")).collect();
+    if digest != ports.sha || graph.get(NAG_NODE).is_some()
+        || graph[ports.model]["class_type"] != "UNETLoader"
+        || graph[ports.conditioning]["class_type"] != "LTXVConditioning"
+        || graph[ports.encoder]["class_type"] != "CLIPTextEncode"
+        || graph[ports.conditioning]["inputs"]["negative"] != json!([ports.encoder,0]) {
+        return Err(Fault::FrozenGraphDrift);
+    }
+    let guider_class = if mode.id == "a2v" { "CFGGuider" } else { "LTXVDualCFGGuider" };
+    for guider in ports.guiders {
+        if graph[guider]["class_type"] != guider_class
+            || graph[guider]["inputs"]["model"] != json!([ports.model,0])
+            || graph[guider]["inputs"]["negative"] != json!([ports.conditioning,1]) {
+            return Err(Fault::FrozenGraphDrift);
+        }
+    }
+    if mode.id == "a2v" && (graph[ports.encoder]["inputs"]["text"] != json!([ports.text.node,0])
+        || graph[ports.text.node]["class_type"] != "PrimitiveStringMultiline") {
+        return Err(Fault::FrozenGraphDrift);
+    }
+    let text = if text.trim().is_empty() { "" } else { text };
+    write_text(graph, ports.text, text)?;
+    if text.is_empty() { return Ok(()); }
+    // Verified against KJNodes V3 define_schema and live /object_info/LTX2_NAG.
+    // Only video conditioning is patched: user-supplied audio is not re-guided.
+    graph[NAG_NODE] = json!({"class_type":"LTX2_NAG","inputs":{
+        "model":[ports.model,0],"nag_scale":11.0,"nag_alpha":0.25,"nag_tau":2.5,
+        "nag_cond_video":[ports.conditioning,1],"inplace":false
+    }});
+    for guider in ports.guiders { graph[guider]["inputs"]["model"] = json!([NAG_NODE,0]); }
     Ok(())
 }
 
@@ -263,6 +322,7 @@ fn build_graph(mode: &Mode, input: &Input, files: &[(&str, &str)]) -> Result<Val
             graph[sw.node]["inputs"][sw.field] = json!(flag);
         }
     }
+    apply_negative_prompt(mode, &mut graph, input.negative_prompt.as_deref())?;
     assert_baked(mode, &graph)?;
     Ok(graph)
 }
@@ -274,11 +334,36 @@ fn combo_options(spec: &Value) -> Option<&Vec<Value>> {
     spec.get(1).and_then(|v| v.get("options")).and_then(Value::as_array)
 }
 
+fn combo_option_matches(item: &Value, expected: &str) -> bool {
+    item.as_str() == Some(expected)
+        || item.get("key").and_then(Value::as_str) == Some(expected)
+}
+
 fn is_upload_field(class: &str, field: &str) -> bool {
     (class == "LoadImage" && field == "image") || (class == "LoadAudio" && field == "audio")
 }
 
+/// Only model/weight/file combos are treated as installable resources.
+/// Parameter enumerations such as SaveVideo.format/codec, sampler_name, scheduler,
+/// device, and weight_dtype must not be reported as missing files.
+fn is_model_resource_field(field: &str) -> bool {
+    matches!(
+        field,
+        "unet_name"
+            | "vae_name"
+            | "clip_name"
+            | "ckpt_name"
+            | "lora_name"
+            | "model_name"
+            | "audio_vae"
+    )
+}
+
 struct Issue { message: String }
+
+fn missing_resource(mode: &Mode, missing: &str) -> Issue {
+    Issue { message: format!("{}缺少 {}", mode.label, missing) }
+}
 
 /// Node classes this mode must probe on ComfyUI. A2V also needs EmptyImage when
 /// the first-frame slot is empty (runtime swaps LoadImage for EmptyImage).
@@ -297,30 +382,58 @@ fn resource_classes(mode: &Mode) -> Vec<String> {
     classes
 }
 
+
+fn needs_negative_guidance(input: &Input) -> bool {
+    input.negative_prompt.as_ref().is_some_and(|text| !text.trim().is_empty())
+}
+fn request_resource_classes(mode: &Mode, input: &Input) -> Vec<String> {
+    let mut classes = resource_classes(mode);
+    if needs_negative_guidance(input) { classes.push("LTX2_NAG".to_string()); }
+    classes
+}
+fn nag_contract_compatible(info: &Value) -> bool {
+    let node = &info["LTX2_NAG"];
+    let required = &node["input"]["required"];
+    let optional = &node["input"]["optional"];
+    [("model","MODEL"),("nag_scale","FLOAT"),("nag_alpha","FLOAT"),("nag_tau","FLOAT")]
+        .iter().all(|(key,kind)| required[*key][0] == *kind)
+        && optional["nag_cond_video"][0] == "CONDITIONING"
+        && optional["inplace"][0] == "BOOLEAN"
+        && node["output"][0] == "MODEL"
+}
+fn check_request_resources(mode: &Mode, input: &Input, info: &Value) -> Vec<Issue> {
+    let mut issues = check_mode_resources(mode, info);
+    if needs_negative_guidance(input) && !nag_contract_compatible(info) {
+        issues.push(missing_resource(mode,"LTX2_NAG (missing or incompatible input/output contract)"));
+    }
+    issues
+}
+
 fn check_mode_resources(mode: &Mode, object_info: &Value) -> Vec<Issue> {
     let mut issues = Vec::new();
     let graph: Value = serde_json::from_str(mode.graph).expect("frozen graph");
     let nodes = graph.as_object().expect("frozen graph object");
     if mode.id == "a2v" && object_info.get("EmptyImage").is_none() {
-        issues.push(Issue { message: format!("LTX 2.5 {}缺少 EmptyImage", mode.label) });
+        issues.push(missing_resource(mode, "EmptyImage"));
     }
     for node in nodes.values() {
         let Some(class) = node.get("class_type").and_then(Value::as_str) else { continue; };
         if object_info.get(class).is_none() {
-            issues.push(Issue { message: format!("LTX 2.5 {}缺少 {}", mode.label, class) });
+            issues.push(missing_resource(mode, class));
             continue;
         }
         let Some(inputs) = node.get("inputs").and_then(Value::as_object) else { continue; };
         for (field, value) in inputs {
+            if !is_model_resource_field(field) { continue; }
             let Some(expected) = value.as_str() else { continue; };
-            if is_upload_field(class, field) { continue; }
+            if expected.is_empty() || is_upload_field(class, field) { continue; }
             let info = &object_info[class];
             let required = info.get("input").and_then(|i| i.get("required")).and_then(|r| r.get(field));
             let optional = info.get("input").and_then(|i| i.get("optional")).and_then(|r| r.get(field));
             let Some(spec) = required.or(optional) else { continue; };
             if let Some(options) = combo_options(spec) {
-                if !options.iter().any(|item| item.as_str() == Some(expected)) {
-                    issues.push(Issue { message: format!("LTX 2.5 {}缺少 {}", mode.label, expected) });
+                if !options.iter().any(|item| combo_option_matches(item, expected)) {
+                    issues.push(missing_resource(mode, expected));
                 }
             }
         }
@@ -426,10 +539,14 @@ fn prepare_input(payload: &Value) -> Value {
         }
     }
     let input = &payload["input"];
-    json!({"kind":"operation_input_preflight","status":"ready","requestDigest":digest,"material":{
+    let mut result = json!({"kind":"operation_input_preflight","status":"ready","requestDigest":digest,"material":{
         "operationId":mode.operation,"durationSeconds":input["durationSeconds"],"fps":input["fps"],
         "width":input["width"],"height":input["height"],"seed":input["seed"]
-    }})
+    }});
+    if let Some(text) = validate_input(mode, input).ok().and_then(|input| input.negative_prompt) {
+        result["material"]["negativePrompt"] = json!(text);
+    }
+    result
 }
 
 fn file_for<'a>(media: &'a [Value], id: &str, kind: &str) -> Result<&'a Value, Failure> {
@@ -485,9 +602,9 @@ fn submit(host: &mut dyn Host, request: &Invocation, p: &Value) -> Result<Value,
     let mode = mode_by_operation(p["operationId"].as_str().unwrap_or("")).map_err(Fault::failure)?;
     let parsed = validate_input(mode, &p["input"]).map_err(Fault::failure)?;
     let ctx = context(request, p);
-    let classes = resource_classes(mode);
+    let classes = request_resource_classes(mode, &parsed);
     let info = comfy::object_info_for_classes(host, &ctx, &classes)?;
-    if let Some(issue) = check_mode_resources(mode, &info).into_iter().next() {
+    if let Some(issue) = check_request_resources(mode, &parsed, &info).into_iter().next() {
         return Err(Failure::new("RESOURCE_UNAVAILABLE", issue.message));
     }
     if let Some(port) = mode.audio {
@@ -826,13 +943,80 @@ mod tests {
         assert!(!t2v.iter().any(|c| c == "EmptyImage"));
     }
 
+    fn declared_model_info() -> Value {
+        let mut info = json!({"EmptyImage":{"input":{"required":{}}}});
+        for mode in &MODES {
+            let graph: Value = serde_json::from_str(mode.graph).unwrap();
+            for node in graph.as_object().unwrap().values() {
+                let class = node["class_type"].as_str().unwrap();
+                if info.get(class).is_none() {
+                    info[class] = json!({"input":{"required":{}}});
+                }
+                if let Some(inputs) = node.get("inputs").and_then(Value::as_object) {
+                    for (field, value) in inputs {
+                        if let Some(name) = value.as_str() {
+                            if is_model_resource_field(field) && !name.is_empty() {
+                                let options = info[class]["input"]["required"][field].get(0).cloned().unwrap_or(json!([]));
+                                let mut names = options.as_array().cloned().unwrap_or_default();
+                                if !names.iter().any(|item| combo_option_matches(item, name)) {
+                                    names.push(json!(name));
+                                }
+                                info[class]["input"]["required"][field] = json!([names, {}]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        info["SaveVideo"]["input"]["required"]["format"] = json!([
+            "COMFY_DYNAMICCOMBO_V3",
+            {"options":[{"key":"auto","label":"Auto"},{"key":"mp4"}]}
+        ]);
+        info["SaveVideo"]["input"]["required"]["codec"] = json!([
+            "COMFY_DYNAMICCOMBO_V3",
+            {"options":[{"key":"auto","label":"Auto"}]}
+        ]);
+        info
+    }
+
+    fn assert_no_duplicate_product_prefix(issues: &[Issue]) {
+        for issue in issues {
+            assert!(
+                !issue.message.contains("LTX 2.5 LTX 2.5"),
+                "duplicate product prefix: {}",
+                issue.message
+            );
+            if issue.message.contains("缺少") {
+                assert!(
+                    issue.message.starts_with("LTX 2.5 ") && !issue.message.starts_with("LTX 2.5 LTX 2.5"),
+                    "unexpected resource message: {}",
+                    issue.message
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn combo_option_matches_string_and_dynamic_key() {
+        assert!(combo_option_matches(&json!("auto"), "auto"));
+        assert!(combo_option_matches(&json!({"key":"auto","label":"Auto"}), "auto"));
+        assert!(!combo_option_matches(&json!({"key":"mp4"}), "auto"));
+        assert!(!combo_option_matches(&json!("mp4"), "auto"));
+        assert!(!combo_option_matches(&json!({"label":"auto"}), "auto"));
+    }
+
     #[test]
     fn resource_check_reports_per_mode() {
         let empty = json!({});
         let t2v_issues = check_mode_resources(&T2V, &empty);
-        assert!(t2v_issues.iter().any(|i| i.message.contains("LTX 2.5 文生视频缺少")));
+        assert!(t2v_issues.iter().any(|i| i.message.starts_with("LTX 2.5 文生视频缺少 ")));
+        assert_no_duplicate_product_prefix(&t2v_issues);
+        let i2v_issues = check_mode_resources(&I2V, &empty);
+        assert!(i2v_issues.iter().any(|i| i.message.starts_with("LTX 2.5 图生视频缺少 ")));
+        assert_no_duplicate_product_prefix(&i2v_issues);
         let a2v_issues = check_mode_resources(&A2V, &empty);
-        assert!(a2v_issues.iter().any(|i| i.message.contains("EmptyImage")));
+        assert!(a2v_issues.iter().any(|i| i.message == "LTX 2.5 音频生视频缺少 EmptyImage"));
+        assert_no_duplicate_product_prefix(&a2v_issues);
         let mut info = json!({"EmptyImage":{"input":{"required":{}}}});
         // include every class from all graphs with empty required so only missing filenames are reported
         for mode in &MODES {
@@ -859,11 +1043,74 @@ mod tests {
             }
         }
         assert!(check_mode_resources(&T2V, &info).is_empty());
+        assert!(check_mode_resources(&I2V, &info).is_empty());
         // drop one A2V weight and skip LoadAudio.audio
         info["UNETLoader"]["input"]["required"]["unet_name"] = json!([["other.safetensors"], {}]);
         let missing = check_mode_resources(&A2V, &info);
-        assert!(missing.iter().any(|i| i.message.contains("ltx-2.5-22b-distilled-transformer-bf16.safetensors")));
+        assert!(missing.iter().any(|i| i.message == "LTX 2.5 音频生视频缺少 ltx-2.5-22b-distilled-transformer-comfy-int8-convrot.safetensors"));
         assert!(!missing.iter().any(|i| i.message.contains("example.png")));
+        assert_no_duplicate_product_prefix(&missing);
+    }
+
+    #[test]
+    fn save_video_dynamic_combo_is_not_reported_as_missing() {
+        let info = declared_model_info();
+        for mode in &MODES {
+            let issues = check_mode_resources(mode, &info);
+            assert!(issues.is_empty(), "{} unexpected issues: {:?}", mode.id, issues.iter().map(|i| i.message.as_str()).collect::<Vec<_>>());
+        }
+        let options = combo_options(&info["SaveVideo"]["input"]["required"]["format"]).unwrap();
+        assert!(options.iter().any(|item| combo_option_matches(item, "auto")));
+        assert!(options.iter().all(|item| item.as_str().is_none()));
+    }
+
+    #[test]
+    fn parameter_enums_are_not_treated_as_resources() {
+        let mut info = declared_model_info();
+        // Deliberately omit "auto" / sampler values so a naive combo scan would false-positive.
+        info["SaveVideo"]["input"]["required"]["format"] = json!([["mp4"], {}]);
+        info["SaveVideo"]["input"]["required"]["codec"] = json!([["h264"], {}]);
+        info["KSamplerSelect"]["input"]["required"]["sampler_name"] = json!([["euler"], {}]);
+        info["CLIPLoader"]["input"]["required"]["device"] = json!([["cpu"], {}]);
+        info["UNETLoader"]["input"]["required"]["weight_dtype"] = json!([["fp8_e4m3fn"], {}]);
+        for mode in &MODES {
+            let issues = check_mode_resources(mode, &info);
+            assert!(issues.is_empty(), "{} treated a parameter enum as a missing resource: {:?}", mode.id, issues.iter().map(|i| i.message.as_str()).collect::<Vec<_>>());
+        }
+    }
+
+    #[test]
+    fn string_combo_still_detects_missing_model_files() {
+        let mut info = declared_model_info();
+        info["UNETLoader"]["input"]["required"]["unet_name"] = json!([["other.safetensors"], {}]);
+        let t2v = check_mode_resources(&T2V, &info);
+        let i2v = check_mode_resources(&I2V, &info);
+        let a2v = check_mode_resources(&A2V, &info);
+        assert!(t2v.iter().any(|i| i.message == "LTX 2.5 文生视频缺少 ltx-2.5-22b-distilled-transformer-comfy-int8-convrot.safetensors"));
+        assert!(i2v.iter().any(|i| i.message == "LTX 2.5 图生视频缺少 ltx-2.5-22b-distilled-transformer-comfy-int8-convrot.safetensors"));
+        assert!(a2v.iter().any(|i| i.message == "LTX 2.5 音频生视频缺少 ltx-2.5-22b-distilled-transformer-comfy-int8-convrot.safetensors"));
+        assert_no_duplicate_product_prefix(&t2v);
+        assert_no_duplicate_product_prefix(&i2v);
+        assert_no_duplicate_product_prefix(&a2v);
+        // Traditional string options still match when the file is present.
+        info["UNETLoader"]["input"]["required"]["unet_name"] = json!([
+            ["ltx-2.5-22b-distilled-transformer-comfy-int8-convrot.safetensors"],
+            {}
+        ]);
+        assert!(check_mode_resources(&T2V, &info).is_empty());
+        assert!(check_mode_resources(&I2V, &info).is_empty());
+        assert!(check_mode_resources(&A2V, &info).is_empty());
+    }
+
+    #[test]
+    fn resource_messages_use_mode_label_once() {
+        let failure = Fault::resource(A2V.label, "auto");
+        assert_eq!(failure.code, "RESOURCE_UNAVAILABLE");
+        assert_eq!(failure.message, "LTX 2.5 音频生视频缺少 auto");
+        assert!(!failure.message.contains("LTX 2.5 LTX 2.5"));
+        let missing = check_mode_resources(&A2V, &json!({}));
+        assert!(missing.iter().any(|i| i.message == "LTX 2.5 音频生视频缺少 EmptyImage"));
+        assert_no_duplicate_product_prefix(&missing);
     }
 
     #[test]
@@ -872,4 +1119,159 @@ mod tests {
         assert_eq!(data, json!({"description":"media-99"}));
         assert_eq!(data.as_object().unwrap().len(), 1);
     }
+
+    #[test]
+    fn negative_unrecorded_preserves_frozen_graph_exactly_all_modes() {
+        for mode in &MODES {
+            let frozen: Value = serde_json::from_str(mode.graph).unwrap();
+            let mut actual = frozen.clone();
+            apply_negative_prompt(mode, &mut actual, None).unwrap();
+            assert_eq!(actual, frozen, "{}", mode.id);
+            assert!(actual.get(NAG_NODE).is_none());
+        }
+    }
+    #[test]
+    fn negative_clear_changes_only_negative_text_all_modes() {
+        for mode in &MODES {
+            let frozen: Value = serde_json::from_str(mode.graph).unwrap();
+            let ports = negative_ports(mode).unwrap();
+            let mut expected = frozen.clone();
+            expected[ports.text.node]["inputs"][ports.text.field] = json!("");
+            for text in ["", " \t\n", "\u{3000}"] {
+                let mut actual = frozen.clone();
+                apply_negative_prompt(mode, &mut actual, Some(text)).unwrap();
+                assert_eq!(actual, expected, "{}", mode.id);
+                assert!(actual.get(NAG_NODE).is_none());
+            }
+        }
+    }
+    #[test]
+    fn negative_filled_wires_verified_nag_video_contract_all_modes() {
+        for mode in &MODES {
+            let mut graph: Value = serde_json::from_str(mode.graph).unwrap();
+            let ports = negative_ports(mode).unwrap();
+            let text = "  subtitles, 水印  ";
+            apply_negative_prompt(mode, &mut graph, Some(text)).unwrap();
+            assert_eq!(graph[ports.text.node]["inputs"][ports.text.field], text);
+            assert_eq!(graph[NAG_NODE]["class_type"], "LTX2_NAG");
+            let inputs = &graph[NAG_NODE]["inputs"];
+            assert_eq!(inputs["model"], json!([ports.model,0]));
+            assert_eq!(inputs["nag_cond_video"], json!([ports.conditioning,1]));
+            assert!(inputs["nag_scale"].as_f64().unwrap() > 0.0);
+            assert_eq!(inputs["nag_alpha"], 0.25);
+            assert_eq!(inputs["nag_tau"], 2.5);
+            assert_eq!(inputs["inplace"], false);
+            assert!(inputs.get("nag_cond_audio").is_none());
+            for guider in ports.guiders {
+                assert_eq!(graph[guider]["inputs"]["model"], json!([NAG_NODE,0]));
+                assert_eq!(graph[guider]["inputs"]["negative"], json!([ports.conditioning,1]));
+            }
+        }
+    }
+    #[test]
+    fn negative_fixed_seed_filled_clear_missing_no_request_leak_all_modes() {
+        for mode in &MODES {
+            let original = sample(mode);
+            let baseline = build_graph(mode, &validate_input(mode, &original).unwrap(), &[]).unwrap();
+            for negative in [Some("watermark"), Some(""), None, Some(" \n"), None] {
+                let mut input = original.clone();
+                if let Some(text) = negative { input["negativePrompt"] = json!(text); }
+                let parsed = validate_input(mode, &input).unwrap();
+                let graph = build_graph(mode, &parsed, &[]).unwrap();
+                assert_eq!(graph.get(NAG_NODE).is_some(), negative.is_some_and(|s| !s.trim().is_empty()));
+                if negative.is_none() { assert_eq!(graph, baseline); }
+                for (patch,offset) in mode.seeds {
+                    assert_eq!(graph[patch.node]["inputs"][patch.field], json!(7+offset));
+                }
+            }
+        }
+    }
+    #[test]
+    fn negative_invalid_type_rejected_and_missing_is_not_materialized() {
+        for mode in &MODES {
+            let missing = sample(mode);
+            assert!(validate_input(mode, &missing).unwrap().negative_prompt.is_none());
+            assert!(missing.get("negativePrompt").is_none());
+            for bad in [Value::Null,json!(false),json!(4),json!([]),json!({})] {
+                let mut input = missing.clone();input["negativePrompt"] = bad;
+                assert_eq!(validate_input(mode, &input).unwrap_err(), Fault::NegativePromptInvalid);
+            }
+        }
+    }
+    #[test]
+    fn negative_graph_drift_rejected_before_insertion_all_modes() {
+        for mode in &MODES {
+            let ports = negative_ports(mode).unwrap();
+            let frozen: Value = serde_json::from_str(mode.graph).unwrap();
+            for node in [ports.model,ports.encoder,ports.conditioning,ports.guiders[0],ports.guiders[1]] {
+                let mut graph = frozen.clone();graph[node]["class_type"] = json!("NotTheExpectedClass");
+                assert_eq!(apply_negative_prompt(mode, &mut graph, Some("watermark")).unwrap_err(), Fault::FrozenGraphDrift);
+            }
+            let mut graph = frozen.clone();graph[ports.guiders[0]]["inputs"]["model"] = json!([ports.model,1]);
+            assert_eq!(apply_negative_prompt(mode, &mut graph, Some("watermark")).unwrap_err(), Fault::FrozenGraphDrift);
+        }
+    }
+
+
+    #[test]
+    fn negative_resources_are_strictly_request_conditional_all_modes() {
+        let native_info = declared_model_info();
+        for mode in &MODES {
+            for text in [None,Some(""),Some(" \n"),Some("watermark")] {
+                let mut input = sample(mode);
+                if let Some(text) = text { input["negativePrompt"] = json!(text); }
+                let parsed = validate_input(mode, &input).unwrap();
+                let needed = text.is_some_and(|text| !text.trim().is_empty());
+                assert_eq!(request_resource_classes(mode,&parsed).iter().any(|c| c=="LTX2_NAG"),needed);
+                assert_eq!(!check_request_resources(mode,&parsed,&native_info).is_empty(),needed);
+                let mut info = native_info.clone();
+                info["LTX2_NAG"] = json!({"input":{"required":{"model":["MODEL",{}],"nag_scale":["FLOAT",{}],"nag_alpha":["FLOAT",{}],"nag_tau":["FLOAT",{}]},"optional":{"nag_cond_video":["CONDITIONING",{}],"inplace":["BOOLEAN",{}]}},"output":["MODEL"]});
+                assert!(check_request_resources(mode,&parsed,&info).is_empty());
+                info["LTX2_NAG"]["input"]["optional"]["nag_cond_video"] = json!(["STRING",{}]);
+                assert_eq!(!check_request_resources(mode,&parsed,&info).is_empty(),needed);
+            }
+        }
+    }
+    #[test]
+    fn negative_preflight_preserves_missing_clear_and_user_text_all_modes() {
+        for mode in &MODES {
+            for text in [None,Some(""),Some(" \n"),Some(" watermark ")] {
+                let mut input = sample(mode);
+                if let Some(text) = text {input["negativePrompt"] = json!(text);}
+                let result = prepare_input(&json!({"selection":{"operationId":mode.operation},"input":input,"requestDigest":"test"}));
+                assert_eq!(result["status"],"ready");
+                let got = result["material"].get("negativePrompt");
+                match text {
+                    None => assert!(got.is_none()),
+                    Some(text) if text.trim().is_empty() => assert_eq!(got,Some(&json!(""))),
+                    Some(text) => assert_eq!(got,Some(&json!(text))),
+                }
+            }
+        }
+    }
+
+
+    #[test]
+    #[ignore = "writes request-local smoke fixtures only when BGX_P0_SMOKE_DIR is set"]
+    fn export_negative_smoke_graphs() {
+        let root=std::path::PathBuf::from(std::env::var("BGX_P0_SMOKE_DIR").expect("explicit isolated evidence directory required"));
+        std::fs::create_dir_all(&root).unwrap();
+        let image=std::env::var("BGX_P0_IMAGE_REF").expect("synthetic image upload reference required");
+        let audio=std::env::var("BGX_P0_AUDIO_REF").expect("synthetic audio upload reference required");
+        for mode in &MODES {
+            for (state,text) in [("native",None),("filled",Some("watermark, subtitles")),("clear",Some("")),("unrecorded",None)] {
+                let mut input=sample(mode);input["width"]=json!(256);input["height"]=json!(256);
+                input["durationSeconds"]=json!(1);input["fps"]=json!(24);input["seed"]=json!(7);
+                if mode.image.is_some() {input["image"]=json!([{"mediaId":"img-1"}]);}
+                if let Some(text)=text {input["negativePrompt"]=json!(text);}
+                let parsed=validate_input(mode,&input).unwrap();let mut files=vec![];
+                if let Some(port)=mode.image {files.push((port.load,image.as_str()));}
+                if let Some(port)=mode.audio {files.push((port.load,audio.as_str()));}
+                let mut graph=build_graph(mode,&parsed,&files).unwrap();
+                graph[mode.save]["inputs"]["filename_prefix"]=json!(format!("video/bgx_custom_nodes_p0/{0}_{state}",mode.id));
+                std::fs::write(root.join(format!("{0}_{state}.json",mode.id)),serde_json::to_vec_pretty(&graph).unwrap()).unwrap();
+            }
+        }
+    }
+
 }

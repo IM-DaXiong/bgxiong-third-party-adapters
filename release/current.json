@@ -1558,45 +1558,45 @@
     },
     {
       "pluginId": "local.bgx.ltx25",
-      "version": "0.1.1",
+      "version": "0.1.3",
       "kind": "installable",
       "validation": "sdk_package_validated",
-      "sourceManifest": "records/release-sources/ltx25/0.1.1/manifest.json",
+      "sourceManifest": "records/release-sources/ltx25/0.1.3/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",
-          "source": "artifacts/current/local.bgx.ltx25/0.1.1/adapter-install.json",
-          "sha256": "dea63ef4ade5e92c9006300773fe7caddbd0ff120c867be8ee33353969f7e4da"
+          "source": "artifacts/current/local.bgx.ltx25/0.1.3/adapter-install.json",
+          "sha256": "610db8a956efc12a87995a6867455e551557be0fc06eaba91da9c44f4c1369b8"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/current/local.bgx.ltx25/0.1.1/LICENSE",
+          "source": "artifacts/current/local.bgx.ltx25/0.1.3/LICENSE",
           "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/current/local.bgx.ltx25/0.1.1/README.txt",
-          "sha256": "8a7d612af28d451a3e2b4fbc260b93d9c88ea6e177c4a25a391a64e5c8c2e196"
+          "source": "artifacts/current/local.bgx.ltx25/0.1.3/README.txt",
+          "sha256": "e9bc5827f9b42c236d2555b887973df8a724124b9d19e1a5c9692723c30cd8a8"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/current/local.bgx.ltx25/0.1.1/安装说明.txt",
-          "sha256": "d3f03e795a68fe21b2eefabf183aa6760fcffef2c6c9b7fb61ea450902cef5fb"
+          "source": "artifacts/current/local.bgx.ltx25/0.1.3/安装说明.txt",
+          "sha256": "ce3b85c42614df72a4fb747b9fd7a0c04a5b91e0e7968a0587d9652ffa7e520f"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/current/local.bgx.ltx25/0.1.1/package/adapter.wasm",
-          "sha256": "2921c49e22ab08e7addb56bd9d0e16b09f8dc54f455e5ab98f1e89b05ed7d339"
+          "source": "artifacts/current/local.bgx.ltx25/0.1.3/package/adapter.wasm",
+          "sha256": "5c95dd5d5baaa77ae356c76d170d1aef11fbbc279842744cd18d9f75361308b8"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/current/local.bgx.ltx25/0.1.1/package/manifest.json",
-          "sha256": "06a4a1946bddb6a8d6ea19533f0018f531e82b96717f33b54a3bf6f8b73836a8"
+          "source": "artifacts/current/local.bgx.ltx25/0.1.3/package/manifest.json",
+          "sha256": "0f22774ab6c796775376af3cf00b428e0cd3557356f1069a9618d816c7102b02"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/current/local.bgx.ltx25/0.1.1/package/manifest.sha256",
-          "sha256": "aac7492aaad3bfcd75d38006df56d1fb61602e993c2d9778f529e6718d3e34b1"
+          "source": "artifacts/current/local.bgx.ltx25/0.1.3/package/manifest.sha256",
+          "sha256": "c00ddc5e3c6af6f69d7636b53c5669be44e0fe4af6b310a102d22697d92742c4"
         }
       ]
     }

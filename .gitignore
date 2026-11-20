@@ -57,3 +57,9 @@
 /packages/cloud-adapters/runninghub-h3-spectrum-dynamic/
 /packages/cloud-adapters/runninghub-h3-r2v-dynamic/
 /packages/cloud-adapters/runninghub-h3-r2v-soundtrack/
+
+# Local adapter build scratch and machine-only release receipts.
+packages/.adapter-build/
+release/current-artifact.local.json
+# Local install/live verification dumps; keep package source and release envelopes.
+release/evidence/
