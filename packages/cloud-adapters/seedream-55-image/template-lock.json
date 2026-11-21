@@ -37,10 +37,10 @@
       "sources": [
         {
           "path": "sdk/rust/src/host.rs",
-          "sha256": "c6af2d4db6f54645c3b21a5477f835ad0ebc7aa1fb59e7b45fec53e8c9629067"
+          "sha256": "4526cad02b5530cf84e1665a72c98af53e4f46c631a7b9a21834021decce6158"
         }
       ],
-      "sha256": "c6af2d4db6f54645c3b21a5477f835ad0ebc7aa1fb59e7b45fec53e8c9629067",
+      "sha256": "4526cad02b5530cf84e1665a72c98af53e4f46c631a7b9a21834021decce6158",
       "transform": "byte-copy"
     },
     {

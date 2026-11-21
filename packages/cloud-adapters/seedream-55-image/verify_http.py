@@ -7,7 +7,7 @@ import subprocess
 import uuid
 
 
-FEATURES = ["stream-events-v1", "operation-input-preflight-v2"]
+FEATURES = ["stream-events-v1", "operation-input-preflight-v2", "synchronous-http-wait-v1"]
 PLUGIN = "local.bgx.seedream-55-image"
 MODEL = "doubao-seedream-5-5-261028"
 

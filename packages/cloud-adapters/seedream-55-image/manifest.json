@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "05059fb500435de393ad0a22f9eb918e71a0965d2e8742dc5fed55c96a797ccd",
+  "artifactSha256": "6f154628f68b768bbc25416ed7fc04d7c8d1eae3527ee3ad1834fb301298beba",
   "displayName": "Seedream-55-image",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -39,8 +39,9 @@
   },
   "requiredFeatures": [
     "stream-events-v1",
-    "operation-input-preflight-v2"
+    "operation-input-preflight-v2",
+    "synchronous-http-wait-v1"
   ],
   "schemaVersion": 2,
-  "version": "1.0.5"
+  "version": "1.0.6"
 }

@@ -5,7 +5,7 @@ extern crate alloc;
 
 use alloc::{
     borrow::ToOwned,
-    string::{String, ToString},
+    string::String,
     vec::Vec,
 };
 
@@ -61,13 +61,12 @@ impl From<Invalid> for Failure {
 }
 
 fn port(host: &mut dyn Host, method: &str, args: Value) -> Result<Value, Failure> {
-    host::call(host, method, &args).map_err(|error| {
-        let code = serde_json::to_value(&error).unwrap_or(Value::Null);
-        fail(
-            code["code"].as_str().unwrap_or("UPSTREAM_ERROR"),
-            "适配器宿主操作失败",
-        )
-    })
+    host::call(host, method, &args).map_err(host_failure)
+}
+
+fn host_failure(error: host::HostError) -> Failure {
+    let code = serde_json::to_value(&error).unwrap_or(Value::Null);
+    fail(code["code"].as_str().unwrap_or("UPSTREAM_ERROR"), "适配器宿主操作失败")
 }
 
 fn result_stage(host: &mut dyn Host, code: &str, message: &str) {
@@ -182,14 +181,7 @@ fn read_media(host: &mut dyn Host, handle: &str, size: usize) -> Result<Vec<u8>,
     let mut bytes = Vec::with_capacity(size);
     while bytes.len() < size {
         let count = RESULT_READ_CHUNK.min(size - bytes.len());
-        let part: Vec<u8> = serde_json::from_value(port(
-            host,
-            "host-media.read",
-            json!({
-                "handle":handle,"offset":bytes.len().to_string(),"maxBytes":count,
-            }),
-        )?)
-        .map_err(|_| malformed())?;
+        let part = host.read_media(handle, bytes.len() as u64, count as u32).map_err(host_failure)?;
         if part.is_empty() || part.len() > count {
             return Err(malformed());
         }
@@ -211,11 +203,7 @@ fn create_media(host: &mut dyn Host, kind: &str, mime: &str) -> Result<String, F
 
 fn append_media(host: &mut dyn Host, handle: &str, bytes: &[u8]) -> Result<(), Failure> {
     for chunk in bytes.chunks(CHUNK) {
-        port(
-            host,
-            "host-media.write",
-            json!({"handle":handle,"bytes":chunk}),
-        )?;
+        host.write_media(handle, chunk).map_err(host_failure)?;
     }
     Ok(())
 }
@@ -362,13 +350,21 @@ fn submit(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<
     {
         return Err(fail("UNAUTHORIZED", "请绑定北京火山方舟账号"));
     }
-    let handle = request_body(host, &parameters, &payload["media"])?;
+    result_stage(host, "SEEDREAM_PREPARE", "Preparing generation request body");
+    let handle = request_body(host, &parameters, &payload["media"]).map_err(|mut error| {
+        if error.code != "INVALID_INPUT" {
+            error.code = "RESOURCE_UNAVAILABLE".into();
+            error.message = "本地参考图或生图请求体处理失败";
+        }
+        error
+    })?;
+    result_stage(host, "SEEDREAM_REQUEST_READY", "Generation request body prepared");
     let response = http(
         host,
         "POST",
         ENDPOINT,
         json!({"kind":"media","handle":handle}),
-        request.r#budget_ms,
+        0,
     )
     .map_err(|error| match error.code.as_str() {
         "INVALID_INPUT" | "UNAUTHORIZED" | "PERMISSION_DENIED" | "UNSUPPORTED_FEATURE" => error,
