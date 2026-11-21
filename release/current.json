@@ -3,6 +3,50 @@
   "projectName": "bgxiong-third-party-adapters",
   "packages": [
     {
+      "pluginId": "local.bgx.seedream-55-image",
+      "version": "1.0.0",
+      "kind": "installable",
+      "validation": "sdk_package_validated",
+      "sourceManifest": "packages/cloud-adapters/seedream-55-image/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/current/local.bgx.seedream-55-image/1.0.0/adapter-install.json",
+          "sha256": "421549350b9dda317eb047d813d067ed974e4bbdc3f4159b8734c2d1014a80d1"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/current/local.bgx.seedream-55-image/1.0.0/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/current/local.bgx.seedream-55-image/1.0.0/README.txt",
+          "sha256": "7ced127f2a113f31aa99c4d546fbfd896d1430823f2d552c01e360a334c6141c"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/current/local.bgx.seedream-55-image/1.0.0/安装说明.txt",
+          "sha256": "b264a7d40436a993c532380730320391eac94cdcf877e4aa7fdfa1587476f1ed"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/current/local.bgx.seedream-55-image/1.0.0/package/manifest.json",
+          "sha256": "c8bdb26c528c4c791dca9a1fd9d4b02c695888f52d118829b76bd0b6ab734352"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/current/local.bgx.seedream-55-image/1.0.0/package/manifest.sha256",
+          "sha256": "ffe410c766357580ff74da3b4c53c7f26f2bcc44688083aa638927505572673f"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/current/local.bgx.seedream-55-image/1.0.0/package/adapter.wasm",
+          "sha256": "80f6c880c431365debd9999c1b78907e7afac710854e480777066b0d5d6881c9"
+        }
+      ]
+    },
+    {
       "pluginId": "local.bgx.wan-animate2",
       "version": "0.1.2",
       "kind": "installable",

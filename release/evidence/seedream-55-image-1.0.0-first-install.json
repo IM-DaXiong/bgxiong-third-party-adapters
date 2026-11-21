@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "pluginId": "local.bgx.seedream-55-image",
+  "version": "1.0.0",
+  "newInstallQualified": true,
+  "exitCode": 0,
+  "hostVersion": "0.6.1119",
+  "targetZipSha256": "afc4bf9288fb023efe0c433da0f5f7946b9cccbafb26b50cbd0119b8643cf7a4",
+  "targetZipBytes": 321721,
+  "hostTestExecutableSha256": "f6d19ca1c53854a548c5df1a82a73cd2a4b3714b54206d21ee412363bd34f6c8",
+  "checks": [
+    "local-qa-index-signature",
+    "zip-hash-and-envelope",
+    "install-and-register",
+    "candidate-removed-after-install"
+  ],
+  "registeredImageOperations": {
+    "image": {
+      "pluginId": "local.bgx.seedream-55-image",
+      "version": "1.0.0",
+      "modelId": "doubao-seedream-5-5-261028",
+      "capabilityKey": "image.generate",
+      "operationId": "local.bgx.seedream-55-image/generate",
+      "operationVersion": 1,
+      "inputSchemaDigest": "bcb7e24ec8010fc055b7c212d64585d3d0b489c46f81b8682034942039510521"
+    },
+    "imageToImage": {
+      "pluginId": "local.bgx.seedream-55-image",
+      "version": "1.0.0",
+      "modelId": "doubao-seedream-5-5-261028",
+      "capabilityKey": "image.generate",
+      "operationId": "local.bgx.seedream-55-image/edit",
+      "operationVersion": 1,
+      "inputSchemaDigest": "aca3801bf738391f38edc9f1f52d7b2773696441a31b15db950b45c2b92cf14b"
+    }
+  },
+  "publicZipReadbackMatchesPublishedBytes": true,
+  "publicDownloadUrl": "https://r.bgxiong.com/client/ai-story/bgxiong-third-party-adapters/local.bgx.seedream-55-image-1.0.0.zip",
+  "publicIndexUrl": "https://r.bgxiong.com/client/ai-story/bgxiong-third-party-adapters/latest.json",
+  "publicIndexSequence": 9,
+  "verifiedInstallFileCount": 7
+}

@@ -2,6 +2,14 @@
   "schemaVersion": 1,
   "packages": [
     {
+      "pluginId": "local.bgx.seedream-55-image",
+      "version": "1.0.0",
+      "newInstall": true,
+      "hostVersionRange": "=0.6.1119",
+      "upgradeFrom": [],
+      "evidence": "release/evidence/seedream-55-image-1.0.0-first-install.json"
+    },
+    {
       "pluginId": "local.bgx.ltx23",
       "version": "0.1.2",
       "newInstall": false,
