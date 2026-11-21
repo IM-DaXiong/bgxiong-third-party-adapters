@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib
 import json
 import os
 from pathlib import Path, PurePosixPath
@@ -129,7 +130,7 @@ def published_bytes(name: str, files: list[tuple[str, bytes]]) -> bytes | None:
     return data
 
 
-def publish(packages: list[tuple[str, list[tuple[str, bytes]]]]) -> None:
+def publish(packages: list[tuple[str, list[tuple[str, bytes]]]], *, signed=False, check=False) -> None:
     artifacts = ROOT / "artifacts"
     artifacts.mkdir(exist_ok=True)
     staging = artifacts / f".cdn-staging-{os.getpid()}"
@@ -150,6 +151,7 @@ def publish(packages: list[tuple[str, list[tuple[str, bytes]]]]) -> None:
         if index_path.is_file():
             carried_index = index_path.read_bytes()
         sums = []
+        zip_inventory = {}
         for name, files in packages:
             target = staging / name
             published = published_bytes(name, files)
@@ -158,6 +160,7 @@ def publish(packages: list[tuple[str, list[tuple[str, bytes]]]]) -> None:
             else:
                 target.write_bytes(published)
             digest = sha256(target.read_bytes())
+            zip_inventory[name] = (target.stat().st_size, digest)
             previous = DEST / name
             if previous.exists() and sha256(previous.read_bytes()) != digest:
                 # A released version is immutable, including ZIP metadata bytes.
@@ -165,8 +168,17 @@ def publish(packages: list[tuple[str, list[tuple[str, bytes]]]]) -> None:
             sums.append(f"{digest}  {name}")
             print(name, digest, flush=True)
         (staging / "SHA256SUMS.txt").write_bytes(("\n".join(sums) + "\n").encode("utf-8"))
-        if carried_index is not None:
+        if signed:
+            verifier = importlib.import_module("stage-cdn-upload-directory")
+            latest = (verifier.INDEX_DIR / "latest.json").read_bytes()
+            report = verifier.inspect_index(verifier.load_publisher(), latest, zip_inventory, [])
+            if not report["ready"]:
+                raise PackError(verifier.write_report(report))
+            (staging / "latest.json").write_bytes(latest)
+        elif carried_index is not None:
             (staging / "latest.json").write_bytes(carried_index)
+        if check:
+            return
         if DEST.exists():
             DEST.rename(backup)
             old_moved = True
@@ -195,10 +207,13 @@ def publish(packages: list[tuple[str, list[tuple[str, bytes]]]]) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="validate all locked packages; write nothing")
+    parser.add_argument("--signed", action="store_true", help="validate the production index against the candidate ZIP bytes before replacing the upload directory")
     args = parser.parse_args()
     try:
         packages = locked_packages()
-        if args.check:
+        if args.signed:
+            publish(packages, signed=True, check=args.check)
+        elif args.check:
             for name, files in packages:
                 published_bytes(name, files)
         else:
