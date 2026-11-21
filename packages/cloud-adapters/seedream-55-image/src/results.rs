@@ -12,7 +12,7 @@ use zune_png::PngDecoder;
 
 use crate::{
     append_media, create_media, fail, finish_media, http, malformed, media_len, port, read_media,
-    text, Failure, Parameters, MODEL, PLUGIN,
+    result_stage, text, Failure, Parameters, MODEL, PLUGIN,
 };
 
 const RESULT_HOSTS: &[&str] = &[
@@ -186,7 +186,11 @@ fn artifact(
         let handle = text(&response["payload"], "handle")?;
         let info = port(host, "host-media.info", json!({"handle":handle}))?;
         let length = media_len(&info, MAX_IMAGE_BYTES)?;
-        let mime = validate_image(&read_media(host, handle, length)?, params)?;
+        result_stage(host, "IMAGE_RESULT_DOWNLOADED", &format!("Image downloaded, {length} bytes"));
+        let bytes = read_media(host, handle, length)?;
+        result_stage(host, "SEEDREAM_MEDIA_READ", "Original image read");
+        let mime = validate_image(&bytes, params)?;
+        result_stage(host, "SEEDREAM_IMAGE_VALIDATED", "Original image validated");
         if info["mime"] != mime {
             return Err(malformed());
         }
@@ -222,6 +226,35 @@ fn business_failure(error: &Value) -> Failure {
     let mut failure = fail("UPSTREAM_ERROR", "方舟返回生图错误，已保留收到的成果");
     failure.vendor = copy_identifier(&error["code"]);
     failure
+}
+
+fn persist_completed(
+    host: &mut dyn Host,
+    request: &Invocation,
+    result: &Value,
+) -> Result<(), Failure> {
+    let id = &request.r#request_id;
+    let saved = port(host, "host-checkpoint.read", json!({"requestId":id}))?;
+    let mut checkpoint: Value = serde_json::from_str(text(&saved, "valueJson")?)
+        .map_err(|_| malformed())?;
+    let revision = text(&checkpoint, "revision")?.to_owned();
+    let next = revision.parse::<u64>().ok().and_then(|value| value.checked_add(1))
+        .ok_or_else(malformed)?;
+    let identities = checkpoint["mediaIdentities"].as_array_mut().ok_or_else(malformed)?;
+    for output in result["outputs"].as_array().ok_or_else(malformed)? {
+        let media = &output["media"];
+        let info = port(host, "host-media.info", json!({"handle":media["handle"]}))?;
+        identities.push(json!({"id":media["id"],"kind":media["kind"],"digest":info["sha256"]}));
+    }
+    checkpoint["revision"] = json!(next.to_string());
+    checkpoint["state"] = json!("terminal");
+    checkpoint["vendorTaskId"] = Value::Null;
+    checkpoint["resumeToken"] = Value::Null;
+    checkpoint["result"] = result.clone();
+    port(host, "host-checkpoint.write", json!({
+        "requestId":id,"expectedRevision":revision,"valueJson":checkpoint.to_string(),
+    }))?;
+    Ok(())
 }
 
 pub(crate) fn collect(
@@ -301,10 +334,7 @@ pub(crate) fn collect(
                     artifact(host, request, params, item)
                 };
                 match output {
-                    Ok(output) => {
-                        events.media(host, &output)?;
-                        outputs.push(output);
-                    }
+                    Ok(output) => outputs.push(output),
                     Err(error) => {
                         failure.get_or_insert(error);
                     }
@@ -312,6 +342,9 @@ pub(crate) fn collect(
             }
         }
         if let Some(error) = failure {
+            for output in &outputs {
+                events.media(host, output)?;
+            }
             return Err(error);
         }
         let count = outputs.len();
@@ -332,11 +365,18 @@ pub(crate) fn collect(
         .filter(|key| *key != "size" || input["resolution"] == "custom")
         .filter_map(|key| Some((key.to_owned(), input.get(key)?.clone())))
         .collect();
-        Ok(json!({
+        let completed = json!({
             "kind":"completed","vendorTaskId":null,"appliedParams":applied,"outputs":outputs,"usage":usage,
             "data":{"model":MODEL,"providerRequestId":request_id,"imageCount":count,
                 "reportedUsageJson":response.get("usage").filter(|value| !value.is_null()).map(Value::to_string)},
-        }))
+        });
+        persist_completed(host, request, &completed)?;
+        result_stage(host, "SEEDREAM_CHECKPOINTED", "Validated result checkpoint committed");
+        for output in completed["outputs"].as_array().ok_or_else(malformed)?.iter().take(count) {
+            events.media(host, output)?;
+        }
+        result_stage(host, "SEEDREAM_PUBLISHED", "Validated image outputs published");
+        Ok(completed)
     })();
     result.map_err(|mut error: Failure| {
         error.request = request_id;

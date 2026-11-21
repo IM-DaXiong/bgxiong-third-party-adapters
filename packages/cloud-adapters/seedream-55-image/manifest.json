@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "85f5283e2940200300d896b6b6a8762ca3c5df1f79b37fa243a8636253ea3adb",
+  "artifactSha256": "05059fb500435de393ad0a22f9eb918e71a0965d2e8742dc5fed55c96a797ccd",
   "displayName": "Seedream-55-image",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -7,7 +7,7 @@
     "fuel": 30000000000,
     "memoryBytes": 268435456,
     "outputBytes": 1048576,
-    "wallMs": 180000
+    "wallMs": 600000
   },
   "optionalFeatures": [],
   "pluginId": "local.bgx.seedream-55-image",
@@ -42,5 +42,5 @@
     "operation-input-preflight-v2"
   ],
   "schemaVersion": 2,
-  "version": "1.0.4"
+  "version": "1.0.5"
 }

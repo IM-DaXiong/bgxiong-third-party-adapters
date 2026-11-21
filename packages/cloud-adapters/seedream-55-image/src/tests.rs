@@ -18,6 +18,7 @@ struct Fixture {
     objects: BTreeMap<String, Object>,
     plans: Vec<Value>,
     events: Vec<Value>,
+    checkpoint: Option<Value>,
     body: Value,
     status: u16,
     response: Value,
@@ -32,6 +33,7 @@ impl Fixture {
             objects: BTreeMap::new(),
             plans: vec![],
             events: vec![],
+            checkpoint: None,
             body: Value::Null,
             status: 200,
             response: json!({
@@ -75,7 +77,7 @@ impl Fixture {
         }
         let request: Invocation = serde_json::from_value(json!({
             "protocolVersion":2,"requestId":"fixture","operation":"submit",
-            "enabledFeatures":["stream-events-v1"],"budgetMs":180000,"payloadJson":payload.to_string(),"bindingId":"fixture","profileId":"fixture","capabilitySlot":"image","negotiatedVersion":2,
+            "enabledFeatures":["stream-events-v1"],"budgetMs":600000,"payloadJson":payload.to_string(),"bindingId":"fixture","profileId":"fixture","capabilitySlot":"image","negotiatedVersion":2,
         })).unwrap();
         let output = serde_json::to_value(Seedream::invoke(request, self)).unwrap();
         output["dataJson"]
@@ -101,10 +103,17 @@ impl Host for Fixture {
                 self.objects.get_mut(handle).unwrap().bytes.extend(chunk);
                 Value::Null
             }
-            "host-media.finish" => Value::Null,
+            "host-media.finish" | "host-log.log" => Value::Null,
+            "host-checkpoint.read" => json!({"valueJson":"{\"revision\":\"2\",\"state\":\"acceptance_unknown\",\"mediaIdentities\":[]}"}),
+            "host-checkpoint.write" => {
+                assert_eq!(args["requestId"], "fixture");
+                assert_eq!(args["expectedRevision"], "2");
+                self.checkpoint = Some(serde_json::from_str(args["valueJson"].as_str().unwrap()).unwrap());
+                json!({"revision":"3"})
+            }
             "host-media.info" => {
                 let item = &self.objects[handle];
-                json!({"id":item.id,"kind":item.kind,"mime":item.mime,"byteLength":item.bytes.len().to_string(),"fileName":"fixture","width":32,"height":32})
+                json!({"id":item.id,"kind":item.kind,"mime":item.mime,"byteLength":item.bytes.len().to_string(),"fileName":"fixture","width":32,"height":32,"sha256":format!("{:x}", Sha256::digest(&item.bytes))})
             }
             "host-media.read" => {
                 let item = &self.objects[handle];
@@ -186,6 +195,10 @@ fn transparent_url_maps_exact_request_and_preserves_original() {
     assert_eq!(host.objects[output].bytes, host.png);
     assert_eq!(host.events[1]["payload"]["measurements"][0]["amount"], "0");
     assert_eq!(host.events[2]["payload"]["media"]["handle"], output);
+    let checkpoint = host.checkpoint.as_ref().unwrap();
+    assert_eq!(checkpoint["state"], "terminal");
+    assert_eq!(checkpoint["result"], result);
+    assert_eq!(checkpoint["mediaIdentities"].as_array().unwrap().len(), 2);
 }
 
 #[test]
@@ -433,6 +446,7 @@ fn paid_attempt_failure_preserves_request_usage_and_partial_media() {
     );
     assert_eq!(result["error"]["vendorCode"], "ContentRejected");
     assert_eq!(host.events[2]["payload"]["role"], "artifact");
+    assert!(host.checkpoint.is_none());
     assert_eq!(host.plans.len(), 2);
 
     let mut host = Fixture::new();

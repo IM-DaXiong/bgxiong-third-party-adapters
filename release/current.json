@@ -4,45 +4,45 @@
   "packages": [
     {
       "pluginId": "local.bgx.seedream-55-image",
-      "version": "1.0.4",
+      "version": "1.0.5",
       "kind": "installable",
       "validation": "sdk_package_validated",
       "sourceManifest": "packages/cloud-adapters/seedream-55-image/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",
-          "source": "artifacts/current/local.bgx.seedream-55-image/1.0.4/adapter-install.json",
-          "sha256": "2deeb97da2e2b462596029e137095369df3ff04ccefccff7c28c9ad6bba0f97c"
+          "source": "artifacts/current/local.bgx.seedream-55-image/1.0.5/adapter-install.json",
+          "sha256": "5a5087a5b18fa733501cfd27b5a5398889d946077b5af5e058270275f9ddfd8e"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/current/local.bgx.seedream-55-image/1.0.4/LICENSE",
+          "source": "artifacts/current/local.bgx.seedream-55-image/1.0.5/LICENSE",
           "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/current/local.bgx.seedream-55-image/1.0.4/README.txt",
+          "source": "artifacts/current/local.bgx.seedream-55-image/1.0.5/README.txt",
           "sha256": "c56d48b45c0f77f4c5b0f414227a9d6ea4074090ace0895013eb77fbe887fad4"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/current/local.bgx.seedream-55-image/1.0.4/安装说明.txt",
+          "source": "artifacts/current/local.bgx.seedream-55-image/1.0.5/安装说明.txt",
           "sha256": "134114226b5c0d6146835460bd940acd55524c7da5b31f07b60abd525a3853e8"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/current/local.bgx.seedream-55-image/1.0.4/package/manifest.json",
-          "sha256": "ad3e7425415ec84b56ef83a8324e3adf381c81b3d4df8a5c66030d54a681f9ba"
+          "source": "artifacts/current/local.bgx.seedream-55-image/1.0.5/package/manifest.json",
+          "sha256": "97cab708123e27be41b0051af285ac76bf40cf38c2580e1fc32ad51db9f93d4c"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/current/local.bgx.seedream-55-image/1.0.4/package/manifest.sha256",
-          "sha256": "930b51f328aee527484f5360401bb90483cd48572fb21f0005d7d53275ca43bd"
+          "source": "artifacts/current/local.bgx.seedream-55-image/1.0.5/package/manifest.sha256",
+          "sha256": "4512f710fd6d81327f4f0a900050496ae73e7bb2f39337baa6a7d1de4a37073a"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/current/local.bgx.seedream-55-image/1.0.4/package/adapter.wasm",
-          "sha256": "85f5283e2940200300d896b6b6a8762ca3c5df1f79b37fa243a8636253ea3adb"
+          "source": "artifacts/current/local.bgx.seedream-55-image/1.0.5/package/adapter.wasm",
+          "sha256": "05059fb500435de393ad0a22f9eb918e71a0965d2e8742dc5fed55c96a797ccd"
         }
       ]
     },

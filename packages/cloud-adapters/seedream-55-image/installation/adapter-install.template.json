@@ -42,7 +42,7 @@
     "budgetMs": {
       "capabilities": 60000,
       "probe": 60000,
-      "submit": 180000,
+      "submit": 600000,
       "query": 180000,
       "cancel": 60000
     },

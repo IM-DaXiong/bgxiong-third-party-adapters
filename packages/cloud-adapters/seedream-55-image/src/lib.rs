@@ -28,6 +28,8 @@ const ENDPOINT: &str = "https://ark.cn-beijing.volces.com/api/v3/images/generati
 const CREDENTIAL: &str = "seedream-55-image-user-key";
 const CONFIG: &str = r#"{"type":"object","properties":{"endpointBaseUrl":{"type":"string","const":"https://ark.cn-beijing.volces.com"},"credentialRef":{"type":"string","const":"seedream-55-image-user-key"}},"required":["credentialRef"],"additionalProperties":false}"#;
 const CHUNK: usize = 48 * 1024;
+// One response fits comfortably in the SDK frame even as a JSON byte array.
+const RESULT_READ_CHUNK: usize = 256 * 1024;
 const MAX_REFERENCE_BYTES: usize = 30_000_000;
 const MAX_REQUEST_BYTES: usize = 401_100_000;
 
@@ -66,6 +68,12 @@ fn port(host: &mut dyn Host, method: &str, args: Value) -> Result<Value, Failure
             "适配器宿主操作失败",
         )
     })
+}
+
+fn result_stage(host: &mut dyn Host, code: &str, message: &str) {
+    let _ = host::call::<_, ()>(host, "host-log.log", &json!({
+        "level":"info","code":code,"message":message,
+    }));
 }
 
 fn schema(id: &str, content: &str) -> Value {
@@ -173,7 +181,7 @@ fn media_len(info: &Value, limit: usize) -> Result<usize, Failure> {
 fn read_media(host: &mut dyn Host, handle: &str, size: usize) -> Result<Vec<u8>, Failure> {
     let mut bytes = Vec::with_capacity(size);
     while bytes.len() < size {
-        let count = CHUNK.min(size - bytes.len());
+        let count = RESULT_READ_CHUNK.min(size - bytes.len());
         let part: Vec<u8> = serde_json::from_value(port(
             host,
             "host-media.read",
@@ -366,6 +374,7 @@ fn submit(host: &mut dyn Host, request: &Invocation, payload: &Value) -> Result<
         "INVALID_INPUT" | "UNAUTHORIZED" | "PERMISSION_DENIED" | "UNSUPPORTED_FEATURE" => error,
         _ => fail("ACCEPTANCE_UNKNOWN", "方舟请求受理状态未知，请核对原任务"),
     })?;
+    result_stage(host, "SEEDREAM_RESPONSE", "Generation response received");
     results::collect(host, request, &parameters, &payload["input"], &response)
 }
 
