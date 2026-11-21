@@ -46,8 +46,8 @@ ZImage 1.0.3 与 FLUX2 1.0.4 现补齐 `installation/adapter-install.template.js
 
 - `release/evidence/` 保存已实测升级对的可提交记录及历史来源锁/公开owner回执；仅元数据，不另建旧版安装树。首批只有LTX0.1.0→0.1.2，`newInstall=false`，host精确限定实测产品版本0.6.1119（来自BGX_APP_VERSION/tauri.conf.json，非Cargo包版本）。
 - `scripts/archive-current-resources.py --output <临时owner归档ZIP> --receipt <本地候选回执>` 逐文件验证当前锁全部成品并生成聚合归档，在隔离根调用主仓真实restore owner两次验证；不编译、不签名、不上传、不替换正式current-artifact回执。归档文件名使用Git规范LF锁摘要，不能用Windows CRLF工作树摘要命名。ZIP是上传暂存聚合文件，不是第二套可安装目录。
-- `scripts/sign-online-index-interactive.ps1` 一次完成打包、验签，并把生产签名 `latest.json` 写入 `artifacts/cdn/`。已有可复用索引时直接完成，新索引需要在私密终端隐藏输入签名密码。密码仅传给签名子进程的临时环境。使用已配置签名环境的发行任务可直接调用 `publish-online-index.py --prepare-upload`。上传目录就是 `artifacts/cdn/`。
+- `scripts/sign-online-index-interactive.ps1` 统一验签，并把生产签名 `latest.json` 写入 `artifacts/cdn/`。首次用 `-RememberPassword` 在私密终端授权，签名验证通过后由 Windows DPAPI 将密码加密保存在发行账号的用户配置中。以后同一台机器、同一 Windows 账号可直接自动签名。密码仅临时传给签名子进程。密钥或发行账号变更时重新授权。
 
 ### 在线发布准备
 
-准备程序从 CDN 回读并验签，基于线上序号识别已发布版本，重跑时复用相同候选索引。要纳入特定首装包，使用 `-RequireNewInstall pluginId@version`，程序会核对首装实测记录与 ZIP 摘要。发布后可用 `--commit-receipt` 记录线上回读；下次准备直接核对线上索引。
+默认发布准备从 CDN 回读并验签，基于线上序号识别已发布版本，重跑时复用相同候选索引。仅验证已组装的本地上传目录时使用 `-LocalOnly`，序号以本地签名索引和最近发布回执为锚，本地结果记录未核公网状态。要纳入特定首装包，使用 `-RequireNewInstall pluginId@version`，程序会核对首装实测记录与 ZIP 摘要。发布后可用 `--commit-receipt` 记录线上回读；下次准备直接核对线上索引。

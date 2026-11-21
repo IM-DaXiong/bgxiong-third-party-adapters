@@ -79,5 +79,22 @@ class PublisherContractTests(unittest.TestCase):
                 publisher.prepare_index([old], dict(receipt, sequence=5), '', latest)
 
 
+    def test_local_signing_checks_receipt_without_network_and_reuses_signed_payload(self):
+        package = {'file': 'example-1.0.0.zip', 'sha256': 'a' * 64}
+        receipt = {'sequence': 10, 'payloadSha256': 'verified'}
+        with TemporaryDirectory() as directory, \
+                patch.object(publisher, 'public_index_bytes', side_effect=AssertionError('network')), \
+                patch.object(publisher, 'verified_index', return_value=(
+                    {'sequence': 10, 'packages': [package]}, 'verified')):
+            latest = Path(directory) / 'latest.json'
+            latest.write_bytes(b'signed')
+            self.assertEqual(publisher.prepare_local_index([package], receipt, '', latest), (b'signed', 10))
+            self.assertEqual(publisher.prepare_local_index([], receipt, '', latest), (None, 11))
+            with self.assertRaisesRegex(ValueError, 'publication receipt'):
+                publisher.prepare_local_index([], dict(receipt, payloadSha256='other'), '', latest)
+            with self.assertRaisesRegex(ValueError, 'change signed ZIP'):
+                publisher.prepare_local_index([dict(package, sha256='b' * 64)], receipt, '', latest)
+
+
 if __name__ == '__main__':
     unittest.main()

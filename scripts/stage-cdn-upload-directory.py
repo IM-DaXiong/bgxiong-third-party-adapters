@@ -80,7 +80,7 @@ def verify_sums(zips: dict[str, tuple[int, str]]) -> None:
         raise StageError("SHA256SUMS.txt does not match the locked CDN ZIP set")
 
 
-def inspect_index(mod, latest: bytes, zips: dict[str, tuple[int, str]], required: list[tuple[str, str]]) -> dict:
+def inspect_index(mod, latest: bytes, zips: dict[str, tuple[int, str]], required: list[tuple[str, str]], local_only: bool = False) -> dict:
     key_id, pubkey = host_public_trust()
     if key_id != mod.KEY_ID:
         raise StageError("Publisher key ID differs from the application production key ID")
@@ -118,13 +118,14 @@ def inspect_index(mod, latest: bytes, zips: dict[str, tuple[int, str]], required
     public_sha = None
     public_seq = None
     public_error = None
-    try:
-        public_bytes = mod.public_index_bytes()
-        public_payload, public_payload_sha = mod.verified_index(public_bytes, pubkey)
-        public_sha = sha256(public_bytes)
-        public_seq = public_payload["sequence"]
-    except Exception as exc:
-        public_error = str(exc)
+    if not local_only:
+        try:
+            public_bytes = mod.public_index_bytes()
+            public_payload, public_payload_sha = mod.verified_index(public_bytes, pubkey)
+            public_sha = sha256(public_bytes)
+            public_seq = public_payload["sequence"]
+        except Exception as exc:
+            public_error = str(exc)
     seq = payload["sequence"]
     rollback = []
     if public_seq is not None and seq < public_seq:
@@ -207,6 +208,7 @@ def main() -> int:
     parser.add_argument("--check", action="store_true", help="report readiness; write nothing")
     parser.add_argument("--require-new-install", action="append", default=[], metavar="pluginId@version",
                         help="refuse to write unless this exact package is signed with newInstall=true")
+    parser.add_argument("--local-only", action="store_true", help="verify against local publication facts only")
     args = parser.parse_args()
     try:
         mod = load_publisher()
@@ -214,7 +216,7 @@ def main() -> int:
         zips = load_lock_zips()
         verify_sums(zips)
         latest = (INDEX_DIR / "latest.json").read_bytes()
-        report = inspect_index(mod, latest, zips, required)
+        report = inspect_index(mod, latest, zips, required, local_only=args.local_only)
         sys.stdout.write(write_report(report))
         if args.check:
             return 0 if report["ready"] else 2

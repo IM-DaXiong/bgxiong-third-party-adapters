@@ -251,6 +251,21 @@ def prepare_index(packages, receipt, public, latest_path):
     return None, sequence + 1
 
 
+def prepare_local_index(packages, receipt, public, latest_path):
+    latest = latest_path.read_bytes()
+    baseline, payload_sha = verified_index(latest, public)
+    sequence = baseline['sequence']
+    if sequence < receipt['sequence'] or (sequence == receipt['sequence'] and payload_sha != receipt['payloadSha256']):
+        raise ValueError('Local signed index differs from the last verified publication receipt')
+    published = {row['file']: row['sha256'] for row in baseline['packages']}
+    for package in packages:
+        if package['file'] in published and package['sha256'] != published[package['file']]:
+            raise ValueError(f"Attempt to change signed ZIP {package['file']}")
+    if baseline['packages'] == packages:
+        return latest, sequence
+    return None, sequence + 1
+
+
 def replace_file(path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.NamedTemporaryFile(dir=path.parent, delete=False) as temp:
@@ -260,6 +275,10 @@ def replace_file(path, data):
         os.replace(temporary, path)
     finally:
         temporary.unlink(missing_ok=True)
+
+
+class InvalidSigningPassword(ValueError):
+    pass
 
 
 def sign_index(args, packages, sequence, public, password, workdir):
@@ -277,6 +296,8 @@ def sign_index(args, packages, sequence, public, password, workdir):
         result = subprocess.run(['cargo', 'tauri', 'signer', 'sign', '--private-key-path', str(private_key), str(path)],
                                 cwd=ROOT, env=signer_environment(password), capture_output=True)
         if result.returncode:
+            if b'Wrong password for that key' in result.stderr:
+                raise InvalidSigningPassword('Signing password does not match the adapter-index private key')
             raise ValueError('cargo tauri signer sign failed (secret-bearing signer output intentionally suppressed)')
         signature = path.with_suffix('.json.sig').read_text(encoding='utf-8').strip()
     envelope = canonical({'keyId': KEY_ID, 'payloadB64': base64.b64encode(payload).decode('ascii'), 'signatureB64': signature})
@@ -290,8 +311,11 @@ def main():
     parser.add_argument('--commit-receipt', action='store_true', help='only after approval and successful public read-back')
     parser.add_argument('--prepare-upload', action='store_true', help='pack, sign when needed and stage one upload directory')
     parser.add_argument('--require-new-install', action='append', default=[], metavar='pluginId@version')
+    parser.add_argument('--local-only', action='store_true',
+                        help='verify the assembled ZIPs and use the local signed sequence without contacting CDN')
     parser.add_argument('--source-lock', type=Path, action='append', default=[])
     parser.add_argument('--private-key-path', type=Path)
+    parser.add_argument('--verify-signing-password', action='store_true', help=argparse.SUPPRESS)
     parser.add_argument('--pubkey', help='public .pub file path')
     args = parser.parse_args()
     try:
@@ -299,7 +323,9 @@ def main():
             raise ValueError('--require-new-install requires --prepare-upload')
         if args.prepare_upload and args.commit_receipt:
             raise ValueError('--prepare-upload and --commit-receipt are separate modes')
-        if args.prepare_upload and not args.check:
+        if args.local_only and not args.prepare_upload:
+            raise ValueError('--local-only requires --prepare-upload')
+        if args.prepare_upload and not args.check and not args.local_only:
             subprocess.run([sys.executable, str(ROOT/'scripts/pack-cdn-directory.py')],
                            env=unsigned_environment(), check=True)
         packages = validated_packages(args)
@@ -333,25 +359,33 @@ def main():
             replace_file(receipt_path, canonical(updated)+b'\n')
             print('Receipt committed after public byte and signature verification')
             return 0
-        index, sequence = prepare_index(packages, receipt, public, latest_path)
+        prepare = prepare_local_index if args.local_only else prepare_index
+        index, sequence = prepare(packages, receipt, public, latest_path)
         if args.check:
             print(f'Validated {len(packages)} online packages; sequence {sequence}; signing required: {index is None}')
             return 0
-        if index is None:
+        if index is None or args.verify_signing_password:
             password = os.environ.get('BGX_ADAPTER_INDEX_KEY_PASSWORD')
             if not password:
                 print('BGX_ADAPTER_INDEX_KEY_PASSWORD is required for the new index', file=sys.stderr)
                 return 3
             output.mkdir(parents=True, exist_ok=True)
-            index = sign_index(args, packages, sequence, public, password, output)
+            signed = sign_index(args, packages, sequence, public, password, output)
+            if index is None:
+                index = signed
         replace_file(latest_path, index)
         print(f'Verified index sequence {sequence}')
         if args.prepare_upload:
             stage = [sys.executable, str(ROOT/'scripts/stage-cdn-upload-directory.py')]
+            if args.local_only:
+                stage.append('--local-only')
             for identity in args.require_new_install:
                 stage.extend(['--require-new-install', identity])
             return subprocess.run(stage, env=unsigned_environment()).returncode
         return 0
+    except InvalidSigningPassword as exc:
+        print(str(exc), file=sys.stderr)
+        return 4
     except Exception as exc:
         print(f'Online index not published: {exc}',file=sys.stderr)
         return 1

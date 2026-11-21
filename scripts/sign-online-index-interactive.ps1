@@ -1,8 +1,10 @@
-# Run only from the user's private interactive Windows PowerShell terminal.
-# The signer password is new input, never an existing environment/vault read.
+# First use may capture the password via the user's private terminal.
+# Remembered passwords are Windows DPAPI-protected for this account.
 [CmdletBinding()]
 param(
     [switch]$Preflight,
+    [switch]$LocalOnly,
+    [switch]$RememberPassword,
     [ValidatePattern('^[a-z0-9._-]+@[0-9]+\.[0-9]+\.[0-9]+(?:\+[0-9A-Za-z.-]+)?$')]
     [string[]]$RequireNewInstall = @()
 )
@@ -84,6 +86,7 @@ function New-ChildStartInfo([string]$FileName, [string]$Arguments, [string]$Work
 $root = Split-Path -Parent $PSScriptRoot
 $key = Join-Path ([Environment]::GetFolderPath('UserProfile')) '.tauri\bgxiong-adapter-index'
 $public = $key + '.pub'
+$protectedPassword = $key + '.password.dpapi'
 if (-not (Test-Path -LiteralPath $public -PathType Leaf)) {
     throw 'The independent adapter-index public key is missing.'
 }
@@ -104,40 +107,61 @@ foreach ($identity in $RequireNewInstall) {
     $arguments += ' --require-new-install "' + $identity + '"'
 }
 
+if ($LocalOnly) {
+    $arguments += ' --local-only'
+}
 if ($Preflight) {
     $arguments += ' --check'
 }
 $prepare = New-ChildStartInfo $python $arguments $root $cargoBin
 $prepareProcess = [Diagnostics.Process]::Start($prepare)
 $prepareProcess.WaitForExit()
-if ($prepareProcess.ExitCode -eq 0) { return }
-if ($prepareProcess.ExitCode -ne 3 -or $Preflight) {
+if ($prepareProcess.ExitCode -eq 0 -and (-not $RememberPassword -or $Preflight)) { return }
+if ($prepareProcess.ExitCode -ne 0 -and ($prepareProcess.ExitCode -ne 3 -or $Preflight)) {
     throw 'CDN upload preparation failed. See the publisher output above.'
-}
-if ([Console]::IsInputRedirected -or [Console]::IsOutputRedirected) {
-    throw 'This new index requires signing. Run directly in your private terminal.'
 }
 $tauri = Join-Path $cargoBin 'cargo-tauri.exe'
 if (-not (Test-Path -LiteralPath $tauri -PathType Leaf) -or -not (Test-Path -LiteralPath $key -PathType Leaf)) {
     throw 'The Tauri signer or independent adapter-index private key is missing.'
 }
 
-$secure = Read-Host 'Adapter-index signing password' -AsSecureString
-if ($secure.Length -eq 0) { $secure.Dispose(); throw 'A non-empty password is required; nothing signed.' }
-$pointer = [IntPtr]::Zero
-try {
-    $pointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
-    $sign = New-ChildStartInfo $python ($arguments + ' --private-key-path "' + $key + '"') $root $cargoBin
-    $sign.EnvironmentVariables['BGX_ADAPTER_INDEX_KEY_PASSWORD'] = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($pointer)
-    $process = [Diagnostics.Process]::Start($sign)
-    $sign.EnvironmentVariables.Remove('BGX_ADAPTER_INDEX_KEY_PASSWORD')
-    [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($pointer)
+# Import the module from this PowerShell installation, independent of inherited PSModulePath.
+$securityModule = Join-Path $PSHOME 'Modules\Microsoft.PowerShell.Security\Microsoft.PowerShell.Security.psd1'
+Import-Module -Name $securityModule -ErrorAction Stop
+$interactive = -not [Console]::IsInputRedirected -and -not [Console]::IsOutputRedirected
+$signArguments = $arguments + ' --private-key-path "' + $key + '"'
+if ($RememberPassword) { $signArguments += ' --verify-signing-password' }
+
+do {
+    if ((Test-Path -LiteralPath $protectedPassword -PathType Leaf) -and -not $RememberPassword) {
+        $secure = ConvertTo-SecureString -String ([IO.File]::ReadAllText($protectedPassword).Trim())
+    } else {
+        if (-not $interactive) {
+            throw 'Initialize the signing password once in your private terminal with -RememberPassword.'
+        }
+        $secure = Read-Host 'Adapter-index signing password' -AsSecureString
+    }
     $pointer = [IntPtr]::Zero
-    $secure.Dispose()
-    $process.WaitForExit()
-    if ($process.ExitCode -ne 0) { throw 'CDN upload preparation failed. See the publisher output above.' }
-} finally {
-    if ($null -ne $sign) { $sign.EnvironmentVariables.Remove('BGX_ADAPTER_INDEX_KEY_PASSWORD') }
-    if ($pointer -ne [IntPtr]::Zero) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($pointer) }
-    if ($null -ne $secure) { $secure.Dispose() }
-}
+    $sign = $null
+    try {
+        if ($secure.Length -eq 0) { throw 'A non-empty password is required; nothing signed.' }
+        $pointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
+        $sign = New-ChildStartInfo $python $signArguments $root $cargoBin
+        $sign.EnvironmentVariables['BGX_ADAPTER_INDEX_KEY_PASSWORD'] = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($pointer)
+        $process = [Diagnostics.Process]::Start($sign)
+        $sign.EnvironmentVariables.Remove('BGX_ADAPTER_INDEX_KEY_PASSWORD')
+        [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($pointer)
+        $pointer = [IntPtr]::Zero
+        $process.WaitForExit()
+        $result = $process.ExitCode
+        if ($result -eq 0 -and $RememberPassword) {
+            [IO.File]::WriteAllText($protectedPassword, (ConvertFrom-SecureString -SecureString $secure))
+            Write-Host 'Saved the DPAPI-protected password for this Windows account.'
+        }
+    } finally {
+        if ($null -ne $sign) { $sign.EnvironmentVariables.Remove('BGX_ADAPTER_INDEX_KEY_PASSWORD') }
+        if ($pointer -ne [IntPtr]::Zero) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($pointer) }
+        $secure.Dispose()
+    }
+} while ($result -eq 4 -and $RememberPassword -and $interactive)
+if ($result -ne 0) { throw 'CDN upload preparation failed. See the publisher output above.' }
