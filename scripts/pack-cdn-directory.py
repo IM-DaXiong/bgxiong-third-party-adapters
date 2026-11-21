@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the flat CDN directory exclusively from verified release/current.json.
+"""Build the flat CDN directory from locked ZIPs and a verified signed index.
 
 No source globbing, implicit files, or same-version replacement is permitted.
 --check validates every installable entry without writing any file.
@@ -15,10 +15,12 @@ from pathlib import Path, PurePosixPath
 import re
 import shutil
 import sys
+from types import SimpleNamespace
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 DEST = ROOT / "artifacts" / "cdn"
+QUALIFICATION = ROOT / "artifacts" / "cdn-index" / "qualification"
 
 
 class PackError(Exception):
@@ -116,6 +118,8 @@ def published_bytes(name: str, files: list[tuple[str, bytes]]) -> bytes | None:
         return None
     path = DEST / name
     if not path.is_file():
+        path = QUALIFICATION / name
+    if not path.is_file():
         raise PackError(f"Restore the original published ZIP before building: {name}", 2)
     data = path.read_bytes()
     if len(data) != pin["bytes"] or sha256(data) != pin["sha256"]:
@@ -130,7 +134,38 @@ def published_bytes(name: str, files: list[tuple[str, bytes]]) -> bytes | None:
     return data
 
 
-def publish(packages: list[tuple[str, list[tuple[str, bytes]]]], *, signed=False, check=False) -> None:
+def assemble(packages, staging: Path) -> dict[str, tuple[int, str]]:
+    inventory = {}
+    for name, files in packages:
+        target = staging / name
+        published = published_bytes(name, files)
+        if published is None:
+            write_archive(target, files)
+        else:
+            target.write_bytes(published)
+        data = target.read_bytes()
+        digest = sha256(data)
+        for directory in (DEST, QUALIFICATION):
+            previous = directory / name
+            if previous.exists() and sha256(previous.read_bytes()) != digest:
+                raise PackError(f"Same version has different bytes (同版本不同字节): {name}", 2)
+        inventory[name] = (len(data), digest)
+    sums = "".join(f"{digest}  {name}\n" for name, (_, digest) in inventory.items())
+    (staging / "SHA256SUMS.txt").write_bytes(sums.encode("utf-8"))
+    return inventory
+
+
+def publish(packages, *, qualification=False, check=False, local_only=False,
+            required=(), source_locks=(), signed_index=None) -> None:
+    destination = QUALIFICATION if qualification else DEST
+    if not qualification:
+        verifier = importlib.import_module("stage-cdn-upload-directory")
+        if signed_index is None:
+            latest_path = verifier.INDEX_DIR / "latest.json"
+            if not latest_path.is_file():
+                raise PackError("Missing production-signed latest.json; run sign-online-index-interactive.ps1", 2)
+            signed_index = latest_path.read_bytes()
+        publisher = verifier.load_publisher()
     artifacts = ROOT / "artifacts"
     artifacts.mkdir(exist_ok=True)
     staging = artifacts / f".cdn-staging-{os.getpid()}"
@@ -146,54 +181,34 @@ def publish(packages: list[tuple[str, list[tuple[str, bytes]]]], *, signed=False
         if staging.exists() or backup.exists():
             raise PackError("Staging/backup already exists; inspect it rather than overwrite")
         staging.mkdir()
-        carried_index = None
-        index_path = DEST / "latest.json"
-        if index_path.is_file():
-            carried_index = index_path.read_bytes()
-        sums = []
-        zip_inventory = {}
-        for name, files in packages:
-            target = staging / name
-            published = published_bytes(name, files)
-            if published is None:
-                write_archive(target, files)
-            else:
-                target.write_bytes(published)
-            digest = sha256(target.read_bytes())
-            zip_inventory[name] = (target.stat().st_size, digest)
-            previous = DEST / name
-            if previous.exists() and sha256(previous.read_bytes()) != digest:
-                # A released version is immutable, including ZIP metadata bytes.
-                raise PackError(f"Same version has different bytes (同版本不同字节): {name}; original CDN directory retained", 2)
-            sums.append(f"{digest}  {name}")
-            print(name, digest, flush=True)
-        (staging / "SHA256SUMS.txt").write_bytes(("\n".join(sums) + "\n").encode("utf-8"))
-        if signed:
-            verifier = importlib.import_module("stage-cdn-upload-directory")
-            latest = (verifier.INDEX_DIR / "latest.json").read_bytes()
-            report = verifier.inspect_index(verifier.load_publisher(), latest, zip_inventory, [])
+        zip_inventory = assemble(packages, staging)
+        if not qualification:
+            expected = publisher.validated_packages(SimpleNamespace(source_lock=source_locks), staging)
+            report = verifier.inspect_index(publisher, signed_index, zip_inventory,
+                                            verifier.parse_require(publisher, required),
+                                            local_only=local_only, expected_packages=expected)
             if not report["ready"]:
                 raise PackError(verifier.write_report(report))
-            (staging / "latest.json").write_bytes(latest)
-        elif carried_index is not None:
-            (staging / "latest.json").write_bytes(carried_index)
+            (staging / "latest.json").write_bytes(signed_index)
         if check:
             return
-        if DEST.exists():
-            DEST.rename(backup)
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        if destination.exists():
+            destination.rename(backup)
             old_moved = True
         try:
-            staging.rename(DEST)
+            staging.rename(destination)
             installed = True
         except BaseException:
             if old_moved:
-                backup.rename(DEST)
+                backup.rename(destination)
                 old_moved = False
             raise
         if old_moved:
             shutil.rmtree(backup)
             old_moved = False
-        print(f"packages {len(sums)} -> {DEST}", flush=True)
+        label = "Qualification only (unsigned)" if qualification else "Upload ready (latest.json verified)"
+        print(f"{label}: {len(zip_inventory)} ZIPs -> {destination}", flush=True)
     finally:
         # Never delete the only surviving old directory if restoration failed.
         if staging.exists():
@@ -207,19 +222,20 @@ def publish(packages: list[tuple[str, list[tuple[str, bytes]]]], *, signed=False
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="validate all locked packages; write nothing")
-    parser.add_argument("--signed", action="store_true", help="validate the production index against the candidate ZIP bytes before replacing the upload directory")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--signed", action="store_true", help="also verify the signed index in --check mode")
+    mode.add_argument("--qualification", action="store_true", help="write unsigned ZIPs to the signing workspace for qualification")
+    parser.add_argument("--local-only", action="store_true", help="verify the index against local publication facts only")
     args = parser.parse_args()
     try:
         packages = locked_packages()
-        if args.signed:
-            publish(packages, signed=True, check=args.check)
-        elif args.check:
+        if args.check and not args.signed:
             for name, files in packages:
                 published_bytes(name, files)
         else:
-            publish(packages)
+            publish(packages, qualification=args.qualification, check=args.check, local_only=args.local_only)
         return 0
-    except (PackError, OSError, ValueError, KeyError, TypeError, zipfile.BadZipFile) as exc:
+    except Exception as exc:
         print(f"CDN pack failed: {exc}", file=sys.stderr)
         return exc.exit_code if isinstance(exc, PackError) else 1
 

@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Offline publisher syntax/environment regressions; no keys, signing, or network."""
 import importlib.util
+import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -12,6 +14,27 @@ spec.loader.exec_module(publisher)
 
 
 class PublisherContractTests(unittest.TestCase):
+    def test_owner_authorization_applies_to_exact_zip_and_host_only(self):
+        entry = dict(pluginId='example', version='1.0.0', hostVersionRange='=0.6.1119',
+                     upgradeFrom=[])
+        digest = 'a' * 64
+        approval = dict(schemaVersion=1, kind='ownerAuthorizedWithoutFirstInstall',
+                        authorization='Unique current batch',
+                        packages=[dict(pluginId='example', version='1.0.0',
+                                       hostVersionRange='=0.6.1119', targetZipBytes=1024,
+                                       targetZipSha256=digest)])
+        publisher.validate_first_install(entry, approval, 1024, digest)
+        for invalid_entry, size, sha in [
+            (dict(entry, hostVersionRange='*'), 1024, digest),
+            (dict(entry, version='1.0.1'), 1024, digest),
+            (dict(entry, upgradeFrom=[{'version': '0.9.0'}]), 1024, digest),
+            (entry, 1025, digest),
+            (entry, 1024, 'b' * 64),
+        ]:
+            with self.subTest(entry=invalid_entry, size=size, digest=sha):
+                with self.assertRaisesRegex(ValueError, 'does not cover this exact ZIP and host'):
+                    publisher.validate_first_install(invalid_entry, approval, size, sha)
+
     def test_valid_host_ranges(self):
         for value in ['*', 'x', 'X', '^0.6', '>=0.6.0', '>= 0.6.0, <1.0.0',
                       '1', '1.2', '~1.2.3', '1.2.*', '1.x.*', '=1.2.3',
@@ -94,6 +117,54 @@ class PublisherContractTests(unittest.TestCase):
                 publisher.prepare_local_index([], dict(receipt, payloadSha256='other'), '', latest)
             with self.assertRaisesRegex(ValueError, 'change signed ZIP'):
                 publisher.prepare_local_index([dict(package, sha256='b' * 64)], receipt, '', latest)
+
+
+class UploadDirectoryTests(unittest.TestCase):
+    def test_only_current_signed_batch_replaces_upload_directory(self):
+        packer = importlib.import_module('pack-cdn-directory')
+        verifier = importlib.import_module('stage-cdn-upload-directory')
+        name = 'example-1.0.0.zip'
+        locked = [(name, [('adapter-install.json', b'{}')])]
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            cdn = root / 'artifacts/cdn'
+            workspace = root / 'artifacts/cdn-index'
+            qualification = workspace / 'qualification'
+            cdn.mkdir(parents=True)
+            (cdn / 'previous.zip').write_bytes(b'previous upload')
+            (cdn / 'latest.json').write_bytes(b'previous signature')
+            release = root / 'release'
+            release.mkdir()
+            (release / 'online-index-receipt.json').write_text(
+                json.dumps({'sequence': 1, 'payloadSha256': 'previous'}), encoding='utf-8')
+            with patch.multiple(packer, ROOT=root, DEST=cdn, QUALIFICATION=qualification), \
+                    patch.multiple(verifier, ROOT=root, INDEX_DIR=workspace):
+                with self.assertRaisesRegex(packer.PackError, 'Missing production-signed latest.json'):
+                    packer.publish(locked, local_only=True)
+                packer.publish(locked, qualification=True)
+                data = (qualification / name).read_bytes()
+                expected = {'pluginId': 'example', 'version': '1.0.0', 'newInstall': True,
+                            'file': name, 'bytes': len(data), 'sha256': packer.sha256(data)}
+
+                def index(raw, _public):
+                    package = dict(expected, newInstall=raw == b'current')
+                    return {'sequence': 2, 'packages': [package]}, 'signed'
+
+                publisher_fixture = SimpleNamespace(
+                    KEY_ID='test', verified_index=index,
+                    validated_packages=lambda _args, _staging: [expected])
+                with patch.object(verifier, 'load_publisher', return_value=publisher_fixture), \
+                        patch.object(verifier, 'host_public_trust', return_value=('test', 'test-public')):
+                    (workspace / 'latest.json').write_bytes(b'unqualified')
+                    with self.assertRaisesRegex(verifier.StageError, 'current online qualification'):
+                        packer.publish(locked, local_only=True)
+                    self.assertEqual((cdn / 'latest.json').read_bytes(), b'previous signature')
+                    self.assertTrue((cdn / 'previous.zip').exists())
+                    (workspace / 'latest.json').write_bytes(b'current')
+                    packer.publish(locked, local_only=True)
+                self.assertEqual({p.name for p in cdn.iterdir()}, {name, 'SHA256SUMS.txt', 'latest.json'})
+                self.assertEqual((cdn / name).read_bytes(), data)
+                self.assertEqual((cdn / 'latest.json').read_bytes(), b'current')
 
 
 if __name__ == '__main__':

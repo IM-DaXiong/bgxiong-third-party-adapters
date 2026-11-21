@@ -30,15 +30,17 @@
 
 ## 发行上传根与服务器逐层对齐（2026-11-21）
 
-每个发布目标只交付一个可整目录拖拽覆盖上传的本地根。以服务器目标为基准校验相对文件路径、层级和命名，全部发布文件都在该根内。第三方适配器固定为 `artifacts/cdn/`，对应服务器 `/client/ai-story/bgxiong-third-party-adapters/`。同一层必须同时具备发行锁中的全部当前 ZIP、`SHA256SUMS.txt` 和生产签名 `latest.json`。签名工作区可供工具使用，正式索引必须由发布流程放入上传根，用户只需上传这一处。
+第三方适配器的唯一上传交付目录是 `artifacts/cdn/`，测试和生产批次均交到这里。以服务器目标为基准校验相对文件路径、层级和命名。上传到公网生产路径 `/client/ai-story/bgxiong-third-party-adapters/` 的目录同层必须具备发行锁中全部当前 ZIP、`SHA256SUMS.txt` 和生产签名 `latest.json`，包括用于公网人工验收的批次。签名工作区供工具使用，发布流程负责将索引写入上传根。
 
 发布过程中先组装完整候选，再核全量 ZIP 的相对路径及字节、SHA-256 校验表和 `latest.json` 的签名。索引的每一条文件名、版本、大小和摘要必须与候选内的 ZIP 一致，本批获准上线的更新版本必须出现在索引里。同版本已发布的 ZIP 复用原字节。缺件、索引陈旧、待签名或校验未通过时保留上一批完整上传根，当前批标记待交付。完整候选验收后一次切换，禁止只替换 ZIP、拆走正式 JSON 或让用户自行补传其他路径的文件。
+
+**每次发布必须随 ZIP 主动更新 `latest.json`。** 这是[仓库最高级发行规范](../AGENTS.md#最高级发行规范--所有智能体必读用户2026-11-22)。更新受阻时立即报告具体原因和当前交付状态。`python scripts/pack-cdn-directory.py` 只有在本批索引通过验签，且与在线资格及 ZIP 完全一致时，才会生成上传目录。需要先做 ZIP 字节的发行资格验收时，运行 `python scripts/pack-cdn-directory.py --qualification`。验收用 ZIP 和校验表在 `artifacts/cdn-index/qualification/`。取得本批回执后，运行 `scripts/sign-online-index-interactive.ps1` 一次性校验资格、准备签名并生成完整上传根。
 
 ## 在线索引（2026-11-19）
 
 - `artifacts/cdn/`：历史已发 ZIP 按 `release/cdn-published.json` 固定原字节复用，逐文件仍须匹配 `release/current.json`，禁止覆盖同版本。生产签名 `latest.json` 与 ZIP、`SHA256SUMS.txt` 同层，整目录对公网。
 - `artifacts/cdn-index/`：签名工作区。签完后把 `latest.json` 写入 `artifacts/cdn/`，不另做上传目录。
-- `release/online-*.json`：在线资格与序号回执；资格只登记有实际升级/首装证据的版本。空资格表示尚未取得正式发行资格；本地 S1 不替代开发 EXE/正式验收，也不代表正式索引可发布。
+- `release/online-*.json`：在线资格与序号回执。常规资格登记实际升级或首装证据。用户可明确授权本批先上线后人工验收，授权记录须锁定 ZIP 大小、摘要、包身份和宿主范围。只按此授权开放首装，托管升级资格仍需实测证据。
 
 ZImage 1.0.3 与 FLUX2 1.0.4 现补齐 `installation/adapter-install.template.json`，与宿主现行 `comfyui.serviceOnly` 合同对齐：安装时取软件已经保存的 Comfy 连接，不预设端口、地址或账号。运行包 manifest/WASM 未改；此变更只补齐此前缺失的安装信封，真实 EXE 安装验收单独记录。
 
@@ -46,8 +48,8 @@ ZImage 1.0.3 与 FLUX2 1.0.4 现补齐 `installation/adapter-install.template.js
 
 - `release/evidence/` 保存已实测升级对的可提交记录及历史来源锁/公开owner回执；仅元数据，不另建旧版安装树。首批只有LTX0.1.0→0.1.2，`newInstall=false`，host精确限定实测产品版本0.6.1119（来自BGX_APP_VERSION/tauri.conf.json，非Cargo包版本）。
 - `scripts/archive-current-resources.py --output <临时owner归档ZIP> --receipt <本地候选回执>` 逐文件验证当前锁全部成品并生成聚合归档，在隔离根调用主仓真实restore owner两次验证；不编译、不签名、不上传、不替换正式current-artifact回执。归档文件名使用Git规范LF锁摘要，不能用Windows CRLF工作树摘要命名。ZIP是上传暂存聚合文件，不是第二套可安装目录。
-- `scripts/sign-online-index-interactive.ps1` 统一验签，并把生产签名 `latest.json` 写入 `artifacts/cdn/`。首次用 `-RememberPassword` 在私密终端授权，签名验证通过后由 Windows DPAPI 将密码加密保存在发行账号的用户配置中。以后同一台机器、同一 Windows 账号可直接自动签名。密码仅临时传给签名子进程。密钥或发行账号变更时重新授权。
+- `scripts/sign-online-index-interactive.ps1` 统一组装 ZIP、签名及验签，并将包含 `latest.json` 的完整上传树切换到 `artifacts/cdn/`。首次用 `-RememberPassword` 在私密终端授权，签名验证通过后由 Windows DPAPI 将密码加密保存在发行账号的用户配置中。以后同一台机器、同一 Windows 账号可直接自动签名。密码仅临时传给签名子进程。密钥或发行账号变更时重新授权。
 
 ### 在线发布准备
 
-默认发布准备从 CDN 回读并验签，基于线上序号识别已发布版本，重跑时复用相同候选索引。仅验证已组装的本地上传目录时使用 `-LocalOnly`，序号以本地签名索引和最近发布回执为锚，本地结果记录未核公网状态。要纳入特定首装包，使用 `-RequireNewInstall pluginId@version`，程序会核对首装实测记录与 ZIP 摘要。发布后可用 `--commit-receipt` 记录线上回读；下次准备直接核对线上索引。
+默认发布准备从 CDN 回读并验签，基于线上序号识别已发布版本，重跑时复用相同候选索引。本地准备使用 `-LocalOnly`，序号以本地签名索引和最近发布回执为锚。要纳入特定首装包，使用 `-RequireNewInstall pluginId@version`，程序会核对首装实测记录与 ZIP 摘要。发布后可用 `--commit-receipt` 记录线上回读。

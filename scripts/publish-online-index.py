@@ -9,6 +9,7 @@ import argparse
 import base64
 import datetime as dt
 import hashlib
+import importlib
 import json
 import os
 from pathlib import Path
@@ -138,12 +139,31 @@ def evidence_path(relative):
     return path
 
 
-def validated_packages(args):
+def validate_first_install(entry, evidence, size, sha256):
+    plugin, version = entry['pluginId'], entry['version']
+    if evidence.get('kind') == 'ownerAuthorizedWithoutFirstInstall':
+        fields(evidence, 'schemaVersion kind authorization packages')
+        target = dict(pluginId=plugin, version=version, hostVersionRange=entry['hostVersionRange'],
+                      targetZipBytes=size, targetZipSha256=sha256)
+        if (evidence['schemaVersion'] == 1 and isinstance(evidence['authorization'], str)
+                and evidence['authorization'].strip() and isinstance(evidence['packages'], list)
+                and evidence['packages'].count(target) == 1 and not entry['upgradeFrom']):
+            return
+        raise ValueError(f'Owner authorization does not cover this exact ZIP and host: {plugin}@{version}')
+    if (evidence.get('newInstallQualified') is not True or evidence.get('exitCode') != 0
+            or (evidence.get('pluginId'), evidence.get('version')) != (plugin, version)
+            or evidence.get('targetZipSha256') != sha256 or evidence.get('targetZipBytes') != size):
+        raise ValueError(f'First-install evidence does not qualify exact ZIP: {plugin}@{version}')
+
+
+def validated_packages(args, zip_directory=None):
+    if zip_directory is None:
+        zip_directory = ROOT/'artifacts/cdn'
     current = read(ROOT/'release/current.json')
     eligible = read(ROOT/'release/online-releases.json')
     fields(eligible, 'schemaVersion packages')
     if eligible['schemaVersion'] != 1 or not isinstance(eligible['packages'], list) or not eligible['packages']:
-        raise ValueError('No measured installation or upgrade eligibility is recorded')
+        raise ValueError('No installation or upgrade eligibility is recorded')
     evidence_by_path = {
         entry['evidence']: read(evidence_path(entry['evidence'])) for entry in eligible['packages']
     }
@@ -163,7 +183,8 @@ def validated_packages(args):
         seen.add(identity)
         locked = inventory.get(identity)
         if not locked or locked['kind'] != 'installable':
-            raise ValueError('Online package is not installable in current lock')
+            raise ValueError(f'Online qualification is out of date for {plugin}@{version}; '
+                             'register evidence for the current ZIP before signing latest.json')
         if type(entry['newInstall']) is not bool or not isinstance(entry['upgradeFrom'], list):
             raise ValueError('Invalid online eligibility types')
         host = entry['hostVersionRange']
@@ -180,10 +201,11 @@ def validated_packages(args):
             if not source.is_relative_to(ROOT) or digest(source.read_bytes()) != item['sha256']:
                 raise ValueError('Current release lock source changed')
         name = f'{plugin}-{version}.zip'
-        data = (ROOT/'artifacts/cdn'/name).read_bytes()
+        zip_path = zip_directory/name
+        data = zip_path.read_bytes()
         if not data or len(data) > MAX_BYTES:
             raise ValueError('Package byte limit exceeded')
-        with zipfile.ZipFile(ROOT/'artifacts/cdn'/name) as z:
+        with zipfile.ZipFile(zip_path) as z:
             expected = {f['path']: f for f in locked['files'] if Path(f['path']).name != 'WHERE-TO-INSTALL.txt'}
             if len(z.namelist()) != len(expected) or set(z.namelist()) != set(expected) or 'adapter-install.json' not in expected:
                 raise ValueError('ZIP inventory/envelope differs from lock')
@@ -194,12 +216,10 @@ def validated_packages(args):
             if (manifest['pluginId'], manifest['version']) != identity:
                 raise ValueError('ZIP manifest identity differs')
         sha256 = digest(data)
-        if entry['newInstall'] and (
-            evidence.get('newInstallQualified') is not True or evidence.get('exitCode') != 0
-            or (evidence.get('pluginId'), evidence.get('version')) != identity
-            or evidence.get('targetZipSha256') != sha256 or evidence.get('targetZipBytes') != len(data)
-        ):
-            raise ValueError(f'First-install evidence does not qualify exact ZIP: {plugin}@{version}')
+        if evidence.get('kind') == 'ownerAuthorizedWithoutFirstInstall' and not entry['newInstall']:
+            raise ValueError(f'Owner first-install authorization cannot be used for upgrade-only entry: {plugin}@{version}')
+        if entry['newInstall']:
+            validate_first_install(entry, evidence, len(data), sha256)
         packages.append({'pluginId':plugin,'version':version,'displayName':manifest['displayName'],
             'newInstall':entry['newInstall'],'hostVersionRange':host,'protocolVersion':2,
             'upgradeFrom':entry['upgradeFrom'],'dependencies':[],'file':name,'bytes':len(data),'sha256':sha256})
@@ -325,70 +345,73 @@ def main():
             raise ValueError('--prepare-upload and --commit-receipt are separate modes')
         if args.local_only and not args.prepare_upload:
             raise ValueError('--local-only requires --prepare-upload')
-        if args.prepare_upload and not args.check and not args.local_only:
-            subprocess.run([sys.executable, str(ROOT/'scripts/pack-cdn-directory.py')],
-                           env=unsigned_environment(), check=True)
-        packages = validated_packages(args)
-        new_install = {f'{p["pluginId"]}@{p["version"]}' for p in packages if p['newInstall']}
-        missing = set(args.require_new_install) - new_install
-        if missing:
-            raise ValueError('Missing first-install qualification: ' + ', '.join(sorted(missing)))
-        receipt_path = ROOT/'release/online-index-receipt.json'
-        receipt = read(receipt_path)
-        fields(receipt, 'sequence payloadSha256 publishedAt')
-        if type(receipt['sequence']) is not int or receipt['sequence'] < 1:
-            raise ValueError('Invalid sequence receipt')
-        if args.check and not args.prepare_upload:
-            print(f'Validated {len(packages)} online packages')
-            return 0
-        if not args.pubkey:
-            raise ValueError('--pubkey is required')
-        public = Path(args.pubkey).read_text(encoding='utf-8-sig').strip()
-        output = ROOT/'artifacts/cdn-index'
-        latest_path = output/'latest.json'
-        if args.commit_receipt:
-            latest = latest_path.read_bytes()
-            value, payload_sha = verified_index(latest, public)
-            if value['sequence'] < receipt['sequence'] or value['packages'] != packages:
-                raise ValueError('Stale signed index; eligibility or receipt changed')
-            if public_index_bytes() != latest:
-                raise ValueError('Public CDN bytes differ; receipt was not changed')
-            if value['sequence'] == receipt['sequence'] and payload_sha != receipt['payloadSha256']:
-                raise ValueError('Public payload changed at the same receipt sequence')
-            updated = {'sequence': value['sequence'], 'payloadSha256': payload_sha, 'publishedAt': value['publishedAt']}
-            replace_file(receipt_path, canonical(updated)+b'\n')
-            print('Receipt committed after public byte and signature verification')
-            return 0
-        prepare = prepare_local_index if args.local_only else prepare_index
-        index, sequence = prepare(packages, receipt, public, latest_path)
-        if args.check:
-            print(f'Validated {len(packages)} online packages; sequence {sequence}; signing required: {index is None}')
-            return 0
-        if index is None or args.verify_signing_password:
-            password = os.environ.get('BGX_ADAPTER_INDEX_KEY_PASSWORD')
-            if not password:
-                print('BGX_ADAPTER_INDEX_KEY_PASSWORD is required for the new index', file=sys.stderr)
-                return 3
-            output.mkdir(parents=True, exist_ok=True)
-            signed = sign_index(args, packages, sequence, public, password, output)
-            if index is None:
-                index = signed
-        replace_file(latest_path, index)
-        print(f'Verified index sequence {sequence}')
-        if args.prepare_upload:
-            stage = [sys.executable, str(ROOT/'scripts/stage-cdn-upload-directory.py')]
-            if args.local_only:
-                stage.append('--local-only')
-            for identity in args.require_new_install:
-                stage.extend(['--require-new-install', identity])
-            return subprocess.run(stage, env=unsigned_environment()).returncode
-        return 0
+        if not args.prepare_upload:
+            return run_index(args)
+        packer = importlib.import_module('pack-cdn-directory')
+        with tempfile.TemporaryDirectory(prefix='bgx-cdn-index-') as temporary:
+            candidate = Path(temporary)
+            packer.assemble(packer.locked_packages(), candidate)
+            return run_index(args, candidate, packer)
     except InvalidSigningPassword as exc:
         print(str(exc), file=sys.stderr)
         return 4
     except Exception as exc:
         print(f'Online index not published: {exc}',file=sys.stderr)
         return 1
+
+
+def run_index(args, zip_directory=None, packer=None):
+    packages = validated_packages(args, zip_directory)
+    new_install = {f'{p["pluginId"]}@{p["version"]}' for p in packages if p['newInstall']}
+    missing = set(args.require_new_install) - new_install
+    if missing:
+        raise ValueError('Missing first-install qualification: ' + ', '.join(sorted(missing)))
+    receipt_path = ROOT/'release/online-index-receipt.json'
+    receipt = read(receipt_path)
+    fields(receipt, 'sequence payloadSha256 publishedAt')
+    if type(receipt['sequence']) is not int or receipt['sequence'] < 1:
+        raise ValueError('Invalid sequence receipt')
+    if args.check and not args.prepare_upload:
+        print(f'Validated {len(packages)} online packages')
+        return 0
+    if not args.pubkey:
+        raise ValueError('--pubkey is required')
+    public = Path(args.pubkey).read_text(encoding='utf-8-sig').strip()
+    output = ROOT/'artifacts/cdn-index'
+    latest_path = output/'latest.json'
+    if args.commit_receipt:
+        latest = latest_path.read_bytes()
+        value, payload_sha = verified_index(latest, public)
+        if value['sequence'] < receipt['sequence'] or value['packages'] != packages:
+            raise ValueError('Stale signed index; eligibility or receipt changed')
+        if public_index_bytes() != latest:
+            raise ValueError('Public CDN bytes differ; receipt was not changed')
+        if value['sequence'] == receipt['sequence'] and payload_sha != receipt['payloadSha256']:
+            raise ValueError('Public payload changed at the same receipt sequence')
+        updated = {'sequence': value['sequence'], 'payloadSha256': payload_sha, 'publishedAt': value['publishedAt']}
+        replace_file(receipt_path, canonical(updated)+b'\n')
+        print('Receipt committed after public byte and signature verification')
+        return 0
+    prepare = prepare_local_index if args.local_only else prepare_index
+    index, sequence = prepare(packages, receipt, public, latest_path)
+    if args.check:
+        print(f'Validated {len(packages)} online packages; sequence {sequence}; signing required: {index is None}')
+        return 0
+    if index is None or args.verify_signing_password:
+        password = os.environ.get('BGX_ADAPTER_INDEX_KEY_PASSWORD')
+        if not password:
+            print('BGX_ADAPTER_INDEX_KEY_PASSWORD is required for the new index', file=sys.stderr)
+            return 3
+        output.mkdir(parents=True, exist_ok=True)
+        signed = sign_index(args, packages, sequence, public, password, output)
+        if index is None:
+            index = signed
+    replace_file(latest_path, index)
+    print(f'Verified index sequence {sequence}')
+    if args.prepare_upload:
+        packer.publish(packer.locked_packages(), local_only=args.local_only, required=args.require_new_install,
+                       source_locks=args.source_lock, signed_index=index)
+    return 0
 
 
 if __name__ == '__main__':

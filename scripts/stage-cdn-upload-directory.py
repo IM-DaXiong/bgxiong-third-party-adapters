@@ -1,21 +1,16 @@
 #!/usr/bin/env python3
-"""Place the production-signed index into the public-aligned CDN directory.
-
-This does not sign, upload, invent eligibility, or read private keys. It writes
-artifacts/cdn/latest.json only when the signed index verifies with host public
-trust, is not a sequence rollback, every indexed file matches a ZIP already in
-artifacts/cdn, and each --require-new-install entry is present with
-newInstall=true. ZIP bytes and SHA256SUMS.txt stay in that same directory.
-"""
+"""Stage or verify the complete production-signed CDN directory."""
 from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib
 import importlib.util
 import json
 import re
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[1]
 CDN = ROOT / "artifacts" / "cdn"
@@ -74,13 +69,18 @@ def verify_sums(zips: dict[str, tuple[int, str]]) -> None:
         if not line:
             continue
         digest, name = line.split("  ", 1)
+        if name in parsed:
+            raise StageError("Duplicate ZIP in SHA256SUMS.txt: %s" % name)
         parsed[name] = digest
     expected = {name: digest for name, (_n, digest) in zips.items()}
     if parsed != expected:
         raise StageError("SHA256SUMS.txt does not match the locked CDN ZIP set")
+    paths = {path.name for path in CDN.iterdir()}
+    if paths - {"SHA256SUMS.txt", "latest.json"} != zips.keys():
+        raise StageError("CDN directory contains files outside the locked ZIP set")
 
 
-def inspect_index(mod, latest: bytes, zips: dict[str, tuple[int, str]], required: list[tuple[str, str]], local_only: bool = False) -> dict:
+def inspect_index(mod, latest: bytes, zips: dict[str, tuple[int, str]], required: list[tuple[str, str]], local_only: bool = False, *, expected_packages=None) -> dict:
     key_id, pubkey = host_public_trust()
     if key_id != mod.KEY_ID:
         raise StageError("Publisher key ID differs from the application production key ID")
@@ -108,6 +108,8 @@ def inspect_index(mod, latest: bytes, zips: dict[str, tuple[int, str]], required
         })
     if problems:
         raise StageError("\n".join(problems))
+    if expected_packages is not None and payload["packages"] != expected_packages:
+        raise StageError("latest.json does not match current online qualification; sign the current batch")
     missing_required = []
     for plugin, version in required:
         hit = next((p for p in indexed if p["pluginId"] == plugin and p["version"] == version), None)
@@ -196,35 +198,33 @@ def write_report(report: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
-def install_latest(latest: bytes) -> None:
-    CDN.mkdir(parents=True, exist_ok=True)
-    temporary = CDN / ".latest.json.tmp"
-    temporary.write_bytes(latest)
-    temporary.replace(CDN / "latest.json")
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="report readiness; write nothing")
     parser.add_argument("--require-new-install", action="append", default=[], metavar="pluginId@version",
                         help="refuse to write unless this exact package is signed with newInstall=true")
     parser.add_argument("--local-only", action="store_true", help="verify against local publication facts only")
+    parser.add_argument("--source-lock", type=Path, action="append", default=[])
     args = parser.parse_args()
     try:
+        if not args.check:
+            packer = importlib.import_module("pack-cdn-directory")
+            packer.publish(packer.locked_packages(), local_only=args.local_only,
+                           required=args.require_new_install, source_locks=args.source_lock)
+            return 0
         mod = load_publisher()
         required = parse_require(mod, args.require_new_install)
+        latest_path = CDN / "latest.json"
+        if not latest_path.is_file():
+            raise StageError("Upload directory is incomplete: missing production-signed latest.json")
+        latest = latest_path.read_bytes()
         zips = load_lock_zips()
         verify_sums(zips)
-        latest = (INDEX_DIR / "latest.json").read_bytes()
-        report = inspect_index(mod, latest, zips, required, local_only=args.local_only)
+        expected = mod.validated_packages(SimpleNamespace(source_lock=args.source_lock), CDN)
+        report = inspect_index(mod, latest, zips, required, local_only=args.local_only,
+                               expected_packages=expected)
         sys.stdout.write(write_report(report))
-        if args.check:
-            return 0 if report["ready"] else 2
-        if not report["ready"]:
-            raise StageError("Upload directory was not written: signed index is not ready for the required package(s).")
-        install_latest(latest)
-        print("wrote latest.json into %s (%s zips already there)" % (CDN, len(zips)))
-        return 0
+        return 0 if report["ready"] else 2
     except StageError as exc:
         print("CDN upload staging failed: %s" % exc, file=sys.stderr)
         return exc.exit_code

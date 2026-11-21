@@ -3,58 +3,157 @@
   "packages": [
     {
       "pluginId": "local.bgx.seedream-55-image",
+      "version": "1.0.7",
+      "newInstall": true,
+      "hostVersionRange": "=0.6.1119",
+      "upgradeFrom": [],
+      "evidence": "release/evidence/20261122-current-adapters-owner-authorization.json"
+    },
+    {
+      "pluginId": "local.bgx.wan-animate2",
+      "version": "0.1.4",
+      "newInstall": true,
+      "hostVersionRange": "=0.6.1119",
+      "upgradeFrom": [],
+      "evidence": "release/evidence/20261122-current-adapters-owner-authorization.json"
+    },
+    {
+      "pluginId": "local.bgx.wan22-animate",
+      "version": "0.2.15",
+      "newInstall": true,
+      "hostVersionRange": "=0.6.1119",
+      "upgradeFrom": [],
+      "evidence": "release/evidence/20261122-current-adapters-owner-authorization.json"
+    },
+    {
+      "pluginId": "local.bgx.deepseek-text",
+      "version": "1.0.1",
+      "newInstall": true,
+      "hostVersionRange": "=0.6.1119",
+      "upgradeFrom": [],
+      "evidence": "release/evidence/20261122-current-adapters-owner-authorization.json"
+    },
+    {
+      "pluginId": "local.bgx.minimax-m3",
+      "version": "1.0.3",
+      "newInstall": true,
+      "hostVersionRange": "=0.6.1119",
+      "upgradeFrom": [],
+      "evidence": "release/evidence/20261122-current-adapters-owner-authorization.json"
+    },
+    {
+      "pluginId": "local.independent.comfy-h3-continuum",
+      "version": "1.0.4",
+      "newInstall": true,
+      "hostVersionRange": "=0.6.1119",
+      "upgradeFrom": [],
+      "evidence": "release/evidence/20261122-current-adapters-owner-authorization.json"
+    },
+    {
+      "pluginId": "local.zeroauthor.comfy-zimage-turbo",
+      "version": "1.0.4",
+      "newInstall": true,
+      "hostVersionRange": "=0.6.1119",
+      "upgradeFrom": [],
+      "evidence": "release/evidence/20261122-current-adapters-owner-authorization.json"
+    },
+    {
+      "pluginId": "local.bgx.wan22-s2v",
+      "version": "0.1.8",
+      "newInstall": true,
+      "hostVersionRange": "=0.6.1119",
+      "upgradeFrom": [],
+      "evidence": "release/evidence/20261122-current-adapters-owner-authorization.json"
+    },
+    {
+      "pluginId": "local.bgx.minimax-h3-image-comfy",
+      "version": "1.0.3",
+      "newInstall": true,
+      "hostVersionRange": "=0.6.1119",
+      "upgradeFrom": [],
+      "evidence": "release/evidence/20261122-current-adapters-owner-authorization.json"
+    },
+    {
+      "pluginId": "local.thirdparty.comfy-panorama-image",
+      "version": "1.24.4",
+      "newInstall": true,
+      "hostVersionRange": "=0.6.1119",
+      "upgradeFrom": [],
+      "evidence": "release/evidence/20261122-current-adapters-owner-authorization.json"
+    },
+    {
+      "pluginId": "local.bgx.ltx23",
+      "version": "0.1.4",
+      "newInstall": true,
+      "hostVersionRange": "=0.6.1119",
+      "upgradeFrom": [
+        {
+          "version": "0.1.2",
+          "manifestSha256": "96f2b733ddcd95d4bc000e077b1047947222f2323a3530beab36d8f5ed342c07"
+        }
+      ],
+      "evidence": "release/evidence/20261121-local.bgx.ltx23-0.1.4-first-install.json"
+    },
+    {
+      "pluginId": "local.bgx.seedvr2-image",
+      "version": "1.0.4",
+      "newInstall": true,
+      "hostVersionRange": "=0.6.1119",
+      "upgradeFrom": [],
+      "evidence": "release/evidence/20261122-current-adapters-owner-authorization.json"
+    },
+    {
+      "pluginId": "local.bgx.seedream-image",
+      "version": "1.0.8",
+      "newInstall": true,
+      "hostVersionRange": "=0.6.1119",
+      "upgradeFrom": [],
+      "evidence": "release/evidence/20261122-current-adapters-owner-authorization.json"
+    },
+    {
+      "pluginId": "local.thirdparty.runninghub-qwen-image-21",
+      "version": "0.1.5",
+      "newInstall": true,
+      "hostVersionRange": "=0.6.1119",
+      "upgradeFrom": [],
+      "evidence": "release/evidence/20261122-current-adapters-owner-authorization.json"
+    },
+    {
+      "pluginId": "local.thirdparty.h3-face-refine",
+      "version": "1.0.1",
+      "newInstall": true,
+      "hostVersionRange": "=0.6.1119",
+      "upgradeFrom": [],
+      "evidence": "release/evidence/20261122-current-adapters-owner-authorization.json"
+    },
+    {
+      "pluginId": "local.independent.flux2-ordered-reference",
       "version": "1.0.5",
       "newInstall": true,
       "hostVersionRange": "=0.6.1119",
       "upgradeFrom": [],
-      "evidence": "release/evidence/seedream-55-image-1.0.5-first-install.json"
+      "evidence": "release/evidence/20261122-current-adapters-owner-authorization.json"
     },
     {
-      "pluginId": "local.bgx.ltx23",
-      "version": "0.1.2",
-      "newInstall": false,
+      "pluginId": "local.thirdparty.runninghub-h3-all",
+      "version": "1.0.7",
+      "newInstall": true,
       "hostVersionRange": "=0.6.1119",
-      "upgradeFrom": [
-        {
-          "version": "0.1.0",
-          "manifestSha256": "2d49d1a27a116ea2fe3d551828dce82cb401b89967edcef2c96c5503f6aa8875"
-        }
-      ],
-      "evidence": "release/evidence/20261119-ltx23-online-owner-integration.json"
+      "upgradeFrom": [],
+      "evidence": "release/evidence/20261122-current-adapters-owner-authorization.json"
     },
     {
       "pluginId": "local.bgx.ltx25",
-      "version": "0.1.3",
+      "version": "0.1.8",
       "newInstall": true,
       "hostVersionRange": "=0.6.1119",
       "upgradeFrom": [
         {
-          "version": "0.1.0",
-          "manifestSha256": "92c1ac2f5cc97fddee98c762e2f2368f0a113231a27b33d9df71ebc088f61218"
-        },
-        {
-          "version": "0.1.1",
-          "manifestSha256": "06a4a1946bddb6a8d6ea19533f0018f531e82b96717f33b54a3bf6f8b73836a8"
-        },
-        {
-          "version": "0.1.2",
-          "manifestSha256": "0717fea590c0e869ff33a644a2436d8b42172fe260411dd65212b8aa08662466"
+          "version": "0.1.3",
+          "manifestSha256": "0f22774ab6c796775376af3cf00b428e0cd3557356f1069a9618d816c7102b02"
         }
       ],
-      "evidence": "release/evidence/20261120-ltx25-0.1.3-online-first-install.json"
-    },
-    {
-      "pluginId": "local.bgx.wan22-s2v",
-      "version": "0.1.6",
-      "newInstall": true,
-      "hostVersionRange": "=0.6.1119",
-      "upgradeFrom": [
-        {
-          "version": "0.1.5",
-          "manifestSha256": "394a22fcd8a336a10e63ca3dc9b0934430bef7a1d99ccae1f5f022416aeabcdd"
-        }
-      ],
-      "evidence": "release/evidence/20261121-wan22-s2v-0.1.6-online-managed-upgrade.json"
+      "evidence": "release/evidence/20261121-local.bgx.ltx25-0.1.8-first-install.json"
     }
   ]
 }
