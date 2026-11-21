@@ -1,0 +1,31 @@
+{
+  "type": "object",
+  "properties": {
+    "model": {
+      "type": "string"
+    },
+    "providerRequestId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "imageCount": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "reportedUsageJson": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "model",
+    "providerRequestId",
+    "imageCount",
+    "reportedUsageJson"
+  ],
+  "additionalProperties": false
+}

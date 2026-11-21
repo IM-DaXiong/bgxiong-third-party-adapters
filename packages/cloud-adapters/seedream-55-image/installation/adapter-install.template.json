@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "packageDirectory": "package",
+  "manifestSha256": "BUILD_GENERATED_MANIFEST_SHA256",
+  "hostConfig": {
+    "bindingId": "seedream-55-image-manual",
+    "bindingRevision": 1,
+    "configurationRef": "seedream-55-image-v1",
+    "configuration": {
+      "credentialRef": "seedream-55-image-user-key"
+    },
+    "network": {
+      "origins": [
+        "https://ark-content-generation-v2-cn-beijing.tos-cn-beijing.volces.com"
+      ],
+      "allowPrivate": false,
+      "allowEmbeddedAuthorization": false,
+      "deniedHosts": [],
+      "deniedNetworks": []
+    },
+    "credentials": [],
+    "trust": {
+      "publishers": [],
+      "revokedPlugins": [],
+      "revokedVersions": [],
+      "revokedKeys": [],
+      "denylistedHosts": [],
+      "isFresh": false,
+      "supportedFeatures": [
+        "stream-events-v1",
+        "operation-input-preflight-v2"
+      ]
+    },
+    "transport": {
+      "handshakeTimeoutMs": 10000,
+      "writeTimeoutMs": 60000,
+      "shutdownTimeoutMs": 10000,
+      "cancelGraceMs": 100
+    },
+    "mediaTtlMs": 3600000,
+    "budgetMs": {
+      "capabilities": 60000,
+      "probe": 60000,
+      "submit": 180000,
+      "query": 180000,
+      "cancel": 60000
+    },
+    "probe": null
+  },
+  "authentication": {
+    "source": "userInput",
+    "fields": [
+      {
+        "reference": "seedream-55-image-user-key",
+        "label": "火山方舟 API Key",
+        "mode": "bearer",
+        "origins": [],
+        "customHeader": null,
+        "accountOriginHostSuffix": "ark.cn-beijing.volces.com"
+      }
+    ]
+  },
+  "managedMediaProbe": false
+}

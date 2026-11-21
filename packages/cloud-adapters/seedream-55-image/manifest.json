@@ -1,0 +1,45 @@
+{
+  "artifactSha256": "80f6c880c431365debd9999c1b78907e7afac710854e480777066b0d5d6881c9",
+  "displayName": "Seedream 5.5",
+  "entry": "adapter.wasm",
+  "language": "rust",
+  "limits": {
+    "fuel": 30000000000,
+    "memoryBytes": 268435456,
+    "outputBytes": 1048576,
+    "wallMs": 180000
+  },
+  "optionalFeatures": [],
+  "pluginId": "local.bgx.seedream-55-image",
+  "protocolRange": {
+    "max": 2,
+    "min": 2
+  },
+  "publisherId": null,
+  "publisherKeyId": null,
+  "requestedCapabilities": {
+    "allowPrivateNetwork": false,
+    "auth": [
+      "bearer"
+    ],
+    "embeddedHeaders": [],
+    "endpointPolicy": [
+      "staticHosts"
+    ],
+    "mediaSlots": [
+      "image",
+      "file"
+    ],
+    "networkHosts": [
+      "ark.cn-beijing.volces.com",
+      "ark-content-generation-v2-cn-beijing.tos-cn-beijing.volces.com"
+    ],
+    "stateBytes": 0
+  },
+  "requiredFeatures": [
+    "stream-events-v1",
+    "operation-input-preflight-v2"
+  ],
+  "schemaVersion": 2,
+  "version": "1.0.0"
+}
