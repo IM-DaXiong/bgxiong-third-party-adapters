@@ -34,6 +34,19 @@
         }
       ],
       "evidence": "release/evidence/20261120-ltx25-0.1.3-online-first-install.json"
+    },
+    {
+      "pluginId": "local.bgx.wan22-s2v",
+      "version": "0.1.6",
+      "newInstall": true,
+      "hostVersionRange": "=0.6.1119",
+      "upgradeFrom": [
+        {
+          "version": "0.1.5",
+          "manifestSha256": "394a22fcd8a336a10e63ca3dc9b0934430bef7a1d99ccae1f5f022416aeabcdd"
+        }
+      ],
+      "evidence": "release/evidence/20261121-wan22-s2v-0.1.6-online-managed-upgrade.json"
     }
   ]
 }

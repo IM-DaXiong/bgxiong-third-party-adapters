@@ -1,0 +1,297 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "prompt",
+    "inputMode",
+    "aspectRatio",
+    "resolution",
+    "fps",
+    "durationSeconds",
+    "seed",
+    "image",
+    "audio"
+  ],
+  "properties": {
+    "prompt": {
+      "type": "string",
+      "default": ""
+    },
+    "inputMode": {
+      "type": "string",
+      "const": "image_to_video"
+    },
+    "aspectRatio": {
+      "type": "string",
+      "enum": [
+        "16:9",
+        "9:16",
+        "1:1",
+        "4:3",
+        "3:4"
+      ],
+      "default": "1:1"
+    },
+    "resolution": {
+      "type": "string",
+      "enum": [
+        "640x352",
+        "352x640",
+        "640x640",
+        "640x480",
+        "480x640",
+        "480x256",
+        "256x480",
+        "480x480",
+        "480x352",
+        "352x480",
+        "832x480",
+        "480x832",
+        "832x832",
+        "832x624",
+        "624x832",
+        "1024x576",
+        "576x1024",
+        "1024x1024",
+        "1024x768",
+        "768x1024",
+        "1280x720",
+        "720x1280",
+        "1280x1280",
+        "1280x960",
+        "960x1280",
+        "1536x864",
+        "864x1536",
+        "1536x1536",
+        "1536x1152",
+        "1152x1536",
+        "1920x1072",
+        "1072x1920",
+        "1920x1920",
+        "1920x1440",
+        "1440x1920",
+        "2560x1440",
+        "1440x2560",
+        "2560x2560",
+        "2560x1920",
+        "1920x2560",
+        "3200x1792",
+        "1792x3200",
+        "3200x3200",
+        "3200x2400",
+        "2400x3200",
+        "3840x2160",
+        "2160x3840",
+        "3840x3840",
+        "3840x2880",
+        "2880x3840"
+      ],
+      "default": "640x640"
+    },
+    "fps": {
+      "type": "integer",
+      "const": 16,
+      "default": 16
+    },
+    "durationSeconds": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 30,
+      "default": 0
+    },
+    "seed": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967045,
+      "default": 0
+    },
+    "image": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "mediaId"
+        ],
+        "properties": {
+          "mediaId": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "audio": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "mediaId"
+        ],
+        "properties": {
+          "mediaId": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "aspectRatio": {
+            "const": "16:9"
+          }
+        },
+        "required": [
+          "aspectRatio"
+        ]
+      },
+      "then": {
+        "properties": {
+          "resolution": {
+            "enum": [
+              "640x352",
+              "480x256",
+              "832x480",
+              "1024x576",
+              "1280x720",
+              "1536x864",
+              "1920x1072",
+              "2560x1440",
+              "3200x1792",
+              "3840x2160"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "aspectRatio": {
+            "const": "9:16"
+          }
+        },
+        "required": [
+          "aspectRatio"
+        ]
+      },
+      "then": {
+        "properties": {
+          "resolution": {
+            "enum": [
+              "352x640",
+              "256x480",
+              "480x832",
+              "576x1024",
+              "720x1280",
+              "864x1536",
+              "1072x1920",
+              "1440x2560",
+              "1792x3200",
+              "2160x3840"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "aspectRatio": {
+            "const": "1:1"
+          }
+        },
+        "required": [
+          "aspectRatio"
+        ]
+      },
+      "then": {
+        "properties": {
+          "resolution": {
+            "enum": [
+              "640x640",
+              "480x480",
+              "832x832",
+              "1024x1024",
+              "1280x1280",
+              "1536x1536",
+              "1920x1920",
+              "2560x2560",
+              "3200x3200",
+              "3840x3840"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "aspectRatio": {
+            "const": "4:3"
+          }
+        },
+        "required": [
+          "aspectRatio"
+        ]
+      },
+      "then": {
+        "properties": {
+          "resolution": {
+            "enum": [
+              "640x480",
+              "480x352",
+              "832x624",
+              "1024x768",
+              "1280x960",
+              "1536x1152",
+              "1920x1440",
+              "2560x1920",
+              "3200x2400",
+              "3840x2880"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "aspectRatio": {
+            "const": "3:4"
+          }
+        },
+        "required": [
+          "aspectRatio"
+        ]
+      },
+      "then": {
+        "properties": {
+          "resolution": {
+            "enum": [
+              "480x640",
+              "352x480",
+              "624x832",
+              "768x1024",
+              "960x1280",
+              "1152x1536",
+              "1440x1920",
+              "1920x2560",
+              "2400x3200",
+              "2880x3840"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

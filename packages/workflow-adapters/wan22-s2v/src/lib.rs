@@ -2,6 +2,7 @@
 //! Wan S2V: all graph topology, chunk quantization and Comfy mappings live here.
 extern crate alloc;
 mod comfy;
+mod generate;
 use alloc::{format, string::{String, ToString}, vec, vec::Vec};
 use bgx_adapter_v2_sdk::{guest, Adapter, Host, Invocation, Response};
 use serde_json::{json, Value};
@@ -41,7 +42,7 @@ pub fn capabilities() -> Value {
                 {"fieldPointer":"/parameters/resolution","widget":"select","label":"分辨率","description":"","group":"规格"},
                 {"fieldPointer":"/parameters/fps","widget":"select","label":"帧率","description":"","group":"规格"},
                 {"fieldPointer":"/parameters/seed","widget":"integer","label":"种子","description":"","group":"参数"}]}}],
-        "schemas":[i,o,c,r]}]})
+        "schemas":[i,o,c,r]},generate::contract()]})
 }
 
 const FPS: u64 = 16;
@@ -91,13 +92,17 @@ pub fn graph(input: &Value, image: &str, audio: &str) -> Result<Value,Failure> {
     let duration=input["audio"]["durationMs"].as_u64().ok_or_else(||invalid("Measured audio duration is required"))?;
     let (lengths,_,_)=timing(duration)?;
     let params = &input["parameters"];
-    let (width, height) = output_dimensions(params)?;
+    build_graph(input, image, audio, output_dimensions(params)?, &lengths)
+}
+
+fn build_graph(input: &Value, image: &str, audio: &str, (width, height): (u64, u64), lengths: &[u64]) -> Result<Value, Failure> {
+    let params = &input["parameters"];
     let seed = params["seed"].as_u64().filter(|value| *value <= 4294967045)
         .ok_or_else(|| invalid("Invalid seed"))?;
     let mut g: Value = serde_json::from_str(include_str!("../workflows/api.json")).expect("frozen graph");
     g["153"]["inputs"]["width"] = json!(width);
     g["153"]["inputs"]["height"] = json!(height);
-    for (node, length) in ["153", "172:76", "165:76"].into_iter().zip(&lengths) {
+    for (node, length) in ["153", "172:76", "165:76"].into_iter().zip(lengths) {
         g[node]["inputs"]["length"] = json!(length);
     }
     for (node, offset) in [("152",0),("172:77",1),("165:77",250)] { g[node]["inputs"]["seed"]=json!(seed+offset); }
@@ -184,7 +189,11 @@ fn query(host:&mut dyn Host,request:&Invocation,p:&Value)->Result<Value,Failure>
         comfy::Remote::Running=>("running",json!([]),Value::Null,Value::Null),
         comfy::Remote::Succeeded(files)=>{
             let output=comfy::download(host,&ctx,&files[0])?;
-            let data=json!({"schemaVersion":1,"video":{"mediaId":output["media"]["id"]},"receipt":p["resumeToken"]["receipt"]});
+            let data=if p["operationId"]==generate::OPERATION {
+                json!({"description":output["media"]["id"]})
+            } else {
+                json!({"schemaVersion":1,"video":{"mediaId":output["media"]["id"]},"receipt":p["resumeToken"]["receipt"]})
+            };
             ("succeeded",json!([output]),data,Value::Null)
         },
         comfy::Remote::Failed(reason)=>("failed",json!([]),Value::Null,json!({"category":"vendorTaskFailed","message":"Wan S2V execution failed","vendorCode":reason,"details":{"promptId":id}})),
@@ -216,11 +225,15 @@ impl Adapter for WanS2v {
         let wire=serde_json::to_value(&request).expect("typed invocation");
         let result=(||{
             let p:Value=serde_json::from_str(&request.r#payload_json).map_err(|_|invalid("Payload must contain JSON"))?;
-            if matches!(wire["operation"].as_str(),Some("submit"|"query"|"upload")) && p["operationId"]!=OPERATION {return Err(invalid("Unknown speech operation"));}
+            let generation = p["operationId"]==generate::OPERATION;
+            if matches!(wire["operation"].as_str(),Some("submit"|"query"|"upload")) && p["operationId"]!=OPERATION && !generation {return Err(invalid("Unknown Wan S2V operation"));}
             match wire["operation"].as_str() {
-                Some("capabilities")=>Ok(capabilities()),Some("submit")=>submit(host,&request,&p),Some("query")=>query(host,&request,&p),
+                Some("capabilities")=>Ok(capabilities()),
+                Some("submit") if generation=>generate::submit(host,&request,&p),
+                Some("submit")=>submit(host,&request,&p),Some("query")=>query(host,&request,&p),
                 Some("upload")=>{let value=comfy::upload(host,&context(&request,&p),&p["media"])?;Ok(json!({"mediaId":p["media"]["id"],"uploadRef":value}))},
                 Some("probe")=>match p["kind"].as_str(){
+                    Some("operation_input_preflight")=>Ok(generate::preflight(&p)),
                     Some("operation_preflight")=>{if p["operationId"]!=OPERATION{return Err(invalid("Unknown operation"));}preflight(&p)},
                     Some("package_validation")=>Ok(json!({"packageValid":true,"connection":"not_checked","authentication":"not_checked","resources":"not_checked","issues":[]})),
                     Some("connectivity")=>{connectivity(host,&context(&request,&p))?;Ok(json!({"packageValid":true,"connection":"ready","authentication":"ready","resources":"ready","issues":[]}))},

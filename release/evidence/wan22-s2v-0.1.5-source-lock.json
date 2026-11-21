@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "sourceLockGitCommit": "0fcf224062796a62945437dfd9b25653d7714458",
+  "packages": [
+    {
+      "pluginId": "local.bgx.wan22-s2v",
+      "version": "0.1.5",
+      "kind": "installable",
+      "validation": "sdk_package_validated",
+      "sourceManifest": "records/release-sources/wan22-s2v/0.1.5/manifest.json",
+      "files": [
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/current/local.bgx.wan22-s2v/0.1.5/adapter-install.json",
+          "sha256": "7b5d761afe52b060d098fe3dfe0a3a4a1aa94edcb82c7ac99907dd841d6052f7"
+        },
+        {
+          "path": "LICENSE",
+          "source": "artifacts/current/local.bgx.wan22-s2v/0.1.5/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/current/local.bgx.wan22-s2v/0.1.5/package/adapter.wasm",
+          "sha256": "a681ab49e039ed189ba696a1afb1208866d0e0f8f3926a7219d59f53f56663e7"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/current/local.bgx.wan22-s2v/0.1.5/package/manifest.json",
+          "sha256": "394a22fcd8a336a10e63ca3dc9b0934430bef7a1d99ccae1f5f022416aeabcdd"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/current/local.bgx.wan22-s2v/0.1.5/package/manifest.sha256",
+          "sha256": "0e4f5f9db834cef37d5422612a99ee99ad738f13baedf2b59f243c37aa2cd863"
+        },
+        {
+          "path": "README.txt",
+          "source": "artifacts/current/local.bgx.wan22-s2v/0.1.5/README.txt",
+          "sha256": "826d3ceb243891a89180fee4d29f672ce2e4906f411d1bb0421f32550b52a116"
+        },
+        {
+          "path": "安装说明.txt",
+          "source": "artifacts/current/local.bgx.wan22-s2v/0.1.5/安装说明.txt",
+          "sha256": "7d0b61a557e8fd288ba12e5918034c732d048c01e590f92257786597c1480947"
+        }
+      ]
+    }
+  ]
+}
