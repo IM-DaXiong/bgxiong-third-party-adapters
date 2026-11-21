@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "kind": "measuredAdapterOwnerFirstInstallEvidence",
+  "pluginId": "local.bgx.wan22-s2v",
+  "version": "0.1.6",
+  "measuredHostVersion": "0.6.1119",
+  "newInstallQualified": true,
+  "exitCode": 0,
+  "targetZipBytes": 231339,
+  "targetZipSha256": "5d5b78a70b5f9ddc3b0fc66eb4e21a55be8dff92b91a201bf1a1d293098b369c",
+  "testBinarySha256": "e10ba4c8abdf83ddcced34ae7bc13b22fcd29e022509ac92ae7c4fa66d16f397",
+  "testLogSha256": "98d9d81c629b30862b564065bc8b37c00e5612b9a2087509f65953c25fc1821d",
+  "registeredVideoModels": 1,
+  "publicZipReadbackMatchesPublishedBytes": true,
+  "qualificationScope": "Ephemeral signed QA index, exact ZIP discovery and download, SDK install and registration of one video model into an empty isolated library. No real generation or managed-package upgrade."
+}

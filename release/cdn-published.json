@@ -59,6 +59,10 @@
     "local.thirdparty.runninghub-qwen-image-21-0.1.4.zip": {
       "bytes": 241225,
       "sha256": "144b77f165a201def6d1766951178efa223949a518ab23910cff4880995ec468"
+    },
+    "local.bgx.wan22-s2v-0.1.6.zip": {
+      "bytes": 231339,
+      "sha256": "5d5b78a70b5f9ddc3b0fc66eb4e21a55be8dff92b91a201bf1a1d293098b369c"
     }
   },
   "schemaVersion": 1
