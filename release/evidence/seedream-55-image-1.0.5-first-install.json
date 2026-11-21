@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "pluginId": "local.bgx.seedream-55-image",
+  "version": "1.0.5",
+  "sourceCommit": "9b87eee",
+  "hostVersion": "0.6.1119",
+  "newInstallQualified": true,
+  "exitCode": 0,
+  "targetZipBytes": 334412,
+  "targetZipSha256": "94d9428876f91ad024f8dd316ea4758df2825160e63b82cbb9e81adbd48aeb89",
+  "checks": [
+    "adapter-rust-tests-9",
+    "sdk-offline-verification-8",
+    "isolated-host-first-install",
+    "sdk-worker-with-two-input-images-and-one-post",
+    "durable-checkpoint-recovery-before-image-event",
+    "double-offline-export-byte-equality",
+    "public-zip-and-seven-installation-files-verified"
+  ],
+  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/seedream-55-image-1.0.5/local.bgx.seedream-55-image-1.0.5.zip"
+}
