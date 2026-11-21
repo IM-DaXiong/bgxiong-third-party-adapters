@@ -57,6 +57,33 @@
         ],
         "additionalProperties": false
       }
+    },
+    "aspectRatio": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "1:1",
+        "4:3",
+        "3:4",
+        "16:9",
+        "9:16",
+        "3:2",
+        "2:3",
+        "21:9",
+        "5:4",
+        "4:5"
+      ],
+      "default": "auto"
+    },
+    "resolution": {
+      "type": "string",
+      "enum": [
+        "1K",
+        "1.5K",
+        "2K",
+        "custom"
+      ],
+      "default": "2K"
     }
   },
   "required": [

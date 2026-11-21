@@ -1,4 +1,7 @@
-use alloc::vec::Vec;
+use alloc::{
+    string::{String, ToString},
+    vec::Vec,
+};
 
 use serde_json::{json, Value};
 
@@ -9,7 +12,7 @@ pub(crate) struct Invalid(pub &'static str, pub &'static str);
 
 pub(crate) struct Parameters<'a> {
     pub prompt: &'a str,
-    pub size: &'a str,
+    pub size: String,
     pub response_format: &'a str,
     pub output_format: &'a str,
     pub background: &'a str,
@@ -63,9 +66,8 @@ impl<'a> Parameters<'a> {
         }
         let fields = input.as_object().ok_or(Invalid("", "需要操作输入对象"))?;
         if fields.keys().any(|key| match key.as_str() {
-            "prompt" | "size" | "responseFormat" | "outputFormat" | "background" | "watermark" => {
-                false
-            }
+            "prompt" | "size" | "resolution" | "aspectRatio" | "responseFormat"
+            | "outputFormat" | "background" | "watermark" => false,
             "referenceImages" => !edit,
             _ => true,
         }) {
@@ -75,12 +77,39 @@ impl<'a> Parameters<'a> {
             .as_str()
             .filter(|s| !s.trim().is_empty())
             .ok_or(Invalid("/prompt", "提示词不能为空"))?;
-        let size = match input.get("size") {
-            None => "2K",
-            Some(value) => value
+        let tier = choice(
+            input,
+            "resolution",
+            &["2K", "1K", "1.5K", "custom"],
+            Invalid("/resolution", "清晰度无效"),
+        )?;
+        let size = if tier == "custom" {
+            input["size"]
                 .as_str()
-                .filter(|s| dimensions_valid(s))
-                .ok_or(Invalid("/size", "尺寸规格超出范围"))?,
+                .filter(|s| s.contains('x') && dimensions_valid(s))
+                .ok_or(Invalid("/size", "请填写有效宽x高，例如 1920x1080"))?
+        } else {
+            tier
+        };
+        let ratio = match input.get("aspectRatio") {
+            None => "auto",
+            Some(value) => value.as_str().ok_or(Invalid("/aspectRatio", "画幅无效"))?,
+        };
+        let size = if ratio == "auto" {
+            size.to_string()
+        } else {
+            let sizes: Value = serde_json::from_str(include_str!("../image-sizes.json"))
+                .map_err(|_| Invalid("/size", "图片尺寸表无效"))?;
+            if sizes.get(size).is_none() {
+                return Err(Invalid(
+                    "/aspectRatio",
+                    "自定义宽高已指定画幅，请选择自动画幅",
+                ));
+            }
+            sizes[size][ratio]
+                .as_str()
+                .ok_or(Invalid("/aspectRatio", "不支持此画幅"))?
+                .to_string()
         };
         let response_format = choice(
             input,

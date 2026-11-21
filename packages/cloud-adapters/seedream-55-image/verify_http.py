@@ -93,10 +93,11 @@ def main():
     _, response, run = invoke("capabilities", {}, "capabilities")
     assert run.returncode == 0, run.stderr
     caps = json.loads(response["dataJson"])
-    assert (caps["pluginId"], caps["pluginVersion"]) == (PLUGIN, "1.0.0")
+    manifest = load(paths.package / "manifest.json")
+    assert (caps["pluginId"], caps["pluginVersion"]) == (PLUGIN, manifest["version"])
     contracts = {entry["localId"]: entry for entry in caps["capabilityContracts"]}
     assert set(contracts) == {"image", "image-edit"}
-    package = {"pluginId": PLUGIN, "version": "1.0.0",
+    package = {"pluginId": PLUGIN, "version": manifest["version"],
                "digest": digest((paths.package / "manifest.sha256").read_bytes())}
 
     def preparation(local_id, fields, ready=True):
@@ -130,11 +131,11 @@ def main():
 
     request_ids = []
     for name, local_id, fields, ready, expected in [
-        ("generate", "image", {"prompt": "透明贴纸", "size": "2880x1440", "background": "transparent",
+        ("generate", "image", {"prompt": "透明贴纸", "resolution": "custom", "size": "2880x1440", "background": "transparent",
                                "outputFormat": "png", "watermark": True}, True, "ready"),
         ("defaults", "image", {"prompt": "测试"}, True, "ready"),
         ("invalid-jpeg", "image", {"prompt": "测试", "outputFormat": "jpeg", "background": "transparent"}, True, "rejected"),
-        ("invalid-ratio", "image", {"prompt": "测试", "size": "4000x240"}, True, "rejected"),
+        ("invalid-ratio", "image", {"prompt": "测试", "resolution": "custom", "size": "4000x240"}, True, "rejected"),
         ("unbound", "image", {"prompt": "测试"}, False, "rejected"),
         ("ten-references", "image-edit", {"prompt": "测试", "referenceImages": [
             {"mediaId": f"reference-{i}"} for i in range(10)]}, True, "ready"),
@@ -155,6 +156,14 @@ def main():
             error = stale.get("error") or json.loads(stale_run.stderr)
             assert "PREPARATION_STALE" in json.dumps(error), error
 
+    sizes = load(Path(__file__).with_name("image-sizes.json"))
+    for contract in contracts.values():
+        op = contract["operations"][0]
+        schema = next(x for x in contract["schemas"] if x["digest"] == op["inputSchema"]["digest"])
+        props = json.loads(schema["schemaJson"])["properties"]
+        assert props["resolution"]["enum"] == [*sizes, "custom"]
+        for ratios in sizes.values():
+            assert props["aspectRatio"]["enum"] == ["auto", *ratios]
     assert contracts["image"]["operations"][0]["mediaSlots"] == []
     assert contracts["image-edit"]["operations"][0]["mediaSlots"][0]["maxCount"] == 10
     save(paths.output / "summary.json", {"passed": 8, "networkGrantCount": 0, "probeRequestIds": request_ids})

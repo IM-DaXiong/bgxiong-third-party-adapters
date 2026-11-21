@@ -98,6 +98,20 @@ fn capability(edit: bool) -> Value {
     let mut controls = vec![
         control("/prompt", "multiline", "提示词", "输入", Some("prompt")),
         control("/size", "text", "输出规格", "参数", Some("size")),
+        control(
+            "/resolution",
+            "select",
+            "清晰度",
+            "参数",
+            Some("resolution"),
+        ),
+        control(
+            "/aspectRatio",
+            "select",
+            "画幅",
+            "参数",
+            Some("aspectRatio"),
+        ),
         control("/responseFormat", "select", "响应格式", "参数", None),
         control("/outputFormat", "select", "输出格式", "参数", None),
         control("/background", "select", "背景", "参数", None),

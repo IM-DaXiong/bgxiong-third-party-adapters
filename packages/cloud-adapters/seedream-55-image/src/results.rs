@@ -15,7 +15,10 @@ use crate::{
     text, Failure, Parameters, MODEL, PLUGIN,
 };
 
-const RESULT_HOST: &str = "ark-content-generation-v2-cn-beijing.tos-cn-beijing.volces.com";
+const RESULT_HOSTS: &[&str] = &[
+    "ark-content-generation-v2-cn-beijing.tos-cn-beijing.volces.com",
+    "ark-acg-cn-beijing.tos-cn-beijing.volces.com",
+];
 const MAX_IMAGE_BYTES: usize = 32 * 1024 * 1024;
 const MAX_RESPONSE_BYTES: usize = 48 * 1024 * 1024;
 
@@ -100,7 +103,7 @@ fn approved_url(raw: &str) -> Result<&str, Failure> {
     if raw
         .strip_prefix("https://")
         .and_then(|tail| tail.split_once('/'))
-        .is_some_and(|(host, _)| host == RESULT_HOST)
+        .is_some_and(|(host, _)| RESULT_HOSTS.contains(&host))
         && !raw.contains(['#', '\\'])
         && !raw
             .bytes()
@@ -318,12 +321,15 @@ pub(crate) fn collect(
         outputs.push(raw_output);
         let applied: Map<String, Value> = [
             "size",
+            "aspectRatio",
+            "resolution",
             "watermark",
             "background",
             "responseFormat",
             "outputFormat",
         ]
         .into_iter()
+        .filter(|key| *key != "size" || input["resolution"] == "custom")
         .filter_map(|key| Some((key.to_owned(), input.get(key)?.clone())))
         .collect();
         Ok(json!({

@@ -1,6 +1,6 @@
 {
-  "artifactSha256": "80f6c880c431365debd9999c1b78907e7afac710854e480777066b0d5d6881c9",
-  "displayName": "Seedream 5.5",
+  "artifactSha256": "85f5283e2940200300d896b6b6a8762ca3c5df1f79b37fa243a8636253ea3adb",
+  "displayName": "Seedream-55-image",
   "entry": "adapter.wasm",
   "language": "rust",
   "limits": {
@@ -32,7 +32,8 @@
     ],
     "networkHosts": [
       "ark.cn-beijing.volces.com",
-      "ark-content-generation-v2-cn-beijing.tos-cn-beijing.volces.com"
+      "ark-content-generation-v2-cn-beijing.tos-cn-beijing.volces.com",
+      "ark-acg-cn-beijing.tos-cn-beijing.volces.com"
     ],
     "stateBytes": 0
   },
@@ -41,5 +42,5 @@
     "operation-input-preflight-v2"
   ],
   "schemaVersion": 2,
-  "version": "1.0.0"
+  "version": "1.0.4"
 }

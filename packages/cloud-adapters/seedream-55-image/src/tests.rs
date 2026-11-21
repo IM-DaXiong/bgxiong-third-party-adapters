@@ -165,7 +165,9 @@ fn selection(id: &str) -> Value {
 #[test]
 fn transparent_url_maps_exact_request_and_preserves_original() {
     let mut host = Fixture::new();
-    let input = json!({"prompt":" 花朵 ","size":"2K","outputFormat":"png","responseFormat":"url","background":"transparent","watermark":true});
+    host.response["data"][0]["url"] =
+        json!("https://ark-acg-cn-beijing.tos-cn-beijing.volces.com/original.png?example=fixture");
+    let input = json!({"prompt":" 花朵 ","size":"1024x1024","outputFormat":"png","responseFormat":"url","background":"transparent","watermark":true});
     let result = host.invoke(&selection(GENERATE), input, json!([]), false);
     assert_eq!(
         host.body,
@@ -184,6 +186,27 @@ fn transparent_url_maps_exact_request_and_preserves_original() {
     assert_eq!(host.objects[output].bytes, host.png);
     assert_eq!(host.events[1]["payload"]["measurements"][0]["amount"], "0");
     assert_eq!(host.events[2]["payload"]["media"]["handle"], output);
+}
+
+#[test]
+fn size_tier_and_frame_reach_the_wire_for_both_operations() {
+    for (tier, ratio, expected) in [("2K", "16:9", "2816x1584"), ("1K", "4:5", "916x1145")] {
+        for operation in [GENERATE, EDIT] {
+            let mut host = Fixture::new();
+            let mut input = json!({"prompt":"fixture","resolution":tier,"aspectRatio":ratio});
+            let media = if operation == EDIT {
+                let id = host.put("image", "image/png", image(80, ImageFormat::Png));
+                input["referenceImages"] = json!([{"mediaId":id}]);
+                json!([{"id":id,"kind":"image","handle":id,"mime":"image/png"}])
+            } else {
+                json!([])
+            };
+            let result = host.invoke(&selection(operation), input, media, false);
+            assert_eq!(result["kind"], "completed", "{result}");
+            assert_eq!(host.body["size"], expected);
+            assert!(host.body.get("aspectRatio").is_none());
+        }
+    }
 }
 
 #[test]
@@ -229,7 +252,7 @@ fn dimensions_and_closed_parameters_reject_before_post() {
     for input in [
         json!({"prompt":"  "}),
         json!({"prompt":"p","watermark":null}),
-        json!({"prompt":"p","size":12}),
+        json!({"prompt":"p","resolution":"custom","size":12}),
         json!({"prompt":"p","background":"transparent","outputFormat":"jpeg"}),
         json!({"prompt":"p","stream":true}),
         json!({"prompt":"p","model":MODEL}),
@@ -321,6 +344,7 @@ fn invalid_reference_counts_leases_and_preparation_never_post() {
 fn unverified_urls_and_redirects_never_retry_generation() {
     for url in [
         "https://other.example/image.png",
+        "https://ark-acg-cn-beijing.tos-cn-beijing.volces.com.example/image.png",
         "http://ark-content-generation-v2-cn-beijing.tos-cn-beijing.volces.com/test.png",
         "https://user@ark-content-generation-v2-cn-beijing.tos-cn-beijing.volces.com/test.png",
     ] {

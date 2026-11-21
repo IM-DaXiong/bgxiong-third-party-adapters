@@ -11,7 +11,8 @@
     },
     "network": {
       "origins": [
-        "https://ark-content-generation-v2-cn-beijing.tos-cn-beijing.volces.com"
+        "https://ark-content-generation-v2-cn-beijing.tos-cn-beijing.volces.com",
+        "https://ark-acg-cn-beijing.tos-cn-beijing.volces.com"
       ],
       "allowPrivate": false,
       "allowEmbeddedAuthorization": false,
