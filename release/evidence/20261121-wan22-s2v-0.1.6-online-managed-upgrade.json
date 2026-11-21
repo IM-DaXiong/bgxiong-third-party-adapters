@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "kind": "measuredAdapterOwnerInstallAndUpgradeEvidence",
+  "pluginId": "local.bgx.wan22-s2v",
+  "version": "0.1.6",
+  "measuredHostVersion": "0.6.1119",
+  "newInstallQualified": true,
+  "exitCode": 0,
+  "targetZipBytes": 231339,
+  "targetZipSha256": "5d5b78a70b5f9ddc3b0fc66eb4e21a55be8dff92b91a201bf1a1d293098b369c",
+  "testBinarySha256": "51d5fc8038d7c89ea90d04cd51cd451d56382be648a6b48b19f995c72a338f6f",
+  "testLogSha256": "2de796f5132b5619957a905bc9a4c1af834ad6dc3c8a62c7f3de95196e9505a0",
+  "registeredVideoModels": 1,
+  "publicZipReadbackMatchesPublishedBytes": true,
+  "qualificationScope": "Exact production ZIP and historical source bytes, isolated signed index and real SDK. Verified first install and managed upgrade, saved ComfyUI connection inheritance, unchanged in-flight task pin, deferred old-version cleanup and no repeat discovery. No paid generation or public upgrade UI used for this qualification.",
+  "sourceLock": "release/evidence/wan22-s2v-0.1.5-source-lock.json",
+  "sourceLockSha256": "d198812b8a029b88e21649d98efb71024d98781ed0986aeea2615855dc68ece8",
+  "sourceLockGitCommit": "0fcf224062796a62945437dfd9b25653d7714458",
+  "managedUpgradeQualified": true,
+  "managedSourceVersion": "0.1.5",
+  "managedSourceManifestSha256": "394a22fcd8a336a10e63ca3dc9b0934430bef7a1d99ccae1f5f022416aeabcdd"
+}
