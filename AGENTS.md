@@ -11,7 +11,9 @@
 - 先发现主仓H，使用同级H/../bgxiong-third-party-adapters。本机L:/00Dev/bgxiong-third-party-adapters。公开远程https://github.com/IM-DaXiong/bgxiong-third-party-adapters，禁止再建平行开发真源。
 - 本根已承接原bgxiong-vendor-adapters的Git历史、合同、源码和未提交修改，并合入原sources/main/packages独有包。packages是合并后主线源码；projects是独立项目。旧sources/main不是活动owner，不得再次在其中开发。
 - artifacts存标准安装包，records存历史保全；禁止按最大版本覆盖源码，禁止同版本覆盖不同包内容。每包唯一owner，分支独有修改先保全合并。
-- **本机安装测试固定入口（用户2026-11-09，2026-11-19收口）**。以后开发和测试产出的可安装包只放到 `artifacts/current/<pluginId>/<version>/`，目录内有 `adapter-install.json`。软件安装、卸载都选这个目录。每包只留 `release/current.json` 里的当前版本。禁止再把测试安装包放到 `artifacts/releases`、`artifacts/cache`、`artifacts/downloads`、`build/` 或 `projects/install-*`。发行上传目录是 `artifacts/cdn/`：每个当前包一个 `<pluginId>-<version>.zip`，平铺、只留最新版本。上传 CDN 或网盘时拖走整个目录。主仓打发行包时自动生成，打发行包的智能体必须留下整理好的目录，禁止让用户自己运行或整理。
+- **本机安装测试固定入口（用户2026-11-09，2026-11-19收口）**。以后开发和测试产出的可安装包只放到 `artifacts/current/<pluginId>/<version>/`，目录内有 `adapter-install.json`。软件安装、卸载都选这个目录。每包只留 `release/current.json` 里的当前版本。禁止再把测试安装包放到 `artifacts/releases`、`artifacts/cache`、`artifacts/downloads`、`build/` 或 `projects/install-*`。发行上传目录是 `artifacts/cdn/`。
+
+- **发行目录与服务器逐层对齐（用户2026-11-21）**：每个发行目标交付一个与服务器目标相对路径一致的上传根。适配器只交付 `artifacts/cdn/`，当前 ZIP、`SHA256SUMS.txt` 和匹配的生产签名 `latest.json` 同层，用户整目录拖拽。签名工作区文件由脚本收齐。验证全量清单、ZIP 摘要、签名及索引目标后一次切换。缺件、待签名或不匹配时保留上一批完整目录，当前批明确标待交付。见[本地与公开仓库目录约定](docs/DIRECTORY_LAYOUT.zh-CN.md#发行上传根与服务器逐层对齐2026-11-21)。
 - 发行逐包核源码版本、已验证产物、安装信封、companion、SDK、license和SHA256，并解包实际EXE核对。WIP/教学材料不冒充已发行可用包；缺项明确列阻断，不静默打旧包。
 - 用户安装不依赖我方开发路径。当前引用、历史任务、冻结合同及卸载由统一安装/恢复owner管理，禁止直接删运行包或UPDATE用户库绕过校验。
 - 厂商逻辑归独立包，SDK/宿主通用规则归公共owner。公开同步不带密钥、模型、用户媒体、运行库和本机记录；合并目录不构成把未审查项目全量公开的理由。
