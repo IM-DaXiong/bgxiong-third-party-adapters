@@ -52,6 +52,33 @@
   "managedMediaProbe": true,
   "comfyui": {
     "serviceOnly": true,
+    "requiredCustomNodes": [
+      {
+        "id": "com.kijai.comfyui-kjnodes",
+        "folderName": "ComfyUI-KJNodes",
+        "displayName": "ComfyUI-KJNodes",
+        "license": "GPL-3.0-only",
+        "homepage": "https://github.com/kijai/ComfyUI-KJNodes",
+        "gitCommit": "4d6f027c23991aef33698a5c8c57452111df4cdb",
+        "archive": {
+          "url": "https://r.bgxiong.com/client/ai-story/comfy-custom-nodes/ComfyUI-KJNodes/4d6f027c23991aef33698a5c8c57452111df4cdb.zip",
+          "sha256": "9e403b6532402df0cd4afdc2794c48c1c49dd76e98098153cc3bafa63bc2725e",
+          "bytes": 1194663,
+          "stripComponents": 1
+        },
+        "requirements": {
+          "path": "requirements.txt",
+          "sha256": "e8cc1fb089c6e74bb5f326e949fd89ea7653de0d193d7a385c38af44e66656bd",
+          "wheelLock": "bgx-wheel-lock.json"
+        },
+        "acceptClassTypes": ["LTX2_NAG"],
+        "when": {
+          "operationIds": ["local.bgx.ltx25/t2v"],
+          "inputPointer": "negativePrompt",
+          "test": "nonBlankText"
+        }
+      }
+    ],
     "resourceGuide": {
       "capabilityId": "comfy.resource_pack",
       "resourceId": "comfy.resource_pack",

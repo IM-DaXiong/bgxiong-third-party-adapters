@@ -1,6 +1,8 @@
 # LTX 2.5 第三方适配器
 
-`pluginId=local.bgx.ltx25`，版本 `0.1.4`。一个包提供三个操作，在视频工作台里选择对应模型即可。
+`pluginId=local.bgx.ltx25`，版本 `0.1.6`。一个包提供三个操作，在视频工作台里选择对应模型即可。
+
+0.1.6 文生视频候选接入可选负面提示词。在当前 ComfyUI 声明采样种子为必填时，提示词增强沿用本次请求的种子。
 
 0.1.4 在安装信封中写入由冻结图生成的 `resourceGuide.weights`（文生/图生/音频生视频各 6 项），供宿主按操作做权重探测与引导。三模式构图与 INT8 权重文件集合不变。
 
@@ -65,7 +67,7 @@ The person shown in the first frame remains the same person and talks while look
 
 ## 安装
 
-只从本仓库 `artifacts/current/local.bgx.ltx25/0.1.4/` 选择安装（目录内有 `adapter-install.json`）。安装后把它登记为视频模型，并在软件里配置本机 ComfyUI 服务地址。本包安装信封使用 `comfyui.serviceOnly`，不再写死 `127.0.0.1:8188`。
+从本仓库 `artifacts/current/local.bgx.ltx25/0.1.6/` 选择安装（目录内有 `adapter-install.json`）。安装后把它登记为视频模型，并在软件里配置本机 ComfyUI 服务地址。本包安装信封使用 `comfyui.serviceOnly`。
 
 安装包校验或离线合同检查通过，不代表真机生成已经通过。
 

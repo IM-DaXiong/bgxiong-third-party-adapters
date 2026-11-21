@@ -409,6 +409,26 @@ fn check_request_resources(mode: &Mode, input: &Input, info: &Value) -> Vec<Issu
     issues
 }
 
+fn apply_prompt_sampler_seed(graph: &mut Value, object_info: &Value, seed: u64) {
+    let options = &object_info["TextGenerateLTX2Prompt"]["input"]["required"]["sampling_mode"][1]["options"];
+    let requires_seed = options.as_array().is_some_and(|options| {
+        options.iter().any(|option| {
+            option["key"] == "on" && option["inputs"]["required"]["seed"][0] == "INT"
+        })
+    });
+    if !requires_seed {
+        return;
+    }
+    for node in graph.as_object_mut().expect("prepared graph is an object").values_mut() {
+        if node["class_type"] != "TextGenerateLTX2Prompt" || node["inputs"]["sampling_mode"] != "on" {
+            continue;
+        }
+        if let Some(inputs) = node["inputs"].as_object_mut() {
+            inputs.entry("sampling_mode.seed").or_insert_with(|| json!(seed));
+        }
+    }
+}
+
 fn check_mode_resources(mode: &Mode, object_info: &Value) -> Vec<Issue> {
     let mut issues = Vec::new();
     let graph: Value = serde_json::from_str(mode.graph).expect("frozen graph");
@@ -462,6 +482,9 @@ fn controls(mode: &Mode) -> Vec<Value> {
         json!({"fieldPointer":"/height","widget":"integer","label":"高","description":"","group":"规格","displayRole":"height"}),
         json!({"fieldPointer":"/seed","widget":"integer","label":"种子","description":"","group":"参数"}),
     ];
+    if mode.id == T2V.id {
+        rows.insert(1, json!({"fieldPointer":"/negativePrompt","widget":"multiline","label":"负面提示词","description":"","group":"输入","displayRole":"negativePrompt"}));
+    }
     if mode.image.is_some() {
         rows.insert(1, json!({"fieldPointer":"/image","widget":"media","label":"图片","description":"","group":"输入"}));
     }
@@ -627,7 +650,8 @@ fn submit(host: &mut dyn Host, request: &Invocation, p: &Value) -> Result<Value,
         files.push((port.load.to_string(), comfy::upload(host, &ctx, item)?));
     }
     let borrowed: Vec<(&str, &str)> = files.iter().map(|(n, p)| (n.as_str(), p.as_str())).collect();
-    let patched = build_graph(mode, &parsed, &borrowed).map_err(Fault::failure)?;
+    let mut patched = build_graph(mode, &parsed, &borrowed).map_err(Fault::failure)?;
+    apply_prompt_sampler_seed(&mut patched, &info, parsed.seed);
     let remote = match comfy::submit(host, &ctx, &patched, &request.r#request_id) {
         Ok(id) => id,
         Err(mut error) => {
@@ -813,6 +837,17 @@ mod tests {
         assert_eq!(graph["429"]["inputs"]["noise_seed"], 7);
         assert_eq!(graph["421"]["inputs"]["noise_seed"], 8);
         assert_eq!(graph["454"]["inputs"]["value"], false);
+
+        let mut compatible = graph.clone();
+        apply_prompt_sampler_seed(&mut compatible, &json!({}), input.seed);
+        assert_eq!(compatible, graph);
+        let object_info = json!({"TextGenerateLTX2Prompt":{"input":{"required":{"sampling_mode":[
+            "COMFY_DYNAMICCOMBO_V3", {"options":[{"key":"on","inputs":{"required":{"seed":["INT",{}]}}}]}
+        ]}}}});
+        apply_prompt_sampler_seed(&mut compatible, &object_info, input.seed);
+        assert_eq!(compatible["443"]["inputs"]["sampling_mode.seed"], 7);
+        apply_prompt_sampler_seed(&mut compatible, &object_info, 11);
+        assert_eq!(compatible["443"]["inputs"]["sampling_mode.seed"], 7);
     }
 
     #[test]
