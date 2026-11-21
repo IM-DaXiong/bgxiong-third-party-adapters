@@ -73,7 +73,7 @@
         },
         "acceptClassTypes": ["LTX2_NAG"],
         "when": {
-          "operationIds": ["local.bgx.ltx25/t2v"],
+          "operationIds": ["local.bgx.ltx25/t2v", "local.bgx.ltx25/i2v", "local.bgx.ltx25/a2v"],
           "inputPointer": "negativePrompt",
           "test": "nonBlankText"
         }

@@ -476,15 +476,13 @@ fn schema_record(id: &str, text: &str) -> Value {
 fn controls(mode: &Mode) -> Vec<Value> {
     let mut rows = vec![
         json!({"fieldPointer":"/prompt","widget":"multiline","label":"提示词","description":"","group":"输入","displayRole":"prompt"}),
+        json!({"fieldPointer":"/negativePrompt","widget":"multiline","label":"负面提示词","description":"","group":"输入","displayRole":"negativePrompt"}),
         json!({"fieldPointer":"/durationSeconds","widget":"integer","label":"时长","description":"","group":"规格","displayRole":"duration"}),
         json!({"fieldPointer":"/fps","widget":"integer","label":"帧率","description":"","group":"规格","displayRole":"fps"}),
         json!({"fieldPointer":"/width","widget":"integer","label":"宽","description":"","group":"规格","displayRole":"width"}),
         json!({"fieldPointer":"/height","widget":"integer","label":"高","description":"","group":"规格","displayRole":"height"}),
         json!({"fieldPointer":"/seed","widget":"integer","label":"种子","description":"","group":"参数"}),
     ];
-    if mode.id == T2V.id {
-        rows.insert(1, json!({"fieldPointer":"/negativePrompt","widget":"multiline","label":"负面提示词","description":"","group":"输入","displayRole":"negativePrompt"}));
-    }
     if mode.image.is_some() {
         rows.insert(1, json!({"fieldPointer":"/image","widget":"media","label":"图片","description":"","group":"输入"}));
     }
@@ -764,6 +762,12 @@ mod tests {
             assert_eq!(contract["transportSlot"], "video");
             let op = &contract["operations"][0];
             assert_eq!(op["id"], mode.operation);
+            let schema: Value = serde_json::from_str(mode.schema).unwrap();
+            assert_eq!(schema["properties"]["negativePrompt"], json!({"type":"string"}));
+            assert!(schema["required"].as_array().unwrap().iter().all(|key| key != "negativePrompt"));
+            assert_eq!(op["uiSchema"]["controls"].as_array().unwrap().iter()
+                .filter(|control| control["fieldPointer"] == "/negativePrompt"
+                    && control["displayRole"] == "negativePrompt").count(), 1);
             assert_eq!(op["promptProjection"], json!({"profileId":"ltx","version":1}));
             assert_eq!(op["execution"]["cancellation"], "unsupported");
             assert_eq!(op["execution"]["resumable"], true);

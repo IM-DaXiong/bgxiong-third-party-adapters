@@ -1,7 +1,7 @@
 [workspace]
 [package]
 name = "bgx-ltx25"
-version = "0.1.6"
+version = "0.1.7"
 edition = "2021"
 license = "LicenseRef-Proprietary"
 publish = false

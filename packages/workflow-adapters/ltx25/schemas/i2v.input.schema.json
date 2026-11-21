@@ -16,6 +16,9 @@
       "type": "string",
       "minLength": 1
     },
+    "negativePrompt": {
+      "type": "string"
+    },
     "inputMode": {
       "type": "string",
       "const": "image_to_video"

@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "6953adcdbf1175fcb0ca2e84f89c7b3d9c0135e3aeb2ae2a2ba68adc85eb11d3",
+  "artifactSha256": "8278bca05f6d0e399e49b9821d3d531e4a494bc9aa145fcbd2e85483f981813c",
   "displayName": "LTX 2.5",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -41,5 +41,5 @@
     "operation-preflight-v1"
   ],
   "schemaVersion": 2,
-  "version": "0.1.6"
+  "version": "0.1.7"
 }

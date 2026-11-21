@@ -18,6 +18,9 @@
       "minLength": 1,
       "default": "The person shown in the first frame remains the same person and talks while looking toward the camera. Mouth movement, blinking, and small natural shifts in expression and head position follow the timing of the supplied speech. Face, hair, clothing, and background stay consistent with the first frame. This is a single continuous take with a static camera, holding a medium close-up of the head and shoulders, with no pan, zoom, or cut. Lighting stays unchanged from the opening shot."
     },
+    "negativePrompt": {
+      "type": "string"
+    },
     "inputMode": {
       "type": "string",
       "const": "image_to_video"
