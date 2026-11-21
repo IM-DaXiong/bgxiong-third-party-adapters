@@ -1,6 +1,6 @@
 {
   "artifactSha256": "d1b02b5f23e60ca6b8a915e084f7055672e8260fdd10989940b4cd61346d3947",
-  "displayName": "火山智能视觉 · 即梦",
+  "displayName": "即梦",
   "entry": "adapter.wasm",
   "language": "rust",
   "limits": {

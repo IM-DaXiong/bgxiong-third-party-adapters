@@ -55,7 +55,7 @@ fn capabilities() -> Value {
     json!({"schemaVersion":2,"pluginId":PLUGIN_ID,"pluginVersion":env!("CARGO_PKG_VERSION"),"capabilityContracts":[{
         "schemaVersion":2,"localId":"zimage-t2i","capabilityKey":"image.generate","transportSlot":"image","modelIds":[MODEL_ID],
         "configurationSchema":{"id":"config","digest":config["digest"]},
-        "operations":[{"id":OPERATION,"version":1,"label":"Z Image Turbo text to image",
+        "operations":[{"id":OPERATION,"version":1,"label":"Z-Image-Turbo 文生图",
             "inputSchema":{"id":"input","digest":input["digest"]},"outputSchema":{"id":"output","digest":output["digest"]},
             "resumeSchema":{"id":"resume","digest":resume["digest"]},
             "uiSchema":{"controls":[

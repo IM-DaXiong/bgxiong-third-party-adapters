@@ -17,23 +17,27 @@ def main():
     parser = argparse.ArgumentParser(__doc__)
     for option in ("cli", "sdk", "worker", "out"):
         parser.add_argument("--" + option, required=True, type=Path)
+    parser.add_argument("--runtime-sdk", type=Path, help="SDK runtime root containing the worker and protocol")
     args = parser.parse_args()
     source = Path(__file__).resolve().parent
     destination = args.out.resolve()
     archive = Path(str(destination) + ".zip")
     if destination.exists() or archive.exists():
         parser.error("Output directory and archive must both be new; never overwrite a published version")
-    destination.mkdir(parents=True)
+    sdk = args.sdk.resolve()
+    runtime_sdk = args.runtime_sdk.resolve() if args.runtime_sdk else sdk
+    worker = args.worker.resolve()
 
     def run(*command):
         subprocess.run([str(args.cli.resolve()), *map(str, command)], check=True)
 
-    subprocess.run([sys.executable, str(source / "export-profile-schemas.py"), "--sdk", str(args.sdk.resolve()),
+    subprocess.run([sys.executable, str(source / "export-profile-schemas.py"), "--sdk", str(sdk),
                     "--check"], check=True)
-    run("build", "--sdk", args.sdk.resolve(), "--project", source)
-    run("check", "--sdk", args.sdk.resolve(), "--worker", args.worker.resolve(), "--project", source)
-    run("pack", "--sdk", args.sdk.resolve(), "--project", source, "--out", destination / "package")
-    run("check", "--sdk", args.sdk.resolve(), "--worker", args.worker.resolve(), "--project", destination / "package")
+    run("build", "--sdk", sdk, "--project", source)
+    run("check", "--sdk", runtime_sdk, "--worker", worker, "--project", source)
+    destination.mkdir(parents=True)
+    run("pack", "--sdk", sdk, "--project", source, "--out", destination / "package")
+    run("check", "--sdk", runtime_sdk, "--worker", worker, "--project", destination / "package")
     manifest = json.loads((destination / "package/manifest.json").read_text(encoding="utf-8"))
     install = json.loads((source / "installation/adapter-install.template.json").read_text(encoding="utf-8"))
     install["manifestSha256"] = sha(destination / "package/manifest.json")
@@ -48,6 +52,7 @@ def main():
     (destination / "adapter-install.json").write_text(json.dumps(install, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     for name in ("ASSETS.zh-CN.md", "README.zh-CN.md"):
         shutil.copyfile(source / name, destination / name)
+    shutil.copyfile(source.parents[2] / "LICENSE", destination / "LICENSE")
     (destination / "SHA256SUMS.txt").write_text("".join(
         f"{sha(path)}  {path.relative_to(destination).as_posix()}\n"
         for path in sorted(destination.rglob("*")) if path.is_file()), encoding="utf-8")

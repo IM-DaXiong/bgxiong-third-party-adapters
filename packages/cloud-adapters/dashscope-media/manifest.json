@@ -1,6 +1,6 @@
 {
   "artifactSha256": "1dc3705f95ad489fece2106821bf27fe8fe5470923fdf31f9271be2d5721b47b",
-  "displayName": "百炼图像与万相视频",
+  "displayName": "百炼-万相",
   "entry": "adapter.wasm",
   "language": "rust",
   "limits": {

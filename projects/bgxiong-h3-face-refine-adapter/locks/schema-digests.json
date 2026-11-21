@@ -1,6 +1,6 @@
 {
   "pluginId": "local.thirdparty.h3-face-refine",
-  "version": "1.0.0-a33",
+  "version": "1.0.1",
   "laneACommit": "3b6a7e738",
   "digests": {
     "analyze.input.schema.json": "e9c9e68e8d384227dbbfa7a9b30f1c87ac37fc69f6b728a5122e624e77c3fe53",

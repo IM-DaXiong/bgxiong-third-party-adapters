@@ -1,6 +1,6 @@
 {
   "artifactSha256": "cc45712cf9d3376f0ad80872aa9099e729c0dffa872919a289fb1e91b3653e0d",
-  "displayName": "ComfyUI LTX2.3 image + reference audio author example",
+  "displayName": "ComfyUI-LTX-2.3-IA2V",
   "entry": "adapter.wasm",
   "language": "rust",
   "limits": {
@@ -35,5 +35,5 @@
   },
   "requiredFeatures": [],
   "schemaVersion": 2,
-  "version": "1.0.1"
+  "version": "1.0.2"
 }

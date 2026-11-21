@@ -1,6 +1,6 @@
 {
-  "artifactSha256": "08b07b7acbbf03d93628890a97de4aa58d7b81daf8b08961ef1b6ef4257d378e",
-  "displayName": "Wan Animate 2 角色动画（ComfyUI）",
+  "artifactSha256": "8b88b232a4da49b4b22f351677a175ce0cf9be856b849d2a88a196aa72eb6545",
+  "displayName": "Wan-Animate2 动作迁移",
   "entry": "adapter.wasm",
   "language": "rust",
   "limits": {
@@ -36,5 +36,5 @@
   },
   "requiredFeatures": [],
   "schemaVersion": 2,
-  "version": "0.1.2"
+  "version": "0.1.4"
 }

@@ -20,7 +20,7 @@ dependencies = [
 
 [[package]]
 name = "bgx-comfy-h3-r2v-example"
-version = "1.0.1"
+version = "1.0.2"
 dependencies = [
  "bgx-adapter-v2-sdk",
  "serde_json",

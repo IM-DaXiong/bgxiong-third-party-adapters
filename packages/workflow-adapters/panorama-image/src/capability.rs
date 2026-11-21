@@ -85,7 +85,7 @@ pub fn capabilities() -> Value {
     scene["localId"] = json!(SCENE_MODEL);
     scene["modelIds"] = json!([SCENE_MODEL]);
     scene["operations"][0]["id"] = json!(SCENE_OPERATION);
-    scene["operations"][0]["label"] = json!("Qwen 2.1 · 多方向全景");
+    scene["operations"][0]["label"] = json!("千问-Image-2.1 · 多方向全景");
     scene["operations"][0]["inputSchema"] = json!({"id":"studio-input","digest":scene_input["digest"]});
     scene["operations"][0]["mediaSlots"][0]["minCount"] = json!(0);
     scene["operations"][0]["mediaSlots"][0]["mediaKind"] = json!("file");

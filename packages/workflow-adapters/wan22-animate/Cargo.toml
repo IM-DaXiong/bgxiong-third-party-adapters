@@ -2,7 +2,7 @@
 
 [package]
 name = "bgx-wan22-animate"
-version = "0.2.13"
+version = "0.2.15"
 edition = "2021"
 license = "LicenseRef-Proprietary"
 publish = false
@@ -11,7 +11,7 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
-bgx-adapter-v2-sdk = { path = "../../../contract/v2/sdk/rust" }
+bgx-adapter-v2-sdk = { path = "../../../../bgxiong-adapter-sdk/sdk/rust" }
 serde_json = { version = "=1.0.149", default-features = false, features = ["alloc", "arbitrary_precision"] }
 sha2 = { version = "=0.10.9", default-features = false }
 
@@ -20,10 +20,10 @@ panic = "abort"
 debug = 0
 incremental = false
 [dev-dependencies]
-bgx-adapter-v2-validator = { path = "../../../contract/v2/crates/validator" }
+bgx-adapter-v2-validator = { path = "../../../../bgxiong-adapter-sdk/crates/validator" }
 
-bgx-adapter-v2-reference-host = { path = "../../../contract/v2/crates/reference-host" }
-bgx-adapter-v2-transport = { path = "../../../contract/v2/crates/transport" }
+bgx-adapter-v2-reference-host = { path = "../../../../bgxiong-adapter-sdk/crates/reference-host" }
+bgx-adapter-v2-transport = { path = "../../../../bgxiong-adapter-sdk/crates/transport" }
 tempfile = "3"
 
 tokio = { version = "=1.52.1", features = ["macros", "rt"] }

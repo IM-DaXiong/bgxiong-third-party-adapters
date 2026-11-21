@@ -54,7 +54,7 @@ fn capabilities() -> Value {
     json!({"schemaVersion":2,"pluginId":PLUGIN_ID,"pluginVersion":env!("CARGO_PKG_VERSION"),"capabilityContracts":[{
         "schemaVersion":2,"localId":"ltx25-i2v","capabilityKey":"video.generate","transportSlot":"video","modelIds":[MODEL_ID],
         "configurationSchema":{"id":"config","digest":config["digest"]},
-        "operations":[{"id":OPERATION,"version":1,"label":"LTX2.5 image to video (768x768, 24fps, 193 frames, generated audio)",
+        "operations":[{"id":OPERATION,"version":1,"label":"LTX-2.5 图生视频",
             "inputSchema":{"id":"input","digest":input["digest"]},"outputSchema":{"id":"output","digest":output["digest"]},
             "resumeSchema":{"id":"resume","digest":resume["digest"]},
             "uiSchema":{"controls":[

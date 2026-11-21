@@ -20,7 +20,7 @@ dependencies = [
 
 [[package]]
 name = "bgx-breeze-speech"
-version = "1.0.2"
+version = "1.0.4"
 dependencies = [
  "bgx-adapter-v2-sdk",
  "serde_json",

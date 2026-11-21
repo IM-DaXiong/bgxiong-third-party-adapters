@@ -90,7 +90,7 @@ fn capabilities() -> Value {
     json!({"schemaVersion":2,"pluginId":PLUGIN_ID,"pluginVersion":env!("CARGO_PKG_VERSION"),"capabilityContracts":[{
         "schemaVersion":2,"localId":"qwen-multi-ref","capabilityKey":"image.generate","transportSlot":"image","modelIds":[MODEL_ID],
         "configurationSchema":{"id":"config","digest":config["digest"]},
-        "operations":[{"id":OPERATION,"version":1,"label":"Qwen Image 2.1 two-image reference edit",
+        "operations":[{"id":OPERATION,"version":1,"label":"千问-Image-2.1 双参考图编辑",
             "inputSchema":{"id":"input","digest":input["digest"]},"outputSchema":{"id":"output","digest":output["digest"]},
             "resumeSchema":{"id":"resume","digest":resume["digest"]},
             "uiSchema":{"controls":[

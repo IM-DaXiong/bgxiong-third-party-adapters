@@ -1,6 +1,6 @@
 {
-  "artifactSha256": "6f154628f68b768bbc25416ed7fc04d7c8d1eae3527ee3ad1834fb301298beba",
-  "displayName": "Seedream-55-image",
+  "artifactSha256": "f0544c75a3695403fc1e09b9be4c47fb2b4a54e04977865a8b5719de20da4228",
+  "displayName": "Seedream 5.5",
   "entry": "adapter.wasm",
   "language": "rust",
   "limits": {
@@ -43,5 +43,5 @@
     "synchronous-http-wait-v1"
   ],
   "schemaVersion": 2,
-  "version": "1.0.6"
+  "version": "1.0.7"
 }

@@ -95,7 +95,7 @@ fn capabilities() -> Value {
     json!({"schemaVersion":2,"pluginId":PLUGIN_ID,"pluginVersion":env!("CARGO_PKG_VERSION"),"capabilityContracts":[{
         "schemaVersion":2,"localId":"flux2-multi-ref","capabilityKey":"image.generate","transportSlot":"image","modelIds":[MODEL_ID],
         "configurationSchema":{"id":"config","digest":config["digest"]},
-        "operations":[{"id":OPERATION,"version":OPERATION_VERSION,"inputProfile":"operation-input-v1","label":"FLUX.2 ordered two-image reference generation",
+        "operations":[{"id":OPERATION,"version":OPERATION_VERSION,"inputProfile":"operation-input-v1","label":"FLUX.2 有序双参考图",
             "inputSchema":{"id":"input","digest":input["digest"]},"outputSchema":{"id":"output","digest":output["digest"]},
             "resumeSchema":{"id":"resume","digest":resume["digest"]},
             "uiSchema":{"controls":[

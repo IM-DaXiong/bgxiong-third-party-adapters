@@ -1,6 +1,6 @@
 {
   "artifactSha256": "0000000000000000000000000000000000000000000000000000000000000000",
-  "displayName": "ComfyUI Qwen Image 2.1 I2I author example",
+  "displayName": "ComfyUI-千问-Image-2.1-I2I",
   "entry": "adapter.wasm",
   "language": "rust",
   "limits": {
@@ -33,5 +33,5 @@
   },
   "requiredFeatures": [],
   "schemaVersion": 2,
-  "version": "1.0.0"
+  "version": "1.0.1"
 }

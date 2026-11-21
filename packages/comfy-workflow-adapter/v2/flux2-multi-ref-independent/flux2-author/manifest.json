@@ -1,6 +1,6 @@
 {
-  "artifactSha256": "85451e9d8d58a13290238f0bdc4ca38f4703a5b87042242d93a1369999a0f236",
-  "displayName": "Independent FLUX.2 ordered reference author package",
+  "artifactSha256": "38b24cb09ecc5f2dbe2532ba24f532b142706b1c4d545a45afdc53fb4bc8dd4b",
+  "displayName": "FLUX.2 有序参考图",
   "entry": "adapter.wasm",
   "language": "rust",
   "limits": {
@@ -35,5 +35,5 @@
     "operation-input-preflight-v2"
   ],
   "schemaVersion": 2,
-  "version": "1.0.4"
+  "version": "1.0.5"
 }

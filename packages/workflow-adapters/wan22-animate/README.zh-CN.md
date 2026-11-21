@@ -1,6 +1,6 @@
-# Wan 2.2 Animate 独立适配包 0.2.13
+# Wan2.2-Animate 人物替换
 
-当前 `manifest.json` 版本是 **0.2.13**。下面各节是迁入时保留的历史说明，版本号是当时的包，不覆盖这一行。0.2.13 在 manifest 的 `requiredFeatures` 中声明 `submission-rejection-v1`，并在参数校验里拒绝不合法的 `windowFrames` / `overlapFrames`（须为 4n+1，且重叠帧数小于每段帧数）。这只说明源码合同。首页指向的安装包是 prerelease 候选；本文件不把完整应用 GUI/GPU 成片写成已经验收通过。
+当前源码版本是 **0.2.15**。下面各节保留历次合同说明。自 0.2.13 起，manifest 的 `requiredFeatures` 声明 `submission-rejection-v1`，并在参数校验里拒绝不合法的 `windowFrames` / `overlapFrames`（须为 4n+1，且重叠帧数小于每段帧数）。0.2.15 的应用安装与 GPU 成片验收待记录。
 
 
 
@@ -12,7 +12,7 @@
 
 准备后的PNG位于Comfy input下 `bgx-wan22-reference/`，是普通输入资产；文件名由服务生成，接口不接受input之外路径。原图、源视频、选人点、遮罩与原任务记录均不改写。派生输入按Comfy输入资产管理，不自动删除可能仍被任务引用的文件。
 
-源码打包：运行本目录 `build-package.py --cli <公开SDK CLI绝对路径> --sdk <SDK根绝对路径> --worker <worker绝对路径> --out <新的交付目录绝对路径>`。入口执行build/check/pack/runtime check，从companion唯一源码生成安装文件与逐文件SHA；拒绝覆盖既有目录/ZIP。
+从源码打包时，`--sdk` 指向同级 `bgxiong-adapter-sdk` 源码根，Cargo 依赖与跟踪合同也读取该根。运行本目录 `build-package.py --cli <公开SDK CLI绝对路径> --sdk <SDK源码根> --runtime-sdk <含worker与protocol的SDK运行时根> --worker <worker绝对路径> --out <新交付目录>`。入口依次执行 SDK build、check、pack 和成品 check，生成安装信封、companion、许可证和逐文件摘要。
 
 本次修复保证参考几何保留，不保证扩散模型每次都精确换脸或去墨镜。完整任务出片、原节点回写、非目标人物保持及人工身份效果需分别验收。当时的宿主计划不在本公开仓库，本次未能读取产品仓原文。
 

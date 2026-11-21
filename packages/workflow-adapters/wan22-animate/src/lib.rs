@@ -493,7 +493,7 @@ mod rejection_tests {
     #[test]
     fn missing_frame_timing_writes_rejected_checkpoint() {
         let fixtures: Value = serde_json::from_str(include_str!(
-            "../../../../contract/v2/profiles/video-target-keyframes-v1/fixtures/receipts.json"
+            "../../../../../bgxiong-adapter-sdk/profiles/video-target-keyframes-v1/fixtures/receipts.json"
         ))
         .unwrap();
         let input = fixtures["valid"]["trackingInput"].clone();
@@ -549,7 +549,7 @@ mod rejection_tests {
             }
         }
         let fixtures: Value = serde_json::from_str(include_str!(
-            "../../../../contract/v2/profiles/video-target-keyframes-v1/fixtures/receipts.json"
+            "../../../../../bgxiong-adapter-sdk/profiles/video-target-keyframes-v1/fixtures/receipts.json"
         ))
         .unwrap();
         // Prefer worktree SDK path if present

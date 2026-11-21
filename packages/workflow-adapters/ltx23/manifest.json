@@ -1,6 +1,6 @@
 {
-  "artifactSha256": "d0dc124b17e6fd6afd4d545a901beb3fe6248d5068b5e45d46bd670fe3ed879b",
-  "displayName": "LTX 2.3",
+  "artifactSha256": "f5ffd80bb6ca3805743bd0e64174cdfda10f595daf2aea0db2a71888f0889ed4",
+  "displayName": "LTX-2.3",
   "entry": "adapter.wasm",
   "language": "rust",
   "limits": {
@@ -25,5 +25,5 @@
   },
   "requiredFeatures": ["operation-input-preflight-v2", "operation-preflight-v1"],
   "schemaVersion": 2,
-  "version": "0.1.3"
+  "version": "0.1.4"
 }

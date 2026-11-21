@@ -1,6 +1,6 @@
 {
   "artifactSha256": "873d5a63ad8e102ea4461f9c3ba0973af54cb992647b83fa9f5b1fff47652b0a",
-  "displayName": "ComfyUI H3 two-reference + audio author example",
+  "displayName": "ComfyUI-MiniMax-H3-R2V-Audio",
   "entry": "adapter.wasm",
   "language": "rust",
   "limits": {
@@ -35,5 +35,5 @@
   },
   "requiredFeatures": [],
   "schemaVersion": 2,
-  "version": "1.0.1"
+  "version": "1.0.2"
 }

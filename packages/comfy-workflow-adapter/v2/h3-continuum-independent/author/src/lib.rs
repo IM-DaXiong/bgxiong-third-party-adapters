@@ -54,7 +54,7 @@ fn capabilities() -> Value {
     json!({"schemaVersion":2,"pluginId":PLUGIN_ID,"pluginVersion":env!("CARGO_PKG_VERSION"),"capabilityContracts":[{
         "schemaVersion":2,"localId":"continuum-driving-audio","capabilityKey":"video.generate","transportSlot":"video","modelIds":[MODEL_ID],
         "configurationSchema":{"id":"config","digest":config["digest"]},
-        "operations":[{"id":OPERATION,"version":1,"label":"H3 Continuum image + driving audio (512x512,24fps,one 5second chunk)",
+        "operations":[{"id":OPERATION,"version":1,"label":"MiniMax-H3-Continuum 图+驱动音频",
             "inputSchema":{"id":"input","digest":input["digest"]},"outputSchema":{"id":"output","digest":output["digest"]},
             "resumeSchema":{"id":"resume","digest":resume["digest"]},
             "uiSchema":{"controls":[

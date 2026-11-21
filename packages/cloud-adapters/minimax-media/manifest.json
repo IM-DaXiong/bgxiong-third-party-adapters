@@ -1,6 +1,6 @@
 {
   "artifactSha256": "b31b0c3824d210ed558639059b02498bbb97defa342043995cdcfe89870787d8",
-  "displayName": "MiniMax 图像与 H3",
+  "displayName": "MiniMax 图像与 MiniMax-H3",
   "entry": "adapter.wasm",
   "language": "rust",
   "limits": {

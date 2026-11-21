@@ -1,6 +1,6 @@
 {
   "artifactSha256": "8049db45d0db605d424e6286a941c7d72d8549feffec858860db1deb03f79bce",
-  "displayName": "ComfyUI LTX2.5 image to video author example",
+  "displayName": "ComfyUI-LTX-2.5-I2V",
   "entry": "adapter.wasm",
   "language": "rust",
   "limits": {
@@ -33,5 +33,5 @@
   },
   "requiredFeatures": [],
   "schemaVersion": 2,
-  "version": "1.0.1"
+  "version": "1.0.2"
 }

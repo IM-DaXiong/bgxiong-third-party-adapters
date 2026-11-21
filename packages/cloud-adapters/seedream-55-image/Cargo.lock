@@ -40,7 +40,7 @@ dependencies = [
 
 [[package]]
 name = "bgx-seedream-55-image"
-version = "1.0.6"
+version = "1.0.7"
 dependencies = [
  "base64",
  "bgx-adapter-v2-sdk",

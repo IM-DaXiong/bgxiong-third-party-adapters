@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "pluginId": "local.tts.breeze",
-  "pluginVersion": "1.0.2",
+  "pluginVersion": "1.0.4",
   "capabilityContracts": [
     {
       "schemaVersion": 2,
@@ -19,7 +19,7 @@
         {
           "id": "std/speech.synthesize",
           "version": 1,
-          "label": "std/speech.synthesize",
+          "label": "Breeze-TTS-2 语音合成",
           "inputSchema": {
             "id": "https://bgxiong.local/vendor-adapter/v2/profiles/speech-v1/synthesize.input.schema.json",
             "digest": "f51eacb5d1d76023638e8c66646132abca32a5be4599d115f2c5102b822360c2"

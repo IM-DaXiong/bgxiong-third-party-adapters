@@ -33,7 +33,7 @@ pub fn contract(base:&Value)->Value {
     schema["properties"]["advanced"]["properties"]["sourceName"].as_object_mut().unwrap().remove("minLength");
     let s=crate::capability::schema("h3-studio-video-input",&schema.to_string());
     c["localId"]=json!(MODEL);c["modelIds"]=json!([MODEL]);
-    c["operations"][0]["id"]=json!(OPERATION);c["operations"][0]["label"]=json!("H3 · 工程新视角视频");
+    c["operations"][0]["id"]=json!(OPERATION);c["operations"][0]["label"]=json!("MiniMax-H3 · 工程新视角视频");
     c["operations"][0]["inputSchema"]=json!({"id":"h3-studio-video-input","digest":s["digest"]});c["schemas"][0]=s;c
 }
 fn document(input:&Value)->Result<SceneDocument,Failure> {

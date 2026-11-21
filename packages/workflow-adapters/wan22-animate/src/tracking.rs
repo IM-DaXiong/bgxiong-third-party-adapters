@@ -444,7 +444,7 @@ mod tests {
         let operation=&declaration["operations"][2];
         assert_eq!(operation["execution"]["cancellation"],"remote");
         assert_eq!(declaration["operations"][0]["execution"]["cancellation"],"unsupported");
-        let fixtures:Value=serde_json::from_str(include_str!("../../../../contract/v2/profiles/video-target-keyframes-v1/fixtures/receipts.json")).unwrap();
+        let fixtures:Value=serde_json::from_str(include_str!("../../../../../bgxiong-adapter-sdk/profiles/video-target-keyframes-v1/fixtures/receipts.json")).unwrap();
         let submit:bgx_adapter_v2_sdk::OperationSubmitV2=serde_json::from_value(json!({
             "schemaVersion":2,"modelId":"wan2.2-animate-14b","capabilityKey":"video.edit",
             "operationId":crate::capability::TRACKING_OPERATION_ID,"operationVersion":1,"inputSchemaDigest":operation["inputSchema"]["digest"],

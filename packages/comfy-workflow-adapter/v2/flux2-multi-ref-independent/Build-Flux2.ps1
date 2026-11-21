@@ -2,6 +2,7 @@
 param(
     [Parameter(Mandatory)][string]$Project,
     [Parameter(Mandatory)][string]$OutputDirectory,
+    [string]$SdkRoot = (Join-Path $PSScriptRoot 'vendor-adapter-v2'),
     [switch]$Offline
 )
 $ErrorActionPreference = 'Stop'
@@ -9,7 +10,7 @@ foreach ($path in @($Project,$OutputDirectory)) {
     if (-not [IO.Path]::IsPathFullyQualified($path)) { throw 'Use absolute project and output paths.' }
 }
 if (Test-Path -LiteralPath $OutputDirectory) { throw 'OutputDirectory must not exist.' }
-$sdk = Join-Path $PSScriptRoot 'vendor-adapter-v2'
+$sdk = (Resolve-Path -LiteralPath $SdkRoot).Path
 $cli = Join-Path $sdk 'bin/bgx-adapter-v2.exe'
 $worker = Join-Path $sdk 'bin/bgx-adapter-v2-worker.exe'
 $buildArgs = @('build','--sdk',$sdk,'--project',$Project)
