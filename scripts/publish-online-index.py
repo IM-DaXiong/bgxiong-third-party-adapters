@@ -123,7 +123,8 @@ def source_fingerprints(locks):
     sources = {}
     for lock in locks:
         for row in lock['packages']:
-            manifest = next((f for f in row['files'] if f['path'] == 'package/manifest.json'), None)
+            path = 'adapter-pack/manifest.json' if row.get('kind') == 'speechManaged' else 'package/manifest.json'
+            manifest = next((f for f in row['files'] if f['path'] == path), None)
             if manifest:
                 identity = (row['pluginId'], row['version'])
                 if identity in sources and sources[identity] != manifest['sha256']:
@@ -145,6 +146,8 @@ def validate_first_install(entry, evidence, size, sha256):
         fields(evidence, 'schemaVersion kind authorization packages')
         target = dict(pluginId=plugin, version=version, hostVersionRange=entry['hostVersionRange'],
                       targetZipBytes=size, targetZipSha256=sha256)
+        if 'resourceVersion' in entry:
+            target['resourceVersion'] = entry['resourceVersion']
         if (evidence['schemaVersion'] == 1 and isinstance(evidence['authorization'], str)
                 and evidence['authorization'].strip() and isinstance(evidence['packages'], list)
                 and evidence['packages'].count(target) == 1 and not entry['upgradeFrom']):
@@ -173,7 +176,9 @@ def validated_packages(args, zip_directory=None):
     inventory = {(p['pluginId'], p['version']): p for p in current['packages']}
     seen, packages = set(), []
     for entry in eligible['packages']:
-        fields(entry, 'pluginId version newInstall hostVersionRange upgradeFrom evidence')
+        resource = entry.get('resourceVersion')
+        fields(entry, 'pluginId version newInstall hostVersionRange upgradeFrom evidence'
+               + (' resourceVersion' if resource is not None else ''))
         plugin, version = entry['pluginId'], entry['version']
         if not isinstance(plugin, str) or not re.fullmatch(r'[a-z0-9._-]+', plugin) or not stable_version(version):
             raise ValueError('Invalid package identity or prerelease')
@@ -182,7 +187,9 @@ def validated_packages(args, zip_directory=None):
             raise ValueError('Duplicate online package')
         seen.add(identity)
         locked = inventory.get(identity)
-        if not locked or locked['kind'] != 'installable':
+        managed = resource is not None
+        expected_kind = 'speechManaged' if managed else 'installable'
+        if not locked or locked['kind'] != expected_kind:
             raise ValueError(f'Online qualification is out of date for {plugin}@{version}; '
                              'register evidence for the current ZIP before signing latest.json')
         if type(entry['newInstall']) is not bool or not isinstance(entry['upgradeFrom'], list):
@@ -191,6 +198,15 @@ def validated_packages(args, zip_directory=None):
         if not valid_host_range(host):
             raise ValueError('Invalid hostVersionRange')
         evidence = evidence_by_path[entry['evidence']]
+        owner_first_install = evidence.get('kind') == 'ownerAuthorizedWithoutFirstInstall'
+        if managed and (not stable_version(resource)
+                        or (owner_first_install and not (host.startswith('>=') and stable_version(host[2:])))
+                        or (not owner_first_install and (
+                            evidence.get('managedSpeechQualified') is not True
+                            or evidence.get('resourceVersion') != resource
+                            or not stable_version(evidence.get('hostVersion'))
+                            or host != '>=' + evidence['hostVersion']))):
+            raise ValueError(f'Managed speech requires exact host/resource qualification: {plugin}@{version}')
         for source in entry['upgradeFrom']:
             fields(source, 'version manifestSha256')
             if not HEX.fullmatch(source['manifestSha256']) or sources.get((plugin, source['version'])) != source['manifestSha256']:
@@ -207,22 +223,31 @@ def validated_packages(args, zip_directory=None):
             raise ValueError('Package byte limit exceeded')
         with zipfile.ZipFile(zip_path) as z:
             expected = {f['path']: f for f in locked['files'] if Path(f['path']).name != 'WHERE-TO-INSTALL.txt'}
-            if len(z.namelist()) != len(expected) or set(z.namelist()) != set(expected) or 'adapter-install.json' not in expected:
+            install_files = {'provisioning.json', 'prepare-resources.ps1'} if managed else {'adapter-install.json'}
+            if len(z.namelist()) != len(expected) or set(z.namelist()) != set(expected) or not install_files <= expected.keys():
                 raise ValueError('ZIP inventory/envelope differs from lock')
             for path, f in expected.items():
                 if digest(z.read(path)) != f['sha256']:
                     raise ValueError('ZIP contents differ from lock')
-            manifest = json.loads(z.read('package/manifest.json'))
+            manifest = json.loads(z.read('adapter-pack/manifest.json' if managed else 'package/manifest.json'))
             if (manifest['pluginId'], manifest['version']) != identity:
                 raise ValueError('ZIP manifest identity differs')
+            if managed:
+                provisioning = json.loads(z.read('provisioning.json'))
+                if (provisioning['pluginId'], provisioning['pluginVersion'], provisioning['version']) != (plugin, version, resource):
+                    raise ValueError('ZIP managed speech resource identity differs')
         sha256 = digest(data)
         if evidence.get('kind') == 'ownerAuthorizedWithoutFirstInstall' and not entry['newInstall']:
             raise ValueError(f'Owner first-install authorization cannot be used for upgrade-only entry: {plugin}@{version}')
         if entry['newInstall']:
             validate_first_install(entry, evidence, len(data), sha256)
+        if managed and not owner_first_install and (evidence.get('targetZipSha256') != sha256 or evidence.get('targetZipBytes') != len(data)
+                        or evidence.get('upgradeFrom', []) != entry['upgradeFrom']):
+            raise ValueError(f'Managed speech evidence does not match exact ZIP or upgrade sources: {plugin}@{version}')
+        dependencies = [{'kind': 'sdkSpeech', 'resourceVersion': resource}] if managed else []
         packages.append({'pluginId':plugin,'version':version,'displayName':manifest['displayName'],
             'newInstall':entry['newInstall'],'hostVersionRange':host,'protocolVersion':2,
-            'upgradeFrom':entry['upgradeFrom'],'dependencies':[],'file':name,'bytes':len(data),'sha256':sha256})
+            'upgradeFrom':entry['upgradeFrom'],'dependencies':dependencies,'file':name,'bytes':len(data),'sha256':sha256})
     return sorted(packages, key=lambda p:(p['pluginId'],p['version']))
 
 

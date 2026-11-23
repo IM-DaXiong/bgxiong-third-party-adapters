@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "kind": "ownerAuthorizedWithoutFirstInstall",
+  "authorization": "用户于 2026-11-23 明确要求直接更新 CDN 上传目录，由用户上传链接并在真实生成环境验收。仅授权所列托管语音首装包、运行资源版本和宿主范围。",
+  "packages": [
+    {
+      "pluginId": "local.tts.breeze",
+      "version": "1.0.4",
+      "resourceVersion": "1.0.3",
+      "hostVersionRange": ">=0.6.1126",
+      "targetZipBytes": 424596,
+      "targetZipSha256": "dc9ef698a94e03e0ead4e3ac748841d844fec491724095a958d048f103c03860"
+    }
+  ]
+}

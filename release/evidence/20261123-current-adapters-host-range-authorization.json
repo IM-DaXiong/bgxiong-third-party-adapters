@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "kind": "ownerAuthorizedWithoutFirstInstall",
+  "authorization": "2026-11-23 owner instruction: publish the same current adapter ZIPs with minimum host 0.6.1125 and no upper bound. First-install authorization only.",
+  "packages": [
+    {
+      "pluginId": "local.bgx.seedream-55-image",
+      "version": "1.0.7",
+      "hostVersionRange": ">=0.6.1125",
+      "targetZipBytes": 328712,
+      "targetZipSha256": "1e96e3cb498b8960f854fa6a457c6d0388e4d6cf05b1a184d9112dd5d61465f4"
+    },
+    {
+      "pluginId": "local.bgx.wan-animate2",
+      "version": "0.1.4",
+      "hostVersionRange": ">=0.6.1125",
+      "targetZipBytes": 221824,
+      "targetZipSha256": "f7bb017a9082d637ea3df30be9ca4da5ff326d80c2ff5c51a876cbed07dbdd23"
+    },
+    {
+      "pluginId": "local.bgx.wan22-animate",
+      "version": "0.2.15",
+      "hostVersionRange": ">=0.6.1125",
+      "targetZipBytes": 327501,
+      "targetZipSha256": "56e9a3e0c0e354863fe8f35fbb88f6b1c98cecc641c346c1fbf563f860f09d48"
+    },
+    {
+      "pluginId": "local.bgx.deepseek-text",
+      "version": "1.0.1",
+      "hostVersionRange": ">=0.6.1125",
+      "targetZipBytes": 200859,
+      "targetZipSha256": "8c6e6fbda4ce67d1f4f6663e3a12e60d0550e451ed2a07d0f2d6ff7a8305442b"
+    },
+    {
+      "pluginId": "local.bgx.minimax-m3",
+      "version": "1.0.3",
+      "hostVersionRange": ">=0.6.1125",
+      "targetZipBytes": 198051,
+      "targetZipSha256": "531e3e690ca909c66778f9ec565ea4cc60d01020633fb0de21384e833cc2d073"
+    },
+    {
+      "pluginId": "local.independent.comfy-h3-continuum",
+      "version": "1.0.4",
+      "hostVersionRange": ">=0.6.1125",
+      "targetZipBytes": 234764,
+      "targetZipSha256": "f1a28636cf9298a214bd2fcf070195d73e8454862ecab410f0770f2b0ea7112f"
+    },
+    {
+      "pluginId": "local.zeroauthor.comfy-zimage-turbo",
+      "version": "1.0.4",
+      "hostVersionRange": ">=0.6.1125",
+      "targetZipBytes": 204832,
+      "targetZipSha256": "0db8f5f10ba3508e1580b77a2ba812cb59ba433472bc64a40fd88de662926654"
+    },
+    {
+      "pluginId": "local.bgx.wan22-s2v",
+      "version": "0.1.8",
+      "hostVersionRange": ">=0.6.1125",
+      "targetZipBytes": 232080,
+      "targetZipSha256": "5feaeb6c0ffe1ce1b6b2669efb7940f30b8bb0ac79b69660270f8fe50465b930"
+    },
+    {
+      "pluginId": "local.bgx.minimax-h3-image-comfy",
+      "version": "1.0.3",
+      "hostVersionRange": ">=0.6.1125",
+      "targetZipBytes": 224244,
+      "targetZipSha256": "440c72a199d60ff7a196dc7c991b7166619fcb3b41c0c36a211db0cee5c97885"
+    },
+    {
+      "pluginId": "local.thirdparty.comfy-panorama-image",
+      "version": "1.24.4",
+      "hostVersionRange": ">=0.6.1125",
+      "targetZipBytes": 2887326,
+      "targetZipSha256": "a6c08b85411ce272f3c057a5bd44201165ebbe67afaab68b73e617614ba52c24"
+    },
+    {
+      "pluginId": "local.bgx.seedvr2-image",
+      "version": "1.0.4",
+      "hostVersionRange": ">=0.6.1125",
+      "targetZipBytes": 231508,
+      "targetZipSha256": "d275424070d1e27a944469090406f0454f00f37d45e00a603bb68d7f572e9a59"
+    },
+    {
+      "pluginId": "local.bgx.seedream-image",
+      "version": "1.0.8",
+      "hostVersionRange": ">=0.6.1125",
+      "targetZipBytes": 226442,
+      "targetZipSha256": "7b8aa609c6a8d572557170254aaf9c11ff8eba50bb5bbfad2cee4eaa6822f258"
+    },
+    {
+      "pluginId": "local.thirdparty.runninghub-qwen-image-21",
+      "version": "0.1.5",
+      "hostVersionRange": ">=0.6.1125",
+      "targetZipBytes": 239987,
+      "targetZipSha256": "4885b87c9adf525949e8d52c8b13e654f7981527697b355203d9464098f297c7"
+    },
+    {
+      "pluginId": "local.thirdparty.h3-face-refine",
+      "version": "1.0.1",
+      "hostVersionRange": ">=0.6.1125",
+      "targetZipBytes": 403057,
+      "targetZipSha256": "7721ee9e5b1d39ce21a7e6472a91b76eadbf9ce0fd2eb505710b10592217e8a5"
+    },
+    {
+      "pluginId": "local.independent.flux2-ordered-reference",
+      "version": "1.0.5",
+      "hostVersionRange": ">=0.6.1125",
+      "targetZipBytes": 225692,
+      "targetZipSha256": "3e82316640b635c8c5f3b2343d150bb720553da3c7a75942cf3d55e980831998"
+    },
+    {
+      "pluginId": "local.thirdparty.runninghub-h3-all",
+      "version": "1.0.7",
+      "hostVersionRange": ">=0.6.1125",
+      "targetZipBytes": 306473,
+      "targetZipSha256": "b6bd90f73c23e4872cd78c12e7b7918b09f28dc5fa4a77d45aed798314f8b4a8"
+    }
+  ]
+}

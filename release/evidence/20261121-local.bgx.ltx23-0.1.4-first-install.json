@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "pluginId": "local.bgx.ltx23",
+  "version": "0.1.4",
+  "measuredHostVersion": "0.6.1119",
+  "newInstallQualified": true,
+  "exitCode": 0,
+  "targetZipBytes": 224178,
+  "targetZipSha256": "50c1bfb7aa12d5c04d3b2af7a8bb7cac52d1772a5391f31f8c4716576680b548",
+  "testBinarySha256": "b9f7068d97d85d0aa680e6088a7929c10178a70f3c36ca53ac56cf984e2f681f",
+  "testLogSha256": "ef8e9f2f5e894597760d21858663a0e0ee1dac47fb7240aaf39bd41972a05167",
+  "qualificationScope": "Loopback signed QA index, exact archive and real SDK registration in a clean database",
+  "sourceLock": "release/evidence/20261121-adapter-display-name-source-lock.json",
+  "compatibility": {
+    "pluginId": "local.bgx.ltx23",
+    "exactLiveCapabilitiesApartFromVersion": true
+  },
+  "sourceVersion": "0.1.2",
+  "sourceManifestSha256": "96f2b733ddcd95d4bc000e077b1047947222f2323a3530beab36d8f5ed342c07",
+  "installedUpgradeValidation": "pending on the normal installed owner"
+}

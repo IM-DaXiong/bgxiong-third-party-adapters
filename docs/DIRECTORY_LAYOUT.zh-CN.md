@@ -42,6 +42,8 @@
 - `artifacts/cdn-index/`：签名工作区。签完后把 `latest.json` 写入 `artifacts/cdn/`，不另做上传目录。
 - `release/online-*.json`：在线资格与序号回执。常规资格登记实际升级或首装证据。用户可明确授权本批先上线后人工验收，授权记录须锁定 ZIP 大小、摘要、包身份和宿主范围。只按此授权开放首装，托管升级资格仍需实测证据。
 
+托管语音资格另登记 `resourceVersion`，发行程序核原始冻结 ZIP、随包准备器、运行时版本、已验宿主版本和升级来源。签名索引在 `dependencies` 中声明 `sdkSpeech` 资源版本。具备相应随包资源的宿主展示安装或更新操作，用户确认后复用已有运行资源或从正式资源 CDN 下载。
+
 ZImage 1.0.3 与 FLUX2 1.0.4 现补齐 `installation/adapter-install.template.json`，与宿主现行 `comfyui.serviceOnly` 合同对齐：安装时取软件已经保存的 Comfy 连接，不预设端口、地址或账号。运行包 manifest/WASM 未改；此变更只补齐此前缺失的安装信封，真实 EXE 安装验收单独记录。
 
 ### 2026-11-19 正式在线资格与owner归档续修

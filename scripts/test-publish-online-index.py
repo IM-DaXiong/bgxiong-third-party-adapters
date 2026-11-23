@@ -7,6 +7,7 @@ from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
+import zipfile
 
 spec = importlib.util.spec_from_file_location('publisher', Path(__file__).with_name('publish-online-index.py'))
 publisher = importlib.util.module_from_spec(spec)
@@ -14,6 +15,65 @@ spec.loader.exec_module(publisher)
 
 
 class PublisherContractTests(unittest.TestCase):
+    def test_managed_speech_uses_frozen_bytes_and_requires_exact_host_evidence(self):
+        packer_spec = importlib.util.spec_from_file_location('packer', Path(__file__).with_name('pack-cdn-directory.py'))
+        packer = importlib.util.module_from_spec(packer_spec)
+        packer_spec.loader.exec_module(packer)
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'release/evidence').mkdir(parents=True)
+            current = root / 'artifacts/current/local.test.speech'
+            source = current / '1.0.4'
+            (source / 'adapter-pack').mkdir(parents=True)
+            files = {
+                'adapter-pack/manifest.json': json.dumps({'pluginId': 'local.test.speech', 'version': '1.0.4', 'displayName': 'Speech'}).encode(),
+                'provisioning.json': json.dumps({'pluginId': 'local.test.speech', 'pluginVersion': '1.0.4', 'version': '1.0.3'}).encode(),
+                'prepare-resources.ps1': b'fixture',
+            }
+            frozen = current / '1.0.4.zip'
+            with zipfile.ZipFile(frozen, 'w') as archive:
+                for path, data in files.items():
+                    (source / path).write_bytes(data)
+                    archive.writestr(path, data)
+            lock = {'schemaVersion': 1, 'packages': [
+                {'kind': 'speechManaged', 'pluginId': 'local.test.speech', 'version': '1.0.4',
+                 'files': [{'path': path, 'source': (source / path).relative_to(root).as_posix(),
+                            'sha256': publisher.digest(data)} for path, data in files.items()]}
+            ]}
+            (root / 'release/current.json').write_text(json.dumps(lock), encoding='utf-8')
+            entry = dict(pluginId='local.test.speech', version='1.0.4', resourceVersion='1.0.3', newInstall=True,
+                         upgradeFrom=[], hostVersionRange='>=0.6.1126', evidence='release/evidence/proof.json')
+            (root / 'release/online-releases.json').write_text(json.dumps({'schemaVersion': 1, 'packages': [entry]}), encoding='utf-8')
+            proof = dict(managedSpeechQualified=True, newInstallQualified=True, exitCode=0, pluginId='local.test.speech',
+                         version='1.0.4', resourceVersion='1.0.3', hostVersion='0.6.1126',
+                         targetZipBytes=frozen.stat().st_size, targetZipSha256=publisher.digest(frozen.read_bytes()))
+            (root / entry['evidence']).write_text(json.dumps(proof), encoding='utf-8')
+            candidate = root / 'candidate'
+            candidate.mkdir()
+            with (
+                patch.multiple(packer, ROOT=root, DEST=root / 'current', QUALIFICATION=root / 'qualification'),
+                patch.object(publisher, 'ROOT', root),
+            ):
+                packer.assemble(packer.locked_packages(), candidate)
+                self.assertEqual((candidate / 'local.test.speech-1.0.4.zip').read_bytes(), frozen.read_bytes())
+                packages = publisher.validated_packages(SimpleNamespace(source_lock=[]), candidate)
+                self.assertEqual(packages[0]['dependencies'], [{'kind': 'sdkSpeech', 'resourceVersion': '1.0.3'}])
+                proof['hostVersion'] = '0.6.1125'
+                (root / entry['evidence']).write_text(json.dumps(proof), encoding='utf-8')
+                with self.assertRaisesRegex(ValueError, 'exact host/resource qualification'):
+                    publisher.validated_packages(SimpleNamespace(source_lock=[]), candidate)
+                approval = dict(schemaVersion=1, kind='ownerAuthorizedWithoutFirstInstall',
+                                authorization='Test exact production acceptance authorization',
+                                packages=[{key: proof[key] for key in (
+                                    'pluginId', 'version', 'resourceVersion', 'targetZipBytes', 'targetZipSha256'
+                                )} | {'hostVersionRange': entry['hostVersionRange']}])
+                (root / entry['evidence']).write_text(json.dumps(approval), encoding='utf-8')
+                self.assertEqual(publisher.validated_packages(SimpleNamespace(source_lock=[]), candidate), packages)
+                approval['packages'][0]['resourceVersion'] = '1.0.2'
+                (root / entry['evidence']).write_text(json.dumps(approval), encoding='utf-8')
+                with self.assertRaisesRegex(ValueError, 'does not cover this exact ZIP and host'):
+                    publisher.validated_packages(SimpleNamespace(source_lock=[]), candidate)
+
     def test_owner_authorization_applies_to_exact_zip_and_host_only(self):
         entry = dict(pluginId='example', version='1.0.0', hostVersionRange='=0.6.1119',
                      upgradeFrom=[])

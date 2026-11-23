@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "pluginId": "local.bgx.ltx25",
+  "version": "0.1.8",
+  "measuredHostVersion": "0.6.1119",
+  "newInstallQualified": true,
+  "exitCode": 0,
+  "targetZipBytes": 232777,
+  "targetZipSha256": "917cd05391e5088098838e92e2c7ab330e90a96b8240701a77e3eedaecc91ea2",
+  "testBinarySha256": "b9f7068d97d85d0aa680e6088a7929c10178a70f3c36ca53ac56cf984e2f681f",
+  "testLogSha256": "7d4e9a5a63408069228de7d558b80bffb03f1270fc254fc6ff97fc159db41e00",
+  "qualificationScope": "Loopback signed QA index, exact archive and real SDK registration in a clean database",
+  "sourceLock": "release/evidence/20261121-adapter-display-name-source-lock.json",
+  "compatibility": {
+    "pluginId": "local.bgx.ltx25",
+    "exactLiveCapabilitiesApartFromVersion": true
+  },
+  "sourceVersion": "0.1.3",
+  "sourceManifestSha256": "0f22774ab6c796775376af3cf00b428e0cd3557356f1069a9618d816c7102b02",
+  "installedUpgradeValidation": "pending on the normal installed owner",
+  "managedUpgradeFixture": "The synthetic managed-ComfyUI source was refused by the normal declared ComfyUI envelope. This test is separate from the signed first-install pass."
+}

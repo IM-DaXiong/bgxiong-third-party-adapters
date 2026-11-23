@@ -50,10 +50,15 @@ def locked_packages() -> list[tuple[str, list[tuple[str, bytes]]]]:
     seen = set()
     problems = []
     root = ROOT.resolve()
+    eligibility_file = ROOT / "release/online-releases.json"
+    eligibility = json.loads(eligibility_file.read_text(encoding="utf-8-sig")) if eligibility_file.is_file() else {}
+    online_speech = {(item["pluginId"], item["version"]) for item in eligibility.get("packages", [])
+                     if item.get("resourceVersion")}
     for package in lock["packages"]:
-        if package.get("kind") != "installable":
-            continue
         plugin, version = package["pluginId"], package["version"]
+        managed = package.get("kind") == "speechManaged" and (plugin, version) in online_speech
+        if package.get("kind") != "installable" and not managed:
+            continue
         if not re.fullmatch(r"[a-z0-9._-]+", plugin) or not re.fullmatch(r"[0-9A-Za-z.+-]+", version):
             raise PackError(f"Unsafe package identity: {plugin!r}@{version!r}")
         name = f"{plugin}-{version}.zip"
@@ -80,7 +85,9 @@ def locked_packages() -> list[tuple[str, list[tuple[str, bytes]]]]:
                 continue
             if PurePosixPath(archive_path).name != "WHERE-TO-INSTALL.txt":
                 files.append((archive_path, data))
-        required = {"adapter-install.json", "package/manifest.json"}
+        required = {"provisioning.json", "prepare-resources.ps1", "adapter-pack/manifest.json"} if managed else {
+            "adapter-install.json", "package/manifest.json"
+        }
         missing = required - {path for path, _ in files}
         if missing:
             problems.append(f"{name}: missing locked installation files: {', '.join(sorted(missing))}")
@@ -139,6 +146,19 @@ def assemble(packages, staging: Path) -> dict[str, tuple[int, str]]:
     for name, files in packages:
         target = staging / name
         published = published_bytes(name, files)
+        if published is None and "adapter-pack/manifest.json" in dict(files):
+            manifest = json.loads(dict(files)["adapter-pack/manifest.json"])
+            plugin, version = manifest["pluginId"], manifest["version"]
+            if name != f"{plugin}-{version}.zip":
+                raise PackError(f"Managed speech ZIP identity differs: {name}")
+            frozen = ROOT / "artifacts" / "current" / plugin / f"{version}.zip"
+            with zipfile.ZipFile(frozen) as archive:
+                names = archive.namelist()
+                if len(names) != len(files) or set(names) != {path for path, _ in files}:
+                    raise PackError(f"Managed speech ZIP inventory differs from the release lock: {name}")
+                if any(archive.read(path) != content for path, content in files):
+                    raise PackError(f"Managed speech ZIP contents differ from the release lock: {name}")
+            published = frozen.read_bytes()
         if published is None:
             write_archive(target, files)
         else:
