@@ -161,7 +161,7 @@ def validate_first_install(entry, evidence, size, sha256):
 
 def validated_packages(args, zip_directory=None):
     if zip_directory is None:
-        zip_directory = ROOT/'artifacts/cdn'
+        zip_directory = Path("L:/00Dev/bgxiong-00-release/cdn-bgxiong-third-party-adapters")
     current = read(ROOT/'release/current.json')
     eligible = read(ROOT/'release/online-releases.json')
     fields(eligible, 'schemaVersion packages')

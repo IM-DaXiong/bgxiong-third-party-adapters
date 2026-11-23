@@ -19,7 +19,7 @@ from types import SimpleNamespace
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-DEST = ROOT / "artifacts" / "cdn"
+DEST = Path("L:/00Dev/bgxiong-00-release/cdn-bgxiong-third-party-adapters")
 QUALIFICATION = ROOT / "artifacts" / "cdn-index" / "qualification"
 
 

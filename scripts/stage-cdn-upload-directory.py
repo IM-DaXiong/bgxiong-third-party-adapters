@@ -13,7 +13,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[1]
-CDN = ROOT / "artifacts" / "cdn"
+CDN = Path("L:/00Dev/bgxiong-00-release/cdn-bgxiong-third-party-adapters")
 INDEX_DIR = ROOT / "artifacts" / "cdn-index"
 UPLOAD_PREFIX = "https://r.bgxiong.com/client/ai-story/bgxiong-third-party-adapters/"
 HOST_MOD = ROOT.parent / "bgxiong-ai-story" / "src-tauri" / "src" / "comfyui" / "workflow" / "adapter_online_update" / "mod.rs"

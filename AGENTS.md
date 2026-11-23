@@ -1,10 +1,12 @@
+> **BAS-3 修订 / 用户 t372–t374 / 2026-11-23**：唯一交付根 `L:\00Dev\bgxiong-00-release` 下必须直接平级 `dev-项目名`、`release-项目名`、`cdn-项目名`、`deploy-项目名`，不再有编号分类/主机名/client/ai-story导航外壳。进入项目目录就选/拖成品；包内模块/平台结构照旧，CDN实际对象键不变。按本仓 RELEASE_OUTPUTS.md；同项目/用途/类型/平台/渠道只保留有版本/构建证据的最新完整成品，核验后删旧版，不按复制mtime判断；运行安装目录、源码、配置、缓存不迁移。
+
 > **BAS-3 / 用户2026-11-23 / 所有智能体必读**：最终发行、开发/测试编译、开发人员拿走测试、CDN/部署成果唯一归集根为 `L:\00Dev\bgxiong-00-release`。开工及交付前必读本仓 [RELEASE_OUTPUTS.md](RELEASE_OUTPUTS.md)，按目的地保留整套相对布局并归集；不得只报旧target/dist/artifacts路径称交付。本条覆盖旧“仓内目录为最终交付根”的开发环境表述；源码/工具缓存、正在运行的EXE、适配器本机开发安装归档和最终用户安装/EXE旁协议不迁移。
 
 # 比格熊第三方适配器统一规范
 
 ## 最高级发行规范 · 所有智能体必读（用户2026-11-22）
 
-- **唯一上传交付目录是 `L:/00Dev/bgxiong-00-release/03-cdn/r.bgxiong.com/client/ai-story/bgxiong-third-party-adapters/`；`artifacts/cdn/`仅组装验签工作区。** 测试和生产批次都交到这里。每次发布都必须随 ZIP 更新 `latest.json`，无需用户提醒。同层交付本批全部 ZIP、`SHA256SUMS.txt` 和与上传目标所信任的密钥匹配的 `latest.json`。公网生产路径必须使用生产签名，即使用途是在线人工验收。使用 `scripts/sign-online-index-interactive.ps1` 校验在线资格、生产签名、序号、清单及索引引用 ZIP 的版本、大小和摘要，全部通过才交付。只有重试同一批且字节与资格完全一致时，才可复用该批已验签索引。
+- **唯一上传交付目录是 `L:/00Dev/bgxiong-00-release/cdn-bgxiong-third-party-adapters/`；`artifacts/cdn/`仅组装验签工作区。** 测试和生产批次都交到这里。每次发布都必须随 ZIP 更新 `latest.json`，无需用户提醒。同层交付本批全部 ZIP、`SHA256SUMS.txt` 和与上传目标所信任的密钥匹配的 `latest.json`。公网生产路径必须使用生产签名，即使用途是在线人工验收。使用 `scripts/sign-online-index-interactive.ps1` 校验在线资格、生产签名、序号、清单及索引引用 ZIP 的版本、大小和摘要，全部通过才交付。只有重试同一批且字节与资格完全一致时，才可复用该批已验签索引。
 - **索引更新失败，立即明确告知用户。** 说明具体阻塞、当前目录状态以及需要用户提供的输入或操作。待验收、待签名、索引缺失或不匹配的批次标记待交付。用户明确授权本批先上线再人工验收时，以精确 ZIP 字节和目标宿主范围登记本批授权，保留实际验收状态，正常完成生产签名和整目录核验。该授权只覆盖对应批次。见[发行上传目录约定](docs/DIRECTORY_LAYOUT.zh-CN.md#发行上传根与服务器逐层对齐2026-11-21)。
 
 ## 开发与交付约定
