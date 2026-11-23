@@ -1,13 +1,15 @@
+> **BAS-3 / 用户2026-11-23 / 所有智能体必读**：最终发行、开发/测试编译、开发人员拿走测试、CDN/部署成果唯一归集根为 `L:\00Dev\bgxiong-00-release`。开工及交付前必读本仓 [RELEASE_OUTPUTS.md](RELEASE_OUTPUTS.md)，按目的地保留整套相对布局并归集；不得只报旧target/dist/artifacts路径称交付。本条覆盖旧“仓内目录为最终交付根”的开发环境表述；源码/工具缓存、正在运行的EXE、适配器本机开发安装归档和最终用户安装/EXE旁协议不迁移。
+
 # 比格熊第三方适配器统一规范
 
 ## 最高级发行规范 · 所有智能体必读（用户2026-11-22）
 
-- **唯一上传交付目录是 `artifacts/cdn/`。** 测试和生产批次都交到这里。每次发布都必须随 ZIP 更新 `latest.json`，无需用户提醒。同层交付本批全部 ZIP、`SHA256SUMS.txt` 和与上传目标所信任的密钥匹配的 `latest.json`。公网生产路径必须使用生产签名，即使用途是在线人工验收。使用 `scripts/sign-online-index-interactive.ps1` 校验在线资格、生产签名、序号、清单及索引引用 ZIP 的版本、大小和摘要，全部通过才交付。只有重试同一批且字节与资格完全一致时，才可复用该批已验签索引。
+- **唯一上传交付目录是 `L:/00Dev/bgxiong-00-release/03-cdn/r.bgxiong.com/client/ai-story/bgxiong-third-party-adapters/`；`artifacts/cdn/`仅组装验签工作区。** 测试和生产批次都交到这里。每次发布都必须随 ZIP 更新 `latest.json`，无需用户提醒。同层交付本批全部 ZIP、`SHA256SUMS.txt` 和与上传目标所信任的密钥匹配的 `latest.json`。公网生产路径必须使用生产签名，即使用途是在线人工验收。使用 `scripts/sign-online-index-interactive.ps1` 校验在线资格、生产签名、序号、清单及索引引用 ZIP 的版本、大小和摘要，全部通过才交付。只有重试同一批且字节与资格完全一致时，才可复用该批已验签索引。
 - **索引更新失败，立即明确告知用户。** 说明具体阻塞、当前目录状态以及需要用户提供的输入或操作。待验收、待签名、索引缺失或不匹配的批次标记待交付。用户明确授权本批先上线再人工验收时，以精确 ZIP 字节和目标宿主范围登记本批授权，保留实际验收状态，正常完成生产签名和整目录核验。该授权只覆盖对应批次。见[发行上传目录约定](docs/DIRECTORY_LAYOUT.zh-CN.md#发行上传根与服务器逐层对齐2026-11-21)。
 
 ## 开发与交付约定
 
-- **源码与成品各只留一处（用户2026-11-19）**：当前适配器源码只放 `packages/<分组>/<包名>`，一个包一个目录，不在 `projects/`、`artifacts/` 或发行哈希目录再放一份源码。可安装成品只放 `artifacts/current/<pluginId>/<version>/`，文件树与 `release/current.json` 指向的字节一致，布局统一为安装信封、`package/manifest.json`、`package/manifest.sha256`、`package/adapter.wasm`，以及该包实际需要的 LICENSE、说明和伴随文件。每个 pluginId 只保留发行锁里的当前版本。旧版本成品、候选目录和已经搬进 `artifacts/current` 的散列发行副本直接删除，不另留平行成品目录。本地测试安装和卸载只使用 `artifacts/current/<pluginId>/<version>/`，该目录里有 `adapter-install.json`。不要再从 `artifacts/cache`、`artifacts/downloads`、`build/` 或 `projects/install-*` 拿安装包。
+- **源码与成品各只留一处（用户2026-11-19）**：当前适配器源码只放 `packages/<分组>/<包名>`，一个包一个目录，不在 `projects/`、`artifacts/` 或发行哈希目录再放一份源码。本机安装归档只放 `artifacts/current/<pluginId>/<version>/`，文件树与 `release/current.json` 指向的字节一致，布局统一为安装信封、`package/manifest.json`、`package/manifest.sha256`、`package/adapter.wasm`，以及该包实际需要的 LICENSE、说明和伴随文件。每个 pluginId 只保留发行锁里的当前版本。旧版本成品、候选目录和已经搬进 `artifacts/current` 的散列发行副本直接删除，不另留平行成品目录。本地测试安装和卸载只使用 `artifacts/current/<pluginId>/<version>/`，该目录里有 `adapter-install.json`。不要再从 `artifacts/cache`、`artifacts/downloads`、`build/` 或 `projects/install-*` 拿安装包。
 
 - **本地与公开目录一致（用户2026-11-11）**：遵循 `docs/DIRECTORY_LAYOUT.zh-CN.md`。源码在 packages/projects，发行锁与下载目录在 release；完整二进制通过 Releases 分发并可远程恢复，artifacts/current 与安装 ZIP 解压树一致。旧根迁移材料、退役 sources 及重复产物入口已保全到 records/20261111-layout-cleanup，禁止重新创建活动 sources/main。不得把 sourceExample 或托管运行时说明文件冒充通用可安装 ZIP。
 
@@ -18,7 +20,7 @@
 - 先发现主仓H，使用同级H/../bgxiong-third-party-adapters。本机L:/00Dev/bgxiong-third-party-adapters。公开远程https://github.com/IM-DaXiong/bgxiong-third-party-adapters，禁止再建平行开发真源。
 - 本根已承接原bgxiong-vendor-adapters的Git历史、合同、源码和未提交修改，并合入原sources/main/packages独有包。packages是合并后主线源码；projects是独立项目。旧sources/main不是活动owner，不得再次在其中开发。
 - artifacts存标准安装包，records存历史保全；禁止按最大版本覆盖源码，禁止同版本覆盖不同包内容。每包唯一owner，分支独有修改先保全合并。
-- **本机安装测试固定入口（用户2026-11-09，2026-11-19收口）**。以后开发和测试产出的可安装包只放到 `artifacts/current/<pluginId>/<version>/`，目录内有 `adapter-install.json`。软件安装、卸载都选这个目录。每包只留 `release/current.json` 里的当前版本。禁止再把测试安装包放到 `artifacts/releases`、`artifacts/cache`、`artifacts/downloads`、`build/` 或 `projects/install-*`。发行上传目录是 `artifacts/cdn/`。
+- **本机安装测试固定入口（用户2026-11-09，2026-11-19收口）**。本机开发安装归档只放到 `artifacts/current/<pluginId>/<version>/`，目录内有 `adapter-install.json`。软件安装、卸载都选这个目录。每包只留 `release/current.json` 里的当前版本。禁止再把测试安装包放到 `artifacts/releases`、`artifacts/cache`、`artifacts/downloads`、`build/` 或 `projects/install-*`。仓内组装目录是 `artifacts/cdn/`，最终上传交付根按BAS-3统一归集合同。
 
 - 发行逐包核源码版本、已验证产物、安装信封、companion、SDK、license和SHA256，并解包实际EXE核对。WIP/教学材料不冒充已发行可用包；缺项明确列阻断，不静默打旧包。
 - 用户安装不依赖我方开发路径。当前引用、历史任务、冻结合同及卸载由统一安装/恢复owner管理，禁止直接删运行包或UPDATE用户库绕过校验。

@@ -1,3 +1,5 @@
+> **BAS-3 / 2026-11-23 生效覆盖**：最终交付及CDN待上传根统一为 `L:/00Dev/bgxiong-00-release`，详见本仓 `RELEASE_OUTPUTS.md` / 主仓统一交付根GUIDE。下文仓内build/dist/artifacts/cdn若仍作为命令输入，只指工具组装/缓存/运行阶段，不再是最终交付位置；artifacts/current本机安装归档与最终用户EXE旁布局不迁移。
+
 # 本地与公开仓库目录约定
 
 2026-11-11。公开仓库与本地 checkout 使用同一套源码目录；构建缓存、用户数据和历史现场不上传 Git。
@@ -30,7 +32,7 @@
 
 ## 发行上传根与服务器逐层对齐（2026-11-21）
 
-第三方适配器的唯一上传交付目录是 `artifacts/cdn/`，测试和生产批次均交到这里。以服务器目标为基准校验相对文件路径、层级和命名。上传到公网生产路径 `/client/ai-story/bgxiong-third-party-adapters/` 的目录同层必须具备发行锁中全部当前 ZIP、`SHA256SUMS.txt` 和生产签名 `latest.json`，包括用于公网人工验收的批次。签名工作区供工具使用，发布流程负责将索引写入上传根。
+第三方适配器生产CDN最终交付目录是 `L:/00Dev/bgxiong-00-release/03-cdn/r.bgxiong.com/client/ai-story/bgxiong-third-party-adapters/`；测试批次交统一根的 `01-dev-test/adapters/<batch>/`，仓内 `artifacts/cdn/` 仅是组装验签工作区。以服务器目标为基准校验相对文件路径、层级和命名。上传到公网生产路径 `/client/ai-story/bgxiong-third-party-adapters/` 的目录同层必须具备发行锁中全部当前 ZIP、`SHA256SUMS.txt` 和生产签名 `latest.json`，包括用于公网人工验收的批次。签名工作区供工具使用，发布流程负责将索引写入上传根。
 
 发布过程中先组装完整候选，再核全量 ZIP 的相对路径及字节、SHA-256 校验表和 `latest.json` 的签名。索引的每一条文件名、版本、大小和摘要必须与候选内的 ZIP 一致，本批获准上线的更新版本必须出现在索引里。同版本已发布的 ZIP 复用原字节。缺件、索引陈旧、待签名或校验未通过时保留上一批完整上传根，当前批标记待交付。完整候选验收后一次切换，禁止只替换 ZIP、拆走正式 JSON 或让用户自行补传其他路径的文件。
 
