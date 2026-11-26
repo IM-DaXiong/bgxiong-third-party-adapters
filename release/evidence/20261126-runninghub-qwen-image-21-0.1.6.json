@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "kind": "isolatedHostPackageInstall",
+  "exitCode": 0,
+  "newInstallQualified": true,
+  "hostVersion": "0.6.1126",
+  "test": "packaged_sdk_install_finishes_membership_in_isolated_data",
+  "sdkSourceCommit": "74cd600321e257c558172b81886b3f9040f5d56f",
+  "sourceLock": "release/evidence/20261126-runninghub-source-lock.json",
+  "sourceIndexSequence": 14,
+  "upgradeVerification": "Production source ZIP and manifest fingerprint matched; installed-source online upgrade not run.",
+  "firstInstallVerification": "ZIP members byte-identical to the directory installed and registered by the isolated host test.",
+  "upgradeFrom": [
+    {
+      "version": "0.1.5",
+      "manifestSha256": "ab33bd8f14d5d65a00bb9b32cf3acaf7447a026e6080e592b627dfc06007dcc8"
+    }
+  ],
+  "pluginId": "local.thirdparty.runninghub-qwen-image-21",
+  "version": "0.1.6",
+  "sourceVersion": "0.1.5",
+  "sourceManifestSha256": "ab33bd8f14d5d65a00bb9b32cf3acaf7447a026e6080e592b627dfc06007dcc8",
+  "sourceZipSha256": "4885b87c9adf525949e8d52c8b13e654f7981527697b355203d9464098f297c7",
+  "targetZipSha256": "f55e936778941f56bd10729909c6c59a1f85d10cb336a8520181057e49fcaa26",
+  "targetZipBytes": 239215
+}
