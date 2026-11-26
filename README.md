@@ -6,6 +6,13 @@
 
 比格熊官网 [www.bgxiong.com](https://www.bgxiong.com)｜微信公众号：天途影像｜[比格熊开发治理 Skill](https://www.bgxiong.com/goods/9p65SRB2Sl)
 
+## RunningHub 默认名称更新
+
+- **RunningHub-MiniMax-H3 1.0.8**。9 项默认工作流名称。[下载 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-default-names-20261126/local.thirdparty.runninghub-h3-all-1.0.8.zip)
+- **RunningHub-千问-Image-2.1 0.1.6**。2 项默认操作名称。[下载 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-default-names-20261126/local.thirdparty.runninghub-qwen-image-21-0.1.6.zip)
+
+两个 ZIP 均通过隔离宿主安装和模型登记，并从公网上重新下载核对摘要。[发行页及 SHA256](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/runninghub-default-names-20261126)
+
 ## 下载后安装，无需编译
 
 这里提供已经构建好的比格熊第三方适配器。打开 [发行下载页](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/installable-adapters-20261111-h3-101)，下载对应适配器的 ZIP，解压后在比格熊 **设置 → 第三方适配器 → 安装适配包** 中选择解压目录。含 `adapter-install.json` 的包选完整目录；FLUX.2、Z Image 包按随包说明选择 `package/` 并配置服务。无需下载源码或安装 Rust。

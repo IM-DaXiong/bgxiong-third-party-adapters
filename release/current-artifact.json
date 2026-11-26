@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "lockSha256": "0b8fe7d0e712b273344e6ab2c12d439f02412ddc99fd72f3fb3fe412f244c67a",
-  "archiveSha256": "31b0b130b001bd0b59251aaf5899ab3584ac25ad00fbcb70b8e40a784f84465e",
-  "archiveBytes": 7605383,
+  "lockSha256": "883cc3a11c16a0c640fe3221717eb5415da6705cf474b6cdcaa18fe1e165dc48",
+  "archiveSha256": "92279c73fb7a636f6cda1b2b3234bd04435f0497314ac7e838fa6eebaa85ab0a",
+  "archiveBytes": 7605319,
   "files": 276,
   "fileCount": 276,
-  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/release-inputs-0.6.1122-20261122/third-party-frozen-resources-0b8fe7d0e712.zip"
+  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-default-names-20261126/third-party-frozen-resources-883cc3a11c16.zip"
 }
