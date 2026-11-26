@@ -105,12 +105,12 @@ impl ModelKind {
     }
     fn label(self) -> &'static str {
         match self {
-            Self::Ref1 => "固定1图参考 · Turbo",
-            Self::Slot2 => "固定2图参考 · Turbo",
-            Self::Slot3 => "固定3图参考 · Turbo",
-            Self::Slot4 => "固定4图参考 · Turbo",
-            Self::I2vTurbo => "首帧生视频 · Turbo",
-            Self::Fl2va => "首帧生视频 · 官方原生",
+            Self::Ref1 => "RH-H3-1图参考 · Turbo",
+            Self::Slot2 => "RH-H3-2图参考 · Turbo",
+            Self::Slot3 => "RH-H3-3图参考 · Turbo",
+            Self::Slot4 => "RH-H3-4图参考 · Turbo",
+            Self::I2vTurbo => "RH-H3-首帧生· Turbo",
+            Self::Fl2va => "RH-H3-首帧生 · 官方",
         }
     }
     fn operation_id(self) -> String {

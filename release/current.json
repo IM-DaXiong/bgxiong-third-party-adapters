@@ -962,55 +962,55 @@
     },
     {
       "pluginId": "local.thirdparty.runninghub-qwen-image-21",
-      "version": "0.1.5",
+      "version": "0.1.6",
       "kind": "installable",
       "validation": "sdk_package_and_install_envelope_validated",
       "sourceManifest": "packages/cloud-adapters/runninghub-qwen-image-21/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",
-          "source": "artifacts/current/local.thirdparty.runninghub-qwen-image-21/0.1.5/adapter-install.json",
-          "sha256": "ec3eba9951b2cf44f378413fe963ae980a560b9acf8306ec6933ae454b995850"
+          "source": "artifacts/current/local.thirdparty.runninghub-qwen-image-21/0.1.6/adapter-install.json",
+          "sha256": "5b2fa80eefd46ebfe593b6ee20bee92af96980ba1505f88bb9a2a53338902474"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/current/local.thirdparty.runninghub-qwen-image-21/0.1.5/LICENSE",
+          "source": "artifacts/current/local.thirdparty.runninghub-qwen-image-21/0.1.6/LICENSE",
           "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/current/local.thirdparty.runninghub-qwen-image-21/0.1.5/package/adapter.wasm",
-          "sha256": "cc12be6a831f067a953b43d9a00dfc39e5d843c4c1ff536d0fdc4619344ed0c3"
+          "source": "artifacts/current/local.thirdparty.runninghub-qwen-image-21/0.1.6/package/adapter.wasm",
+          "sha256": "1ac7c6eea1d537055485daa9f3e8cfca70b1501c8a98e4fc9cc5789be0540996"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/current/local.thirdparty.runninghub-qwen-image-21/0.1.5/package/manifest.json",
-          "sha256": "ab33bd8f14d5d65a00bb9b32cf3acaf7447a026e6080e592b627dfc06007dcc8"
+          "source": "artifacts/current/local.thirdparty.runninghub-qwen-image-21/0.1.6/package/manifest.json",
+          "sha256": "4bdd9ace1d7cdabff48838bca3a6a2a66f9732ce33582af53efc8695fd49ce2a"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/current/local.thirdparty.runninghub-qwen-image-21/0.1.5/package/manifest.sha256",
-          "sha256": "2b722b2295cb9f0f088dde0dfd05b9d794fff982e8b5cb7d5c06d85eba5504df"
+          "source": "artifacts/current/local.thirdparty.runninghub-qwen-image-21/0.1.6/package/manifest.sha256",
+          "sha256": "ceb6e6fc60987a2c62dae982e02e804c58faf6caf6944f4fddef6d9c24c317c0"
         },
         {
           "path": "README.md",
-          "source": "artifacts/current/local.thirdparty.runninghub-qwen-image-21/0.1.5/README.md",
+          "source": "artifacts/current/local.thirdparty.runninghub-qwen-image-21/0.1.6/README.md",
           "sha256": "a3829574f4bb9ff11bef2275f9b1a7e77e35de33b8616fc863db3140eec3ce49"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/current/local.thirdparty.runninghub-qwen-image-21/0.1.5/README.txt",
-          "sha256": "d23410bb24631f9053e265f44dee2c64c3636146af315175963af1b3d8390426"
+          "source": "artifacts/current/local.thirdparty.runninghub-qwen-image-21/0.1.6/README.txt",
+          "sha256": "dcd70c0c8be6c10049d28b0be4c807eeeecf73f88d18d7e0d6f0240af353a9f3"
         },
         {
           "path": "SHA256SUMS",
-          "source": "artifacts/current/local.thirdparty.runninghub-qwen-image-21/0.1.5/SHA256SUMS",
-          "sha256": "d094947ced7e242d2c580090c8756e12292cf77132b9700daf2c3afdadb380fd"
+          "source": "artifacts/current/local.thirdparty.runninghub-qwen-image-21/0.1.6/SHA256SUMS",
+          "sha256": "f06935c3441091c1e3ee32d2e832c27db278da70c167ce53fa8ff06307b31221"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/current/local.thirdparty.runninghub-qwen-image-21/0.1.5/安装说明.txt",
-          "sha256": "9c521f59741391c70334dc0a503847c11f7395427166e410daf44b076dfa9068"
+          "source": "artifacts/current/local.thirdparty.runninghub-qwen-image-21/0.1.6/安装说明.txt",
+          "sha256": "de36af824219a861812c13cdd9cdb14c01ddbaab7a48b598bec413350a278622"
         }
       ]
     },
@@ -1543,50 +1543,50 @@
     },
     {
       "pluginId": "local.thirdparty.runninghub-h3-all",
-      "version": "1.0.7",
+      "version": "1.0.8",
       "kind": "installable",
       "validation": "sdk_package_and_install_envelope_validated",
       "sourceManifest": "packages/cloud-adapters/runninghub-h3-all/manifest.json",
       "files": [
         {
           "path": "adapter-install.json",
-          "source": "artifacts/current/local.thirdparty.runninghub-h3-all/1.0.7/adapter-install.json",
-          "sha256": "9e88f1f9aee8cd9b8155e4af2c14285fd56f978722f36a19c8cce342716d80dd"
+          "source": "artifacts/current/local.thirdparty.runninghub-h3-all/1.0.8/adapter-install.json",
+          "sha256": "22e4f51ba99a72ad6c49108afc05ea9fdf605f8a18ebb8faa05d4a994b306137"
         },
         {
           "path": "LICENSE",
-          "source": "artifacts/current/local.thirdparty.runninghub-h3-all/1.0.7/LICENSE",
+          "source": "artifacts/current/local.thirdparty.runninghub-h3-all/1.0.8/LICENSE",
           "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/current/local.thirdparty.runninghub-h3-all/1.0.7/package/adapter.wasm",
-          "sha256": "19bb1650562e7ff3acc2e96bf2a6e521e1eb976514ec13a0ff4699da9637429a"
+          "source": "artifacts/current/local.thirdparty.runninghub-h3-all/1.0.8/package/adapter.wasm",
+          "sha256": "77672bed0d051acd876ebc078c5b0da3192fa94fa3bff0c170a9c395d6b448f0"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/current/local.thirdparty.runninghub-h3-all/1.0.7/package/manifest.json",
-          "sha256": "5d13bc5135be539b648eda3751a688b748108dda40e87f9c81d7351eb1f41ba1"
+          "source": "artifacts/current/local.thirdparty.runninghub-h3-all/1.0.8/package/manifest.json",
+          "sha256": "f6b6cf26ece075e435431a09df375e07c496146bec0c8ff8500b39cf681a7fe5"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/current/local.thirdparty.runninghub-h3-all/1.0.7/package/manifest.sha256",
-          "sha256": "5095cd1c1875190ee2061406004a9e6dffce7214fb0d74fcfafa530d1edfe4dc"
+          "source": "artifacts/current/local.thirdparty.runninghub-h3-all/1.0.8/package/manifest.sha256",
+          "sha256": "ef7d002c77cbc5ba89e66d28504ccb19502334c9859421779095c6728f281217"
         },
         {
           "path": "README.md",
-          "source": "artifacts/current/local.thirdparty.runninghub-h3-all/1.0.7/README.md",
+          "source": "artifacts/current/local.thirdparty.runninghub-h3-all/1.0.8/README.md",
           "sha256": "62be1150d9b24f3d7c00d59bf57162e9b353edcb89bf70ef1d4c67fa6852f019"
         },
         {
           "path": "README.txt",
-          "source": "artifacts/current/local.thirdparty.runninghub-h3-all/1.0.7/README.txt",
-          "sha256": "ac7764851f2631a72b21d8d3bc3ce15a373942fc8ebf432fc674f51b05debfdf"
+          "source": "artifacts/current/local.thirdparty.runninghub-h3-all/1.0.8/README.txt",
+          "sha256": "b7a4b7902d09c8144d6e710d9c03da2d0efff66ae8ce2cf28f57c121006f17c7"
         },
         {
           "path": "安装说明.txt",
-          "source": "artifacts/current/local.thirdparty.runninghub-h3-all/1.0.7/安装说明.txt",
-          "sha256": "c255845db7b6fc6d0892688e771d333b568865a51b71cb8b35239251eec6e67a"
+          "source": "artifacts/current/local.thirdparty.runninghub-h3-all/1.0.8/安装说明.txt",
+          "sha256": "d63de45717946805c377c39f213ade4998868da02804db5fccf57b6050395f1e"
         }
       ]
     },

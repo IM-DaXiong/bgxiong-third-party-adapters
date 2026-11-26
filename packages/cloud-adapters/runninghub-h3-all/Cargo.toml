@@ -4,7 +4,7 @@ exclude = ["vendor-sdk/sdk/rust"]
 
 [package]
 name = "runninghub-h3-all-adapter"
-version = "1.0.7"
+version = "1.0.8"
 edition = "2021"
 license = "LicenseRef-Proprietary"
 publish = false

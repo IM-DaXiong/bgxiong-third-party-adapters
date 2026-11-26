@@ -112,11 +112,16 @@
     },
     {
       "pluginId": "local.thirdparty.runninghub-qwen-image-21",
-      "version": "0.1.5",
+      "version": "0.1.6",
       "newInstall": true,
       "hostVersionRange": ">=0.6.1125",
-      "upgradeFrom": [],
-      "evidence": "release/evidence/20261123-current-adapters-host-range-authorization.json"
+      "upgradeFrom": [
+        {
+          "version": "0.1.5",
+          "manifestSha256": "ab33bd8f14d5d65a00bb9b32cf3acaf7447a026e6080e592b627dfc06007dcc8"
+        }
+      ],
+      "evidence": "release/evidence/20261126-runninghub-qwen-image-21-0.1.6.json"
     },
     {
       "pluginId": "local.thirdparty.h3-face-refine",
@@ -136,11 +141,16 @@
     },
     {
       "pluginId": "local.thirdparty.runninghub-h3-all",
-      "version": "1.0.7",
+      "version": "1.0.8",
       "newInstall": true,
       "hostVersionRange": ">=0.6.1125",
-      "upgradeFrom": [],
-      "evidence": "release/evidence/20261123-current-adapters-host-range-authorization.json"
+      "upgradeFrom": [
+        {
+          "version": "1.0.7",
+          "manifestSha256": "5d13bc5135be539b648eda3751a688b748108dda40e87f9c81d7351eb1f41ba1"
+        }
+      ],
+      "evidence": "release/evidence/20261126-runninghub-h3-all-1.0.8.json"
     },
     {
       "pluginId": "local.bgx.ltx25",

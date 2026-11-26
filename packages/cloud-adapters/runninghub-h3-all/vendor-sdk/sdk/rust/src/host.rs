@@ -1,4 +1,5 @@
 use alloc::string::String;
+use alloc::vec::Vec;
 use serde::{Serialize, de::DeserializeOwned};
 use serde_json::{Value,json};
 use crate::{HostPortCallV2,HostPortCallV2HostError};
@@ -9,6 +10,25 @@ pub type HostError = HostPortCallV2HostError;
 /// permissions, ownership, budgets and cancellation before performing effects.
 pub trait Host {
     fn call(&mut self, call: HostPortCallV2) -> Result<Value,HostError>;
+
+    fn read_media(&mut self, handle: &str, offset: u64, max_bytes: u32) -> Result<Vec<u8>, HostError> {
+        let value = self.call(HostPortCallV2::V5(crate::HostPortCallV2Branch5 {
+            r#method: crate::HostPortCallV2Branch5Method::V0,
+            r#args: crate::HostPortCallV2HostMediaReadArgs {
+                r#handle: handle.into(), r#offset: alloc::string::ToString::to_string(&offset), r#max_bytes: max_bytes,
+            },
+        }))?;
+        serde_json::from_value(value).map_err(|_| invalid_wire("Invalid media bytes"))
+    }
+
+    fn write_media(&mut self, handle: &str, bytes: &[u8]) -> Result<(), HostError> {
+        self.call(HostPortCallV2::V7(crate::HostPortCallV2Branch7 {
+            r#method: crate::HostPortCallV2Branch7Method::V0,
+            r#args: crate::HostPortCallV2HostMediaWriteArgs {
+                r#handle: handle.into(), r#bytes: bytes.into(),
+            },
+        })).map(|_| ())
+    }
 }
 
 pub fn invalid_wire(message: &str) -> HostError {
@@ -27,6 +47,29 @@ pub(crate) struct ComponentHost;
 #[cfg(feature="component-guest")]
 impl Host for ComponentHost {
     fn call(&mut self,call:HostPortCallV2)->Result<Value,HostError>{crate::generated::wire_abi::call_component(call)}
+
+    fn read_media(&mut self, handle: &str, offset: u64, max_bytes: u32) -> Result<Vec<u8>, HostError> {
+        use crate::__bindings::bgxiong::vendor_adapter::host_media;
+        host_media::read(&host_media::HostPortCallV2HostMediaReadArgs {
+            handle: handle.into(),
+            offset: alloc::string::ToString::to_string(&offset),
+            max_bytes,
+        }).map_err(component_error)
+    }
+
+    fn write_media(&mut self, handle: &str, bytes: &[u8]) -> Result<(), HostError> {
+        use crate::__bindings::bgxiong::vendor_adapter::host_media;
+        host_media::write(&host_media::HostPortCallV2HostMediaWriteArgs {
+            handle: handle.into(),
+            bytes: bytes.into(),
+        }).map_err(component_error)
+    }
+}
+
+#[cfg(feature="component-guest")]
+fn component_error(error: crate::__bindings::bgxiong::vendor_adapter::types::HostPortCallV2HostError) -> HostError {
+    crate::generated::wire_abi::from_host_port_call_v2_host_error(error)
+        .unwrap_or_else(|_| invalid_wire("Invalid component host error"))
 }
 
 pub fn diagnostic(error:&HostError)->String{error.r#message.clone()}

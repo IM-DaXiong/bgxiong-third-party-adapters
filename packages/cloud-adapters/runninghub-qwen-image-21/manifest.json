@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "cc12be6a831f067a953b43d9a00dfc39e5d843c4c1ff536d0fdc4619344ed0c3",
+  "artifactSha256": "1ac7c6eea1d537055485daa9f3e8cfca70b1501c8a98e4fc9cc5789be0540996",
   "displayName": "RunningHub-千问-Image-2.1",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -37,5 +37,5 @@
     "operation-input-preflight-v2"
   ],
   "schemaVersion": 2,
-  "version": "0.1.5"
+  "version": "0.1.6"
 }

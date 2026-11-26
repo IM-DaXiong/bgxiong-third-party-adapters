@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "19bb1650562e7ff3acc2e96bf2a6e521e1eb976514ec13a0ff4699da9637429a",
+  "artifactSha256": "77672bed0d051acd876ebc078c5b0da3192fa94fa3bff0c170a9c395d6b448f0",
   "displayName": "RunningHub-MiniMax-H3",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -38,5 +38,5 @@
     "operation-input-preflight-v2"
   ],
   "schemaVersion": 2,
-  "version": "1.0.7"
+  "version": "1.0.8"
 }
