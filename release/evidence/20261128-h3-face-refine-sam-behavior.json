@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "pluginId": "local.thirdparty.h3-face-refine",
+  "version": "1.0.8",
+  "sdkSourceCommit": "2508095c070ca5d503e2881da2ee8ebd01520019",
+  "sdkCliSha256": "9301d7fb2de971d4b92cd910b09d8d5f91cd35a6d7644ab0eaf54ef4d5fc4152",
+  "sdkWorkerSha256": "6434c8981640275c2dcaf67e19ad400e0182d5dcdac1305e08cdde282ccfe2b4",
+  "targetZipSha256": "efb1c5b42cbd5b79574bdff899f8901e1244819011139ff7e8c7eb3c6430c02b",
+  "targetZipBytes": 598794,
+  "packageFiles": 28,
+  "packageValidation": [
+    "inventory",
+    "schema",
+    "signature-policy",
+    "wasm-capabilities",
+    "wasm-package-validation"
+  ],
+  "frozenInputReplay": {
+    "originalPackage": "1.0.7",
+    "originalInputCanonicalSha256": "b8b2e835c1b1f0febec5b0f9e93da5f41109c8be323b08b6d1d11af2466c5d64",
+    "originalField": "/freeze/userParams/samModel",
+    "oldResult": "h3-face-refine.invalid-input",
+    "inputConditions": "开启 SAM，未指定模型。沿用工作输入，仅为隔离副本重新冻结包与操作身份。",
+    "targetResult": "ready"
+  },
+  "formProbe": {
+    "localComfy": {
+      "fields": [
+        {
+          "choices": [],
+          "fieldPointer": "/freeze/userParams/samModel",
+          "reason": "当前 ComfyUI 未注册 SAMLoader。请安装或启用 ComfyUI-Impact-Pack 后重启 ComfyUI。"
+        }
+      ],
+      "kind": "operation_form_options"
+    },
+    "mockComfy": {
+      "fields": [
+        {
+          "choices": [
+            "ESAM",
+            "folder/sam.safetensors",
+            "sam_vit_b_01ec64.pth"
+          ],
+          "fieldPointer": "/freeze/userParams/samModel"
+        }
+      ],
+      "kind": "operation_form_options"
+    },
+    "mockGets": [
+      "/object_info/SAMLoader",
+      "/object_info/H3FaceMaskSAM"
+    ]
+  },
+  "submitCheck": {
+    "entry": "H3FaceRefine::invoke(submit)",
+    "coveredInputs": [
+      "selection",
+      "trajectory"
+    ],
+    "service": "模拟 ComfyUI 缺 SAMLoader",
+    "perInput": {
+      "gets": [
+        "/object_info/SAMLoader"
+      ],
+      "uploads": 0,
+      "promptSubmissions": 0,
+      "code": "RESOURCE_UNAVAILABLE",
+      "checkpointState": "rejected",
+      "basis": "before_submission"
+    }
+  },
+  "gpuRender": "实机未注册 SAMLoader，未进行有模型的 GPU 精修。",
+  "sdkSubmitCheck": {
+    "mode": "selection",
+    "media": "合成 MP4 短片及包内测试 PNG",
+    "sdkPreflight": "ready",
+    "responseSha256": "2a07d526cd4cb8b2536ce2d37d445b6f368cafd0b3cdfe7ec0cc0a809a5bd57f",
+    "httpRequests": [
+      {
+        "method": "GET",
+        "path": "/object_info/SAMLoader"
+      }
+    ],
+    "uploads": 0,
+    "promptSubmissions": 0,
+    "response": {
+      "error": {
+        "code": "RESOURCE_UNAVAILABLE",
+        "message": "RESOURCE_UNAVAILABLE: 当前 ComfyUI 未注册 SAMLoader。请安装或启用 ComfyUI-Impact-Pack 后重启 ComfyUI。",
+        "retryable": false,
+        "vendorCode": null,
+        "vendorRequestId": null
+      },
+      "operation": "submit",
+      "protocolVersion": 2
+    },
+    "checkpointState": "rejected",
+    "rejectionBasis": "before_submission"
+  }
+}
