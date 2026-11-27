@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "1f30985b6b3e09d07f23e033f8bb3218143ccd77",
+  "method": "按发行锁中的 pluginId 和 version 匹配开发宿主已保存的 capabilities 回执，展开每项操作的输入 JSON Schema 并核对工作台控件。检查布尔开关是否会令未列出可选项的外部资源名成为必填。",
+  "lockedEntries": 31,
+  "sourceExamplesExcluded": 9,
+  "distributedPackages": 22,
+  "operations": 62,
+  "operationsWithBooleanInput": 13,
+  "affected": [
+    {
+      "pluginId": "local.thirdparty.h3-face-refine",
+      "version": "1.0.7",
+      "operationId": "local.thirdparty.h3-face-refine/video.refine",
+      "enabledBy": "/freeze/userParams/samEnabled",
+      "fieldPointer": "/freeze/userParams/samModel",
+      "fixedIn": "1.0.8"
+    }
+  ],
+  "findings": [
+    "SeedVR2 的增强与 VAE 模型是独立固定枚举。切片和卸载开关不要求用户另填模型名。",
+    "WAN Animate 的上下文窗口、FLUX.2 的 Turbo、Seedream 的水印、文本模型的思考以及 Breeze 的随机情绪开关均不依赖需用户填写的外部模型。",
+    "人脸精修的检测器有缺省值。重新检测只改变是否复用结果。跟踪数据中的镜像字段属于冻结媒体几何信息。"
+  ],
+  "packages": [
+    {
+      "pluginId": "local.bgx.seedream-55-image",
+      "version": "1.0.7",
+      "operationCount": 2,
+      "withBooleanInput": [
+        "local.bgx.seedream-55-image/generate",
+        "local.bgx.seedream-55-image/edit"
+      ]
+    },
+    {
+      "pluginId": "local.bgx.wan-animate2",
+      "version": "0.1.4",
+      "operationCount": 1,
+      "withBooleanInput": [
+        "local.bgx.wan-animate2/animate"
+      ]
+    },
+    {
+      "pluginId": "local.bgx.wan22-animate",
+      "version": "0.2.15",
+      "operationCount": 3,
+      "withBooleanInput": [
+        "local.bgx.wan22-animate/tracking-preview"
+      ]
+    },
+    {
+      "pluginId": "local.bgx.deepseek-text",
+      "version": "1.0.1",
+      "operationCount": 1,
+      "withBooleanInput": [
+        "local.bgx.deepseek-text/complete"
+      ]
+    },
+    {
+      "pluginId": "local.bgx.minimax-m3",
+      "version": "1.0.3",
+      "operationCount": 1,
+      "withBooleanInput": [
+        "local.bgx.minimax-m3/complete"
+      ]
+    },
+    {
+      "pluginId": "local.independent.comfy-h3-continuum",
+      "version": "1.0.4",
+      "operationCount": 1,
+      "withBooleanInput": []
+    },
+    {
+      "pluginId": "local.zeroauthor.comfy-zimage-turbo",
+      "version": "1.0.4",
+      "operationCount": 1,
+      "withBooleanInput": []
+    },
+    {
+      "pluginId": "local.bgx.wan22-s2v",
+      "version": "0.1.8",
+      "operationCount": 2,
+      "withBooleanInput": []
+    },
+    {
+      "pluginId": "local.bgx.minimax-h3-image-comfy",
+      "version": "1.0.3",
+      "operationCount": 2,
+      "withBooleanInput": []
+    },
+    {
+      "pluginId": "local.thirdparty.comfy-panorama-image",
+      "version": "1.24.4",
+      "operationCount": 17,
+      "withBooleanInput": []
+    },
+    {
+      "pluginId": "local.bgx.ltx23",
+      "version": "0.1.4",
+      "operationCount": 4,
+      "withBooleanInput": []
+    },
+    {
+      "pluginId": "local.bgx.seedvr2-image",
+      "version": "1.0.4",
+      "operationCount": 1,
+      "withBooleanInput": [
+        "local.bgx.seedvr2-image/upscale"
+      ]
+    },
+    {
+      "pluginId": "local.bgx.seedream-image",
+      "version": "1.0.8",
+      "operationCount": 2,
+      "withBooleanInput": [
+        "local.bgx.seedream-image/generate",
+        "local.bgx.seedream-image/edit"
+      ]
+    },
+    {
+      "pluginId": "local.thirdparty.runninghub-qwen-image-21",
+      "version": "0.1.6",
+      "operationCount": 2,
+      "withBooleanInput": []
+    },
+    {
+      "pluginId": "local.tts.breeze",
+      "version": "1.0.4",
+      "operationCount": 1,
+      "withBooleanInput": [
+        "std/speech.synthesize"
+      ]
+    },
+    {
+      "pluginId": "local.thirdparty.h3-face-refine",
+      "version": "1.0.7",
+      "operationCount": 5,
+      "withBooleanInput": [
+        "local.thirdparty.h3-face-refine/subjects.analyze",
+        "local.thirdparty.h3-face-refine/video.refine"
+      ]
+    },
+    {
+      "pluginId": "local.independent.flux2-ordered-reference",
+      "version": "1.0.5",
+      "operationCount": 1,
+      "withBooleanInput": [
+        "local.independent.flux2-ordered-reference/flux2-multi-ref"
+      ]
+    },
+    {
+      "pluginId": "local.thirdparty.runninghub-h3-all",
+      "version": "1.0.8",
+      "operationCount": 9,
+      "withBooleanInput": []
+    },
+    {
+      "pluginId": "local.bgx.ltx25",
+      "version": "0.1.8",
+      "operationCount": 3,
+      "withBooleanInput": []
+    },
+    {
+      "pluginId": "local.bgx.bailian-paraformer-v2",
+      "version": "1.0.2",
+      "operationCount": 1,
+      "withBooleanInput": []
+    },
+    {
+      "pluginId": "local.bgx.bailian-fun-asr",
+      "version": "1.0.2",
+      "operationCount": 1,
+      "withBooleanInput": []
+    },
+    {
+      "pluginId": "local.bgx.bailian-qwen3-asr-flash",
+      "version": "1.0.2",
+      "operationCount": 1,
+      "withBooleanInput": []
+    }
+  ]
+}

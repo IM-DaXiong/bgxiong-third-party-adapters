@@ -5,6 +5,11 @@ $versionLine = Get-Content -LiteralPath (Join-Path $root 'Cargo.toml') | Where-O
 if ($versionLine -notmatch '^version = "([^"]+)"$') { throw 'Missing package version' }
 $version = $Matches[1]
 $repo = Split-Path -Parent (Split-Path -Parent $root)
+if (Test-Path -LiteralPath (Join-Path $repo '.git') -PathType Leaf) {
+    $common = & git -C $repo rev-parse --path-format=absolute --git-common-dir
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot locate the canonical adapter install archive.' }
+    $repo = Split-Path -Parent $common
+}
 $archive = Join-Path $repo 'artifacts/current/local.thirdparty.h3-face-refine'
 $destination = Join-Path $archive $version
 if (Test-Path -LiteralPath $destination) { throw "Refusing to overwrite distribution: $destination" }
