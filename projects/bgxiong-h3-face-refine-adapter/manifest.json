@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "f6e44e12fe20f8c52d153f820b8daa95314bf377d3cc489c96513d0650509ed6",
+  "artifactSha256": "0cd4e4588a90e96a4a1c7019456a56ee5b4b0acd92a12d55eae9bbd967dc2c36",
   "displayName": "MiniMax-H3-小脸精修",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -44,5 +44,5 @@
     "operation-form-options-v1"
   ],
   "schemaVersion": 2,
-  "version": "1.0.8"
+  "version": "1.0.9"
 }

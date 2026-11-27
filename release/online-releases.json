@@ -125,7 +125,7 @@
     },
     {
       "pluginId": "local.thirdparty.h3-face-refine",
-      "version": "1.0.8",
+      "version": "1.0.9",
       "newInstall": true,
       "hostVersionRange": ">=0.6.1130",
       "upgradeFrom": [
@@ -140,9 +140,13 @@
         {
           "version": "1.0.7",
           "manifestSha256": "47273bd3ce49786d2dd6f6a891a9b4d126fa9e37bd8ad9a116aa21eca08093ab"
+        },
+        {
+          "version": "1.0.8",
+          "manifestSha256": "5bb5a94a5ee8cb8e05744c1163be679b331f68a95836e66d25e34125c7f8be8d"
         }
       ],
-      "evidence": "release/evidence/20261128-h3-face-refine-1.0.8.json"
+      "evidence": "release/evidence/20261128-h3-face-refine-1.0.9.json"
     },
     {
       "pluginId": "local.independent.flux2-ordered-reference",
@@ -189,27 +193,54 @@
     },
     {
       "pluginId": "local.bgx.bailian-paraformer-v2",
-      "version": "1.0.2",
+      "version": "1.0.4",
       "newInstall": true,
-      "hostVersionRange": ">=0.6.1129",
-      "upgradeFrom": [],
-      "evidence": "release/evidence/20261128-bailian-asr-1.0.2-authorization.json"
+      "hostVersionRange": ">=0.6.1130",
+      "upgradeFrom": [
+        {
+          "version": "1.0.2",
+          "manifestSha256": "9b0b1c4a8e788a5f59c38f945d386c3a4c7e1c9726b9fb7469940c785ed5cec5"
+        },
+        {
+          "version": "1.0.3",
+          "manifestSha256": "90fa2c6541e0687bd20e147195150537db5faf79fc5f545f9cf31be0dcf895d8"
+        }
+      ],
+      "evidence": "release/evidence/20261128-bailian-asr-1.0.4-online-authorization.json"
     },
     {
       "pluginId": "local.bgx.bailian-fun-asr",
-      "version": "1.0.2",
+      "version": "1.0.4",
       "newInstall": true,
-      "hostVersionRange": ">=0.6.1129",
-      "upgradeFrom": [],
-      "evidence": "release/evidence/20261128-bailian-asr-1.0.2-authorization.json"
+      "hostVersionRange": ">=0.6.1130",
+      "upgradeFrom": [
+        {
+          "version": "1.0.2",
+          "manifestSha256": "dfe64676d808d9f9b411a5a9c70d0721482f3c82d1f1fd374306b82efa69ad88"
+        },
+        {
+          "version": "1.0.3",
+          "manifestSha256": "e276672ebc4a583f8ddb7b814de5e5a586b544d3ccebbc82abde1c1fe6f5ef1d"
+        }
+      ],
+      "evidence": "release/evidence/20261128-bailian-asr-1.0.4-online-authorization.json"
     },
     {
       "pluginId": "local.bgx.bailian-qwen3-asr-flash",
-      "version": "1.0.2",
+      "version": "1.0.4",
       "newInstall": true,
-      "hostVersionRange": ">=0.6.1129",
-      "upgradeFrom": [],
-      "evidence": "release/evidence/20261128-bailian-asr-1.0.2-authorization.json"
+      "hostVersionRange": ">=0.6.1130",
+      "upgradeFrom": [
+        {
+          "version": "1.0.2",
+          "manifestSha256": "cdc31c86d9b4bd16862b52a8074a5c14bc4b9f1d8af1999d1a01b25d63400a86"
+        },
+        {
+          "version": "1.0.3",
+          "manifestSha256": "0d6d99bf1ab8e33c858df6268adabfedc8d3e6b2bc276fde29c7280c4c7bb45d"
+        }
+      ],
+      "evidence": "release/evidence/20261128-bailian-asr-1.0.4-online-authorization.json"
     }
   ]
 }

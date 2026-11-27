@@ -1,0 +1,7 @@
+
+running 1 test
+test comfyui::workflow::adapter_online_update::apply::state_machine_tests::real_online_first_install ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 11088 filtered out; finished in 17.73s
+
+Online Install passed: local.thirdparty.h3-face-refine None -> 1.0.9, host 0.6.1130, ZIP SHA256 ad9c0bd66bb9c2154509eed942a3569ff0107efc8a11d032f8d246d66cdffdba, 0 video models

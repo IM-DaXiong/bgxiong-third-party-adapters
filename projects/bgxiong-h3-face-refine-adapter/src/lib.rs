@@ -31,6 +31,7 @@ struct Failure {
     message: String,
     retryable: bool,
     service_rejected: bool,
+    http_status: Option<u64>,
 }
 
 fn fail(code: &'static str, message: impl Into<String>) -> Failure {
@@ -39,6 +40,7 @@ fn fail(code: &'static str, message: impl Into<String>) -> Failure {
         message: message.into(),
         retryable: false,
         service_rejected: false,
+        http_status: None,
     }
 }
 
@@ -105,6 +107,7 @@ fn http_body(h: &mut dyn Host, method: &str, url: &str, body: Value) -> Result<V
     if matches!(status, 404 | 405) {
         let mut failure = fail("RESOURCE_UNAVAILABLE", format!("Comfy HTTP {status}: required adapter endpoint unavailable; restart the configured ComfyUI service to load the installed nodes"));
         failure.service_rejected = true;
+        failure.http_status = Some(status);
         return Err(failure);
     }
     let raw: Value = serde_json::from_slice(&bytes).map_err(|_| fail("UPSTREAM_ERROR", format!("Comfy HTTP {status}: response is not JSON; {}", response_diagnostic::describe(&bytes))))?;
@@ -113,6 +116,7 @@ fn http_body(h: &mut dyn Host, method: &str, url: &str, body: Value) -> Result<V
         let rejected = status == 400 && matches!(kind, "prompt_outputs_failed_validation" | "prompt_no_outputs" | "invalid_prompt");
         let mut failure = fail(if rejected { "INVALID_INPUT" } else { "UPSTREAM_ERROR" }, format!("Comfy HTTP {status}: {kind}; {}", response_diagnostic::describe(&bytes)));
         failure.service_rejected = rejected;
+        failure.http_status = Some(status);
         return Err(failure);
     }
     Ok(raw)
@@ -153,6 +157,7 @@ pub fn capabilities() -> Value {
     let refine_out = schema("refine_out", include_str!("../schemas/refine.output.schema.json"));
     let config = schema("configuration", include_str!("../schemas/configuration.schema.json"));
     let resume = schema("resume", include_str!("../schemas/resume.schema.json"));
+    let analyze_resume = schema("analyze_resume", include_str!("../schemas/resume.analyze.schema.json"));
     let source_read_only = read_only_schema("source_read_only", include_str!("../schemas/media-target-selection-v1/source-identity.schema.json"));
     let analysis_read_only = read_only_schema("analysis_read_only", include_str!("../schemas/media-target-selection-v1/analysis-receipt.schema.json"));
     let selection_read_only = read_only_schema("selection_read_only", include_str!("../schemas/media-target-selection-v1/selection.schema.json"));
@@ -212,7 +217,7 @@ pub fn capabilities() -> Value {
             "modelIds": [MODEL],
             "configurationSchema": {"id": "configuration", "digest": config["digest"]},
             "schemas": [trajectory_in.clone(), trajectory_out.clone(), seed_in.clone(), seed_out.clone(), analyze_in.clone(), analyze_out.clone(), preview_in.clone(), preview_out.clone(),
-                refine_in.clone(), refine_out.clone(), config, resume.clone(), source_read_only,
+                refine_in.clone(), refine_out.clone(), config, resume.clone(), analyze_resume.clone(), source_read_only,
                 analysis_read_only, selection_read_only, tracking_read_only],
             "operations": [
                 mk_op(OP_TRAJECTORY, "按帧范围跟踪人脸", &trajectory_in, &trajectory_out, vec![],
@@ -224,10 +229,11 @@ pub fn capabilities() -> Value {
                 mk_op(OP_SEED, "识别当前帧人脸", &seed_in, &seed_out, vec![],
                     vec![json!({"role":"seed_images","inputPointer":"/sampleMediaIds","mediaKind":"image","minCount":1,"maxCount":5})],
                     vec![], "synchronous"),
-                mk_op(OP_ANALYZE, "分析镜头与候选脸", &analyze_in, &analyze_out, analyze_controls,
+                ({ let mut operation = mk_op(OP_ANALYZE, "分析镜头与候选脸", &analyze_in, &analyze_out, analyze_controls,
                     vec![json!({"role":"source_video","inputPointer":"/source/mediaId","mediaKind":"video","minCount":1,"maxCount":1})],
-                    vec![],
-                    "synchronous"),
+                    vec![], "asynchronous");
+                  operation["resumeSchema"] = json!({"id":analyze_resume["id"],"digest":analyze_resume["digest"]});
+                  operation }),
                 mk_op(OP_PREVIEW, "跟踪预览", &preview_in, &preview_out, vec![],
                     vec![
                         json!({"role":"source_video","inputPointer":"/analysis/source/mediaId","mediaKind":"video","minCount":1,"maxCount":1}),
@@ -357,140 +363,7 @@ fn run_seed(h: &mut dyn Host, payload: &Value, phase: &mut Phase) -> Result<Valu
     Ok(json!({"kind":"completed","vendorTaskId":null,"appliedParams":null,"outputs":[],"data":data,"usage":null}))
 }
 
-fn run_analyze(h: &mut dyn Host, payload: &Value, phase: &mut Phase) -> Result<Value> {
-    let configuration = payload.get("configuration").cloned().unwrap_or(json!({}));
-    let base = cfg_base(&configuration)?;
-    let input = payload.get("input").ok_or_else(|| invalid("missing input"))?;
-    let detection = input.get("detectionParams").cloned().or_else(|| input.get("detection").cloned()).unwrap_or(json!({}));
-    let source = input.get("source").ok_or_else(|| invalid("missing source identity"))?;
-    let source_id = source["mediaId"].as_str().ok_or_else(|| invalid("missing source mediaId"))?;
-    // Read-only readiness precedes media upload and any analysis side effect.
-    let health = http_json(h, "GET", &format!("{}/bgx_face_refine/health", base.trim_end_matches('/')), None)?;
-    if health["analysisSessions"] != true || health["trackingReceipt"] != true {
-        return Err(fail("RESOURCE_UNAVAILABLE", "Configured ComfyUI has not loaded the installed face refinement nodes; restart it in settings"));
-    }
-    let nodes = http_json(h, "GET", &format!("{}/object_info/H3FaceSelect", base.trim_end_matches('/')), None)?;
-    if !nodes["H3FaceSelect"].is_object() {
-        return Err(fail("RESOURCE_UNAVAILABLE", "Configured ComfyUI is missing H3FaceSelect; restart it in settings to load the installed package"));
-    }
-    let video_path = upload_source(h, payload, base, source_id, "video")?;
-
-    let body = json!({
-        "video": video_path,
-        "detector": detection.get("detector").and_then(Value::as_str).unwrap_or("bbox/face_yolov8m.pt"),
-        "confidence": detection.get("confidence").and_then(Value::as_f64).unwrap_or(0.35),
-        "cut_detection": detection.get("cutDetection").and_then(Value::as_str).unwrap_or("auto"),
-        "cut_threshold": detection.get("cutThreshold").and_then(Value::as_f64).unwrap_or(3.0),
-        "select": detection.get("selectHint").and_then(Value::as_str).unwrap_or("largest_face"),
-        "force": detection.get("force").and_then(Value::as_bool).unwrap_or(false)
-    });
-    let url = format!("{}/h3_facerefine/scan", base.trim_end_matches('/'));
-    *phase = Phase::Unknown;
-    let raw = http_json(h, "POST", &url, Some(body.clone())).map_err(|failure| {
-        if failure.service_rejected { *phase = Phase::ServiceRejected; }
-        failure
-    })?;
-    if let Some(err) = raw.get("error").and_then(Value::as_str) {
-        if raw["busy"] == true {
-            *phase = Phase::ServiceRejected;
-            let mut failure = fail("RATE_LIMITED", "ComfyUI 正在渲染，请在队列空闲后重新分析目标");
-            failure.retryable = true;
-            failure.service_rejected = true;
-            return Err(failure);
-        }
-        return Err(fail("UPSTREAM_ERROR", err));
-    }
-    // Map upstream shot cards → media-target-selection analysis receipt (package-local profile).
-    let positive = |key: &str| raw[key].as_f64().filter(|n| n.is_finite() && *n > 0.0).ok_or_else(|| fail("UPSTREAM_ERROR", format!("scan missing valid {key}")));
-    let w = positive("width")?;
-    let hgt = positive("height")?;
-    let fps = positive("fps")?;
-    let frames = raw["frames"].as_u64().filter(|n| *n > 0).ok_or_else(|| fail("UPSTREAM_ERROR", "scan missing frames"))?;
-    let mut shots = Vec::new();
-    if let Some(arr) = raw.get("shots").and_then(Value::as_array) {
-        for (i, shot) in arr.iter().enumerate() {
-            let seg = shot.get("segment").and_then(Value::as_array);
-            let a = seg.and_then(|s| s.get(0)).and_then(Value::as_f64).unwrap_or(0.0);
-            let b = seg.and_then(|s| s.get(1)).and_then(Value::as_f64).unwrap_or(a);
-            let start_ms = round_ms((a / fps) * 1000.0);
-            let end_ms = round_ms((b / fps) * 1000.0);
-            let mut candidates = Vec::new();
-            if let Some(boxes) = shot.get("boxes").and_then(Value::as_array) {
-                let mut ordered: Vec<_> = boxes.iter().collect();
-                ordered.sort_by(|a,b| {
-                    let center = |v: &Value| (v[0].as_f64().unwrap_or(0.0) + v[2].as_f64().unwrap_or(0.0)) / 2.0;
-                    center(a).total_cmp(&center(b))
-                });
-                for (ci, bx) in ordered.into_iter().enumerate() {
-                    let vals = bx.as_array();
-                    let x0 = vals.and_then(|v| v.get(0)).and_then(Value::as_f64).unwrap_or(0.0) * w;
-                    let y0 = vals.and_then(|v| v.get(1)).and_then(Value::as_f64).unwrap_or(0.0) * hgt;
-                    let x1 = vals.and_then(|v| v.get(2)).and_then(Value::as_f64).unwrap_or(0.0) * w;
-                    let y1 = vals.and_then(|v| v.get(3)).and_then(Value::as_f64).unwrap_or(0.0) * hgt;
-                    candidates.push(json!({
-                        "candidateId": format!("c{ci}"),
-                        "box": {"x": x0, "y": y0, "width": (x1 - x0), "height": (y1 - y0)},
-                        "score": null,
-                        "previewMediaId": null
-                    }));
-                }
-            }
-            let fi = shot.get("frame").and_then(Value::as_f64).unwrap_or(0.0);
-            let representative_frame_ms = if fi < 0.0 { start_ms } else { round_ms((fi / fps) * 1000.0) };
-            shots.push(json!({
-                "shotId": format!("s{i}"),
-                "range": {"startMs": start_ms, "endMs": end_ms},
-                "representativeFrameMs": representative_frame_ms,
-                "candidates": candidates
-            }));
-        }
-    }
-    let digest_src = serde_json::to_string(&shots).unwrap_or_default();
-    let digest: String = Sha256::digest(digest_src.as_bytes())
-        .iter()
-        .map(|b| format!("{b:02x}"))
-        .collect();
-    let analysis_id: String = {
-        let mut hasher = Sha256::new();
-        hasher.update(source.to_string().as_bytes());
-        hasher.update(detection.to_string().as_bytes());
-        hasher.update(digest.as_bytes());
-        hasher
-            .finalize()
-            .iter()
-            .map(|b| format!("{b:02x}"))
-            .collect::<String>()
-            .chars()
-            .take(32)
-            .collect()
-    };
-    let end_ms = if frames > 0 {
-        round_ms((frames as f64 / fps) * 1000.0)
-    } else {
-        0
-    };
-    let receipt = json!({
-        "analysisId": analysis_id,
-        "revision": "1",
-        "digest": digest,
-        "source": source,
-        "coveredRange": {"startMs": 0, "endMs": end_ms},
-        "page": {"cursor": null, "nextCursor": null, "complete": true},
-        "shots": shots
-    });
-    let mut session_detection = body;
-    session_detection.as_object_mut().unwrap().remove("video");
-    http_json(h,"POST",&format!("{}/bgx_face_refine/analysis-session",base.trim_end_matches('/')),Some(json!({"analysis":receipt,"detection":session_detection})))?;
-    Ok(json!({
-        "kind": "completed",
-        "vendorTaskId": null,
-        "appliedParams": null,
-        "outputs": [],
-        "data": receipt,
-        "usage": null
-    }))
-}
-
+mod analysis;
 
 fn analysis_state(h: &mut dyn Host, base: &str, id: &str, revision: &str, digest: &str) -> Result<Value> {
     if id.len() != 32 || !id.bytes().all(|b| b.is_ascii_hexdigit()) { return Err(invalid("invalid analysis session id")); }
@@ -728,6 +601,10 @@ fn comfy_submit_prompt(h: &mut dyn Host, base: &str, mut workflow: Value, client
     }
     let info = platform_parameters::definitions(h, base, &workflow)?;
     platform_parameters::prepare(&mut workflow, &info)?;
+    post_comfy_prompt(h, base, workflow, client_id, phase)
+}
+
+fn post_comfy_prompt(h: &mut dyn Host, base: &str, workflow: Value, client_id: &str, phase: &mut Phase) -> Result<String> {
     let url = format!("{}/prompt", base.trim_end_matches('/'));
     let body = json!({
         "prompt": workflow,
@@ -999,7 +876,7 @@ impl Adapter for H3FaceRefine {
                     match op_id {
                         OP_TRAJECTORY => run_trajectory(host, &payload, &mut phase),
                         OP_SEED => run_seed(host, &payload, &mut phase),
-                        OP_ANALYZE => run_analyze(host, &payload, &mut phase),
+                        OP_ANALYZE => analysis::submit(host, &payload, &request.request_id, &mut phase),
                         OP_PREVIEW => run_preview(host, &payload, &mut phase),
                         OP_REFINE => run_refine(host, &payload, &mut phase),
                         _ => Err(fail(
@@ -1040,7 +917,12 @@ impl Adapter for H3FaceRefine {
                 if vendor_task_id.is_empty() {
                     return response_fail(&request, invalid("cancel requires vendorTaskId"));
                 }
-                match comfy_cancel(host, &base, vendor_task_id) {
+                let cancellation = if payload["operationId"] == OP_ANALYZE {
+                    analysis::cancel(host, &base, vendor_task_id, &payload["resumeToken"])
+                } else {
+                    comfy_cancel(host, &base, vendor_task_id)
+                };
+                match cancellation {
                     Ok(v) => v,
                     Err(f) => return response_fail(&request, f),
                 }
@@ -1061,39 +943,6 @@ bgx_adapter_v2_sdk::export_adapter!(H3FaceRefine);
 #[cfg(test)]
 mod tests {
     use super::*;
-    struct TestHost { calls: usize }
-    impl Host for TestHost {
-        fn call(&mut self, call: bgx_adapter_v2_sdk::HostPortCallV2) -> core::result::Result<Value, host::HostError> {
-            let call = serde_json::to_value(call).unwrap();
-            self.calls += 1;
-            if self.calls <= 2 {
-                assert_eq!(call["args"]["plan"]["method"], "GET");
-                let value = if self.calls == 1 { json!({"analysisSessions":true,"trackingReceipt":true}) } else { json!({"H3FaceSelect":{}}) };
-                return Ok(json!({"status":200,"payload":{"bytes":serde_json::to_vec(&value).unwrap()}}));
-            }
-            if self.calls == 3 {
-                assert_eq!(call["method"], "host-media.info");
-                return Ok(json!({"kind":"video","mime":"video/mp4","fileName":"clip.mp4","byteLength":"123"}));
-            }
-            if self.calls == 6 {
-                assert_eq!(call["method"], "host-http.execute");
-                assert!(call["args"]["plan"]["url"].as_str().unwrap().ends_with("/bgx_face_refine/analysis-session"));
-                return Ok(json!({"status":200,"payload":{"kind":"buffered","bytes":serde_json::to_vec(&json!({"saved":true})).unwrap()}}));
-            }
-            assert_eq!(call["method"], "host-http.execute");
-            let plan = &call["args"]["plan"];
-            let value = if self.calls == 4 {
-                assert_eq!(plan["body"]["parts"][0]["handle"], "managed-clip");
-                json!({"name":"uploaded.mp4","subfolder":""})
-            } else {
-                let bytes: Vec<u8> = serde_json::from_value(plan["body"]["bytes"].clone()).unwrap();
-                let body: Value = serde_json::from_slice(&bytes).unwrap();
-                assert_eq!(body["video"], "uploaded.mp4");
-                json!({"width":640,"height":360,"fps":25,"frames":25,"shots":[{"segment":[0,25],"frame":0,"boxes":[[0.1,0.2,0.3,0.4]]}]})
-            };
-            Ok(json!({"status":200,"payload":{"kind":"buffered","bytes":serde_json::to_vec(&value).unwrap()}}))
-        }
-    }
     #[test]
     fn host_budget_failure_is_a_valid_error_response() {
         let request: Invocation = serde_json::from_value(json!({"protocolVersion":2,"operation":"submit","profileId":"test","bindingId":"test","capabilitySlot":"videoFaceRefine","requestId":"test","budgetMs":1000,"payloadJson":"{}","negotiatedVersion":2,"enabledFeatures":[]})).unwrap();
@@ -1196,59 +1045,5 @@ mod tests {
         assert_eq!(response["requestDigest"], "input-digest");
         assert_eq!(response["status"], "rejected");
         assert_eq!(response["diagnostics"][0]["fieldPointer"], "/freeze/source");
-    }
-    #[test]
-    fn analysis_missing_nodes_never_uploads_and_http_router_rejection_is_terminal() {
-        struct UnreadyOrRejected { ready: bool, scan_error: Option<Value>, inner: TestHost }
-        impl Host for UnreadyOrRejected {
-            fn call(&mut self, call: bgx_adapter_v2_sdk::HostPortCallV2) -> core::result::Result<Value, host::HostError> {
-                let value = serde_json::to_value(&call).unwrap();
-                if !self.ready {
-                    self.inner.calls += 1;
-                    assert_eq!(value["args"]["plan"]["method"], "GET");
-                    return Ok(json!({"status":404,"payload":{"bytes":b"404: Not Found".to_vec()}}));
-                }
-                if value["args"]["plan"]["url"] == "http://localhost/h3_facerefine/scan" {
-                    if let Some(body) = &self.scan_error {
-                        return Ok(json!({"status":200,"payload":{"bytes":serde_json::to_vec(body).unwrap()}}));
-                    }
-                    return Ok(json!({"status":405,"payload":{"bytes":b"405: Method Not Allowed".to_vec()}}));
-                }
-                self.inner.call(call)
-            }
-        }
-        let payload = json!({"configuration":{"endpointBaseUrl":"http://localhost"},"input":{"source":{"mediaId":"source"}},"media":[{"id":"source","handle":"managed-clip","kind":"video","mime":"video/mp4","fileName":"clip.mp4","byteLength":"123"}]});
-        let mut host = UnreadyOrRejected { ready: false, scan_error: None, inner: TestHost { calls: 0 } };
-        let mut phase = Phase::BeforeSubmission;
-        let failure = run_analyze(&mut host, &payload, &mut phase).unwrap_err();
-        assert_eq!(failure.code, "RESOURCE_UNAVAILABLE");
-        assert!(matches!(phase, Phase::BeforeSubmission));
-        assert_eq!(host.inner.calls, 1);
-        host.ready = true;
-        host.inner.calls = 0;
-        let failure = run_analyze(&mut host, &payload, &mut phase).unwrap_err();
-        assert_eq!(failure.code, "RESOURCE_UNAVAILABLE");
-        assert!(matches!(phase, Phase::ServiceRejected));
-        assert!(failure.service_rejected);
-        for busy in [true, false] {
-            host.inner.calls = 0;
-            host.scan_error = Some(json!({"busy":busy,"error":"scan failed"}));
-            let failure = run_analyze(&mut host, &payload, &mut phase).unwrap_err();
-            assert_eq!(failure.code, if busy { "RATE_LIMITED" } else { "UPSTREAM_ERROR" });
-            assert_eq!(failure.retryable, busy);
-            assert_eq!(matches!(phase, Phase::ServiceRejected), busy);
-            assert_eq!(matches!(phase, Phase::Unknown), !busy);
-        }
-    }
-    #[test]
-    fn analysis_uses_managed_upload_and_preserves_source_identity() {
-        let source = json!({"mediaId":"source","digest":"frozen-source"});
-        let payload = json!({"configuration":{"endpointBaseUrl":"http://127.0.0.1:8188"},"input":{"source":source},"media":[{"id":"source","handle":"managed-clip","kind":"video","mime":"video/mp4","fileName":"clip.mp4","byteLength":"123"}]});
-        let mut host = TestHost { calls: 0 };
-        let result = run_analyze(&mut host, &payload, &mut Phase::BeforeSubmission).unwrap();
-        assert_eq!(host.calls, 6);
-        assert_eq!(result["data"]["source"], source);
-        assert!(result["data"].get("vendor").is_none());
-        assert_eq!(result["data"]["shots"][0]["candidates"][0]["box"]["width"], 128.0);
     }
 }

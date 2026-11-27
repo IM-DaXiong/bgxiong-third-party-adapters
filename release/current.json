@@ -1355,150 +1355,165 @@
     },
     {
       "pluginId": "local.thirdparty.h3-face-refine",
-      "version": "1.0.8",
+      "version": "1.0.9",
       "kind": "installable",
       "validation": "sdk_package_and_install_envelope_validated",
       "sourceManifest": "projects/bgxiong-h3-face-refine-adapter/manifest.json",
       "files": [
         {
+          "path": "COMFYUI-INSTALL.zh-CN.md",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/COMFYUI-INSTALL.zh-CN.md",
+          "sha256": "a4570168c7f2ceeed08a59df87da26c306279150c5b51bf39f07984cc871f79e"
+        },
+        {
           "path": "LICENSE-NOTES.md",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/LICENSE-NOTES.md",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/LICENSE-NOTES.md",
           "sha256": "cc36aff667de6eedd6fddf90c4cc4bb6869568be7d62da1562c07067bb2ad452"
         },
         {
           "path": "README.zh-CN.md",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/README.zh-CN.md",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/README.zh-CN.md",
           "sha256": "7adbdeb9e3ea0799d86d590555ec49825d7ef891f5870a094c7f627463c3498a"
         },
         {
           "path": "adapter-install.json",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/adapter-install.json",
-          "sha256": "c8872a4eac52dc7baf56d31487f853752907c1091a6b5543b80738d0ea5ecd85"
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/adapter-install.json",
+          "sha256": "09104a9658d3a190f64332b09fb0da83a00a3429294a333da73ebcc5c10f7b07"
         },
         {
           "path": "comfy-nodes/BGXFaceRefineContract/__init__.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/BGXFaceRefineContract/__init__.py",
-          "sha256": "2e242b069e0396e6af1176bae2be8710c53d61a857eb21ed12fcfe0beaad3a91"
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/BGXFaceRefineContract/__init__.py",
+          "sha256": "f83e44368e8d8704c6a996a771a61b2b4062676f86c7b307b30ea78c71e482da"
         },
         {
           "path": "comfy-nodes/BGXFaceRefineContract/dependencies/scenedetect-0.7.3-py3-none-any.whl",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/BGXFaceRefineContract/dependencies/scenedetect-0.7.3-py3-none-any.whl",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/BGXFaceRefineContract/dependencies/scenedetect-0.7.3-py3-none-any.whl",
           "sha256": "74b92aac271c712facae35b816c8e1b953e8138ef5b302272da15b1ab72c036b"
         },
         {
           "path": "comfy-nodes/BGXFaceRefineContract/face_track.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/BGXFaceRefineContract/face_track.py",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/BGXFaceRefineContract/face_track.py",
           "sha256": "416ab189af2392444f13701a7a2a168f63f6a23e8550bcbbe2016556bc7a4777"
         },
         {
+          "path": "comfy-nodes/BGXFaceRefineContract/queued_analysis.py",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/BGXFaceRefineContract/queued_analysis.py",
+          "sha256": "fe951d8c0d3171c5915f6c312e5962635ec72af3b5522b5437370b63316e3bab"
+        },
+        {
           "path": "comfy-nodes/BGXFaceRefineContract/seed.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/BGXFaceRefineContract/seed.py",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/BGXFaceRefineContract/seed.py",
           "sha256": "3ad1bc1bb4f0ef4e3d97f89f79d2e682a1df5584d7371ace1f5dd7ced71788a5"
         },
         {
           "path": "comfy-nodes/BGXFaceRefineContract/session_api.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/BGXFaceRefineContract/session_api.py",
-          "sha256": "f2a55a01f26a783178c5154e95953c36da3c99a76b5cdc3175486f66bf06c116"
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/BGXFaceRefineContract/session_api.py",
+          "sha256": "072c0c6bf6c100465f92ee600821666755d73be7797910e7d7b037e5a21632bf"
         },
         {
           "path": "comfy-nodes/BGXFaceRefineContract/sessions.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/BGXFaceRefineContract/sessions.py",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/BGXFaceRefineContract/sessions.py",
           "sha256": "fd1b6f2f478ceffbc625dfa8b2d102ff6e2d3e8ef847760d0fda10802a9cdc15"
         },
         {
           "path": "comfy-nodes/BGXFaceRefineContract/tracking.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/BGXFaceRefineContract/tracking.py",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/BGXFaceRefineContract/tracking.py",
           "sha256": "518bf9d1d997451a2353878e1569e98964e5e16d79da826463c2935c4388ec46"
         },
         {
           "path": "comfy-nodes/BGXFaceRefineContract/trajectory.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/BGXFaceRefineContract/trajectory.py",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/BGXFaceRefineContract/trajectory.py",
           "sha256": "d66e59b8b372bfaec42a39b4697668016a52e7d168041b9c22ac766625c520b2"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/bug_report.yml",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/bug_report.yml",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/bug_report.yml",
           "sha256": "890bbb41a0df4e6519c012148c9e6204b05fb7833f1a340d1133c5622f57ac58"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/config.yml",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/config.yml",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/config.yml",
           "sha256": "7cca53eddc3d54dcbe80b600f9295a49d1c6d93fff0ca85ad57620eb8447d759"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/.github/workflows/publish.yml",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/ComfyUI-H3-FaceRefine/.github/workflows/publish.yml",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/.github/workflows/publish.yml",
           "sha256": "0888358066113715b575e29cb6613bb01845df967bb6c153578867613de3d835"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/.gitignore",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/ComfyUI-H3-FaceRefine/.gitignore",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/.gitignore",
           "sha256": "5b7e52bd0188656a2c97a3d511231d03f507d4b974ae90517ad7b1a610a11b80"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/LICENSE",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/ComfyUI-H3-FaceRefine/LICENSE",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/LICENSE",
           "sha256": "b03d4e31e6bb15940bfa88d3e270653e0925ea01d9828842d2ee22b3ea620bb9"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/README.md",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/ComfyUI-H3-FaceRefine/README.md",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/README.md",
           "sha256": "0685f78860b9e72f6abf6db24b37e9ab8def452d1a6c806c88d2f2ac7d704516"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/__init__.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/ComfyUI-H3-FaceRefine/__init__.py",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/__init__.py",
           "sha256": "66327d684adb8768b4be2db8527c45844c72d008a88ccc8c849fb049835a2d92"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Auto_Select.json",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Auto_Select.json",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Auto_Select.json",
           "sha256": "b75ca7e9c52b41994b0242c742c151ae069b184654169ff765f9923b5366c4d3"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Manual_Select.json",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Manual_Select.json",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Manual_Select.json",
           "sha256": "233c70e8e570566eee53d63126bde734777c1e1e2e20599197ae78b859a73151"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/nodes.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/ComfyUI-H3-FaceRefine/nodes.py",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/nodes.py",
           "sha256": "643d186d8471347cba40891a8a0c5ad60a4e0186058373a83c95ee0cf9edd7c7"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/picker_api.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/ComfyUI-H3-FaceRefine/picker_api.py",
-          "sha256": "dc70bbe4964bc97566eea58c0794e08651573459897d4423d7213ac7ce1ae635"
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/picker_api.py",
+          "sha256": "21767c8def583583c94f4ae4d19319baf1ce6456e348e10bd0fcfb8abf79363f"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/pyproject.toml",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/ComfyUI-H3-FaceRefine/pyproject.toml",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/pyproject.toml",
           "sha256": "b7d944341ef75e73c5a28cd6eba441a90ddb237b35f03e70a9b0b71e637c96e9"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/requirements.txt",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/ComfyUI-H3-FaceRefine/requirements.txt",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/requirements.txt",
           "sha256": "44a8f6759579c36dea25aca606b3d48b774e96d88271d1e6c36efda779328489"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/web/h3_face_select.js",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/comfy-nodes/ComfyUI-H3-FaceRefine/web/h3_face_select.js",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/web/h3_face_select.js",
           "sha256": "b82e637c3c3149921896dcb3cd9ec48e5910b0fa656e4f1f9714dbe83b0e239e"
         },
         {
+          "path": "install-comfyui-nodes.py",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/install-comfyui-nodes.py",
+          "sha256": "653a60373248187fa793f94feac9aff8d553716b92b1b63d8bc3accf690b73e3"
+        },
+        {
           "path": "package/adapter.wasm",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/package/adapter.wasm",
-          "sha256": "f6e44e12fe20f8c52d153f820b8daa95314bf377d3cc489c96513d0650509ed6"
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/package/adapter.wasm",
+          "sha256": "0cd4e4588a90e96a4a1c7019456a56ee5b4b0acd92a12d55eae9bbd967dc2c36"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/package/manifest.json",
-          "sha256": "5bb5a94a5ee8cb8e05744c1163be679b331f68a95836e66d25e34125c7f8be8d"
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/package/manifest.json",
+          "sha256": "fa944842f23aa5d538ab5d686d5c2a71211b4d9a1da486be9cb2bdfbeecafb6f"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.8/package/manifest.sha256",
-          "sha256": "81fa6f54693b8682600bbca0aadca59048a7398792c5972621a4bb4eb02777c3"
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/package/manifest.sha256",
+          "sha256": "3ebaf4dd387655cf7c07ac3dfe94093b8637a476088ea2cccd26f7e2a86acd8f"
         }
       ]
     },
@@ -1651,133 +1666,133 @@
     },
     {
       "pluginId": "local.bgx.bailian-paraformer-v2",
-      "version": "1.0.2",
+      "version": "1.0.4",
       "kind": "installable",
       "validation": "sdk_package_validated",
       "sourceManifest": "packages/asr-adapters/bgxiong-bailian-paraformer-v2/manifest.json",
       "files": [
         {
           "path": "LICENSE",
-          "source": "artifacts/current/local.bgx.bailian-paraformer-v2/1.0.2/LICENSE",
+          "source": "artifacts/current/local.bgx.bailian-paraformer-v2/1.0.4/LICENSE",
           "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "README.md",
-          "source": "artifacts/current/local.bgx.bailian-paraformer-v2/1.0.2/README.md",
-          "sha256": "1cb18d3b9022e828b7a5868e3137ba4021981d70c0c515a3c4b1d1b291f4958e"
+          "source": "artifacts/current/local.bgx.bailian-paraformer-v2/1.0.4/README.md",
+          "sha256": "2618dfc4ed156462a222c72fb8debddc35fddfd44eccb74816ee596b689d70df"
         },
         {
           "path": "adapter-install.json",
-          "source": "artifacts/current/local.bgx.bailian-paraformer-v2/1.0.2/adapter-install.json",
-          "sha256": "4be5f692c32e0df76efad1a1b236f8943c9652dbab00d6bbeeb4030159920893"
+          "source": "artifacts/current/local.bgx.bailian-paraformer-v2/1.0.4/adapter-install.json",
+          "sha256": "6d5860e3f391cb7157af88bbd82391a5db753b92cb20292feb1c9a664c25e391"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/current/local.bgx.bailian-paraformer-v2/1.0.2/package/adapter.wasm",
-          "sha256": "a0f66b1aafed079f26faeee4815e3da122f7b37493dffd2f4f9f240dc054f297"
+          "source": "artifacts/current/local.bgx.bailian-paraformer-v2/1.0.4/package/adapter.wasm",
+          "sha256": "021ba5f458d6b96c47ff7a2e08895cabbd7911ba2b6e9b484a765595dea445fc"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/current/local.bgx.bailian-paraformer-v2/1.0.2/package/manifest.json",
-          "sha256": "9b0b1c4a8e788a5f59c38f945d386c3a4c7e1c9726b9fb7469940c785ed5cec5"
+          "source": "artifacts/current/local.bgx.bailian-paraformer-v2/1.0.4/package/manifest.json",
+          "sha256": "ebe50099402a986498b6694ecd20194a31b79de6b9e5ae973a76daf85582834c"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/current/local.bgx.bailian-paraformer-v2/1.0.2/package/manifest.sha256",
-          "sha256": "13db763b9fae037781b75db73ab2b41f3fd20b558201fabe51a4908c34cf52cf"
+          "source": "artifacts/current/local.bgx.bailian-paraformer-v2/1.0.4/package/manifest.sha256",
+          "sha256": "0c40a1951205cfac033d94e05b8a698ecb3c2065aabf3f3f1bd63598a5f86b56"
         },
         {
           "path": "sdk-source-lock.json",
-          "source": "artifacts/current/local.bgx.bailian-paraformer-v2/1.0.2/sdk-source-lock.json",
-          "sha256": "b29b229b3a47b1dfc62c7e1aacaaa434ce6b1aebcf6e97190b30f26999fd998c"
+          "source": "artifacts/current/local.bgx.bailian-paraformer-v2/1.0.4/sdk-source-lock.json",
+          "sha256": "19aa852f180e20a1bb6303f1ec27bc0ce716ac820b73b2a1fa132460cdc5e0ce"
         }
       ]
     },
     {
       "pluginId": "local.bgx.bailian-fun-asr",
-      "version": "1.0.2",
+      "version": "1.0.4",
       "kind": "installable",
       "validation": "sdk_package_validated",
       "sourceManifest": "packages/asr-adapters/bgxiong-bailian-fun-asr/manifest.json",
       "files": [
         {
           "path": "LICENSE",
-          "source": "artifacts/current/local.bgx.bailian-fun-asr/1.0.2/LICENSE",
+          "source": "artifacts/current/local.bgx.bailian-fun-asr/1.0.4/LICENSE",
           "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "README.md",
-          "source": "artifacts/current/local.bgx.bailian-fun-asr/1.0.2/README.md",
-          "sha256": "d5dd06b3ff1fe8313c06203940f28ce17f79ed02360f28714252d8d95685d6f1"
+          "source": "artifacts/current/local.bgx.bailian-fun-asr/1.0.4/README.md",
+          "sha256": "902d80cb6c65f25e7fb605b0a0e49ad717b12f1354823d3da8a233932b74cbca"
         },
         {
           "path": "adapter-install.json",
-          "source": "artifacts/current/local.bgx.bailian-fun-asr/1.0.2/adapter-install.json",
-          "sha256": "3a88786eb2bf8526eab88a69ce9850e8bcf8762054c42a01475811825ed51f95"
+          "source": "artifacts/current/local.bgx.bailian-fun-asr/1.0.4/adapter-install.json",
+          "sha256": "6ad38154ed273d90db56b4f962db73db73e4debd8e0a4855fc96525b1681ba10"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/current/local.bgx.bailian-fun-asr/1.0.2/package/adapter.wasm",
-          "sha256": "898cd7f9fc2714fede2e6f3308aa1df87d69296388a7042b7bceffbf51a7d859"
+          "source": "artifacts/current/local.bgx.bailian-fun-asr/1.0.4/package/adapter.wasm",
+          "sha256": "bb451685ff2317eb9bfc981e30d9fb6460ed7156c3364bd90454fbff082a0fc1"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/current/local.bgx.bailian-fun-asr/1.0.2/package/manifest.json",
-          "sha256": "dfe64676d808d9f9b411a5a9c70d0721482f3c82d1f1fd374306b82efa69ad88"
+          "source": "artifacts/current/local.bgx.bailian-fun-asr/1.0.4/package/manifest.json",
+          "sha256": "7a5780f98e8bb2719e210a45bd10788dd3f771eec0c035d31a1548340e5995d5"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/current/local.bgx.bailian-fun-asr/1.0.2/package/manifest.sha256",
-          "sha256": "72b2bc661d7b593b7a97bb4faf4328e0f024b2051978228390f2ac273cfe37c2"
+          "source": "artifacts/current/local.bgx.bailian-fun-asr/1.0.4/package/manifest.sha256",
+          "sha256": "780d2743e42522cf74af511a547b1dc77f6d84b07193de55284fc5ea689fcb2b"
         },
         {
           "path": "sdk-source-lock.json",
-          "source": "artifacts/current/local.bgx.bailian-fun-asr/1.0.2/sdk-source-lock.json",
-          "sha256": "b29b229b3a47b1dfc62c7e1aacaaa434ce6b1aebcf6e97190b30f26999fd998c"
+          "source": "artifacts/current/local.bgx.bailian-fun-asr/1.0.4/sdk-source-lock.json",
+          "sha256": "19aa852f180e20a1bb6303f1ec27bc0ce716ac820b73b2a1fa132460cdc5e0ce"
         }
       ]
     },
     {
       "pluginId": "local.bgx.bailian-qwen3-asr-flash",
-      "version": "1.0.2",
+      "version": "1.0.4",
       "kind": "installable",
       "validation": "sdk_package_validated",
       "sourceManifest": "packages/asr-adapters/bgxiong-bailian-qwen3-asr-flash/manifest.json",
       "files": [
         {
           "path": "LICENSE",
-          "source": "artifacts/current/local.bgx.bailian-qwen3-asr-flash/1.0.2/LICENSE",
+          "source": "artifacts/current/local.bgx.bailian-qwen3-asr-flash/1.0.4/LICENSE",
           "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
         },
         {
           "path": "README.md",
-          "source": "artifacts/current/local.bgx.bailian-qwen3-asr-flash/1.0.2/README.md",
-          "sha256": "86e703c66ad5329a69396690455cb28caea1058386e35fde4a1263f95eded35a"
+          "source": "artifacts/current/local.bgx.bailian-qwen3-asr-flash/1.0.4/README.md",
+          "sha256": "a98ee8b4d9fd69c59be15662f11d64614ce989a8c8bcd63bd8a3399473ae1ae4"
         },
         {
           "path": "adapter-install.json",
-          "source": "artifacts/current/local.bgx.bailian-qwen3-asr-flash/1.0.2/adapter-install.json",
-          "sha256": "b8d97364dcedeb027e5110fe93ec479ab90ad80cfc637bed7eb9d5e78adcdc22"
+          "source": "artifacts/current/local.bgx.bailian-qwen3-asr-flash/1.0.4/adapter-install.json",
+          "sha256": "89d04134a5e158c96aae20dc0e672c016686b8d394a59e2416782f4138e34fed"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/current/local.bgx.bailian-qwen3-asr-flash/1.0.2/package/adapter.wasm",
-          "sha256": "920e5df06f81eb277e53d8d78c215b4e949bf2e4d16aacab052c6727bcfc22e3"
+          "source": "artifacts/current/local.bgx.bailian-qwen3-asr-flash/1.0.4/package/adapter.wasm",
+          "sha256": "fb7013c467639a052eb7725d46df892f263c6a54334d58ba3cfa4949f9e74982"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/current/local.bgx.bailian-qwen3-asr-flash/1.0.2/package/manifest.json",
-          "sha256": "cdc31c86d9b4bd16862b52a8074a5c14bc4b9f1d8af1999d1a01b25d63400a86"
+          "source": "artifacts/current/local.bgx.bailian-qwen3-asr-flash/1.0.4/package/manifest.json",
+          "sha256": "d9344c50cb008f081994004f5bcba8f493a12d22467c94042553cb03acbbaa9f"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/current/local.bgx.bailian-qwen3-asr-flash/1.0.2/package/manifest.sha256",
-          "sha256": "39bca41ae1ae135245e3bcc53c816c699a07e9cf5e5432151c5b7848679f8243"
+          "source": "artifacts/current/local.bgx.bailian-qwen3-asr-flash/1.0.4/package/manifest.sha256",
+          "sha256": "22ca34b9065ff0b439d2c56baf613c9d1854ea86b6e456251878372e1511bf83"
         },
         {
           "path": "sdk-source-lock.json",
-          "source": "artifacts/current/local.bgx.bailian-qwen3-asr-flash/1.0.2/sdk-source-lock.json",
-          "sha256": "b29b229b3a47b1dfc62c7e1aacaaa434ce6b1aebcf6e97190b30f26999fd998c"
+          "source": "artifacts/current/local.bgx.bailian-qwen3-asr-flash/1.0.4/sdk-source-lock.json",
+          "sha256": "19aa852f180e20a1bb6303f1ec27bc0ce716ac820b73b2a1fa132460cdc5e0ce"
         }
       ]
     }

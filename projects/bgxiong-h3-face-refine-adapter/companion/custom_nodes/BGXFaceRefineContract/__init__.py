@@ -4,12 +4,16 @@ import folder_paths
 
 from .tracking import NODE_CLASS_MAPPINGS, NODE_DISPLAY_NAME_MAPPINGS
 from .face_track import BGXFaceTrack
+from .queued_analysis import BGXFaceAnalyze, CLASS_NAME
 from .session_api import register
 
 # Expose the bundled workflow's detector paths even in a standalone Comfy install.
 folder_paths.add_model_folder_path("ultralytics", str(Path(folder_paths.models_dir) / "ultralytics"))
 folder_paths.folder_names_and_paths["ultralytics"][1].add(".pt")
 folder_paths.filename_list_cache.pop("ultralytics", None)
+
+NODE_CLASS_MAPPINGS[CLASS_NAME] = BGXFaceAnalyze
+NODE_DISPLAY_NAME_MAPPINGS[CLASS_NAME] = "分析镜头与候选脸"
 
 register()
 NODE_CLASS_MAPPINGS["BGXFaceTrack"] = BGXFaceTrack

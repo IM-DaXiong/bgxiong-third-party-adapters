@@ -56,8 +56,9 @@ $descriptor = @{
     }
 }
 [IO.File]::WriteAllText((Join-Path $out 'adapter-install.json'), (($descriptor | ConvertTo-Json -Depth 40).Replace("`r`n", "`n")) + "`n", $utf8)
-Copy-Item -LiteralPath (Join-Path $root 'README.zh-CN.md') -Destination (Join-Path $out 'README.zh-CN.md')
-Copy-Item -LiteralPath (Join-Path $root 'LICENSE-NOTES.md') -Destination (Join-Path $out 'LICENSE-NOTES.md')
+foreach ($name in @('README.zh-CN.md','LICENSE-NOTES.md','COMFYUI-INSTALL.zh-CN.md','install-comfyui-nodes.py')) {
+    Copy-Item -LiteralPath (Join-Path $root $name) -Destination (Join-Path $out $name)
+}
 foreach ($item in $code) {
     if ((Get-FileHash -LiteralPath (Join-Path $out $item.path) -Algorithm SHA256).Hash.ToLowerInvariant() -ne $item.sha256) {
         throw "Companion digest mismatch: $($item.path)"

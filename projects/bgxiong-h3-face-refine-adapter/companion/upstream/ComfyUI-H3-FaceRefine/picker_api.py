@@ -10,6 +10,7 @@ import base64
 import io
 import json
 import os
+import threading
 import traceback
 
 import numpy as np
@@ -49,14 +50,15 @@ def _strict_refusal(path: str):
         f"{_STRICT_ENV}.")}
 
 
-def _shot_cards(frames, all_boxes, all_confs, segs, W, H, mode, long_edge=640):
+def _shot_cards(frames, all_boxes, all_confs, segs, W, H, mode, long_edge=640, *, include_previews=True):
     """Per shot: the frame it locks on, that frame with every face numbered, and the
     boxes normalised 0-1 so the browser can lay click targets over the image."""
-    from PIL import Image
+    if include_previews:
+        from PIL import Image
 
-    thick = max(2, int(round(min(H, W) / 240.0)))
-    scale = max(2, int(round(min(H, W) / 140.0)))
-    _, lh = N._label_size("0", scale)
+        thick = max(2, int(round(min(H, W) / 240.0)))
+        scale = max(2, int(round(min(H, W) / 140.0)))
+        _, lh = N._label_size("0", scale)
 
     out = []
     for a, b in segs:
@@ -65,26 +67,30 @@ def _shot_cards(frames, all_boxes, all_confs, segs, W, H, mode, long_edge=640):
             out.append({"segment": [int(a), int(b)], "frame": -1, "faces": 0,
                         "jpg": None, "boxes": []})
             continue
-        img = frames[frame][..., :3].clone()
         ranked = N._rank_boxes(all_boxes[frame], all_confs[frame], W, H, mode)
+        if include_previews:
+            img = frames[frame][..., :3].clone()
         norm = []
         for rank, bi in enumerate(ranked):
             box = all_boxes[frame][bi]
-            col = (0.15, 0.45, 1.0)
-            N._draw_rect(img, box[0], box[1], box[2], box[3], col, thick)
-            N._draw_label(img, box[0], box[1] - lh, str(rank), scale, (1.0, 1.0, 1.0), col)
             norm.append([box[0] / W, box[1] / H, box[2] / W, box[3] / H])
+            if include_previews:
+                col = (0.15, 0.45, 1.0)
+                N._draw_rect(img, box[0], box[1], box[2], box[3], col, thick)
+                N._draw_label(img, box[0], box[1] - lh, str(rank), scale, (1.0, 1.0, 1.0), col)
 
-        arr = (img.clamp(0, 1).cpu().numpy() * 255.0).astype(np.uint8)
-        pil = Image.fromarray(arr)
-        if max(pil.size) > long_edge:
-            r = long_edge / float(max(pil.size))
-            pil = pil.resize((max(1, int(pil.width * r)), max(1, int(pil.height * r))))
-        buf = io.BytesIO()
-        pil.convert("RGB").save(buf, format="JPEG", quality=88, optimize=True)
+        jpg = None
+        if include_previews:
+            arr = (img.clamp(0, 1).cpu().numpy() * 255.0).astype(np.uint8)
+            pil = Image.fromarray(arr)
+            if max(pil.size) > long_edge:
+                r = long_edge / float(max(pil.size))
+                pil = pil.resize((max(1, int(pil.width * r)), max(1, int(pil.height * r))))
+            buf = io.BytesIO()
+            pil.convert("RGB").save(buf, format="JPEG", quality=88, optimize=True)
+            jpg = base64.b64encode(buf.getvalue()).decode("ascii")
         out.append({"segment": [int(a), int(b)], "frame": int(frame),
-                    "faces": len(ranked), "boxes": norm,
-                    "jpg": base64.b64encode(buf.getvalue()).decode("ascii")})
+                    "faces": len(ranked), "boxes": norm, "jpg": jpg})
     return out
 
 
@@ -92,6 +98,7 @@ def _shot_cards(frames, all_boxes, all_confs, segs, W, H, mode, long_edge=640):
 # detector over the whole clip, so clicking the button twice on an unchanged node
 # should not pay for it twice.
 _CACHE = {"key": None, "data": None}
+_SCAN_LOCK = threading.Lock()
 
 # Only what changes the DETECTION. `select` changes which face is numbered 0, not which
 # faces exist, so it re-renders cards from this and never re-scans.
@@ -102,7 +109,7 @@ _KEYED = ("detector", "confidence", "cut_detection", "cut_threshold",
 def _cache_key(path, params):
     try:
         stat = os.stat(path)
-        stamp = (int(stat.st_mtime), int(stat.st_size))
+        stamp = (stat.st_mtime_ns, stat.st_size)
     except OSError:
         stamp = (0, 0)
     return json.dumps([path, stamp] + [str(params.get(k)) for k in _KEYED], sort_keys=True)
@@ -143,22 +150,40 @@ def _render_running():
 
 
 def _scan(params):
-    """Blocking. Runs on a worker thread so the server keeps serving."""
+    """Legacy HTTP picker, running outside ComfyUI's queue."""
     path = N._resolve_video(params.get("video"))
     if not _path_allowed(path):
         raise ValueError(_strict_refusal(path)["error"])
 
     key = _cache_key(path, params)
-    if _CACHE["key"] == key and _CACHE["data"] is not None:
-        return _cards_from(_CACHE["data"], params, cached=True)
+    with _SCAN_LOCK:
+        if _CACHE["key"] == key and _CACHE["data"] is not None:
+            return _cards_from(_CACHE["data"], params, cached=True)
+        if _render_running() and not params.get("force"):
+            raise _RenderBusy(
+                "A render is running. Scanning now would share the GPU with it and could "
+                "miss faces, so the result would not be safe to pick from. Try again once "
+                "the queue is clear.")
+        return _scan_video(path, params, key, N._make_cut_detector, _progress)
 
-    _progress("Loading the video", 0, 0, os.path.basename(path))
-    if _render_running() and not params.get("force"):
-        raise _RenderBusy(
-            "A render is running. Scanning now would share the GPU with it and could "
-            "miss faces, so the result would not be safe to pick from. Try again once "
-            "the queue is clear.")
 
+def run_queued_scan(path, params, cut_factory, check_interrupted):
+    """Called with an uploaded input by a ComfyUI node after the queue selects it."""
+    key = ("queued", _cache_key(path, params))
+    with _SCAN_LOCK:
+        check_interrupted()
+        if not params.get("force") and _CACHE["key"] == key and _CACHE["data"] is not None:
+            return _cards_from(_CACHE["data"], params, cached=True, progress=None, include_previews=False)
+        return _scan_video(
+            path, params, key, cut_factory, None, check_interrupted,
+            include_previews=False, strict_cuts=True,
+        )
+
+
+def _scan_video(path, params, key, cut_factory, progress, check_interrupted=None, *,
+                include_previews=True, strict_cuts=False):
+    if progress:
+        progress("Loading the video", 0, 0, os.path.basename(path))
     images, _audio, fps = N._load_video_components(path)
     images, _audio, fps = N._trim_batch(
         images, _audio, fps,
@@ -173,8 +198,10 @@ def _scan(params):
     cuts, cut_det, cut_tc = [], None, None
     if str(params.get("cut_detection", "none")) != "none":
         try:
-            cut_det, cut_tc = N._make_cut_detector(float(params.get("cut_threshold") or 3.0))
+            cut_det, cut_tc = cut_factory(float(params.get("cut_threshold") or 3.0))
         except Exception:
+            if strict_cuts:
+                raise
             cut_det = None
 
     det_name = os.path.basename(str(params.get("detector") or "")) or "the detector"
@@ -184,8 +211,10 @@ def _scan(params):
 
     all_boxes, all_confs = [], []
     for i in range(B):
-        if i % step == 0:
-            _progress(f"Scanning for {work}", i, B, f"frame {i} of {B}")
+        if check_interrupted:
+            check_interrupted()
+        if progress and i % step == 0:
+            progress(f"Scanning for {work}", i, B, f"frame {i} of {B}")
         bgr = N._to_bgr_u8(images[i])
         if cut_det is not None:
             for t in cut_det.process_frame(cut_tc(i, fps=24.0), bgr):
@@ -205,32 +234,37 @@ def _scan(params):
         raise ValueError("No face detected in any frame. Lower confidence, or use a "
                          "detector that suits this material.")
 
-    _progress(f"Scanning for {work}", B, B, f"frame {B} of {B}")
+    if check_interrupted:
+        check_interrupted()
+    if progress:
+        progress(f"Scanning for {work}", B, B, f"frame {B} of {B}")
     segs = N._segments(B, cuts)
     # Only the frame each shot locks on is kept. Holding the whole clip to re-render
     # from would cost gigabytes; these are a handful of frames and are all a card needs.
     keep = {}
-    for a, b in segs:
-        f = next((i for i in range(a, b) if all_boxes[i]), -1)
-        if f >= 0:
-            keep[f] = images[f].clone()
+    if include_previews:
+        for a, b in segs:
+            f = next((i for i in range(a, b) if all_boxes[i]), -1)
+            if f >= 0:
+                keep[f] = images[f].clone()
     det = {"frames": keep, "all_boxes": all_boxes, "all_confs": all_confs,
            "segs": segs, "B": int(B), "W": int(W), "H": int(H), "fps": float(fps),
            "path": path}
     _CACHE["key"], _CACHE["data"] = key, det
-    return _cards_from(det, params, cached=False)
+    return _cards_from(det, params, cached=False, progress=progress, include_previews=include_previews)
 
 
-def _cards_from(det, params, cached):
+def _cards_from(det, params, cached, progress=_progress, *, include_previews=True):
     """Render the shot cards from a cached detection.
 
     Separate from the scan because `select` changes only which face is numbered 0, and
     re-detecting a whole clip to answer that would be a full pass for nothing.
     """
     mode = N._review_select(str(params.get("select") or "largest_face"))
-    _progress("Building the shot previews", 0, 0, f"{len(det['segs'])} shot(s)")
+    if progress:
+        progress("Building the shot previews", 0, 0, f"{len(det['segs'])} shot(s)")
     cards = _shot_cards(det["frames"], det["all_boxes"], det["all_confs"],
-                        det["segs"], det["W"], det["H"], mode)
+                        det["segs"], det["W"], det["H"], mode, include_previews=include_previews)
     return {"frames": det["B"], "width": det["W"], "height": det["H"],
             "fps": det["fps"], "source": os.path.basename(det["path"]),
             "path": det["path"], "shots": cards, "cached": bool(cached)}
@@ -325,8 +359,9 @@ def register():
     except Exception:
         return
 
-    routes = getattr(getattr(PromptServer, "instance", None), "routes", None)
-    if routes is None:
+    server = getattr(PromptServer, "instance", None)
+    routes = getattr(server, "routes", None)
+    if routes is None or getattr(server, "_bgx_h3_queued_scan", None):
         return
 
     @routes.get("/h3_facerefine/videos")
@@ -390,3 +425,5 @@ def register():
             traceback.print_exc()
             return web.json_response({"error": str(exc)}, status=200)
         return web.json_response(data)
+
+    server._bgx_h3_queued_scan = run_queued_scan

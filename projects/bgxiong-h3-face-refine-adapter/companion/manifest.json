@@ -1,12 +1,13 @@
 {
-  "version": "1.0.3",
+  "version": "1.0.6",
   "entry": "scripts/start-managed.ps1",
   "bootstrapTimeoutSec": 1800,
   "healthEndpoint": "/system_stats",
   "probeEndpoints": [
     "/object_info",
     "/h3_facerefine/videos",
-    "/bgx_face_refine/health"
+    "/bgx_face_refine/health",
+    "/object_info/BGXFaceAnalyze"
   ],
   "requiredClasses": [
     "H3FaceSelect",
@@ -15,7 +16,8 @@
     "H3InjectVideoLatent",
     "H3PerFrameDenoise",
     "H3FaceTrackingReceipt",
-    "BGXFaceTrack"
+    "BGXFaceTrack",
+    "BGXFaceAnalyze"
   ],
   "optionalClasses": [
     "H3FaceMaskSAM"
@@ -46,7 +48,11 @@
     "custom_nodes/BGXFaceRefineContract/sessions.py",
     "custom_nodes/BGXFaceRefineContract/session_api.py",
     "models.json",
-    "scripts/install-models.ps1"
+    "scripts/install-models.ps1",
+    "custom_nodes/BGXFaceRefineContract/queued_analysis.py",
+    "custom_nodes/BGXFaceRefineContract/seed.py",
+    "custom_nodes/BGXFaceRefineContract/trajectory.py",
+    "custom_nodes/BGXFaceRefineContract/dependencies/scenedetect-0.7.3-py3-none-any.whl"
   ],
-  "description": "Isolated upstream 1.1.2 plus package-owned persistent analysis sessions and structured tracking receipts"
+  "description": "H3 FaceRefine with queued target analysis, persistent analysis sessions and structured tracking receipts"
 }

@@ -40,7 +40,9 @@ pub(super) fn prepare(graph: &mut Value, info: &Value) -> Result<()> {
             let spec = definition["input"]["required"].get(key).or_else(|| definition["input"]["optional"].get(key));
             let Some(choices) = spec.and_then(|s| s[0].as_array()) else { continue };
             if value.is_array() { continue; }
-            if key == "cut_detection" && *value == "auto" { *value = json!("auto (pyscenedetect)"); }
+            if key == "cut_detection" && *value == "auto" && !choices.contains(value) {
+                *value = json!("auto (pyscenedetect)");
+            }
             if key == "detector" {
                 if let Some(path) = value.as_str() {
                     let normalized = path.replace('\\', "/");

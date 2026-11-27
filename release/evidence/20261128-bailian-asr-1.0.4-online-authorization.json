@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "kind": "ownerAuthorizedBeforeOnlineAcceptance",
+  "authorization": "2026-11-28 用户在要求修复 F1 录音阻塞和百炼整段上传后，要求先把该修订的三包归入生产 CDN 目录供其上传。用户保留人工验收。真实云结果回填仍在核验。",
+  "packages": [
+    {
+      "pluginId": "local.bgx.bailian-paraformer-v2",
+      "version": "1.0.4",
+      "hostVersionRange": ">=0.6.1130",
+      "targetZipBytes": 207589,
+      "targetZipSha256": "6143da186641d4f796c6b19451843f7aa0f6b63a22cd31b5e28401b2e95b8c46",
+      "upgradeFrom": [
+        {
+          "version": "1.0.2",
+          "manifestSha256": "9b0b1c4a8e788a5f59c38f945d386c3a4c7e1c9726b9fb7469940c785ed5cec5"
+        },
+        {
+          "version": "1.0.3",
+          "manifestSha256": "90fa2c6541e0687bd20e147195150537db5faf79fc5f545f9cf31be0dcf895d8"
+        }
+      ],
+      "newInstall": true
+    },
+    {
+      "pluginId": "local.bgx.bailian-fun-asr",
+      "version": "1.0.4",
+      "hostVersionRange": ">=0.6.1130",
+      "targetZipBytes": 207593,
+      "targetZipSha256": "bbc6e3a5151b16dbdb827e95796279986556d8117f5e4f30bc220d14a754e5a7",
+      "upgradeFrom": [
+        {
+          "version": "1.0.2",
+          "manifestSha256": "dfe64676d808d9f9b411a5a9c70d0721482f3c82d1f1fd374306b82efa69ad88"
+        },
+        {
+          "version": "1.0.3",
+          "manifestSha256": "e276672ebc4a583f8ddb7b814de5e5a586b544d3ccebbc82abde1c1fe6f5ef1d"
+        }
+      ],
+      "newInstall": true
+    },
+    {
+      "pluginId": "local.bgx.bailian-qwen3-asr-flash",
+      "version": "1.0.4",
+      "hostVersionRange": ">=0.6.1130",
+      "targetZipBytes": 207481,
+      "targetZipSha256": "4ba5f684d9e96e6b7030e463f3af2bd22bb2c48c9fe1a4ead104e13bc0cccfeb",
+      "upgradeFrom": [
+        {
+          "version": "1.0.2",
+          "manifestSha256": "cdc31c86d9b4bd16862b52a8074a5c14bc4b9f1d8af1999d1a01b25d63400a86"
+        },
+        {
+          "version": "1.0.3",
+          "manifestSha256": "0d6d99bf1ab8e33c858df6268adabfedc8d3e6b2bc276fde29c7280c4c7bb45d"
+        }
+      ],
+      "newInstall": true
+    }
+  ],
+  "sourceLock": "release/evidence/20261128-bailian-asr-1.0.4-upgrade-sources.json"
+}

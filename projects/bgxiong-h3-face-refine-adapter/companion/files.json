@@ -3,18 +3,38 @@
   "files": [
     {
       "path": "CONTRACT.md",
-      "sha256": "de4e406e5b94f6d95456c5aefe371dc9bae6f68d01ce0517299ea5486ddc638d",
-      "bytes": 2146
+      "sha256": "450bd35cb2297a52d955cf58a638c9c237a0b8ada8503b5e47041bd8218883e9",
+      "bytes": 3413
     },
     {
       "path": "custom_nodes/BGXFaceRefineContract/__init__.py",
-      "sha256": "2e242b069e0396e6af1176bae2be8710c53d61a857eb21ed12fcfe0beaad3a91",
-      "bytes": 714
+      "sha256": "f83e44368e8d8704c6a996a771a61b2b4062676f86c7b307b30ea78c71e482da",
+      "bytes": 888
+    },
+    {
+      "path": "custom_nodes/BGXFaceRefineContract/dependencies/scenedetect-0.7.3-py3-none-any.whl",
+      "sha256": "74b92aac271c712facae35b816c8e1b953e8138ef5b302272da15b1ab72c036b",
+      "bytes": 159513
+    },
+    {
+      "path": "custom_nodes/BGXFaceRefineContract/face_track.py",
+      "sha256": "416ab189af2392444f13701a7a2a168f63f6a23e8550bcbbe2016556bc7a4777",
+      "bytes": 12158
+    },
+    {
+      "path": "custom_nodes/BGXFaceRefineContract/queued_analysis.py",
+      "sha256": "fe951d8c0d3171c5915f6c312e5962635ec72af3b5522b5437370b63316e3bab",
+      "bytes": 4070
+    },
+    {
+      "path": "custom_nodes/BGXFaceRefineContract/seed.py",
+      "sha256": "3ad1bc1bb4f0ef4e3d97f89f79d2e682a1df5584d7371ace1f5dd7ced71788a5",
+      "bytes": 2597
     },
     {
       "path": "custom_nodes/BGXFaceRefineContract/session_api.py",
-      "sha256": "0c73fb63ff0c1dc6afe2bc53ae88138fd91d33fc1e938bc6dc95bd76944b7cfa",
-      "bytes": 2233
+      "sha256": "072c0c6bf6c100465f92ee600821666755d73be7797910e7d7b037e5a21632bf",
+      "bytes": 7522
     },
     {
       "path": "custom_nodes/BGXFaceRefineContract/sessions.py",
@@ -27,14 +47,14 @@
       "bytes": 4203
     },
     {
-      "path": "custom_nodes/BGXFaceRefineContract/face_track.py",
-      "sha256": "168a642f46faf2d3a67be1dfe36b5f77f5b0805152fbc13ad545930d3d7f9989",
-      "bytes": 10862
+      "path": "custom_nodes/BGXFaceRefineContract/trajectory.py",
+      "sha256": "d66e59b8b372bfaec42a39b4697668016a52e7d168041b9c22ac766625c520b2",
+      "bytes": 12526
     },
     {
       "path": "extra-paths/extra_model_paths.yaml",
-      "sha256": "243ccaa689e28abf38f35db23a973ec093da62872d00c82ef1b3e6478caec33a",
-      "bytes": 395
+      "sha256": "44cd1b8cb1f2240ee82914fc73c8f141075e5bb5591c4683a1cf21b70dc11b16",
+      "bytes": 404
     },
     {
       "path": "face_refine_ops.py",
@@ -43,8 +63,8 @@
     },
     {
       "path": "manifest.json",
-      "sha256": "efbd7ede59e2ff5353420cdd69b6e31b5f2f3ece5727bc471386ce7f95cc2037",
-      "bytes": 1646
+      "sha256": "8b49abfda94240bb3aee271c2c0c86f6212f86cd8513a9089c05fc2ebe0e860c",
+      "bytes": 1960
     },
     {
       "path": "models.json",
@@ -53,28 +73,33 @@
     },
     {
       "path": "requirements.txt",
-      "sha256": "4de2c5952ca59ff6c8bfc51484d51c86aa54d09030774a3035ffbdcfafb48388",
-      "bytes": 47
+      "sha256": "379c85f5498168a7fe8acc2c1ff31036547db5703b0db1ea2d813630ab02dd35",
+      "bytes": 51
     },
     {
       "path": "scripts/install-models.ps1",
-      "sha256": "3b327631a6bc1befd835e6f385abbfc8e9555c0c8da65e191d6c1bde29748c75",
-      "bytes": 1736
+      "sha256": "03c74e0d04dc4af01551a288068d5a395f87b7372ee55092beab2e66d73ca83f",
+      "bytes": 1761
     },
     {
       "path": "scripts/prepare-runtime.ps1",
-      "sha256": "d7dd114cc6275fe83d5cde34721050a1985dcb01e8d082205f5fb98ac920879c",
-      "bytes": 2994
+      "sha256": "1d9b713280e836b65dc090d78381c87ed91a96314bcd5952f3afb873c5ea4faa",
+      "bytes": 3048
     },
     {
       "path": "scripts/probe.ps1",
-      "sha256": "ba6fa15705b5cd5bfb25cf5b8216d696adfb851940fb69724cb95123e937cdde",
-      "bytes": 1072
+      "sha256": "e3cc85958cf5d130d42d8dd812dbbaa070b7bad505f9d981d5e68b7215282614",
+      "bytes": 1098
     },
     {
       "path": "scripts/start-managed.ps1",
-      "sha256": "ac0d18c9e0544134a03ae5c76e3706dd4abbc8b0e424e1d06c4a8c6962728e1a",
-      "bytes": 1384
+      "sha256": "2626ef2d9983b735505dd20f37313b5df940457d5f69819c1a0d345416a9ab06",
+      "bytes": 1413
+    },
+    {
+      "path": "test_queued_analysis.py",
+      "sha256": "457c3a6579095417050a6a7203fe9e5cbf926136fe12445ff29dcba4e03b07ad",
+      "bytes": 9484
     },
     {
       "path": "test_tracking_receipt.py",
@@ -88,33 +113,33 @@
     },
     {
       "path": "upstream/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/bug_report.yml",
-      "sha256": "07b79cc498a31cf867519e4452892e7fafc72857fbeb2f4c7e38ff879006a1f4",
-      "bytes": 4861
+      "sha256": "890bbb41a0df4e6519c012148c9e6204b05fb7833f1a340d1133c5622f57ac58",
+      "bytes": 4984
     },
     {
       "path": "upstream/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/config.yml",
-      "sha256": "31c66f479ece519d77f9ccd25027fa5b17763ad5ed665bc8502ccb5a03957dff",
-      "bytes": 504
+      "sha256": "7cca53eddc3d54dcbe80b600f9295a49d1c6d93fff0ca85ad57620eb8447d759",
+      "bytes": 512
     },
     {
       "path": "upstream/ComfyUI-H3-FaceRefine/.github/workflows/publish.yml",
-      "sha256": "036e3db01522ae009f33f384d3c2998c8349399f0c7826ba18d2d5084e232cf6",
-      "bytes": 578
+      "sha256": "0888358066113715b575e29cb6613bb01845df967bb6c153578867613de3d835",
+      "bytes": 604
     },
     {
       "path": "upstream/ComfyUI-H3-FaceRefine/.gitignore",
-      "sha256": "fc5a5773a9550d2e1b5408e8645056b65c7eccbed4d50b368a5dfd35a00578e5",
-      "bytes": 245
+      "sha256": "5b7e52bd0188656a2c97a3d511231d03f507d4b974ae90517ad7b1a610a11b80",
+      "bytes": 274
     },
     {
       "path": "upstream/ComfyUI-H3-FaceRefine/LICENSE",
-      "sha256": "8e7ed9f75c094f7baf6c0a002ce368a009b2b44d531fbb8102d3753bfa01b4c2",
-      "bytes": 1067
+      "sha256": "b03d4e31e6bb15940bfa88d3e270653e0925ea01d9828842d2ee22b3ea620bb9",
+      "bytes": 1088
     },
     {
       "path": "upstream/ComfyUI-H3-FaceRefine/README.md",
-      "sha256": "5731a98a0dc54d80768b0bb8adb8631719b4e12de6585e04b3d29b414d0638f3",
-      "bytes": 62236
+      "sha256": "0685f78860b9e72f6abf6db24b37e9ab8def452d1a6c806c88d2f2ac7d704516",
+      "bytes": 63184
     },
     {
       "path": "upstream/ComfyUI-H3-FaceRefine/__init__.py",
@@ -138,8 +163,8 @@
     },
     {
       "path": "upstream/ComfyUI-H3-FaceRefine/picker_api.py",
-      "sha256": "dc70bbe4964bc97566eea58c0794e08651573459897d4423d7213ac7ce1ae635",
-      "bytes": 16561
+      "sha256": "21767c8def583583c94f4ae4d19319baf1ce6456e348e10bd0fcfb8abf79363f",
+      "bytes": 18220
     },
     {
       "path": "upstream/ComfyUI-H3-FaceRefine/pyproject.toml",
@@ -148,14 +173,14 @@
     },
     {
       "path": "upstream/ComfyUI-H3-FaceRefine/requirements.txt",
-      "sha256": "47cea4f53ee219b4b9b7f4683886d4a9011ba35edad54fe79a1badc85590dcc6",
-      "bytes": 282
+      "sha256": "44a8f6759579c36dea25aca606b3d48b774e96d88271d1e6c36efda779328489",
+      "bytes": 291
     },
     {
       "path": "upstream/ComfyUI-H3-FaceRefine/web/h3_face_select.js",
-      "sha256": "f633692e9753946663df0b7d7529d84273902ae1b08d8853caf8dc796f109bcc",
-      "bytes": 47964
+      "sha256": "b82e637c3c3149921896dcb3cd9ec48e5910b0fa656e4f1f9714dbe83b0e239e",
+      "bytes": 49084
     }
   ],
-  "note": "Upstream remains 1.1.2. The package-owned tracking companion is 1.0.3."
+  "note": "Upstream remains 1.1.2. The package-owned tracking companion is 1.0.6."
 }

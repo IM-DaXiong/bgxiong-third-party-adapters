@@ -45,12 +45,19 @@ pub(super) fn query(h: &mut dyn Host, payload: &Value) -> Result<Value> {
     let token = &payload["resumeToken"];
     if token["promptId"].as_str() != Some(id) { return Err(invalid("resume prompt identity mismatch")); }
     let op = required(token, "operationId")?;
-    if op != OP_PREVIEW && op != OP_REFINE { return Err(invalid("unsupported resumed operation")); }
+    if !matches!(op, OP_ANALYZE | OP_PREVIEW | OP_REFINE) { return Err(invalid("unsupported resumed operation")); }
+    let retry_status_read = |mut error: Failure| {
+        if op == OP_ANALYZE && matches!(error.code, "TIMEOUT" | "RESOURCE_UNAVAILABLE" | "UPSTREAM_ERROR") {
+            error.retryable = true;
+        }
+        error
+    };
     let encoded_id = encode(id);
-    let mut history = comfy_query_prompt(h, base, &encoded_id)?;
+    let mut history = comfy_query_prompt(h, base, &encoded_id).map_err(retry_status_read)?;
     let mut result = json!({"status":"running","outputs":[],"data":null,"usage":null,"progress":null,"terminalFailure":null,"resumeToken":token});
     if history[id].is_null() {
-        let queue = http_json(h, "GET", &format!("{}/queue", base.trim_end_matches('/')), None)?;
+        let queue = http_json(h, "GET", &format!("{}/queue", base.trim_end_matches('/')), None)
+            .map_err(retry_status_read)?;
         let pending = queue["queue_pending"].as_array().ok_or_else(|| fail("UPSTREAM_ERROR", "invalid queue response"))?;
         let running = queue["queue_running"].as_array().ok_or_else(|| fail("UPSTREAM_ERROR", "invalid queue response"))?;
         if pending.iter().any(|r| r[1].as_str() == Some(id)) {
@@ -60,7 +67,7 @@ pub(super) fn query(h: &mut dyn Host, payload: &Value) -> Result<Value> {
         if running.iter().any(|r| r[1].as_str() == Some(id)) {
             return Ok(result);
         }
-        history = comfy_query_prompt(h, base, &encoded_id)?;
+        history = comfy_query_prompt(h, base, &encoded_id).map_err(retry_status_read)?;
         if history[id].is_null() {
             return Err(fail("RESOURCE_UNAVAILABLE", "运行队列和历史均查不到原任务，请保留原任务 ID"));
         }
@@ -88,6 +95,15 @@ pub(super) fn query(h: &mut dyn Host, payload: &Value) -> Result<Value> {
     }
     if status["completed"] != true || status["status_str"] != "success" {
         return Err(fail("UPSTREAM_ERROR", "history has no verified successful execution"));
+    }
+    if op == OP_ANALYZE {
+        result["data"] = analysis::read(h, base, entry, token).map_err(|mut error| {
+            error.retryable = true;
+            error.message = format!("Comfy task {id} completed; analysis collection failed, retain this task for query without resubmission: {}", error.message);
+            error
+        })?;
+        result["status"] = json!("succeeded");
+        return Ok(result);
     }
     let output = collect(h, base, entry, op == OP_PREVIEW).map_err(|mut error| {
         error.retryable = true;

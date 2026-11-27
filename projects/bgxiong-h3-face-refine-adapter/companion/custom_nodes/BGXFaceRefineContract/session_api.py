@@ -7,7 +7,9 @@ import folder_paths
 from server import PromptServer
 from .sessions import save_session, load_session
 from .face_track import _input_file
-from . import seed, trajectory
+from . import queued_analysis, seed, trajectory
+
+COMPANION_VERSION = "1.0.6"
 
 
 def has_audio(name):
@@ -22,14 +24,43 @@ def has_audio(name):
 
 
 def register():
+    server = PromptServer.instance
+    # Same-version physical nodes and package-mounted nodes can be imported together.
+    if getattr(server, "_bgx_face_refine_session_api_version", None) == COMPANION_VERSION:
+        return
     root = Path(folder_paths.get_temp_directory()) / "bgx-face-refine" / "analysis-v1"
-    routes = PromptServer.instance.routes
+    routes = server.routes
     trajectory_root = root.parent / "trajectory-download-v1"
     detector_lock = asyncio.Lock()
 
     @routes.get("/bgx_face_refine/health")
     async def health(request):
-        return web.json_response({"version":"1.0.5","analysisSessions":True,"trackingReceipt":True,"sharedTracking":True,"seedFrames":True,"trajectoryArtifacts":True})
+        return web.json_response({"version": COMPANION_VERSION, "analysisSessions":True,"trackingReceipt":True,
+                                  "sharedTracking":True,"seedFrames":True,"trajectoryArtifacts":True,
+                                  "queuedAnalysis": queued_analysis.available()})
+
+    @routes.get("/bgx_face_refine/queued-analysis/{request_id}")
+    async def get_queued_analysis(request):
+        try:
+            path = queued_analysis.artifact_path(request.match_info["request_id"])
+        except ValueError as error:
+            return web.json_response({"error": str(error)}, status=400)
+        if not path.is_file():
+            return web.json_response({"error": "Queued face analysis result unavailable"}, status=404)
+        return web.FileResponse(path, headers={"Content-Type": "application/json"})
+
+    @routes.post("/bgx_face_refine/queued-analysis/{request_id}/cancel")
+    async def cancel_queued_analysis(request):
+        try:
+            request_id = queued_analysis.analysis_id(request.match_info["request_id"])
+            payload = await request.json()
+            prompt_id = payload.get("promptId") if isinstance(payload, dict) else None
+            if not isinstance(prompt_id, str) or not prompt_id:
+                raise ValueError("Missing ComfyUI prompt ID")
+        except ValueError as error:
+            return web.json_response({"error": str(error)}, status=400)
+        deleted = queued_analysis.cancel_pending(PromptServer.instance.prompt_queue, prompt_id, request_id)
+        return web.json_response({"outcome": "remote_confirmed" if deleted else "unsupported"})
 
     @routes.post("/bgx_face_refine/detect-samples")
     async def detect_samples(request):
@@ -97,6 +128,9 @@ def register():
             return web.json_response({"error":"Analysis session unavailable; analyze again"},status=404)
         except (ValueError, KeyError, TypeError) as error:
             return web.json_response({"error":str(error)},status=400)
+
+    server._bgx_face_refine_session_api_version = COMPANION_VERSION
+
 
 def compute_trajectory(body, output_root):
     from PIL import Image

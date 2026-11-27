@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bgxiong.local/vendor-adapter/v2/profiles/media-target-selection-v1/resume.analyze.schema.json",
+  "type": "object",
+  "properties": {
+    "operationId": { "const": "local.thirdparty.h3-face-refine/subjects.analyze" },
+    "promptId": { "type": "string", "minLength": 1 },
+    "analysisRequestId": { "type": "string", "pattern": "^[0-9a-f]{32}$" },
+    "source": { "$ref": "read-only-source-identity.schema.json" },
+    "detection": { "$ref": "analyze.input.schema.json#/properties/detectionParams" },
+    "sessionDetection": {
+      "type": "object",
+      "properties": {
+        "detector": { "type": "string", "minLength": 1 },
+        "confidence": { "type": "number" },
+        "cut_detection": { "type": "string", "minLength": 1 },
+        "cut_threshold": { "type": "number" },
+        "select": { "type": "string", "minLength": 1 },
+        "force": { "type": "boolean" }
+      },
+      "required": ["detector", "confidence", "cut_detection", "cut_threshold", "select", "force"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["operationId", "promptId", "analysisRequestId", "source", "detection", "sessionDetection"],
+  "additionalProperties": false
+}
