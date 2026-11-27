@@ -1,5 +1,7 @@
 """Normalize H3 crop geometry for the host-owned trajectory revision store."""
 import math
+import sys
+from pathlib import Path
 
 
 def normalize(transform):
@@ -77,6 +79,24 @@ def restore(layout, rows):
                 detected=[True]*len(source), absent=[False]*len(source), crop_factor=layout["cropFactor"])
 
 
+def _cut_detector(threshold):
+    # The pure Python wheel travels with the verified companion. Only this node
+    # needs it, so installing the adapter does not rewrite the Comfy environment.
+    wheel = Path(__file__).with_name("dependencies") / "scenedetect-0.7.3-py3-none-any.whl"
+    if not wheel.is_file():
+        raise ValueError("当前人脸精修包缺少自动切镜依赖，请重新安装对应版本")
+    location = str(wheel)
+    sys.path.insert(0, location)
+    try:
+        from scenedetect.common import FrameTimecode
+        from scenedetect.detectors import AdaptiveDetector
+    except ImportError as error:
+        raise ValueError("ComfyUI 无法加载人脸精修的自动切镜依赖") from error
+    finally:
+        sys.path.remove(location)
+    return AdaptiveDetector(adaptive_threshold=float(threshold)), FrameTimecode
+
+
 def manual_pick(images, anchor_index, box, settings, upstream, interrupt, identity_reference=None):
     """Run the normal detector on this batch only. Seed the tracker with the user's exact box."""
     count, height, width, _ = images.shape
@@ -88,7 +108,7 @@ def manual_pick(images, anchor_index, box, settings, upstream, interrupt, identi
     detector = upstream._load_detector(settings["detector"])
     cut_det, cut_tc = None, None
     if settings["cut_detection"] == "auto":
-        cut_det, cut_tc = upstream._make_cut_detector(settings["cut_threshold"])
+        cut_det, cut_tc = _cut_detector(settings["cut_threshold"])
     boxes, cuts = [], []
     for index, image in enumerate(images):
         interrupt()

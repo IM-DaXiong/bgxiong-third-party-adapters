@@ -29,7 +29,7 @@ def register():
 
     @routes.get("/bgx_face_refine/health")
     async def health(request):
-        return web.json_response({"version":"1.0.4","analysisSessions":True,"trackingReceipt":True,"sharedTracking":True,"seedFrames":True,"trajectoryArtifacts":True})
+        return web.json_response({"version":"1.0.5","analysisSessions":True,"trackingReceipt":True,"sharedTracking":True,"seedFrames":True,"trajectoryArtifacts":True})
 
     @routes.post("/bgx_face_refine/detect-samples")
     async def detect_samples(request):

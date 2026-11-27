@@ -1,6 +1,6 @@
 {
   "pluginId": "local.thirdparty.h3-face-refine",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "upstream": {
     "repo": "https://github.com/Carasibana/ComfyUI-H3-FaceRefine",
     "commit": "d8521d14fe0d721d80cd9417fff5a559cbc21aba",
@@ -14,7 +14,16 @@
     "packageMirror": "schemas/media-target-selection-v1"
   },
   "a03HostPortsExtended": false,
-  "companionContractVersion": "1.0.4",
+  "companionContractVersion": "1.0.5",
   "sdkSnapshotCompatibilityRecord": "locks/sdk-source-sync-20261030.json",
-  "validationSdkSourceCommit": "f1c38dd1f5231c8e2c2e70f5ba7b980ef313817c"
+  "validationSdkSourceCommit": "f1c38dd1f5231c8e2c2e70f5ba7b980ef313817c",
+  "runtimeDependencies": [
+    {
+      "name": "PySceneDetect",
+      "version": "0.7.3",
+      "license": "BSD-3-Clause",
+      "path": "companion/custom_nodes/BGXFaceRefineContract/dependencies/scenedetect-0.7.3-py3-none-any.whl",
+      "sha256": "74b92aac271c712facae35b816c8e1b953e8138ef5b302272da15b1ab72c036b"
+    }
+  ]
 }
