@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 2,
+  "pluginId": "local.bgx.bailian-qwen3-asr-flash",
+  "pluginVersion": "1.0.1",
+  "capabilityContracts": [
+    {
+      "schemaVersion": 2,
+      "localId": "transcription",
+      "capabilityKey": "speech.transcribe",
+      "transportSlot": "generic",
+      "modelIds": [
+        "qwen3-asr-flash"
+      ],
+      "operations": [
+        {
+          "id": "std/speech.transcribe",
+          "version": 1,
+          "label": "百炼 Qwen3-ASR-Flash",
+          "uiSchema": {
+            "controls": []
+          },
+          "mediaSlots": [
+            {
+              "role": "audio",
+              "inputPointer": "/audio",
+              "mediaKind": "audio",
+              "minCount": 1,
+              "maxCount": 1
+            }
+          ],
+          "execution": {
+            "mode": "synchronous",
+            "streaming": false,
+            "cancellation": "unsupported",
+            "resumable": false,
+            "remoteIdempotency": false
+          },
+          "outputSlots": []
+        }
+      ]
+    }
+  ]
+}

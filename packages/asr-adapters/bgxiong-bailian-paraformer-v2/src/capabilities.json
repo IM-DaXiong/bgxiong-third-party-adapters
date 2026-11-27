@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 2,
+  "pluginId": "local.bgx.bailian-paraformer-v2",
+  "pluginVersion": "1.0.1",
+  "capabilityContracts": [
+    {
+      "schemaVersion": 2,
+      "localId": "transcription",
+      "capabilityKey": "speech.transcribe",
+      "transportSlot": "generic",
+      "modelIds": [
+        "paraformer-v2"
+      ],
+      "operations": [
+        {
+          "id": "std/speech.transcribe",
+          "version": 1,
+          "label": "百炼 Paraformer v2",
+          "uiSchema": {
+            "controls": []
+          },
+          "mediaSlots": [
+            {
+              "role": "audio",
+              "inputPointer": "/audio",
+              "mediaKind": "audio",
+              "minCount": 1,
+              "maxCount": 1
+            }
+          ],
+          "execution": {
+            "mode": "asynchronous",
+            "streaming": false,
+            "cancellation": "unsupported",
+            "resumable": true,
+            "remoteIdempotency": false
+          },
+          "outputSlots": []
+        }
+      ]
+    }
+  ]
+}

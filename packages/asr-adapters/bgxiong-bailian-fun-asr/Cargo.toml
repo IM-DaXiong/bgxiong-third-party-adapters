@@ -1,0 +1,19 @@
+[workspace]
+
+[package]
+name = "bgxiong-bailian-fun-asr"
+version = "1.0.1"
+edition = "2021"
+license = "LicenseRef-Proprietary"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+bailian-asr-client = { path = "../bailian-asr-client" }
+
+[profile.release]
+panic = "abort"
+debug = 0
+incremental = false

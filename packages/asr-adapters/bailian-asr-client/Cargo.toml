@@ -1,0 +1,14 @@
+[workspace]
+
+[package]
+name = "bailian-asr-client"
+version = "0.1.0"
+edition = "2021"
+publish = false
+license = "LicenseRef-Proprietary"
+
+[dependencies]
+bgx-adapter-v2-sdk = { path = "../../../../bgxiong-adapter-sdk/sdk/rust" }
+serde_json = { version = "=1.0.149", default-features = false, features = ["alloc"] }
+sha2 = { version = "=0.10.9", default-features = false }
+base64 = { version = "=0.22.1", default-features = false, features = ["alloc"] }

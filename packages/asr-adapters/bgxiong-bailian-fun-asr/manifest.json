@@ -1,0 +1,39 @@
+{
+  "artifactSha256": "b263ef4e58a5ef67fbebcee16df91832468a0a4dc5d8eb737ccdd31f5afb86e8",
+  "displayName": "百炼 Fun-ASR",
+  "entry": "adapter.wasm",
+  "language": "rust",
+  "limits": {
+    "fuel": 20000000000,
+    "memoryBytes": 268435456,
+    "outputBytes": 1048576,
+    "wallMs": 180000
+  },
+  "optionalFeatures": [],
+  "pluginId": "local.bgx.bailian-fun-asr",
+  "protocolRange": {
+    "max": 2,
+    "min": 2
+  },
+  "publisherId": null,
+  "publisherKeyId": null,
+  "requestedCapabilities": {
+    "allowPrivateNetwork": false,
+    "auth": [
+      "bearer"
+    ],
+    "embeddedHeaders": [],
+    "endpointPolicy": [
+      "userConfigurable"
+    ],
+    "mediaSlots": [
+      "audio",
+      "file"
+    ],
+    "networkHosts": [],
+    "stateBytes": 0
+  },
+  "requiredFeatures": [],
+  "schemaVersion": 2,
+  "version": "1.0.1"
+}
