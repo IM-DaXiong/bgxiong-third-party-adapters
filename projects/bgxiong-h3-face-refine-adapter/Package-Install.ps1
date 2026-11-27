@@ -4,8 +4,10 @@ $root = $PSScriptRoot
 $versionLine = Get-Content -LiteralPath (Join-Path $root 'Cargo.toml') | Where-Object { $_ -match '^version = "([^"]+)"$' } | Select-Object -First 1
 if ($versionLine -notmatch '^version = "([^"]+)"$') { throw 'Missing package version' }
 $version = $Matches[1]
-$out = Join-Path $root ('install-' + $version)
-if (Test-Path -LiteralPath $out) { throw "Refusing to overwrite distribution: $out" }
+$repo = Split-Path -Parent (Split-Path -Parent $root)
+$archive = Join-Path $repo 'artifacts/current/local.thirdparty.h3-face-refine'
+$destination = Join-Path $archive $version
+if (Test-Path -LiteralPath $destination) { throw "Refusing to overwrite distribution: $destination" }
 $wasm = if ($ValidatedWasmPath) { [IO.Path]::GetFullPath($ValidatedWasmPath) } else { Join-Path $root 'adapter.wasm' }
 if (-not (Test-Path -LiteralPath $wasm)) { throw 'Build/check with the public SDK first, then provide its validated WASM.' }
 $manifestPath = Join-Path $root 'manifest.json'
@@ -17,10 +19,9 @@ if ([IO.Path]::GetFullPath($wasm) -ne [IO.Path]::GetFullPath((Join-Path $root 'a
 $manifestHash = (Get-FileHash -LiteralPath $manifestPath -Algorithm SHA256).Hash.ToLowerInvariant()
 $inventory = "$manifestHash manifest.json`n$($manifest.artifactSha256) adapter.wasm`n"
 [IO.File]::WriteAllText((Join-Path $root 'manifest.sha256'), $inventory, $utf8)
-$sourcePath = Join-Path $root 'SOURCE.json'
-$sourceRecord = Get-Content -LiteralPath $sourcePath -Raw | ConvertFrom-Json
-$sourceRecord.version = $version
-[IO.File]::WriteAllText($sourcePath, (($sourceRecord | ConvertTo-Json -Depth 40).Replace("`r`n", "`n")) + "`n", $utf8)
+$sourceRecord = Get-Content -LiteralPath (Join-Path $root 'SOURCE.json') -Raw | ConvertFrom-Json
+if ($sourceRecord.version -ne $version) { throw 'SOURCE.json and the package version differ.' }
+$out = Join-Path $archive ('.stage-' + [Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path (Join-Path $out 'package') -Force | Out-Null
 foreach ($name in @('manifest.json','manifest.sha256','adapter.wasm')) { Copy-Item -LiteralPath (Join-Path $root $name) -Destination (Join-Path $out 'package') }
 $code = [Collections.Generic.List[object]]::new()
@@ -50,4 +51,16 @@ $descriptor = @{
     }
 }
 [IO.File]::WriteAllText((Join-Path $out 'adapter-install.json'), (($descriptor | ConvertTo-Json -Depth 40).Replace("`r`n", "`n")) + "`n", $utf8)
-Write-Output "INSTALL_PACKAGE=$out NODE_FILES=$($code.Count) VERSION=$version"
+Copy-Item -LiteralPath (Join-Path $root 'README.zh-CN.md') -Destination (Join-Path $out 'README.zh-CN.md')
+Copy-Item -LiteralPath (Join-Path $root 'LICENSE-NOTES.md') -Destination (Join-Path $out 'LICENSE-NOTES.md')
+foreach ($item in $code) {
+    if ((Get-FileHash -LiteralPath (Join-Path $out $item.path) -Algorithm SHA256).Hash.ToLowerInvariant() -ne $item.sha256) {
+        throw "Companion digest mismatch: $($item.path)"
+    }
+}
+if ((Get-FileHash -LiteralPath (Join-Path $out 'package/manifest.json')).Hash.ToLowerInvariant() -ne $manifestHash -or
+    (Get-FileHash -LiteralPath (Join-Path $out 'package/adapter.wasm')).Hash.ToLowerInvariant() -ne $manifest.artifactSha256) {
+    throw 'Staged package identity differs from the validated package.'
+}
+[IO.Directory]::Move($out, $destination)
+Write-Output "INSTALL_PACKAGE=$destination NODE_FILES=$($code.Count) VERSION=$version"

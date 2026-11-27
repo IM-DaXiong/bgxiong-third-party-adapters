@@ -46,25 +46,44 @@ pub(super) fn query(h: &mut dyn Host, payload: &Value) -> Result<Value> {
     if token["promptId"].as_str() != Some(id) { return Err(invalid("resume prompt identity mismatch")); }
     let op = required(token, "operationId")?;
     if op != OP_PREVIEW && op != OP_REFINE { return Err(invalid("unsupported resumed operation")); }
-    let history = comfy_query_prompt(h, base, &encode(id))?;
-    let entry = &history[id];
+    let encoded_id = encode(id);
+    let mut history = comfy_query_prompt(h, base, &encoded_id)?;
     let mut result = json!({"status":"running","outputs":[],"data":null,"usage":null,"progress":null,"terminalFailure":null,"resumeToken":token});
-    if entry.is_null() {
+    if history[id].is_null() {
         let queue = http_json(h, "GET", &format!("{}/queue", base.trim_end_matches('/')), None)?;
         let pending = queue["queue_pending"].as_array().ok_or_else(|| fail("UPSTREAM_ERROR", "invalid queue response"))?;
         let running = queue["queue_running"].as_array().ok_or_else(|| fail("UPSTREAM_ERROR", "invalid queue response"))?;
-        if pending.iter().any(|r| r[1].as_str() == Some(id)) { result["status"] = json!("queued"); }
-        else if !running.iter().any(|r| r[1].as_str() == Some(id)) {
-            return Err(fail("RESOURCE_UNAVAILABLE", "task absent from history and queue; retain task identity, do not resubmit"));
+        if pending.iter().any(|r| r[1].as_str() == Some(id)) {
+            result["status"] = json!("queued");
+            return Ok(result);
         }
-        return Ok(result);
+        if running.iter().any(|r| r[1].as_str() == Some(id)) {
+            return Ok(result);
+        }
+        history = comfy_query_prompt(h, base, &encoded_id)?;
+        if history[id].is_null() {
+            return Err(fail("RESOURCE_UNAVAILABLE", "运行队列和历史均查不到原任务，请保留原任务 ID"));
+        }
     }
+    let entry = &history[id];
     let status = &entry["status"];
     let messages = status["messages"].as_array().ok_or_else(|| fail("UPSTREAM_ERROR", "history missing status messages"))?;
     let interrupted = messages.iter().any(|m| m[0] == "execution_interrupted");
     if status["status_str"] == "error" || interrupted {
         result["status"] = json!(if interrupted { "cancelled" } else { "failed" });
-        result["terminalFailure"] = json!({"category":if interrupted {"vendorTaskCancelled"} else {"vendorTaskFailed"},"message":"Comfy execution did not complete successfully","vendorCode":null,"details":{"messages":messages}});
+        let diagnostic = messages.iter().filter(|m| m[0] == "execution_error")
+            .find_map(|m| {
+                let node = m[1]["node_type"].as_str()?;
+                let message = m[1]["exception_message"].as_str()?;
+                match node {
+                    "BGXFaceTrack" | "H3FaceTrackCrop" if message.starts_with("Every shot is marked") => Some("所选镜头没有需要精修的人脸"),
+                    "BGXFaceTrack" | "H3FaceTrackCrop" | "H3FaceSelect" if message.starts_with("No face detected") => Some("整段未跟踪到所选人物"),
+                    "BGXFaceTrack" if message == "整段未跟踪到所选人物" => Some("整段未跟踪到所选人物"),
+                    "BGXFaceTrack" if message.starts_with("跟踪数据不完整") => Some("跟踪数据不完整"),
+                    _ => None,
+                }
+            });
+        result["terminalFailure"] = json!({"category":if interrupted {"vendorTaskCancelled"} else {"vendorTaskFailed"},"message":diagnostic.unwrap_or("Comfy execution did not complete successfully"),"vendorCode":null,"details":{"messages":messages}});
         return Ok(result);
     }
     if status["completed"] != true || status["status_str"] != "success" {
@@ -122,6 +141,46 @@ mod tests {
         assert_eq!(r["status"], "failed");
         assert_eq!(r["terminalFailure"]["category"], "vendorTaskFailed");
         assert_eq!(h.calls.len(), 1);
+    }
+
+    #[test]
+    fn completion_between_history_and_queue_is_recovered_with_original_id() {
+        let history = json!({"p":{"status":{"completed":true,"status_str":"success","messages":[]},"outputs":{
+            "3":{"images":[{"filename":"preview.webp","subfolder":"","type":"output"}]},
+            "tracking_receipt":{"trackingReceipt":[{"selectionDigest":"sel","coveredRange":{"startMs":0,"endMs":120},
+                "lostRanges":[{"startMs":40,"endMs":80,"reason":"target_not_detected"}],
+                "unresolvedRanges":[],"ready":{"ok":true,"reasons":[]}}]}
+        }}});
+        let queue = buffered(json!({"queue_running":[],"queue_pending":[]}));
+        let mut h = ScriptHost { replies: vec![buffered(json!({})), queue, buffered(history),
+            json!({"status":200,"payload":{"kind":"media","handle":"preview"}}),
+            json!({"id":"preview-id","kind":"image","mime":"image/webp","fileName":"digest.webp","byteLength":"100"})],
+            calls: vec![] };
+        let mut p = payload();
+        p["resumeToken"]["operationId"] = json!(OP_PREVIEW);
+        p["resumeToken"]["coveredRange"] = json!({"startMs":0,"endMs":120});
+        let response = query(&mut h, &p).unwrap();
+        assert_eq!(response["status"], "succeeded");
+        assert_eq!(response["data"]["ready"]["ok"], true);
+        let urls: Vec<_> = h.calls[..3].iter().map(|call| {
+            assert_eq!(call["args"]["plan"]["method"], "GET");
+            call["args"]["plan"]["url"].as_str().unwrap()
+        }).collect();
+        assert_eq!(urls, ["http://localhost:8188/history/p", "http://localhost:8188/queue", "http://localhost:8188/history/p"]);
+    }
+
+    #[test]
+    fn queue_lookup_keeps_identity_when_pending_or_still_missing() {
+        let mut h = ScriptHost { replies: vec![buffered(json!({})), buffered(json!({
+            "queue_pending":[[0,"p"]],"queue_running":[],
+        }))], calls: vec![] };
+        assert_eq!(query(&mut h, &payload()).unwrap()["status"], "queued");
+        assert_eq!(h.calls.len(), 2);
+        let mut h = ScriptHost { replies: vec![buffered(json!({})), buffered(json!({
+            "queue_pending":[],"queue_running":[],
+        })), buffered(json!({}))], calls: vec![] };
+        assert_eq!(query(&mut h, &payload()).unwrap_err().code, "RESOURCE_UNAVAILABLE");
+        assert_eq!(h.calls.len(), 3);
     }
     #[test]
     fn successful_refine_downloads_declared_output_into_managed_media() {

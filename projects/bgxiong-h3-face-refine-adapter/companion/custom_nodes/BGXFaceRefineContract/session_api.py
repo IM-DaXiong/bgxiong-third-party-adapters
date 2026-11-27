@@ -12,7 +12,7 @@ def register():
 
     @routes.get("/bgx_face_refine/health")
     async def health(request):
-        return web.json_response({"version":"1.0.0-a09","analysisSessions":True,"trackingReceipt":True})
+        return web.json_response({"version":"1.0.2","analysisSessions":True,"trackingReceipt":True,"sharedTracking":True})
 
     @routes.post("/bgx_face_refine/analysis-session")
     async def store(request):

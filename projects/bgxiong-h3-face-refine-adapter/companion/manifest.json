@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-a09",
+  "version": "1.0.2",
   "entry": "scripts/start-managed.ps1",
   "bootstrapTimeoutSec": 1800,
   "healthEndpoint": "/system_stats",
@@ -14,7 +14,8 @@
     "H3FaceStitch",
     "H3InjectVideoLatent",
     "H3PerFrameDenoise",
-    "H3FaceTrackingReceipt"
+    "H3FaceTrackingReceipt",
+    "BGXFaceTrack"
   ],
   "optionalClasses": [
     "H3FaceMaskSAM"
@@ -41,6 +42,7 @@
     "CONTRACT.md",
     "custom_nodes/BGXFaceRefineContract/__init__.py",
     "custom_nodes/BGXFaceRefineContract/tracking.py",
+    "custom_nodes/BGXFaceRefineContract/face_track.py",
     "custom_nodes/BGXFaceRefineContract/sessions.py",
     "custom_nodes/BGXFaceRefineContract/session_api.py",
     "models.json",

@@ -214,7 +214,10 @@ pub fn capabilities() -> Value {
                     vec![],
                     "synchronous"),
                 mk_op(OP_PREVIEW, "跟踪预览", &preview_in, &preview_out, vec![],
-                    vec![json!({"role":"source_video","inputPointer":"/analysis/source/mediaId","mediaKind":"video","minCount":1,"maxCount":1})],
+                    vec![
+                        json!({"role":"source_video","inputPointer":"/analysis/source/mediaId","mediaKind":"video","minCount":1,"maxCount":1}),
+                        json!({"role":"identity_ref","inputPointer":"/identityMediaId","mediaKind":"image","minCount":0,"maxCount":1}),
+                    ],
                     vec![json!({"role":"preview","kind":"image","minCount":1,"maxCount":1})],
                     "asynchronous"),
                 mk_op(OP_REFINE, "人脸精修", &refine_in, &refine_out, refine_controls,
@@ -562,7 +565,46 @@ fn inject_refine_workflow(
 mod platform_parameters;
 mod submission_rejection;
 use submission_rejection::Phase;
+fn bind_shared_tracker(h: &mut dyn Host, base: &str, workflow: &mut Value, context: Value) -> Result<()> {
+    let mut upstream = json!({"select": workflow["select"], "track": workflow["track"]});
+    let info = platform_parameters::definitions(h, base, &upstream)?;
+    platform_parameters::prepare(&mut upstream, &info)?;
+    let video = upstream["select"]["inputs"].as_object_mut().unwrap().remove("video").unwrap();
+    let track_options = upstream["track"]["inputs"].as_object_mut().unwrap();
+    track_options.remove("images");
+    track_options.remove("face_pick");
+    let identity = track_options.remove("identity_reference");
+    let mut inputs = json!({
+        "video": video, "identity_file": context["identityFile"], "settings_json": json!({
+            "select": upstream["select"]["inputs"], "track": upstream["track"]["inputs"],
+        }).to_string(),
+        "analysis_json": context["analysis"].to_string(), "selection_json": context["selection"].to_string(),
+        "render_preview": context["preview"],
+    });
+    if let Some(link) = identity { inputs["identity_reference"] = link; }
+    let graph = workflow.as_object_mut().unwrap();
+    graph.remove("select");
+    graph.insert("track".into(), json!({"class_type":"BGXFaceTrack","inputs":inputs}));
+    for node in graph.values_mut() {
+        for value in node["inputs"].as_object_mut().unwrap().values_mut() {
+            if value.get(0).and_then(Value::as_str) == Some("select") {
+                let output = match value[1].as_u64() {
+                    Some(0) => 7,
+                    Some(1) => 8,
+                    Some(6) => 9,
+                    _ => return Err(invalid("invalid face-track source output")),
+                };
+                *value = json!(["track", output]);
+            }
+        }
+    }
+    Ok(())
+}
+
 fn comfy_submit_prompt(h: &mut dyn Host, base: &str, mut workflow: Value, client_id: &str, phase: &mut Phase) -> Result<String> {
+    if let Some(context) = workflow.as_object_mut().and_then(|obj| obj.remove("_tracking_context")) {
+        bind_shared_tracker(h, base, &mut workflow, context)?;
+    }
     let info = platform_parameters::definitions(h, base, &workflow)?;
     platform_parameters::prepare(&mut workflow, &info)?;
     let url = format!("{}/prompt", base.trim_end_matches('/'));
@@ -624,8 +666,21 @@ fn run_preview(h: &mut dyn Host, payload: &Value, phase: &mut Phase) -> Result<V
     let source = &analysis["source"];
     let source_id = source["mediaId"].as_str().ok_or_else(|| invalid("analysis source.mediaId required"))?;
     let video_name = upload_source(h, payload, base, source_id, "video")?;
-    let mut workflow = inject_preview_workflow(&face_pick, &video_name, analysis, selection)?;
-    apply_detection(&mut workflow, "1", "2", &saved);
+    let preview = inject_preview_workflow(&face_pick, &video_name, analysis, selection)?;
+    let identity_name = input["identityMediaId"].as_str()
+        .map(|id| upload_source(h, payload, base, id, "image")).transpose()?;
+    let mut workflow = inject_refine_workflow(&face_pick, &video_name, "", &json!({
+        "appearanceImages": [], "identityImage": &identity_name,
+    }))?;
+    apply_detection(&mut workflow, "select", "track", &saved);
+    workflow.as_object_mut().unwrap().retain(|key, _| matches!(key.as_str(), "select" | "track" | "identity_ref"));
+    workflow["3"] = preview["3"].clone();
+    workflow["3"]["inputs"]["images"] = json!(["track",2]);
+    workflow["3"]["inputs"]["fps"] = json!(["select",6]);
+    workflow["tracking_receipt"] = preview["tracking_receipt"].clone();
+    workflow["tracking_receipt"]["inputs"]["transform"] = json!(["track",1]);
+    workflow["tracking_receipt"]["inputs"]["fps"] = json!(["select",6]);
+    workflow["_tracking_context"] = json!({"analysis":analysis,"selection":selection,"preview":true,"identityFile":identity_name.unwrap_or_default()});
     let client_id = format!("h3-preview-{:.12}", selection_digest);
     let prompt_id = comfy_submit_prompt(h, base, workflow, &client_id, phase)?;
     Ok(json!({
@@ -678,6 +733,7 @@ fn run_refine(h: &mut dyn Host, payload: &Value, phase: &mut Phase) -> Result<Va
     user_params["identityImage"] = json!(identity_name);
     let mut workflow = inject_refine_workflow(&face_pick, &video_name, prompt, &user_params)?;
     apply_detection(&mut workflow, "select", "track", &saved);
+    workflow["_tracking_context"] = json!({"analysis":saved["analysis"],"selection":selection,"preview":false,"identityFile":identity_name.unwrap_or_default()});
     let freeze_raw = serde_json::to_string(freeze).unwrap_or_default();
     let freeze_digest: String = Sha256::digest(freeze_raw.as_bytes())
         .iter()

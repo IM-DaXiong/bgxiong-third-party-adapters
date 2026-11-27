@@ -1,12 +1,12 @@
 {
   "pluginId": "local.thirdparty.h3-face-refine",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "laneACommit": "3b6a7e738",
   "digests": {
     "analyze.input.schema.json": "e9c9e68e8d384227dbbfa7a9b30f1c87ac37fc69f6b728a5122e624e77c3fe53",
     "analyze.output.schema.json": "69e3b014787b693b638c698752a958eb59edd8eeb4b0921b8ee7ad00bea079e0",
     "configuration.schema.json": "22d4b06042fce6b97b2269886c9a81642cd5eb937320526d53d0904b1a58caa1",
-    "preview.input.schema.json": "4c0a9c5484e1f6ed4f098955661f7aa9213dbdf6bc113545a93979176f9ea683",
+    "preview.input.schema.json": "185d51f5dbea52a1782987ef2827f70e54a2cc8efb596e143e2504ae50af9c50",
     "preview.output.schema.json": "c0cd2855f542b93f6867e4ce8bd40d64bb2fbef0829e18f4b74c70bb038fbc3b",
     "refine.input.schema.json": "e857c9dbe12722d2bdd99c29ec5d53aef6c0c76c42388e5b7066e9b504e3dd28",
     "refine.output.schema.json": "de18e916d82f262db4e077acff4059f33d4c8cfd5576224a0eaabbcbae9134b0",

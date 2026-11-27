@@ -3,6 +3,7 @@
   "$id": "https://bgxiong.local/vendor-adapter/v2/profiles/media-target-selection-v1/preview.input.schema.json",
   "type": "object",
   "properties": {
+    "identityMediaId": { "type": "string", "minLength": 1 },
     "analysis": {
       "$ref": "read-only-analysis-receipt.schema.json"
     },

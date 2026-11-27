@@ -25,6 +25,14 @@ pub(super) fn prepare(graph: &mut Value, info: &Value) -> Result<()> {
         let class = node["class_type"].as_str().ok_or_else(|| invalid("node class missing"))?.to_owned();
         let definition = info.get(&class).ok_or_else(|| fail("RESOURCE_UNAVAILABLE", format!("node unavailable: {class}")))?;
         let inputs = node["inputs"].as_object_mut().ok_or_else(|| invalid("inputs missing"))?;
+        if class == "H3FaceStitch" && inputs.get("undetected_frames") == Some(&json!("skip"))
+            && !["required", "optional"].iter().any(|section| {
+                definition["input"][*section]["undetected_frames"][0].as_array()
+                    .is_some_and(|choices| choices.iter().any(|choice| choice == "skip"))
+            })
+        {
+            return Err(fail("RESOURCE_UNAVAILABLE", "H3FaceStitch does not support skipping undetected frames"));
+        }
         if let Some(required) = definition.pointer("/input/required").and_then(Value::as_object) {
             for key in required.keys() { if !inputs.contains_key(key) { return Err(invalid(&format!("{class}: missing {key}"))); } }
         }

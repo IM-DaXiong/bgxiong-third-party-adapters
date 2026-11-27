@@ -3,18 +3,18 @@
   "files": [
     {
       "path": "CONTRACT.md",
-      "sha256": "121f76be823f1664ca7a76de01ca305e3199089da63da069c728951aa597c945",
-      "bytes": 1474
+      "sha256": "de4e406e5b94f6d95456c5aefe371dc9bae6f68d01ce0517299ea5486ddc638d",
+      "bytes": 2146
     },
     {
       "path": "custom_nodes/BGXFaceRefineContract/__init__.py",
-      "sha256": "2568e7189a1816a2602748c55735021642bdbc81a55b577b363f1bfd6bee34f2",
-      "bytes": 199
+      "sha256": "2e242b069e0396e6af1176bae2be8710c53d61a857eb21ed12fcfe0beaad3a91",
+      "bytes": 714
     },
     {
       "path": "custom_nodes/BGXFaceRefineContract/session_api.py",
-      "sha256": "5098054d330df135b961a1e792ea33f4df5b281216fa586fa800c263baecbf13",
-      "bytes": 1404
+      "sha256": "98f283222a4f9d2943f1e5a558a62318d729de02bb1446d0d34e97000cfcac19",
+      "bytes": 1389
     },
     {
       "path": "custom_nodes/BGXFaceRefineContract/sessions.py",
@@ -23,8 +23,13 @@
     },
     {
       "path": "custom_nodes/BGXFaceRefineContract/tracking.py",
-      "sha256": "0531c1b5be787056d4908f792902a4336dfee93976e3fde06e52399fee41aa67",
-      "bytes": 4181
+      "sha256": "518bf9d1d997451a2353878e1569e98964e5e16d79da826463c2935c4388ec46",
+      "bytes": 4203
+    },
+    {
+      "path": "custom_nodes/BGXFaceRefineContract/face_track.py",
+      "sha256": "02f55468cc4b2570e0b91866bacde5ce163a1d90b6f8fae9059c1e2516469ca4",
+      "bytes": 10862
     },
     {
       "path": "extra-paths/extra_model_paths.yaml",
@@ -38,8 +43,8 @@
     },
     {
       "path": "manifest.json",
-      "sha256": "1b39a526174d87ff9251c47a5fd27dd7ba8087789d8993d18020f0597658f213",
-      "bytes": 1624
+      "sha256": "161ec1f5433345cf9f9df07731940b90ebbd43d587da133e289c0b47f7d0e518",
+      "bytes": 1646
     },
     {
       "path": "models.json",
@@ -63,8 +68,8 @@
     },
     {
       "path": "scripts/probe.ps1",
-      "sha256": "514b4406f958bcb0624b760d4e7bba4526e24bc3b60b9328e81d66e6acc02b71",
-      "bytes": 1049
+      "sha256": "a483b23f6386cf0d3b7e1fc5cd406cfa943ca8e36551b4fa4d43e859b780a530",
+      "bytes": 1072
     },
     {
       "path": "scripts/start-managed.ps1",
@@ -152,5 +157,5 @@
       "bytes": 49084
     }
   ],
-  "note": "Upstream remains 1.1.2; package-owned contract companion is a09."
+  "note": "Upstream remains 1.1.2. The package-owned tracking companion is 1.0.2."
 }
