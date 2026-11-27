@@ -30,19 +30,19 @@ pub(super) fn create(
     host: &mut dyn Host,
     origin: &str,
     key: &str,
-    wav: &[u8],
+    audio: &Audio<'_>,
     budget: u64,
 ) -> Result<String, Failure> {
-    let form = multipart(wav, &[("purpose", "file-extract")])?;
-    let boundary = boundary(wav);
-    let handle = http::put_media(host, "file", "application/octet-stream", &form)?;
     let reply = http::exchange(
         host,
         "POST",
         &format!("{origin}{FILES}"),
         Some(key),
-        json!([{"name":"Content-Type","value":format!("multipart/form-data; boundary={boundary}")}]),
-        json!({"kind":"media","handle":handle}),
+        json!([]),
+        json!({"kind":"multipart","parts":[
+            {"kind":"field","name":"purpose","value":"file-extract"},
+            {"kind":"file","name":"file","fileName":"audio.wav","mime":audio.mime,"handle":audio.handle}
+        ]}),
         budget,
         false,
     )?;
@@ -109,29 +109,4 @@ pub(super) fn delete(
         return Ok(());
     }
     Err(Failure::new("UPSTREAM_ERROR", "百炼已上传音频删除未确认"))
-}
-
-fn boundary(wav: &[u8]) -> String {
-    format!("bgx-{:x}", Sha256::digest(wav))
-}
-
-pub(super) fn multipart(wav: &[u8], fields: &[(&str, &str)]) -> Result<Vec<u8>, Failure> {
-    let boundary = boundary(wav);
-    if wav
-        .windows(boundary.len())
-        .any(|part| part == boundary.as_bytes())
-        || fields.iter().any(|(_, value)| {
-            value.len() > 16384 || value.contains(['\r', '\n']) || value.contains(&boundary)
-        })
-    {
-        return Err(Failure::new("INVALID_INPUT", "百炼上传表单无效"));
-    }
-    let mut body = Vec::new();
-    for (name, value) in fields {
-        body.extend_from_slice(format!("--{boundary}\r\nContent-Disposition: form-data; name=\"{name}\"\r\n\r\n{value}\r\n").as_bytes());
-    }
-    body.extend_from_slice(format!("--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"audio.wav\"\r\nContent-Type: audio/wav\r\n\r\n").as_bytes());
-    body.extend_from_slice(wav);
-    body.extend_from_slice(format!("\r\n--{boundary}--\r\n").as_bytes());
-    Ok(body)
 }

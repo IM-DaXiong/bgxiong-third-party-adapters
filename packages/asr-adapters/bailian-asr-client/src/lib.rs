@@ -75,7 +75,13 @@ fn capabilities(model: Model, definition: &str) -> Value {
     root
 }
 
-fn received_wav(host: &mut dyn Host, payload: &Value) -> Result<(Vec<u8>, u64), Failure> {
+struct Audio<'a> {
+    handle: &'a str,
+    mime: String,
+    duration_ms: u64,
+}
+
+fn received_wav<'a>(host: &mut dyn Host, payload: &'a Value, model: Model) -> Result<Audio<'a>, Failure> {
     let id = payload["input"]["audio"]["mediaId"].as_str();
     let lease = payload["media"]
         .as_array()
@@ -88,19 +94,28 @@ fn received_wav(host: &mut dyn Host, payload: &Value) -> Result<(Vec<u8>, u64), 
                 .flatten()
         })
         .ok_or_else(|| Failure::new("INVALID_INPUT", "缺少授权的音频文件"))?;
-    let wav = http::media_bytes(host, lease, 10_000_000)?;
-    let duration = wav_duration(&wav)?;
-    Ok((wav, duration))
+    let info = http::port(host, "host-media.info", json!({"handle":lease}))?;
+    let limit = policy::max_samples(model) * 2 + 44;
+    let bytes = info["byteLength"].as_str().and_then(|value| value.parse::<usize>().ok())
+        .filter(|bytes| (46..=limit).contains(bytes))
+        .ok_or_else(|| Failure::new("INVALID_INPUT", "音频超过百炼单批识别上限或没有有效长度"))?;
+    let mime = info["mime"].as_str()
+        .filter(|mime| matches!(*mime, "audio/x-wav" | "audio/wav"))
+        .ok_or_else(|| Failure::new("INVALID_INPUT", "百炼识别需要 WAV 音频"))?;
+    let header: Vec<u8> = serde_json::from_value(http::port(host, "host-media.read",
+        json!({"handle":lease,"offset":"0","maxBytes":44}))?)
+        .map_err(|_| Failure::new("UPSTREAM_ERROR", "无法读取百炼音频文件头"))?;
+    Ok(Audio { handle: lease, mime: mime.into(), duration_ms: wav_duration(&header, bytes)? })
 }
 
-fn wav_duration(bytes: &[u8]) -> Result<u64, Failure> {
+fn wav_duration(header: &[u8], bytes: usize) -> Result<u64, Failure> {
     let invalid = || Failure::new("INVALID_INPUT", "识别需要非空的 16 kHz 单声道 PCM16 WAV");
-    let header = bytes.get(..44).ok_or_else(invalid)?;
+    let header = header.get(..44).ok_or_else(invalid)?;
     let field = |at: usize| u32::from_le_bytes(header[at..at + 4].try_into().unwrap()) as usize;
-    let data = bytes.len() - 44;
+    let data = bytes.checked_sub(44).ok_or_else(invalid)?;
     if &header[0..4] != b"RIFF"
         || &header[8..16] != b"WAVEfmt "
-        || field(4) + 8 != bytes.len()
+        || field(4) + 8 != bytes
         || field(16) != 16
         || field(20) != 0x00010001
         || field(24) != 16000
@@ -158,14 +173,11 @@ fn dispatch(
             if payload["input"]["timing"] != "textOnly" {
                 return Err(Failure::new("INVALID_INPUT", "百炼识别仅返回原文"));
             }
-            let (wav, duration) = received_wav(host, &payload)?;
-            if (wav.len() - 44) / 2 > policy::max_samples(model) {
-                return Err(Failure::new("INVALID_INPUT", "音频超过百炼单批识别上限"));
-            }
+            let audio = received_wav(host, &payload, model)?;
             if model == Model::Qwen {
-                qwen::submit(host, &payload, &wav, duration, request.r#budget_ms)
+                qwen::submit(host, &payload, &audio, request.r#budget_ms)
             } else {
-                task::submit(host, model, &payload, &wav, duration, request.r#budget_ms)
+                task::submit(host, model, &payload, &audio, request.r#budget_ms)
             }
         }
         Op::V5 if model != Model::Qwen => task::cancel(host, &payload, request.r#budget_ms),

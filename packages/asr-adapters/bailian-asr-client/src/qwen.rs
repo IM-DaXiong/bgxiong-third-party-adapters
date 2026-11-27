@@ -1,11 +1,10 @@
 use super::*;
-use base64::{engine::general_purpose::STANDARD, Engine};
 
-pub(super) fn request(wav: &[u8], language: &Value) -> Value {
+pub(super) fn request(url: &str, language: &Value) -> Value {
     let mut value = json!({
         "model":"qwen3-asr-flash", "stream":false,
         "messages":[{"role":"user","content":[{"type":"input_audio","input_audio":{
-            "data":format!("data:audio/wav;base64,{}", STANDARD.encode(wav))
+            "data":url
         }}]}]
     });
     // Use only the vendor's common short language tags.
@@ -18,22 +17,34 @@ pub(super) fn request(wav: &[u8], language: &Value) -> Value {
 pub(super) fn submit(
     host: &mut dyn Host,
     payload: &Value,
-    wav: &[u8],
+    audio: &Audio<'_>,
+    budget: u64,
+) -> Result<Value, Failure> {
+    let (origin, key) = http::origin(&payload["configuration"])?;
+    let file = upload::create(host, origin, key, audio, budget)?;
+    let result = (|| {
+        let url = upload::signed_source_url(host, origin, key, &file, budget)?;
+        submit_url(host, origin, key, &url, &payload["input"]["language"], audio.duration_ms, budget)
+    })();
+    if !result.as_ref().is_err_and(|error| error.code == "ACCEPTANCE_UNKNOWN") {
+        let _ = upload::delete(host, origin, key, &file, budget.min(3000));
+    }
+    result
+}
+
+fn submit_url(
+    host: &mut dyn Host,
+    origin: &str,
+    key: &str,
+    url: &str,
+    language: &Value,
     duration: u64,
     budget: u64,
 ) -> Result<Value, Failure> {
-    const ENCODED_REQUEST_LIMIT: usize = 10_000_000;
-    if wav.len().div_ceil(3) * 4 + "data:audio/wav;base64,".len() > ENCODED_REQUEST_LIMIT {
-        return Err(Failure::new(
-            "INVALID_INPUT",
-            "千问识别的 Base64 音频超出 10 MB",
-        ));
-    }
-    let (origin, key) = http::origin(&payload["configuration"])?;
     let body = http::json_body(
         host,
-        &request(wav, &payload["input"]["language"]),
-        ENCODED_REQUEST_LIMIT,
+        &request(url, language),
+        4096,
     )?;
     let reply = http::exchange(
         host,

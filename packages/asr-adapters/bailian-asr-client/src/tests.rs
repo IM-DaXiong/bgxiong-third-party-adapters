@@ -20,22 +20,17 @@ fn wav() -> Vec<u8> {
 }
 
 #[test]
-fn validates_actual_wav_extent_and_qwen_encodes_the_same_bytes() {
-    use base64::{engine::general_purpose::STANDARD, Engine};
+fn validates_wav_extent_and_qwen_uses_the_file_url() {
     let mut bytes = wav();
-    assert_eq!(wav_duration(&bytes).unwrap(), 10);
-    let request = qwen::request(&bytes, &json!("zh"));
+    assert_eq!(wav_duration(&bytes[..44], bytes.len()).unwrap(), 10);
+    let url = "https://example.test/audio.wav?Signature=fixture";
+    let request = qwen::request(url, &json!("zh"));
     let uri = request["messages"][0]["content"][0]["input_audio"]["data"]
         .as_str()
         .unwrap();
-    assert_eq!(
-        STANDARD
-            .decode(uri.strip_prefix("data:audio/wav;base64,").unwrap())
-            .unwrap(),
-        bytes
-    );
+    assert_eq!(uri, url);
     bytes.pop();
-    assert!(wav_duration(&bytes).is_err());
+    assert!(wav_duration(&bytes[..44], bytes.len()).is_err());
 }
 
 #[test]
@@ -49,15 +44,6 @@ fn async_requests_keep_model_specific_parameters_and_exact_multipart_wav() {
         fun,
         json!({"model":"fun-asr","input":{"file_urls":["oss://test"]}})
     );
-    let bytes = wav();
-    let form = upload::multipart(&bytes, &[("key", "example.wav")]).unwrap();
-    assert_eq!(
-        form.windows(bytes.len())
-            .filter(|part| *part == bytes)
-            .count(),
-        1
-    );
-    assert!(upload::multipart(&bytes, &[("key", "bad\r\nvalue")]).is_err());
     assert!(upload::result_url(
         "https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/output.json"
     ));
@@ -81,6 +67,7 @@ struct FakeHost {
     replies: VecDeque<Reply>,
     exchanges: Vec<Value>,
     inbound: Vec<u8>,
+    audio_reads: Vec<usize>,
 }
 
 impl Host for FakeHost {
@@ -90,11 +77,12 @@ impl Host for FakeHost {
         match call["method"].as_str().unwrap() {
             "host-media.create" => Ok(json!("request-media")),
             "host-media.write" | "host-media.finish" | "host-media.release" => Ok(Value::Null),
-            "host-media.info" => Ok(json!({"byteLength":self.inbound.len().to_string()})),
+            "host-media.info" => Ok(json!({"byteLength":self.inbound.len().to_string(),"mime":"audio/x-wav"})),
             "host-media.read" => {
                 let start: usize = args["offset"].as_str().unwrap().parse().unwrap();
                 let end =
                     (start + args["maxBytes"].as_u64().unwrap() as usize).min(self.inbound.len());
+                if args["handle"] == "audio-lease" { self.audio_reads.push(end - start); }
                 Ok(json!(&self.inbound[start..end]))
             }
             "host-http.execute" => {
@@ -120,6 +108,14 @@ fn account() -> Value {
     json!({"endpointBaseUrl":"https://fixture.cn-beijing.maas.aliyuncs.com","credentialRef":"account"})
 }
 
+fn signed_file() -> Reply {
+    Reply::Json(json!({"data":{"url":"http://dashscope-file-mgr.oss-cn-beijing.aliyuncs.com/sample.wav?Signature=fixture"}}))
+}
+
+fn audio() -> Audio<'static> {
+    Audio { handle: "audio-lease", mime: "audio/x-wav".into(), duration_ms: 10 }
+}
+
 #[test]
 fn qwen_never_retries_a_rejected_or_uncertain_submit() {
     for (reply, code) in [
@@ -127,19 +123,21 @@ fn qwen_never_retries_a_rejected_or_uncertain_submit() {
         (Reply::Timeout, "ACCEPTANCE_UNKNOWN"),
     ] {
         let mut host = FakeHost {
-            replies: [reply].into(),
+            replies: [Reply::Json(json!({"id":"file-fe-fixture"})), signed_file(), reply, Reply::Status(204)].into(),
             ..FakeHost::default()
         };
         let payload = json!({"configuration":account(),"input":{"language":"en"}});
         assert_eq!(
-            qwen::submit(&mut host, &payload, &wav(), 10, 60000)
+            qwen::submit(&mut host, &payload, &audio(), 60000)
                 .unwrap_err()
                 .code,
             code
         );
-        assert_eq!(host.exchanges.len(), 1);
-        assert_eq!(host.exchanges[0]["plan"]["method"], "POST");
-        assert_eq!(host.exchanges[0]["credential"], "account");
+        let recognitions: Vec<_> = host.exchanges.iter().filter(|call|
+            call["plan"]["url"].as_str().unwrap().ends_with("/chat/completions")).collect();
+        assert_eq!(recognitions.len(), 1);
+        assert_eq!(recognitions[0]["plan"]["method"], "POST");
+        assert_eq!(recognitions[0]["credential"], "account");
     }
 }
 
@@ -165,11 +163,10 @@ fn async_result_failures_reuse_the_job_and_delete_the_source_file() {
     let mut host = FakeHost {
         replies: [
             Reply::Json(result.clone()),
-            Reply::Status(204),
             Reply::Status(503),
             Reply::Json(result),
-            Reply::Status(404),
             Reply::Json(json!({"transcripts":[{"text":"test speech"}]})),
+            Reply::Status(503),
         ]
         .into(),
         ..FakeHost::default()
@@ -184,48 +181,50 @@ fn async_result_failures_reuse_the_job_and_delete_the_source_file() {
         .exchanges
         .iter()
         .all(|exchange| exchange["plan"]["method"] != "POST"));
-    for exchange in [&host.exchanges[2], &host.exchanges[5]] {
+    for exchange in [&host.exchanges[1], &host.exchanges[3]] {
         assert!(exchange["credential"].is_null());
         assert_eq!(exchange["plan"]["generatedHeaders"], json!([]));
     }
 }
 
 #[test]
-fn signed_file_api_link_uses_https_and_failed_submission_deletes_only_its_own_file() {
+fn uncertain_submit_does_not_delete_a_file_that_the_accepted_task_may_need() {
     let mut host = FakeHost {
         replies: [
             Reply::Json(json!({"id":"file-fe-fixture"})),
             Reply::Json(json!({"data":{"url":"http://dashscope-file-mgr.oss-cn-beijing.aliyuncs.com/sample.wav?Signature=fixture"}})),
             Reply::Timeout,
-            Reply::Json(json!({"deleted":true,"id":"file-fe-fixture"})),
         ].into(), ..FakeHost::default()
     };
     let payload = json!({"configuration":account(),"input":{"language":"en"}});
     let error =
-        task::submit(&mut host, Model::Paraformer, &payload, &wav(), 10, 10000).unwrap_err();
+        task::submit(&mut host, Model::Paraformer, &payload, &audio(), 10000).unwrap_err();
     assert_eq!(error.code, "ACCEPTANCE_UNKNOWN");
     let methods: Vec<_> = host
         .exchanges
         .iter()
         .map(|call| call["plan"]["method"].as_str().unwrap())
         .collect();
-    assert_eq!(methods, ["POST", "GET", "POST", "DELETE"]);
-    assert!(host.exchanges[3]["plan"]["url"]
-        .as_str()
-        .unwrap()
-        .ends_with("/files/file-fe-fixture"));
+    assert_eq!(methods, ["POST", "GET", "POST"]);
 }
 
 #[test]
-fn qwen_refuses_oversize_encoded_audio_before_http() {
-    let mut host = FakeHost::default();
-    let payload = json!({"configuration":account()});
-    let wav = vec![1; 7_500_001];
-    assert_eq!(
-        qwen::submit(&mut host, &payload, &wav, 10, 10000)
-            .unwrap_err()
-            .code,
-        "INVALID_INPUT"
-    );
-    assert!(host.exchanges.is_empty());
+fn one_header_read_and_one_upload_reference_per_recording() {
+    let payload = json!({"input":{"audio":{"mediaId":"wav"}},"media":[{"id":"wav","kind":"audio","handle":"audio-lease"}]});
+    for model in [Model::Paraformer, Model::Fun, Model::Qwen] {
+        let mut host = FakeHost {
+            inbound: wav(),
+            replies: [Reply::Json(json!({"id":"file-fe-fixture"}))].into(),
+            ..FakeHost::default()
+        };
+        let audio = received_wav(&mut host, &payload, model).unwrap();
+        assert_eq!(audio.duration_ms, 10);
+        upload::create(&mut host, "https://fixture.test", "account", &audio, 10000).unwrap();
+        assert_eq!(host.audio_reads, [44]);
+        assert_eq!(host.exchanges.len(), 1);
+        assert_eq!(host.exchanges[0]["plan"]["body"], json!({"kind":"multipart","parts":[
+            {"kind":"field","name":"purpose","value":"file-extract"},
+            {"kind":"file","name":"file","fileName":"audio.wav","mime":"audio/x-wav","handle":"audio-lease"}
+        ]}));
+    }
 }

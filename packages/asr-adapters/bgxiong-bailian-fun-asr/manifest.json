@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "93dc2ce373369565d5c3e7d55dff3e6f64f5f1ade149a6b4feef77f01595c304",
+  "artifactSha256": "bb451685ff2317eb9bfc981e30d9fb6460ed7156c3364bd90454fbff082a0fc1",
   "displayName": "百炼 Fun-ASR",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -35,5 +35,5 @@
   },
   "requiredFeatures": [],
   "schemaVersion": 2,
-  "version": "1.0.3"
+  "version": "1.0.4"
 }

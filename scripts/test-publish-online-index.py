@@ -95,6 +95,24 @@ class PublisherContractTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'does not cover this exact ZIP and host'):
                     publisher.validate_first_install(invalid_entry, approval, size, sha)
 
+    def test_owner_authorized_online_batch_pins_source_and_target(self):
+        entry = dict(pluginId='example', version='1.0.4', hostVersionRange='>=0.6.1130',
+                     newInstall=True, upgradeFrom=[dict(version='1.0.3', manifestSha256='a' * 64)])
+        target = dict(entry, targetZipBytes=1024, targetZipSha256='b' * 64)
+        approval = dict(schemaVersion=1, kind='ownerAuthorizedBeforeOnlineAcceptance',
+                        authorization='Authorize this exact batch before acceptance',
+                        packages=[target], sourceLock='release/evidence/source.json')
+        publisher.validate_owner_authorized_online_batch(entry, approval, 1024, 'b' * 64)
+        for invalid, size, sha in [
+            (dict(entry, newInstall=False), 1024, 'b' * 64),
+            (dict(entry, hostVersionRange='>=0.6.1129'), 1024, 'b' * 64),
+            (dict(entry, upgradeFrom=[dict(version='1.0.3', manifestSha256='f' * 64)]), 1024, 'b' * 64),
+            (entry, 1023, 'b' * 64),
+            (entry, 1024, 'c' * 64),
+        ]:
+            with self.subTest(entry=invalid, size=size, sha=sha), self.assertRaises(ValueError):
+                publisher.validate_owner_authorized_online_batch(invalid, approval, size, sha)
+
     def test_upgrade_requires_one_successful_run_for_each_exact_source(self):
         entry = {
             'pluginId': 'test.adapter', 'version': '2.0.0', 'hostVersionRange': '>=0.6.1129',

@@ -12,17 +12,10 @@ checksum = "2cb931c189b85683d69a5cfad41d4d418671e1ac413dd209f3f2fc31e3cfd902"
 name = "bailian-asr-client"
 version = "0.1.0"
 dependencies = [
- "base64",
  "bgx-adapter-v2-sdk",
  "serde_json",
  "sha2",
 ]
-
-[[package]]
-name = "base64"
-version = "0.22.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
 
 [[package]]
 name = "bgx-adapter-v2-sdk"
@@ -36,7 +29,7 @@ dependencies = [
 
 [[package]]
 name = "bgxiong-bailian-paraformer-v2"
-version = "1.0.3"
+version = "1.0.4"
 dependencies = [
  "bailian-asr-client",
 ]

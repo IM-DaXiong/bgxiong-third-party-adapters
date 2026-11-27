@@ -186,6 +186,18 @@ def validate_installed_upgrades(entry, evidence, size, sha256):
             raise ValueError(f"Upgrade evidence does not qualify exact source and target: {entry['pluginId']} from {source['version']}")
 
 
+def validate_owner_authorized_online_batch(entry, evidence, size, sha256):
+    fields(evidence, 'schemaVersion kind authorization packages sourceLock')
+    target = dict(pluginId=entry['pluginId'], version=entry['version'],
+                  hostVersionRange=entry['hostVersionRange'], targetZipBytes=size,
+                  targetZipSha256=sha256, newInstall=entry['newInstall'],
+                  upgradeFrom=entry['upgradeFrom'])
+    if (evidence['schemaVersion'] != 1 or not isinstance(evidence['authorization'], str)
+            or not evidence['authorization'].strip() or not isinstance(evidence['packages'], list)
+            or evidence['packages'].count(target) != 1):
+        raise ValueError(f"Owner authorization does not cover exact online eligibility: {entry['pluginId']}@{entry['version']}")
+
+
 def validated_packages(args, zip_directory=None):
     if zip_directory is None:
         zip_directory = Path("L:/00Dev/bgxiong-00-release/cdn-bgxiong-third-party-adapters")
@@ -267,12 +279,15 @@ def validated_packages(args, zip_directory=None):
         sha256 = digest(data)
         if evidence.get('kind') == 'ownerAuthorizedWithoutFirstInstall' and not entry['newInstall']:
             raise ValueError(f'Owner first-install authorization cannot be used for upgrade-only entry: {plugin}@{version}')
-        if entry['newInstall']:
+        owner_batch = evidence.get('kind') == 'ownerAuthorizedBeforeOnlineAcceptance'
+        if owner_batch and not managed:
+            validate_owner_authorized_online_batch(entry, evidence, len(data), sha256)
+        elif entry['newInstall']:
             validate_first_install(entry, evidence, len(data), sha256)
         if managed and not owner_first_install and (evidence.get('targetZipSha256') != sha256 or evidence.get('targetZipBytes') != len(data)
                         or evidence.get('upgradeFrom', []) != entry['upgradeFrom']):
             raise ValueError(f'Managed speech evidence does not match exact ZIP or upgrade sources: {plugin}@{version}')
-        if not managed:
+        if not managed and not owner_batch:
             validate_installed_upgrades(entry, evidence, len(data), sha256)
         dependencies = [{'kind': 'sdkSpeech', 'resourceVersion': resource}] if managed else []
         packages.append({'pluginId':plugin,'version':version,'displayName':manifest['displayName'],
