@@ -97,7 +97,7 @@ M3 文本生成与对话，需要自己的平台 API Key。 连接：**MiniMax �
 
 在视频里选择要精修的人脸，预览跟踪效果，再提交精修。连接本地或局域网 ComfyUI。分析目标时若已有渲染占用 GPU，工作台会提示等待队列空闲，之后可再次点击「分析目标」。
 
-适用于比格熊 0.6.1128 及以上版本，在线更新索引支持从 1.0.1、1.0.3 升级。手动安装时解压 ZIP，在适配器设置中选择含 `adapter-install.json` 的目录。包内包含配套 ComfyUI 节点及许可说明。
+从 1.0.1 或 1.0.3 在线升级小脸精修时，请使用比格熊 0.6.1129 或更新版本。0.6.1129 能保留旧精修操作的当前模型选择，并识别 1.0.7 新增的轨迹输入。首次手动安装可用 0.6.1128 或更新版本，解压 ZIP 后在适配器设置选择含 `adapter-install.json` 的目录。包内包含配套 ComfyUI 节点及许可说明。
 
 [下载 1.0.7 安装包](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/h3-face-refine-v1.0.7/local.thirdparty.h3-face-refine-1.0.7.zip) · [SHA-256 校验表](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/h3-face-refine-v1.0.7/SHA256SUMS-h3-face-refine-1.0.7.txt) · [发行记录](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/h3-face-refine-v1.0.7)
 
