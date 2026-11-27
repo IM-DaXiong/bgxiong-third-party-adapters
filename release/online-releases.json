@@ -125,7 +125,7 @@
     },
     {
       "pluginId": "local.thirdparty.h3-face-refine",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "newInstall": true,
       "hostVersionRange": ">=0.6.1130",
       "upgradeFrom": [
@@ -144,9 +144,13 @@
         {
           "version": "1.0.8",
           "manifestSha256": "5bb5a94a5ee8cb8e05744c1163be679b331f68a95836e66d25e34125c7f8be8d"
+        },
+        {
+          "version": "1.0.9",
+          "manifestSha256": "fa944842f23aa5d538ab5d686d5c2a71211b4d9a1da486be9cb2bdfbeecafb6f"
         }
       ],
-      "evidence": "release/evidence/20261128-h3-face-refine-1.0.9.json"
+      "evidence": "release/evidence/20261128-h3-face-refine-1.0.10.json"
     },
     {
       "pluginId": "local.independent.flux2-ordered-reference",

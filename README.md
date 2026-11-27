@@ -95,6 +95,10 @@ M3 文本生成与对话，需要自己的平台 API Key。 连接：**MiniMax �
 
 ### MiniMax-H3 人脸精修
 
+**1.0.10 适用于比格熊 0.6.1130 及以上版本。**「分析目标」在所连接的 ComfyUI 原生队列等待执行。待执行的分析可以定向取消。适配器、两个服务端节点和节点安装脚本同时放在一份 ZIP。独立启动的 ComfyUI 在服务所在机器安装节点后沿用原启动方式和地址。从 1.0.9 升级时，已经安装的服务端节点可继续使用。
+
+[下载 1.0.10](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/h3-face-refine-v1.0.10) · [独立 ComfyUI 安装说明](projects/bgxiong-h3-face-refine-adapter/COMFYUI-INSTALL.zh-CN.md)
+
 **1.0.8 适用于比格熊 0.6.1130 及以上版本。** 开启「SAM 脸形遮罩」可沿脸部轮廓合成精修区域。工作台从当前配置的 ComfyUI 读取模型列表。若模型已移走，需重新选择。缺少 SAM 时可关闭遮罩继续精修。旧草稿已开启遮罩却没有模型名时，适配器会在提交时选择当前加载器提供的兼容模型。普通选脸和已确认轨迹共用该规则。
 
 启用遮罩需要 ComfyUI-Impact-Pack 的 `SAMLoader`、人脸精修配套节点 `H3FaceMaskSAM` 和可选模型。模型列表为空时，将对应权重放入 ComfyUI 的 `models/sams` 并刷新列表。加载器已提供 ESAM 时也可选用。

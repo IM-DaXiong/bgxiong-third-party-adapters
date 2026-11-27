@@ -233,6 +233,7 @@ pub fn capabilities() -> Value {
                     vec![json!({"role":"source_video","inputPointer":"/source/mediaId","mediaKind":"video","minCount":1,"maxCount":1})],
                     vec![], "asynchronous");
                   operation["resumeSchema"] = json!({"id":analyze_resume["id"],"digest":analyze_resume["digest"]});
+                  operation["execution"]["cancellation"] = json!("remote");
                   operation }),
                 mk_op(OP_PREVIEW, "跟踪预览", &preview_in, &preview_out, vec![],
                     vec![
@@ -1021,6 +1022,7 @@ mod tests {
         let ops = declared["capabilityContracts"][0]["operations"].as_array().unwrap();
         assert_eq!(ops.len(), 5);
         assert_eq!(ops.iter().map(|op| op["id"].as_str().unwrap()).collect::<Vec<_>>(), [OP_TRAJECTORY, OP_SEED, OP_ANALYZE, OP_PREVIEW, OP_REFINE]);
+        assert_eq!(ops[2]["execution"]["cancellation"], "remote");
         assert!(ops.iter().all(|op| op["inputProfile"] == "operation-input-v1"));
         assert_eq!(ops[4]["version"], 2);
         assert_eq!(ops[3]["uiSchema"]["controls"], json!([]));

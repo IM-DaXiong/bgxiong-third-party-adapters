@@ -93,7 +93,12 @@ pub(super) fn cancel(h: &mut dyn Host, base: &str, prompt_id: &str, token: &Valu
     }
     let request_id = request_identity(token)?;
     let endpoint = format!("{}/bgx_face_refine/queued-analysis/{request_id}/cancel", base.trim_end_matches('/'));
-    http_json(h, "POST", &endpoint, Some(json!({"promptId":prompt_id})))
+    let result = http_json(h, "POST", &endpoint, Some(json!({"promptId":prompt_id})))?;
+    match result["outcome"].as_str() {
+        Some("remote_confirmed") => Ok(result),
+        Some("unsupported") => Err(fail("UNSUPPORTED_FEATURE", "这条分析已开始或已结束，无法从等待队列移除。")),
+        _ => Err(fail("INVALID_RESPONSE", "ComfyUI 未返回有效的分析取消回执。")),
+    }
 }
 
 fn result_receipt(raw: &Value, source: &Value, detection: &Value) -> Result<Value> {

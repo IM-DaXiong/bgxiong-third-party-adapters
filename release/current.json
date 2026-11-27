@@ -1355,165 +1355,165 @@
     },
     {
       "pluginId": "local.thirdparty.h3-face-refine",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "kind": "installable",
       "validation": "sdk_package_and_install_envelope_validated",
       "sourceManifest": "projects/bgxiong-h3-face-refine-adapter/manifest.json",
       "files": [
         {
           "path": "COMFYUI-INSTALL.zh-CN.md",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/COMFYUI-INSTALL.zh-CN.md",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/COMFYUI-INSTALL.zh-CN.md",
           "sha256": "a4570168c7f2ceeed08a59df87da26c306279150c5b51bf39f07984cc871f79e"
         },
         {
           "path": "LICENSE-NOTES.md",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/LICENSE-NOTES.md",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/LICENSE-NOTES.md",
           "sha256": "cc36aff667de6eedd6fddf90c4cc4bb6869568be7d62da1562c07067bb2ad452"
         },
         {
           "path": "README.zh-CN.md",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/README.zh-CN.md",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/README.zh-CN.md",
           "sha256": "7adbdeb9e3ea0799d86d590555ec49825d7ef891f5870a094c7f627463c3498a"
         },
         {
           "path": "adapter-install.json",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/adapter-install.json",
-          "sha256": "09104a9658d3a190f64332b09fb0da83a00a3429294a333da73ebcc5c10f7b07"
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/adapter-install.json",
+          "sha256": "3c06bb8f60a354539ff55acfbd65674bbe66db4a3f5862c052c4b28764f33b7f"
         },
         {
           "path": "comfy-nodes/BGXFaceRefineContract/__init__.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/BGXFaceRefineContract/__init__.py",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/BGXFaceRefineContract/__init__.py",
           "sha256": "f83e44368e8d8704c6a996a771a61b2b4062676f86c7b307b30ea78c71e482da"
         },
         {
           "path": "comfy-nodes/BGXFaceRefineContract/dependencies/scenedetect-0.7.3-py3-none-any.whl",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/BGXFaceRefineContract/dependencies/scenedetect-0.7.3-py3-none-any.whl",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/BGXFaceRefineContract/dependencies/scenedetect-0.7.3-py3-none-any.whl",
           "sha256": "74b92aac271c712facae35b816c8e1b953e8138ef5b302272da15b1ab72c036b"
         },
         {
           "path": "comfy-nodes/BGXFaceRefineContract/face_track.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/BGXFaceRefineContract/face_track.py",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/BGXFaceRefineContract/face_track.py",
           "sha256": "416ab189af2392444f13701a7a2a168f63f6a23e8550bcbbe2016556bc7a4777"
         },
         {
           "path": "comfy-nodes/BGXFaceRefineContract/queued_analysis.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/BGXFaceRefineContract/queued_analysis.py",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/BGXFaceRefineContract/queued_analysis.py",
           "sha256": "fe951d8c0d3171c5915f6c312e5962635ec72af3b5522b5437370b63316e3bab"
         },
         {
           "path": "comfy-nodes/BGXFaceRefineContract/seed.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/BGXFaceRefineContract/seed.py",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/BGXFaceRefineContract/seed.py",
           "sha256": "3ad1bc1bb4f0ef4e3d97f89f79d2e682a1df5584d7371ace1f5dd7ced71788a5"
         },
         {
           "path": "comfy-nodes/BGXFaceRefineContract/session_api.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/BGXFaceRefineContract/session_api.py",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/BGXFaceRefineContract/session_api.py",
           "sha256": "072c0c6bf6c100465f92ee600821666755d73be7797910e7d7b037e5a21632bf"
         },
         {
           "path": "comfy-nodes/BGXFaceRefineContract/sessions.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/BGXFaceRefineContract/sessions.py",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/BGXFaceRefineContract/sessions.py",
           "sha256": "fd1b6f2f478ceffbc625dfa8b2d102ff6e2d3e8ef847760d0fda10802a9cdc15"
         },
         {
           "path": "comfy-nodes/BGXFaceRefineContract/tracking.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/BGXFaceRefineContract/tracking.py",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/BGXFaceRefineContract/tracking.py",
           "sha256": "518bf9d1d997451a2353878e1569e98964e5e16d79da826463c2935c4388ec46"
         },
         {
           "path": "comfy-nodes/BGXFaceRefineContract/trajectory.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/BGXFaceRefineContract/trajectory.py",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/BGXFaceRefineContract/trajectory.py",
           "sha256": "d66e59b8b372bfaec42a39b4697668016a52e7d168041b9c22ac766625c520b2"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/bug_report.yml",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/bug_report.yml",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/bug_report.yml",
           "sha256": "890bbb41a0df4e6519c012148c9e6204b05fb7833f1a340d1133c5622f57ac58"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/config.yml",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/config.yml",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/ComfyUI-H3-FaceRefine/.github/ISSUE_TEMPLATE/config.yml",
           "sha256": "7cca53eddc3d54dcbe80b600f9295a49d1c6d93fff0ca85ad57620eb8447d759"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/.github/workflows/publish.yml",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/.github/workflows/publish.yml",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/ComfyUI-H3-FaceRefine/.github/workflows/publish.yml",
           "sha256": "0888358066113715b575e29cb6613bb01845df967bb6c153578867613de3d835"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/.gitignore",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/.gitignore",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/ComfyUI-H3-FaceRefine/.gitignore",
           "sha256": "5b7e52bd0188656a2c97a3d511231d03f507d4b974ae90517ad7b1a610a11b80"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/LICENSE",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/LICENSE",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/ComfyUI-H3-FaceRefine/LICENSE",
           "sha256": "b03d4e31e6bb15940bfa88d3e270653e0925ea01d9828842d2ee22b3ea620bb9"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/README.md",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/README.md",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/ComfyUI-H3-FaceRefine/README.md",
           "sha256": "0685f78860b9e72f6abf6db24b37e9ab8def452d1a6c806c88d2f2ac7d704516"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/__init__.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/__init__.py",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/ComfyUI-H3-FaceRefine/__init__.py",
           "sha256": "66327d684adb8768b4be2db8527c45844c72d008a88ccc8c849fb049835a2d92"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Auto_Select.json",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Auto_Select.json",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Auto_Select.json",
           "sha256": "b75ca7e9c52b41994b0242c742c151ae069b184654169ff765f9923b5366c4d3"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Manual_Select.json",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Manual_Select.json",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/ComfyUI-H3-FaceRefine/example_workflows/H3_Face_Refine_Manual_Select.json",
           "sha256": "233c70e8e570566eee53d63126bde734777c1e1e2e20599197ae78b859a73151"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/nodes.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/nodes.py",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/ComfyUI-H3-FaceRefine/nodes.py",
           "sha256": "643d186d8471347cba40891a8a0c5ad60a4e0186058373a83c95ee0cf9edd7c7"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/picker_api.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/picker_api.py",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/ComfyUI-H3-FaceRefine/picker_api.py",
           "sha256": "21767c8def583583c94f4ae4d19319baf1ce6456e348e10bd0fcfb8abf79363f"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/pyproject.toml",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/pyproject.toml",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/ComfyUI-H3-FaceRefine/pyproject.toml",
           "sha256": "b7d944341ef75e73c5a28cd6eba441a90ddb237b35f03e70a9b0b71e637c96e9"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/requirements.txt",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/requirements.txt",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/ComfyUI-H3-FaceRefine/requirements.txt",
           "sha256": "44a8f6759579c36dea25aca606b3d48b774e96d88271d1e6c36efda779328489"
         },
         {
           "path": "comfy-nodes/ComfyUI-H3-FaceRefine/web/h3_face_select.js",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/comfy-nodes/ComfyUI-H3-FaceRefine/web/h3_face_select.js",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/comfy-nodes/ComfyUI-H3-FaceRefine/web/h3_face_select.js",
           "sha256": "b82e637c3c3149921896dcb3cd9ec48e5910b0fa656e4f1f9714dbe83b0e239e"
         },
         {
           "path": "install-comfyui-nodes.py",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/install-comfyui-nodes.py",
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/install-comfyui-nodes.py",
           "sha256": "653a60373248187fa793f94feac9aff8d553716b92b1b63d8bc3accf690b73e3"
         },
         {
           "path": "package/adapter.wasm",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/package/adapter.wasm",
-          "sha256": "0cd4e4588a90e96a4a1c7019456a56ee5b4b0acd92a12d55eae9bbd967dc2c36"
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/package/adapter.wasm",
+          "sha256": "2b81a6fe7dc91ff4163f7453ef907a212de934b455ed44bd86d68b7d5cac56a9"
         },
         {
           "path": "package/manifest.json",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/package/manifest.json",
-          "sha256": "fa944842f23aa5d538ab5d686d5c2a71211b4d9a1da486be9cb2bdfbeecafb6f"
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/package/manifest.json",
+          "sha256": "077ff13f8d581e67a4b1dc889959d1836e337c1539060d616ff3d6dcd0fa4a85"
         },
         {
           "path": "package/manifest.sha256",
-          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.9/package/manifest.sha256",
-          "sha256": "3ebaf4dd387655cf7c07ac3dfe94093b8637a476088ea2cccd26f7e2a86acd8f"
+          "source": "artifacts/current/local.thirdparty.h3-face-refine/1.0.10/package/manifest.sha256",
+          "sha256": "709a25bc1ac0c8c3d3be2015f068c55d7d28e0e87028751832bd6827f32b8ee3"
         }
       ]
     },
