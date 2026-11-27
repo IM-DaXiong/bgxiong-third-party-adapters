@@ -2,6 +2,7 @@
 extern crate alloc;
 
 mod http;
+mod policy;
 mod qwen;
 mod task;
 #[cfg(test)]
@@ -57,7 +58,7 @@ fn reference(schema: &Value) -> Value {
     json!({"id":schema["id"],"digest":schema["digest"]})
 }
 
-fn capabilities(definition: &str) -> Value {
+fn capabilities(model: Model, definition: &str) -> Value {
     let mut root: Value = serde_json::from_str(definition).expect("ASR capabilities");
     let contract = &mut root["capabilityContracts"][0];
     let input = schema(INPUT);
@@ -70,6 +71,7 @@ fn capabilities(definition: &str) -> Value {
     // The standard operation identity includes its resume schema even for a synchronous package.
     contract["operations"][0]["resumeSchema"] = reference(&resume);
     contract["schemas"] = json!([input, output, config, resume]);
+    policy::attach_contract(&mut root, model);
     root
 }
 
@@ -130,13 +132,19 @@ fn dispatch(
         .map_err(|_| Failure::new("INVALID_INPUT", "识别参数格式无效"))?;
     use sdk::InvocationOperation as Op;
     match request.r#operation {
-        Op::V0 => return Ok(capabilities(definition)),
+        Op::V0 => return Ok(capabilities(model, definition)),
         Op::V1 if payload["kind"] == "package_validation" => {
             return Ok(json!({
                 "packageValid":true,"connection":"not_checked","authentication":"not_checked","resources":"not_checked","issues":[]
             }))
         }
         _ => {}
+    }
+    if request.r#operation == Op::V3
+        && payload["capabilityKey"] == "speech.transcribe.policy"
+        && payload["operationId"] == "std/speech.transcribe.policy"
+    {
+        return policy::submit(model, &payload);
     }
     if payload["capabilityKey"] != "speech.transcribe"
         || payload["operationId"] != "std/speech.transcribe"
@@ -151,6 +159,9 @@ fn dispatch(
                 return Err(Failure::new("INVALID_INPUT", "百炼识别仅返回原文"));
             }
             let (wav, duration) = received_wav(host, &payload)?;
+            if (wav.len() - 44) / 2 > policy::max_samples(model) {
+                return Err(Failure::new("INVALID_INPUT", "音频超过百炼单批识别上限"));
+            }
             if model == Model::Qwen {
                 qwen::submit(host, &payload, &wav, duration, request.r#budget_ms)
             } else {

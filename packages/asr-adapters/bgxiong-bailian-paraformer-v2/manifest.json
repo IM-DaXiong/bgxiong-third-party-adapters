@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "a0f66b1aafed079f26faeee4815e3da122f7b37493dffd2f4f9f240dc054f297",
+  "artifactSha256": "ddf47a51de7f36c7cde13d893c5514daa12e107f96e9e21cc923c278a3a68f91",
   "displayName": "百炼 Paraformer v2",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -35,5 +35,5 @@
   },
   "requiredFeatures": [],
   "schemaVersion": 2,
-  "version": "1.0.2"
+  "version": "1.0.3"
 }

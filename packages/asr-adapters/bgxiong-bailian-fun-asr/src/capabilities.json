@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "pluginId": "local.bgx.bailian-fun-asr",
-  "pluginVersion": "1.0.2",
+  "pluginVersion": "1.0.3",
   "capabilityContracts": [
     {
       "schemaVersion": 2,

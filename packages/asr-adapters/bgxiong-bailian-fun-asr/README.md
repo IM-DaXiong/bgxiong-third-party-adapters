@@ -3,3 +3,5 @@
 通过百炼正式文件 API 上传音频并取得短期下载地址。转写结束后删除上传文件。取消时停止本地处理并删除该文件，已受理的百炼任务可能继续运行。
 
 使用「设置」中已配置的北京业务空间百炼账号。支持纯文本识别。
+
+The adapter declares whole-file chat and progressive dictation policies through `std/speech.transcribe.policy@1`. The bundled file recognition operation returns one result per accepted batch.

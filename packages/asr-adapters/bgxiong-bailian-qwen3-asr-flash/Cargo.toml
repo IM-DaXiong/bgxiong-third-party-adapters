@@ -2,7 +2,7 @@
 
 [package]
 name = "bgxiong-bailian-qwen3-asr-flash"
-version = "1.0.2"
+version = "1.0.3"
 edition = "2021"
 license = "LicenseRef-Proprietary"
 publish = false
