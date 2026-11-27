@@ -127,7 +127,7 @@
       "pluginId": "local.thirdparty.h3-face-refine",
       "version": "1.0.7",
       "newInstall": true,
-      "hostVersionRange": ">=0.6.1128",
+      "hostVersionRange": ">=0.6.1129",
       "upgradeFrom": [
         {
           "version": "1.0.1",

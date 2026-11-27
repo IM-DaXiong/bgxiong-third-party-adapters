@@ -17,6 +17,27 @@
   },
   "sourceVersion": "0.1.3",
   "sourceManifestSha256": "0f22774ab6c796775376af3cf00b428e0cd3557356f1069a9618d816c7102b02",
-  "installedUpgradeValidation": "pending on the normal installed owner",
-  "managedUpgradeFixture": "The synthetic managed-ComfyUI source was refused by the normal declared ComfyUI envelope. This test is separate from the signed first-install pass."
+  "managedUpgradeFixture": "The synthetic managed-ComfyUI source was refused by the normal declared ComfyUI envelope. This test is separate from the signed first-install pass.",
+  "initialInstalledUpgradeValidation": "pending on the normal installed owner",
+  "installedUpgradeRuns": [
+    {
+      "kind": "installedSourceOnlineUpgrade",
+      "pluginId": "local.bgx.ltx25",
+      "sourceVersion": "0.1.3",
+      "sourceManifestSha256": "0f22774ab6c796775376af3cf00b428e0cd3557356f1069a9618d816c7102b02",
+      "targetVersion": "0.1.8",
+      "targetZipSha256": "917cd05391e5088098838e92e2c7ab330e90a96b8240701a77e3eedaecc91ea2",
+      "targetZipBytes": 232777,
+      "hostVersion": "0.6.1129",
+      "phase": "done",
+      "currentSelectionMigrated": true,
+      "indexSequence": 19,
+      "testBinarySha256": "bf8b398e37ec3decc9f22bbe78562773aef8b069ca73ce76b84b66c0e0f4422b",
+      "evidenceSha256": "c15a10ac66be030140a268fce0707fac9a00c20da74eebd62e9a4d2d447bad32",
+      "hostExeSha256": "4f8d30cee386c7741a5167da157c5df01011f51b53bac0c86e9a970d2485e240",
+      "validatedHostRange": ">=0.6.1125",
+      "testBinarySource": "38efc2c205a5274658bba84e68bec7cb6aeeabef (1597a87839 + a316e9781d84de625f5b9f7582ef29f63bebd006)",
+      "hostSource": "730c08426e9113be49257efeb4b21ebac26cb1dc"
+    }
+  ]
 }

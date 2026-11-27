@@ -8,7 +8,6 @@
   "sdkSourceCommit": "74cd600321e257c558172b81886b3f9040f5d56f",
   "sourceLock": "release/evidence/20261126-runninghub-source-lock.json",
   "sourceIndexSequence": 14,
-  "upgradeVerification": "Production source ZIP and manifest fingerprint matched; installed-source online upgrade not run.",
   "firstInstallVerification": "ZIP members byte-identical to the directory installed and registered by the isolated host test.",
   "upgradeFrom": [
     {
@@ -22,5 +21,27 @@
   "sourceManifestSha256": "ab33bd8f14d5d65a00bb9b32cf3acaf7447a026e6080e592b627dfc06007dcc8",
   "sourceZipSha256": "4885b87c9adf525949e8d52c8b13e654f7981527697b355203d9464098f297c7",
   "targetZipSha256": "f55e936778941f56bd10729909c6c59a1f85d10cb336a8520181057e49fcaa26",
-  "targetZipBytes": 239215
+  "targetZipBytes": 239215,
+  "initialUpgradeVerification": "Production source ZIP and manifest fingerprint matched; installed-source online upgrade not run.",
+  "installedUpgradeRuns": [
+    {
+      "kind": "installedSourceOnlineUpgrade",
+      "pluginId": "local.thirdparty.runninghub-qwen-image-21",
+      "sourceVersion": "0.1.5",
+      "sourceManifestSha256": "ab33bd8f14d5d65a00bb9b32cf3acaf7447a026e6080e592b627dfc06007dcc8",
+      "targetVersion": "0.1.6",
+      "targetZipSha256": "f55e936778941f56bd10729909c6c59a1f85d10cb336a8520181057e49fcaa26",
+      "targetZipBytes": 239215,
+      "hostVersion": "0.6.1129",
+      "phase": "done",
+      "currentSelectionMigrated": true,
+      "indexSequence": 19,
+      "testBinarySha256": "bf8b398e37ec3decc9f22bbe78562773aef8b069ca73ce76b84b66c0e0f4422b",
+      "evidenceSha256": "2cc1d330d243afc9da3383c189062d3544753c100a133f7f0ff386205795f5cb",
+      "hostExeSha256": "4f8d30cee386c7741a5167da157c5df01011f51b53bac0c86e9a970d2485e240",
+      "validatedHostRange": ">=0.6.1125",
+      "testBinarySource": "38efc2c205a5274658bba84e68bec7cb6aeeabef (1597a87839 + a316e9781d84de625f5b9f7582ef29f63bebd006)",
+      "hostSource": "730c08426e9113be49257efeb4b21ebac26cb1dc"
+    }
+  ]
 }

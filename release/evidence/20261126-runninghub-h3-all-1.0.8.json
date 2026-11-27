@@ -8,7 +8,6 @@
   "sdkSourceCommit": "74cd600321e257c558172b81886b3f9040f5d56f",
   "sourceLock": "release/evidence/20261126-runninghub-source-lock.json",
   "sourceIndexSequence": 14,
-  "upgradeVerification": "Production source ZIP and manifest fingerprint matched; installed-source online upgrade not run.",
   "firstInstallVerification": "ZIP members byte-identical to the directory installed and registered by the isolated host test.",
   "upgradeFrom": [
     {
@@ -22,5 +21,27 @@
   "sourceManifestSha256": "5d13bc5135be539b648eda3751a688b748108dda40e87f9c81d7351eb1f41ba1",
   "sourceZipSha256": "b6bd90f73c23e4872cd78c12e7b7918b09f28dc5fa4a77d45aed798314f8b4a8",
   "targetZipSha256": "50075bf57cedd59215f17326711e2c126e6e5bbd774e76d601c92ec6669c49fd",
-  "targetZipBytes": 307181
+  "targetZipBytes": 307181,
+  "initialUpgradeVerification": "Production source ZIP and manifest fingerprint matched; installed-source online upgrade not run.",
+  "installedUpgradeRuns": [
+    {
+      "kind": "installedSourceOnlineUpgrade",
+      "pluginId": "local.thirdparty.runninghub-h3-all",
+      "sourceVersion": "1.0.7",
+      "sourceManifestSha256": "5d13bc5135be539b648eda3751a688b748108dda40e87f9c81d7351eb1f41ba1",
+      "targetVersion": "1.0.8",
+      "targetZipSha256": "50075bf57cedd59215f17326711e2c126e6e5bbd774e76d601c92ec6669c49fd",
+      "targetZipBytes": 307181,
+      "hostVersion": "0.6.1129",
+      "phase": "done",
+      "currentSelectionMigrated": true,
+      "indexSequence": 19,
+      "testBinarySha256": "bf8b398e37ec3decc9f22bbe78562773aef8b069ca73ce76b84b66c0e0f4422b",
+      "evidenceSha256": "f8883c21eeb640fb60c80e8a7e7d280c9c13eb3b356e205c4c1d58d3947ffae4",
+      "hostExeSha256": "4f8d30cee386c7741a5167da157c5df01011f51b53bac0c86e9a970d2485e240",
+      "validatedHostRange": ">=0.6.1125",
+      "testBinarySource": "38efc2c205a5274658bba84e68bec7cb6aeeabef (1597a87839 + a316e9781d84de625f5b9f7582ef29f63bebd006)",
+      "hostSource": "730c08426e9113be49257efeb4b21ebac26cb1dc"
+    }
+  ]
 }

@@ -17,5 +17,26 @@
   },
   "sourceVersion": "0.1.2",
   "sourceManifestSha256": "96f2b733ddcd95d4bc000e077b1047947222f2323a3530beab36d8f5ed342c07",
-  "installedUpgradeValidation": "pending on the normal installed owner"
+  "initialInstalledUpgradeValidation": "pending on the normal installed owner",
+  "installedUpgradeRuns": [
+    {
+      "kind": "installedSourceOnlineUpgrade",
+      "pluginId": "local.bgx.ltx23",
+      "sourceVersion": "0.1.2",
+      "sourceManifestSha256": "96f2b733ddcd95d4bc000e077b1047947222f2323a3530beab36d8f5ed342c07",
+      "targetVersion": "0.1.4",
+      "targetZipSha256": "50c1bfb7aa12d5c04d3b2af7a8bb7cac52d1772a5391f31f8c4716576680b548",
+      "targetZipBytes": 224178,
+      "hostVersion": "0.6.1129",
+      "phase": "done",
+      "currentSelectionMigrated": true,
+      "indexSequence": 19,
+      "testBinarySha256": "bf8b398e37ec3decc9f22bbe78562773aef8b069ca73ce76b84b66c0e0f4422b",
+      "evidenceSha256": "92a97753406d852a7c6a1c8c6f5d86c796fc4eceb40fafd9462864992e9eeaea",
+      "hostExeSha256": "4f8d30cee386c7741a5167da157c5df01011f51b53bac0c86e9a970d2485e240",
+      "validatedHostRange": ">=0.6.1125",
+      "testBinarySource": "38efc2c205a5274658bba84e68bec7cb6aeeabef (1597a87839 + a316e9781d84de625f5b9f7582ef29f63bebd006)",
+      "hostSource": "730c08426e9113be49257efeb4b21ebac26cb1dc"
+    }
+  ]
 }

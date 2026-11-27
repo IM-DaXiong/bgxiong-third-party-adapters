@@ -95,6 +95,29 @@ class PublisherContractTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'does not cover this exact ZIP and host'):
                     publisher.validate_first_install(invalid_entry, approval, size, sha)
 
+    def test_upgrade_requires_one_successful_run_for_each_exact_source(self):
+        entry = {
+            'pluginId': 'test.adapter', 'version': '2.0.0', 'hostVersionRange': '>=0.6.1129',
+            'upgradeFrom': [{'version': '1.0.0', 'manifestSha256': 'a' * 64},
+                            {'version': '1.0.1', 'manifestSha256': 'b' * 64}],
+        }
+        target = 'c' * 64
+        base = dict(kind='installedSourceOnlineUpgrade', pluginId=entry['pluginId'],
+                    targetVersion=entry['version'], targetZipBytes=1024, targetZipSha256=target,
+                    hostVersion='0.6.1129', hostExeSha256='d' * 64, testBinarySha256='f' * 64,
+                    evidenceSha256='e' * 64,
+                    validatedHostRange=entry['hostVersionRange'], phase='done', currentSelectionMigrated=True)
+        runs = [dict(base, sourceVersion=src['version'], sourceManifestSha256=src['manifestSha256'])
+                for src in entry['upgradeFrom']]
+        with self.assertRaisesRegex(ValueError, 'Missing installed-source'):
+            publisher.validate_installed_upgrades(entry, {'newInstallQualified': True}, 1024, target)
+        publisher.validate_installed_upgrades(entry, {'installedUpgradeRuns': runs}, 1024, target)
+        for change in ({'phase': 'failed'}, {'currentSelectionMigrated': False},
+                       {'sourceManifestSha256': 'f' * 64}, {'targetZipSha256': 'f' * 64}):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                publisher.validate_installed_upgrades(
+                    entry, {'installedUpgradeRuns': [runs[0], dict(runs[1], **change)]}, 1024, target)
+
     def test_valid_host_ranges(self):
         for value in ['*', 'x', 'X', '^0.6', '>=0.6.0', '>= 0.6.0, <1.0.0',
                       '1', '1.2', '~1.2.3', '1.2.*', '1.x.*', '=1.2.3',

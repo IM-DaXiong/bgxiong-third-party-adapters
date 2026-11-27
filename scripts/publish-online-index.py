@@ -159,6 +159,32 @@ def validate_first_install(entry, evidence, size, sha256):
         raise ValueError(f'First-install evidence does not qualify exact ZIP: {plugin}@{version}')
 
 
+def validate_installed_upgrades(entry, evidence, size, sha256):
+    sources = entry['upgradeFrom']
+    if not sources:
+        return
+    measured = evidence.get('installedUpgradeRuns')
+    if not isinstance(measured, list) or len(measured) != len(sources):
+        raise ValueError(f"Missing installed-source online upgrade evidence: {entry['pluginId']}@{entry['version']}")
+    for source in sources:
+        matches = [run for run in measured if isinstance(run, dict)
+                   and run.get('sourceVersion') == source['version']
+                   and run.get('sourceManifestSha256') == source['manifestSha256']]
+        if len(matches) != 1:
+            raise ValueError(f"Missing or duplicate upgrade evidence: {entry['pluginId']} from {source['version']}")
+        run = matches[0]
+        if (run.get('kind') != 'installedSourceOnlineUpgrade'
+                or run.get('pluginId') != entry['pluginId'] or run.get('targetVersion') != entry['version']
+                or run.get('targetZipBytes') != size or run.get('targetZipSha256') != sha256
+                or run.get('validatedHostRange') != entry['hostVersionRange']
+                or not stable_version(run.get('hostVersion'))
+                or not HEX.fullmatch(str(run.get('hostExeSha256', '')))
+                or not HEX.fullmatch(str(run.get('testBinarySha256', '')))
+                or not HEX.fullmatch(str(run.get('evidenceSha256', '')))
+                or run.get('phase') != 'done' or run.get('currentSelectionMigrated') is not True):
+            raise ValueError(f"Upgrade evidence does not qualify exact source and target: {entry['pluginId']} from {source['version']}")
+
+
 def validated_packages(args, zip_directory=None):
     if zip_directory is None:
         zip_directory = Path("L:/00Dev/bgxiong-00-release/cdn-bgxiong-third-party-adapters")
@@ -244,6 +270,8 @@ def validated_packages(args, zip_directory=None):
         if managed and not owner_first_install and (evidence.get('targetZipSha256') != sha256 or evidence.get('targetZipBytes') != len(data)
                         or evidence.get('upgradeFrom', []) != entry['upgradeFrom']):
             raise ValueError(f'Managed speech evidence does not match exact ZIP or upgrade sources: {plugin}@{version}')
+        if not managed:
+            validate_installed_upgrades(entry, evidence, len(data), sha256)
         dependencies = [{'kind': 'sdkSpeech', 'resourceVersion': resource}] if managed else []
         packages.append({'pluginId':plugin,'version':version,'displayName':manifest['displayName'],
             'newInstall':entry['newInstall'],'hostVersionRange':host,'protocolVersion':2,

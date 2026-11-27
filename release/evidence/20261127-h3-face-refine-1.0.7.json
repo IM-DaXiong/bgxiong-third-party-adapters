@@ -21,5 +21,45 @@
   "pluginId": "local.thirdparty.h3-face-refine",
   "version": "1.0.7",
   "targetZipSha256": "2bcbe474cbae108ddbf57cd0ae1c9c49ed83fec972a44752c4927394ba7ad6a8",
-  "targetZipBytes": 590401
+  "targetZipBytes": 590401,
+  "installedUpgradeRuns": [
+    {
+      "kind": "installedSourceOnlineUpgrade",
+      "pluginId": "local.thirdparty.h3-face-refine",
+      "sourceVersion": "1.0.1",
+      "sourceManifestSha256": "b78b182d7cac9ae3246948378ac4dcaa14ac04ad576220276a66d9bbf6b08893",
+      "targetVersion": "1.0.7",
+      "targetZipSha256": "2bcbe474cbae108ddbf57cd0ae1c9c49ed83fec972a44752c4927394ba7ad6a8",
+      "targetZipBytes": 590401,
+      "hostVersion": "0.6.1129",
+      "phase": "done",
+      "currentSelectionMigrated": true,
+      "indexSequence": 19,
+      "testBinarySha256": "bf8b398e37ec3decc9f22bbe78562773aef8b069ca73ce76b84b66c0e0f4422b",
+      "evidenceSha256": "aecd6288302e70ed280e2998c55405abd13200c92b3ce16f6631424d05806e1e",
+      "hostExeSha256": "4f8d30cee386c7741a5167da157c5df01011f51b53bac0c86e9a970d2485e240",
+      "validatedHostRange": ">=0.6.1129",
+      "testBinarySource": "38efc2c205a5274658bba84e68bec7cb6aeeabef (1597a87839 + a316e9781d84de625f5b9f7582ef29f63bebd006)",
+      "hostSource": "730c08426e9113be49257efeb4b21ebac26cb1dc"
+    },
+    {
+      "kind": "installedSourceOnlineUpgrade",
+      "pluginId": "local.thirdparty.h3-face-refine",
+      "sourceVersion": "1.0.3",
+      "sourceManifestSha256": "5b611030bd6f598acc12c98954b99fd47f42c64a35c1069086a243e992b216c7",
+      "targetVersion": "1.0.7",
+      "targetZipSha256": "2bcbe474cbae108ddbf57cd0ae1c9c49ed83fec972a44752c4927394ba7ad6a8",
+      "targetZipBytes": 590401,
+      "hostVersion": "0.6.1129",
+      "phase": "done",
+      "currentSelectionMigrated": true,
+      "indexSequence": 19,
+      "testBinarySha256": "bf8b398e37ec3decc9f22bbe78562773aef8b069ca73ce76b84b66c0e0f4422b",
+      "evidenceSha256": "284c22700ae7b5ca93032dd6b39b1f96b7176dc3cbf701c5483dc4346558705b",
+      "hostExeSha256": "4f8d30cee386c7741a5167da157c5df01011f51b53bac0c86e9a970d2485e240",
+      "validatedHostRange": ">=0.6.1129",
+      "testBinarySource": "38efc2c205a5274658bba84e68bec7cb6aeeabef (1597a87839 + a316e9781d84de625f5b9f7582ef29f63bebd006)",
+      "hostSource": "730c08426e9113be49257efeb4b21ebac26cb1dc"
+    }
+  ]
 }
