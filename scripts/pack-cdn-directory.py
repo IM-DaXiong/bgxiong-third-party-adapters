@@ -17,10 +17,11 @@ import shutil
 import sys
 from types import SimpleNamespace
 import zipfile
+from artifact_paths import archive_checkout
 
 ROOT = Path(__file__).resolve().parents[1]
 DEST = Path("L:/00Dev/bgxiong-00-release/cdn-bgxiong-third-party-adapters")
-QUALIFICATION = ROOT / "artifacts" / "cdn-index" / "qualification"
+QUALIFICATION = archive_checkout(ROOT) / "artifacts" / "cdn-index" / "qualification"
 
 
 class PackError(Exception):
@@ -49,7 +50,7 @@ def locked_packages() -> list[tuple[str, list[tuple[str, bytes]]]]:
     packages = []
     seen = set()
     problems = []
-    root = ROOT.resolve()
+    root = archive_checkout(ROOT)
     eligibility_file = ROOT / "release/online-releases.json"
     eligibility = json.loads(eligibility_file.read_text(encoding="utf-8-sig")) if eligibility_file.is_file() else {}
     online_speech = {(item["pluginId"], item["version"]) for item in eligibility.get("packages", [])
@@ -151,7 +152,7 @@ def assemble(packages, staging: Path) -> dict[str, tuple[int, str]]:
             plugin, version = manifest["pluginId"], manifest["version"]
             if name != f"{plugin}-{version}.zip":
                 raise PackError(f"Managed speech ZIP identity differs: {name}")
-            frozen = ROOT / "artifacts" / "current" / plugin / f"{version}.zip"
+            frozen = archive_checkout(ROOT) / "artifacts" / "current" / plugin / f"{version}.zip"
             with zipfile.ZipFile(frozen) as archive:
                 names = archive.namelist()
                 if len(names) != len(files) or set(names) != {path for path, _ in files}:
@@ -186,7 +187,7 @@ def publish(packages, *, qualification=False, check=False, local_only=False,
                 raise PackError("Missing production-signed latest.json; run sign-online-index-interactive.ps1", 2)
             signed_index = latest_path.read_bytes()
         publisher = verifier.load_publisher()
-    artifacts = ROOT / "artifacts"
+    artifacts = archive_checkout(ROOT) / "artifacts"
     artifacts.mkdir(exist_ok=True)
     staging = artifacts / f".cdn-staging-{os.getpid()}"
     backup = artifacts / f".cdn-backup-{os.getpid()}"

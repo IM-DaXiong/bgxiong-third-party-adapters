@@ -19,6 +19,7 @@ import sys
 import tempfile
 import urllib.request
 import zipfile
+from artifact_paths import archive_checkout
 
 ROOT = Path(__file__).resolve().parents[1]
 INDEX_URL = 'https://r.bgxiong.com/client/ai-story/bgxiong-third-party-adapters/latest.json'
@@ -189,6 +190,7 @@ def validated_packages(args, zip_directory=None):
     if zip_directory is None:
         zip_directory = Path("L:/00Dev/bgxiong-00-release/cdn-bgxiong-third-party-adapters")
     current = read(ROOT/'release/current.json')
+    archive_root = archive_checkout(ROOT)
     eligible = read(ROOT/'release/online-releases.json')
     fields(eligible, 'schemaVersion packages')
     if eligible['schemaVersion'] != 1 or not isinstance(eligible['packages'], list) or not eligible['packages']:
@@ -239,8 +241,8 @@ def validated_packages(args, zip_directory=None):
                 raise ValueError('Source fingerprint missing/mismatched; provide --source-lock')
         # Every locked input is rechecked: an existing ZIP alone is not authority.
         for item in locked['files']:
-            source = (ROOT/item['source']).resolve()
-            if not source.is_relative_to(ROOT) or digest(source.read_bytes()) != item['sha256']:
+            source = (archive_root/item['source']).resolve()
+            if not source.is_relative_to(archive_root) or digest(source.read_bytes()) != item['sha256']:
                 raise ValueError('Current release lock source changed')
         name = f'{plugin}-{version}.zip'
         zip_path = zip_directory/name
@@ -430,7 +432,7 @@ def run_index(args, zip_directory=None, packer=None):
     if not args.pubkey:
         raise ValueError('--pubkey is required')
     public = Path(args.pubkey).read_text(encoding='utf-8-sig').strip()
-    output = ROOT/'artifacts/cdn-index'
+    output = archive_checkout(ROOT)/'artifacts/cdn-index'
     latest_path = output/'latest.json'
     if args.commit_receipt:
         latest = latest_path.read_bytes()
