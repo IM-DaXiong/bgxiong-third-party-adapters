@@ -125,11 +125,16 @@
     },
     {
       "pluginId": "local.thirdparty.h3-face-refine",
-      "version": "1.0.1",
+      "version": "1.0.3",
       "newInstall": true,
-      "hostVersionRange": ">=0.6.1125",
-      "upgradeFrom": [],
-      "evidence": "release/evidence/20261123-current-adapters-host-range-authorization.json"
+      "hostVersionRange": ">=0.6.1128",
+      "upgradeFrom": [
+        {
+          "version": "1.0.1",
+          "manifestSha256": "b78b182d7cac9ae3246948378ac4dcaa14ac04ad576220276a66d9bbf6b08893"
+        }
+      ],
+      "evidence": "release/evidence/20261127-h3-face-refine-1.0.3.json"
     },
     {
       "pluginId": "local.independent.flux2-ordered-reference",

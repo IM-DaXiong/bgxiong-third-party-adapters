@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "lockSha256": "883cc3a11c16a0c640fe3221717eb5415da6705cf474b6cdcaa18fe1e165dc48",
-  "archiveSha256": "92279c73fb7a636f6cda1b2b3234bd04435f0497314ac7e838fa6eebaa85ab0a",
-  "archiveBytes": 7605319,
-  "files": 276,
+  "lockSha256": "fb00cab7bb992a4dca196cbde05c178bfc1e0e987a03bfa4e1453e21ec04c5b3",
+  "archiveSha256": "5ac33476cc6566b514c053dd76972756f3c9e71a1922648329fabd71959aca6d",
+  "archiveBytes": 7617691,
   "fileCount": 276,
-  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/runninghub-default-names-20261126/third-party-frozen-resources-883cc3a11c16.zip"
+  "files": 276,
+  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/h3-face-refine-v1.0.3/third-party-frozen-resources-fb00cab7bb99.zip"
 }

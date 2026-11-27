@@ -653,6 +653,11 @@ fn comfy_cancel(h: &mut dyn Host, base: &str, prompt_id: &str) -> Result<Value> 
 
 mod task_results;
 
+fn omit_audio_for_silent_source(workflow: &mut Value) {
+    workflow["r2v"]["inputs"].as_object_mut().unwrap().remove("ref_audios.ref_audio_0");
+    workflow["create"]["inputs"].as_object_mut().unwrap().remove("audio");
+}
+
 fn run_preview(h: &mut dyn Host, payload: &Value, phase: &mut Phase) -> Result<Value> {
     let configuration = payload.get("configuration").cloned().unwrap_or(json!({}));
     let base = cfg_base(&configuration)?;
@@ -733,6 +738,13 @@ fn run_refine(h: &mut dyn Host, payload: &Value, phase: &mut Phase) -> Result<Va
     user_params["identityImage"] = json!(identity_name);
     let mut workflow = inject_refine_workflow(&face_pick, &video_name, prompt, &user_params)?;
     apply_detection(&mut workflow, "select", "track", &saved);
+    let media = http_json(h, "POST", &format!("{}/bgx_face_refine/source-audio", base.trim_end_matches('/')),
+        Some(json!({"video":video_name})))?;
+    match media["hasAudio"].as_bool() {
+        Some(false) => omit_audio_for_silent_source(&mut workflow),
+        Some(true) => {}
+        None => return Err(fail("UPSTREAM_ERROR", "Comfy did not report the uploaded video's audio streams")),
+    }
     workflow["_tracking_context"] = json!({"analysis":saved["analysis"],"selection":selection,"preview":false,"identityFile":identity_name.unwrap_or_default()});
     let freeze_raw = serde_json::to_string(freeze).unwrap_or_default();
     let freeze_digest: String = Sha256::digest(freeze_raw.as_bytes())
@@ -1001,6 +1013,17 @@ mod tests {
         assert_eq!(wf["tracking_receipt"]["class_type"],"H3FaceTrackingReceipt");
         assert_eq!(wf["3"]["inputs"]["fps"],json!(["1",6]));
         assert_eq!(wf["tracking_receipt"]["inputs"]["analysis_json"],analysis.to_string());
+    }
+
+    #[test]
+    fn silent_source_has_no_reference_or_output_audio_links() {
+        let mut graph = inject_refine_workflow("0", "input.mp4", "", &json!({"appearanceImages": []})).unwrap();
+        assert!(graph["r2v"]["inputs"].get("ref_audios.ref_audio_0").is_some());
+        assert!(graph["create"]["inputs"].get("audio").is_some());
+        omit_audio_for_silent_source(&mut graph);
+        assert!(graph["r2v"]["inputs"].get("ref_audios.ref_audio_0").is_none());
+        assert!(graph["create"]["inputs"].get("audio").is_none());
+        assert_eq!(graph["create"]["inputs"]["fps"], json!(["select",6]));
     }
     #[test]
     fn frozen_input_keeps_operation_roles_and_rejects_stale_source_or_sam() {

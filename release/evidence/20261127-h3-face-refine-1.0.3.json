@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "kind": "isolatedHostPackageInstall",
+  "exitCode": 0,
+  "newInstallQualified": true,
+  "hostVersion": "0.6.1128",
+  "test": "Isolated Windows development host installed the same envelope through Creator, committed it and registered its video.edit operation without setup issues.",
+  "sourceLock": "release/evidence/20261127-h3-face-refine-1.0.1-source.json",
+  "upgradeFrom": [
+    {
+      "version": "1.0.1",
+      "manifestSha256": "b78b182d7cac9ae3246948378ac4dcaa14ac04ad576220276a66d9bbf6b08893"
+    }
+  ],
+  "sdkSourceCommit": "74cd600321e257c558172b81886b3f9040f5d56f",
+  "pluginId": "local.thirdparty.h3-face-refine",
+  "version": "1.0.3",
+  "sourceZipSha256": "7721ee9e5b1d39ce21a7e6472a91b76eadbf9ce0fd2eb505710b10592217e8a5",
+  "targetZipSha256": "893ddd397b73f6a9a8c3e07daa037872183ac09ecd6edadfb9e2bb83a143e8ee",
+  "targetZipBytes": 415429
+}

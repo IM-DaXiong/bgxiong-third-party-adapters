@@ -14,7 +14,7 @@ try {
   $picker = $true
 } catch { $picker = $false }
 $health = Invoke-RestMethod -Uri "$BaseUrl/bgx_face_refine/health" -Method GET
-$contract = ($health.version -eq "1.0.2" -and $health.analysisSessions -eq $true -and $health.trackingReceipt -eq $true -and $health.sharedTracking -eq $true)
+$contract = ($health.version -eq "1.0.3" -and $health.analysisSessions -eq $true -and $health.trackingReceipt -eq $true -and $health.sharedTracking -eq $true)
 $result = [ordered]@{
   ok = ($missing.Count -eq 0 -and $picker -and $contract)
   missingClasses = $missing

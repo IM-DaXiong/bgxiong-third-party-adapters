@@ -1,5 +1,5 @@
 {
-  "version": "1.0.2",
+  "version": "1.0.3",
   "entry": "scripts/start-managed.ps1",
   "bootstrapTimeoutSec": 1800,
   "healthEndpoint": "/system_stats",

@@ -1,6 +1,6 @@
 {
   "pluginId": "local.thirdparty.h3-face-refine",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "upstream": {
     "repo": "https://github.com/Carasibana/ComfyUI-H3-FaceRefine",
     "commit": "d8521d14fe0d721d80cd9417fff5a559cbc21aba",
@@ -14,7 +14,7 @@
     "packageMirror": "schemas/media-target-selection-v1"
   },
   "a03HostPortsExtended": false,
-  "companionContractVersion": "1.0.2",
+  "companionContractVersion": "1.0.3",
   "sdkSnapshotCompatibilityRecord": "locks/sdk-source-sync-20261030.json",
   "validationSdkSourceCommit": "74cd600321e257c558172b81886b3f9040f5d56f"
 }

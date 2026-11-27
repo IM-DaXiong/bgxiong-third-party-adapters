@@ -12,7 +12,7 @@ import folder_paths
 from .tracking import tracking_receipt
 
 
-CACHE_VERSION = "1.0.2"
+CACHE_VERSION = "1.0.3"
 CACHE_MAX_BYTES = 64 * 1024 * 1024
 CACHE_MAX_AGE = 24 * 60 * 60
 
