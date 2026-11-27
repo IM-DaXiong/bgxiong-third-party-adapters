@@ -245,6 +245,7 @@ pub fn capabilities() -> Value {
                     vec![json!({"role":"video","kind":"video","minCount":1,"maxCount":1})],
                     "asynchronous");
                   operation["version"] = json!(2);
+                  operation["uiSchema"]["dynamicOptions"] = json!([{"fieldPointer":sam::MODEL_FIELD,"enabledBy":"/freeze/userParams/samEnabled"}]);
                   operation
                 })
             ]
@@ -678,6 +679,7 @@ fn inject_refine_workflow(
 
 
 mod platform_parameters;
+mod sam;
 mod submission_rejection;
 use submission_rejection::Phase;
 fn bind_shared_tracker(h: &mut dyn Host, base: &str, workflow: &mut Value, context: Value) -> Result<()> {
@@ -823,17 +825,7 @@ fn run_refine(h: &mut dyn Host, payload: &Value, phase: &mut Phase) -> Result<Va
     let selection = input.get("selection");
     let prompt = freeze.get("prompt").and_then(Value::as_str).unwrap_or("");
     let mut user_params = freeze.get("userParams").cloned().unwrap_or(json!({}));
-    let sam_enabled = user_params
-        .get("samEnabled")
-        .and_then(Value::as_bool)
-        .unwrap_or(false);
-    if sam_enabled {
-        // Explicit dependency check — never silently fall back to rectangle masks.
-        for class in ["SAMLoader", "H3FaceMaskSAM"] {
-            let info = http_json(h, "GET", &format!("{}/object_info/{class}", base.trim_end_matches('/')), None)?;
-            if info.get(class).is_none() { return Err(fail("RESOURCE_UNAVAILABLE", format!("SAM enabled but {class} is unavailable"))); }
-        }
-    }
+    sam::resolve_for_submit(h, base, &mut user_params)?;
     let trajectory = input.get("trajectory");
     let mut trajectory_name = None;
     let (saved, face_pick);
@@ -919,10 +911,6 @@ fn frozen_input_problem(operation: &str, input: &Value) -> Option<(&'static str,
         if input.get("selection").is_some() || trajectory["trajectoryDigest"] != input["freeze"]["selectionDigest"] {
             return Some(("/trajectory", "精修轨迹与已确认版本不一致".into()));
         }
-        let params = &input["freeze"]["userParams"];
-        if params["samEnabled"] == true && params["samModel"].as_str().is_none_or(str::is_empty) {
-            return Some(("/freeze/userParams/samModel", "启用脸形遮罩时请选择 SAM 模型".into()));
-        }
         return None;
     }
     let analysis = match operation {
@@ -949,10 +937,6 @@ fn frozen_input_problem(operation: &str, input: &Value) -> Option<(&'static str,
     }
     if freeze["selectionDigest"] != selection["selectionDigest"] {
         return Some(("/freeze/selectionDigest", "Refine selection digest does not match".into()));
-    }
-    let user = &freeze["userParams"];
-    if user["samEnabled"] == true && user["samModel"].as_str().is_none_or(|name| name.trim().is_empty()) {
-        return Some(("/freeze/userParams/samModel", "Select a SAM model when enabling its mask".into()));
     }
     None
 }
@@ -984,6 +968,11 @@ impl Adapter for H3FaceRefine {
                 };
                 if payload["kind"] == "operation_input_preflight" {
                     prepare_operation_input(&payload)
+                } else if payload["kind"] == "operation_form_options" {
+                    match sam::probe(host, &payload) {
+                        Ok(fields) => fields,
+                        Err(failure) => return response_fail(&request, failure),
+                    }
                 } else {
                     json!({
                         "packageValid": true,
@@ -1198,7 +1187,7 @@ mod tests {
         });
         assert!(frozen_input_problem(OP_REFINE, &input).is_none());
         input["freeze"]["userParams"]["samEnabled"] = json!(true);
-        assert_eq!(frozen_input_problem(OP_REFINE, &input).unwrap().0, "/freeze/userParams/samModel");
+        assert!(frozen_input_problem(OP_REFINE, &input).is_none());
         input["freeze"]["source"]["schemaDigest"] = json!("old-schema");
         assert_eq!(frozen_input_problem(OP_REFINE, &input).unwrap().0, "/freeze/source");
         let response = prepare_operation_input(&json!({
