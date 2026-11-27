@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "seed.output.schema.json",
+  "type": "object",
+  "properties": {
+    "kind": {
+      "const": "detectReceipt"
+    },
+    "mediaId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "imageDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "candidateId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "box": {
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "y": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "width": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "height": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "required": [
+              "x",
+              "y",
+              "width",
+              "height"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "candidateId",
+          "box"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 128
+    }
+  },
+  "required": [
+    "kind",
+    "mediaId",
+    "imageDigest",
+    "candidates"
+  ],
+  "additionalProperties": false
+}

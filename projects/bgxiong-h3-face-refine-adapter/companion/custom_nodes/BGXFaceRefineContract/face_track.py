@@ -10,6 +10,7 @@ import time
 
 import folder_paths
 from .tracking import tracking_receipt
+from .trajectory import restore
 
 
 CACHE_VERSION = "1.0.3"
@@ -168,7 +169,7 @@ class BGXFaceTrack:
         return {"required": {
             "video": ("STRING",), "identity_file": ("STRING",), "settings_json": ("STRING",),
             "analysis_json": ("STRING",), "selection_json": ("STRING",), "render_preview": ("BOOLEAN",),
-        }, "optional": {"identity_reference": ("IMAGE",)}}
+        }, "optional": {"identity_reference": ("IMAGE",), "trajectory_file": ("STRING",), "trajectory_digest": ("STRING",)}}
 
     RETURN_TYPES = ("IMAGE", "H3FACEXFORM", "IMAGE", "STRING", "INT", "INT", "INT", "IMAGE", "AUDIO", "FLOAT")
     FUNCTION = "run"
@@ -179,12 +180,28 @@ class BGXFaceTrack:
         # This node verifies the actual source bytes before reusing its own trajectory.
         return float("nan")
 
-    def run(self, video, identity_file, settings_json, analysis_json, selection_json, render_preview, identity_reference=None):
+    def run(self, video, identity_file, settings_json, analysis_json, selection_json, render_preview, identity_reference=None, trajectory_file=None, trajectory_digest=None):
         from comfy.model_management import throw_exception_if_processing_interrupted
         select_node, track_node, upstream = _upstream()
         settings = json.loads(settings_json)
         analysis, selection = json.loads(analysis_json), json.loads(selection_json)
         video = _input_file(video)
+        if trajectory_file is not None:
+            path = _input_file(trajectory_file)
+            if trajectory_digest != "sha256:" + _file_digest(path):
+                raise ValueError("已确认的人脸轨迹摘要不匹配")
+            with path.open(encoding="utf-8") as stream:
+                trajectory = json.load(stream)
+            transform = restore(trajectory["layout"], trajectory["frames"])
+            images, audio, fps = upstream._load_video_components(str(video))
+            _validate_geometry(transform, images.shape)
+            width, height = transform["canvas"]
+            crops = images.new_empty((transform["frames"], height, width, 3))
+            for index, (frame, box) in enumerate(zip(transform["source"], transform["boxes"])):
+                throw_exception_if_processing_interrupted()
+                crops[index:index+1] = upstream._affine_crop(images[frame:frame+1], box, width, height)
+            print(f"[BGXFaceTrack] confirmed trajectory {trajectory_digest} source_frames={len(images)}", flush=True)
+            return crops, transform, images, "", width, height, transform["frames"], images, audio, fps
         if bool(identity_file) != (identity_reference is not None):
             raise ValueError("Identity reference metadata differs from image input")
         key = _cache_key(video, _input_file(identity_file) if identity_file else None,

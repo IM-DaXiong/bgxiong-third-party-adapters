@@ -15,6 +15,8 @@ fn round_ms(x: f64) -> i64 {
 }
 
 pub const PLUGIN: &str = "local.thirdparty.h3-face-refine";
+const OP_TRAJECTORY: &str = "local.thirdparty.h3-face-refine/subjects.trajectory";
+const OP_SEED: &str = "local.thirdparty.h3-face-refine/subjects.seed";
 pub const OP_ANALYZE: &str = "local.thirdparty.h3-face-refine/subjects.analyze";
 pub const OP_PREVIEW: &str = "local.thirdparty.h3-face-refine/subjects.preview";
 pub const OP_REFINE: &str = "local.thirdparty.h3-face-refine/video.refine";
@@ -139,6 +141,10 @@ fn upload_source(h: &mut dyn Host, payload: &Value, base: &str, id: &str, kind: 
 }
 
 pub fn capabilities() -> Value {
+    let trajectory_in = schema("trajectory_in", include_str!("../schemas/trajectory.input.schema.json"));
+    let trajectory_out = schema("trajectory_out", include_str!("../schemas/trajectory.output.schema.json"));
+    let seed_in = schema("seed_in", include_str!("../schemas/seed.input.schema.json"));
+    let seed_out = schema("seed_out", include_str!("../schemas/seed.output.schema.json"));
     let analyze_in = schema("analyze_in", include_str!("../schemas/analyze.input.schema.json"));
     let analyze_out = schema("analyze_out", include_str!("../schemas/analyze.output.schema.json"));
     let preview_in = schema("preview_in", include_str!("../schemas/preview.input.schema.json"));
@@ -205,10 +211,19 @@ pub fn capabilities() -> Value {
             "transportSlot": "videoFaceRefine",
             "modelIds": [MODEL],
             "configurationSchema": {"id": "configuration", "digest": config["digest"]},
-            "schemas": [analyze_in.clone(), analyze_out.clone(), preview_in.clone(), preview_out.clone(),
+            "schemas": [trajectory_in.clone(), trajectory_out.clone(), seed_in.clone(), seed_out.clone(), analyze_in.clone(), analyze_out.clone(), preview_in.clone(), preview_out.clone(),
                 refine_in.clone(), refine_out.clone(), config, resume.clone(), source_read_only,
                 analysis_read_only, selection_read_only, tracking_read_only],
             "operations": [
+                mk_op(OP_TRAJECTORY, "按帧范围跟踪人脸", &trajectory_in, &trajectory_out, vec![],
+                    vec![
+                        json!({"role":"source_video","inputPointer":"/sourceMediaId","mediaKind":"video","minCount":1,"maxCount":1}),
+                        json!({"role":"identity_ref","inputPointer":"/identityMediaId","mediaKind":"image","minCount":0,"maxCount":1}),
+                    ],
+                    vec![json!({"role":"trajectory","kind":"file","minCount":1,"maxCount":1})], "synchronous"),
+                mk_op(OP_SEED, "识别当前帧人脸", &seed_in, &seed_out, vec![],
+                    vec![json!({"role":"seed_images","inputPointer":"/sampleMediaIds","mediaKind":"image","minCount":1,"maxCount":5})],
+                    vec![], "synchronous"),
                 mk_op(OP_ANALYZE, "分析镜头与候选脸", &analyze_in, &analyze_out, analyze_controls,
                     vec![json!({"role":"source_video","inputPointer":"/source/mediaId","mediaKind":"video","minCount":1,"maxCount":1})],
                     vec![],
@@ -220,14 +235,18 @@ pub fn capabilities() -> Value {
                     ],
                     vec![json!({"role":"preview","kind":"image","minCount":1,"maxCount":1})],
                     "asynchronous"),
-                mk_op(OP_REFINE, "人脸精修", &refine_in, &refine_out, refine_controls,
+                ({ let mut operation = mk_op(OP_REFINE, "人脸精修", &refine_in, &refine_out, refine_controls,
                     vec![
                         json!({"role":"source_video","inputPointer":"/freeze/source/mediaId","mediaKind":"video","minCount":1,"maxCount":1}),
+                        json!({"role":"trajectory","inputPointer":"/trajectory/mediaId","mediaKind":"file","minCount":0,"maxCount":1}),
                         json!({"role":"appearance_ref","inputPointer":"/freeze/referenceMediaIds","mediaKind":"image","minCount":0,"maxCount":9}),
                         json!({"role":"identity_ref","inputPointer":"/freeze/userParams/identityMediaIds","mediaKind":"image","minCount":0,"maxCount":1}),
                     ],
                     vec![json!({"role":"video","kind":"video","minCount":1,"maxCount":1})],
-                    "asynchronous")
+                    "asynchronous");
+                  operation["version"] = json!(2);
+                  operation
+                })
             ]
         }]
     })
@@ -246,6 +265,95 @@ fn response_fail(request: &Invocation, f: Failure) -> Response {
 
 fn submit_payload(request: &Invocation) -> Result<Value> {
     serde_json::from_str(&request.r#payload_json).map_err(|_| invalid("submit payload is not JSON"))
+}
+
+fn run_trajectory(h: &mut dyn Host, payload: &Value, phase: &mut Phase) -> Result<Value> {
+    let base = cfg_base(&payload["configuration"])?;
+    let base = base.trim_end_matches('/');
+    let health = http_json(h, "GET", &format!("{base}/bgx_face_refine/health"), None)?;
+    if health["trajectoryArtifacts"] != true {
+        return Err(fail("RESOURCE_UNAVAILABLE", "请重启当前配置的 ComfyUI，加载支持轨迹修正的人脸精修节点"));
+    }
+    let input = &payload["input"];
+    let source_id = input["sourceMediaId"].as_str().ok_or_else(|| invalid("source media required"))?;
+    let video = upload_source(h, payload, base, source_id, "video")?;
+    let identity = input["identityMediaId"].as_str().map(|id| upload_source(h, payload, base, id, "image")).transpose()?;
+    let mut options: Value = serde_json::from_str(include_str!("../workflows/preview.track.api.json"))
+        .map_err(|_| invalid("invalid tracker workflow"))?;
+    let mut track = options["2"]["inputs"].take();
+    let settings = track.as_object_mut().ok_or_else(|| invalid("missing track settings"))?;
+    for name in ["images", "face_pick", "preview"] {
+        settings.remove(name);
+    }
+    track["confidence"] = input["confidence"].as_f64().unwrap_or(0.35).into();
+    track["cut_detection"] = input["cutDetection"].as_str().unwrap_or("auto").into();
+    track["cut_threshold"] = input["cutThreshold"].as_f64().unwrap_or(3.0).into();
+    track["identity_threshold"] = 0.28.into();
+    track["identity_model"] = "insightface".into();
+    let mut body = json!({
+        "video":video, "frames":input["frames"], "anchorIndex":input["anchorIndex"],
+        "anchorBox":input["anchorBox"], "settings":{"track":track}
+    });
+    if let Some(name) = identity {
+        body["identityImage"] = json!(name);
+    }
+    if let Some(layout) = input.get("layout") {
+        body["layout"] = layout.clone();
+    }
+    *phase = Phase::Unknown;
+    let receipt = http_json(h, "POST", &format!("{base}/bgx_face_refine/trajectory"), Some(body))?;
+    let artifact = receipt["artifactId"].as_str().filter(|s| s.len() == 32 &&
+        s.bytes().all(|b| b.is_ascii_hexdigit())).ok_or_else(|| fail("UPSTREAM_ERROR", "invalid trajectory receipt"))?;
+    let url = format!("{base}/bgx_face_refine/trajectory/{artifact}");
+    let response = port(h, "host-http.execute", json!({
+        "plan":{"method":"GET","url":url,"headers":[],"generatedHeaders":[],"body":{"kind":"none"},
+            "sink":{"kind":"media"},"timeoutMs":600000},"credential":null
+    }))?;
+    if response["status"] != 200 || response["payload"]["kind"] != "media" {
+        return Err(fail("UPSTREAM_ERROR", "轨迹文件读取失败"));
+    }
+    let handle = response["payload"]["handle"].as_str().ok_or_else(|| fail("UPSTREAM_ERROR", "missing trajectory handle"))?;
+    let stat = port(h, "host-media.info", json!({"handle":handle}))?;
+    if stat["kind"] != "file" || stat["byteLength"].as_str().and_then(|n| n.parse::<u64>().ok()).unwrap_or(0) == 0 {
+        return Err(fail("UPSTREAM_ERROR", "轨迹文件为空或类型不符"));
+    }
+    Ok(json!({"kind":"completed","vendorTaskId":null,"appliedParams":null,"outputs":[
+        {"kind":"media","role":"trajectory","media":{"id":stat["id"],"kind":stat["kind"],"handle":handle,
+            "mime":stat["mime"],"fileName":stat["fileName"],"byteLength":stat["byteLength"]}}
+    ],"data":{"artifactId":artifact},"usage":null}))
+}
+
+fn run_seed(h: &mut dyn Host, payload: &Value, phase: &mut Phase) -> Result<Value> {
+    let base = cfg_base(&payload["configuration"])?;
+    let base = base.trim_end_matches('/');
+    let health = http_json(h, "GET", &format!("{base}/bgx_face_refine/health"), None)?;
+    if health["seedFrames"] != true {
+        return Err(fail("RESOURCE_UNAVAILABLE", "请重启当前配置的 ComfyUI，加载支持当前帧识别的人脸精修节点"));
+    }
+    let input = &payload["input"];
+    let sample_ids = input["sampleMediaIds"].as_array().ok_or_else(|| invalid("sample ids required"))?;
+    let samples = input["samples"].as_array().filter(|items| (1..=5).contains(&items.len()))
+        .ok_or_else(|| invalid("expected one to five ordered sample frames"))?;
+    if sample_ids.len() != samples.len() ||
+        samples.iter().zip(sample_ids).any(|(sample, id)| &sample["mediaId"] != id) {
+        return Err(invalid("sample descriptor does not match managed media ids"));
+    }
+    let mut uploaded = Vec::with_capacity(samples.len());
+    for sample in samples {
+        let id = sample["mediaId"].as_str().ok_or_else(|| invalid("sample id required"))?;
+        let upload_name = upload_source(h, payload, base, id, "image")?;
+        let mut descriptor = sample.clone();
+        descriptor["uploadName"] = json!(upload_name);
+        uploaded.push(descriptor);
+    }
+    *phase = Phase::Unknown;
+    let data = http_json(h, "POST", &format!("{base}/bgx_face_refine/detect-samples"),
+        Some(json!({"samples":uploaded,"confidence":input.get("confidence").and_then(Value::as_f64).unwrap_or(0.35)})))?;
+    if data["kind"] != "detectReceipt" || !data["candidates"].is_array() ||
+        !samples.iter().any(|sample| sample["mediaId"] == data["mediaId"] && sample["imageDigest"] == data["imageDigest"]) {
+        return Err(fail("UPSTREAM_ERROR", "人脸识别回执与送检画面不一致"));
+    }
+    Ok(json!({"kind":"completed","vendorTaskId":null,"appliedParams":null,"outputs":[],"data":data,"usage":null}))
 }
 
 fn run_analyze(h: &mut dyn Host, payload: &Value, phase: &mut Phase) -> Result<Value> {
@@ -582,6 +690,10 @@ fn bind_shared_tracker(h: &mut dyn Host, base: &str, workflow: &mut Value, conte
         "render_preview": context["preview"],
     });
     if let Some(link) = identity { inputs["identity_reference"] = link; }
+    if !context["trajectoryFile"].is_null() {
+        inputs["trajectory_file"] = context["trajectoryFile"].clone();
+        inputs["trajectory_digest"] = context["trajectoryDigest"].clone();
+    }
     let graph = workflow.as_object_mut().unwrap();
     graph.remove("select");
     graph.insert("track".into(), json!({"class_type":"BGXFaceTrack","inputs":inputs}));
@@ -715,10 +827,24 @@ fn run_refine(h: &mut dyn Host, payload: &Value, phase: &mut Phase) -> Result<Va
             if info.get(class).is_none() { return Err(fail("RESOURCE_UNAVAILABLE", format!("SAM enabled but {class} is unavailable"))); }
         }
     }
-    let selection = selection.ok_or_else(|| invalid("refine requires selection"))?;
-    let saved = analysis_state(h, base, selection["analysisId"].as_str().ok_or_else(|| invalid("analysisId required"))?, selection["analysisRevision"].as_str().unwrap_or(""), selection["analysisDigest"].as_str().unwrap_or(""))?;
+    let trajectory = input.get("trajectory");
+    let mut trajectory_name = None;
+    let (saved, face_pick);
+    if let Some(trajectory) = trajectory {
+        let health = http_json(h, "GET", &format!("{}/bgx_face_refine/health",base.trim_end_matches('/')), None)?;
+        if health["trajectoryArtifacts"] != true {
+            return Err(fail("RESOURCE_UNAVAILABLE", "请重启当前配置的 ComfyUI，加载支持轨迹修正的人脸精修节点"));
+        }
+        let id = trajectory["mediaId"].as_str().ok_or_else(|| invalid("missing confirmed trajectory file"))?;
+        trajectory_name = Some(upload_source(h, payload, base, id, "file")?);
+        saved = json!({});
+        face_pick = String::new();
+    } else {
+        let selection = selection.ok_or_else(|| invalid("refine requires selection"))?;
+        saved = analysis_state(h, base, selection["analysisId"].as_str().ok_or_else(|| invalid("analysisId required"))?, selection["analysisRevision"].as_str().unwrap_or(""), selection["analysisDigest"].as_str().unwrap_or(""))?;
     if saved["analysis"]["source"] != freeze["source"] || selection["selectionDigest"] != freeze["selectionDigest"] { return Err(invalid("refine source or selection differs from frozen analysis")); }
-    let (face_pick, _absent_shots) = selection_bindings(selection, &saved["analysis"])?;
+        (face_pick, _) = selection_bindings(selection, &saved["analysis"])?;
+    }
     let source_id = freeze.pointer("/source/mediaId").and_then(Value::as_str).ok_or_else(|| invalid("freeze source.mediaId required"))?;
     let video_name = upload_source(h, payload, base, source_id, "video")?;
     let references = freeze["referenceMediaIds"].as_array().ok_or_else(|| invalid("referenceMediaIds required"))?;
@@ -737,7 +863,9 @@ fn run_refine(h: &mut dyn Host, payload: &Value, phase: &mut Phase) -> Result<Va
     user_params["appearanceImages"] = json!(images);
     user_params["identityImage"] = json!(identity_name);
     let mut workflow = inject_refine_workflow(&face_pick, &video_name, prompt, &user_params)?;
-    apply_detection(&mut workflow, "select", "track", &saved);
+    if trajectory_name.is_none() {
+        apply_detection(&mut workflow, "select", "track", &saved);
+    }
     let media = http_json(h, "POST", &format!("{}/bgx_face_refine/source-audio", base.trim_end_matches('/')),
         Some(json!({"video":video_name})))?;
     match media["hasAudio"].as_bool() {
@@ -745,8 +873,12 @@ fn run_refine(h: &mut dyn Host, payload: &Value, phase: &mut Phase) -> Result<Va
         Some(true) => {}
         None => return Err(fail("UPSTREAM_ERROR", "Comfy did not report the uploaded video's audio streams")),
     }
-    workflow["_tracking_context"] = json!({"analysis":saved["analysis"],"selection":selection,"preview":false,"identityFile":identity_name.unwrap_or_default()});
-    let freeze_raw = serde_json::to_string(freeze).unwrap_or_default();
+    workflow["_tracking_context"] = json!({
+        "analysis":saved["analysis"],"selection":selection,"preview":false,
+        "identityFile":identity_name.unwrap_or_default(), "trajectoryFile":trajectory_name,
+        "trajectoryDigest":trajectory.map(|v| &v["trajectoryDigest"]),
+    });
+    let freeze_raw = serde_json::to_string(input).unwrap_or_default();
     let freeze_digest: String = Sha256::digest(freeze_raw.as_bytes())
         .iter()
         .map(|b| format!("{b:02x}"))
@@ -774,6 +906,17 @@ fn frozen_input_problem(operation: &str, input: &Value) -> Option<(&'static str,
         || source["schemaDigest"] != refine_digest.as_str()
     {
         return Some((source_pointer, "Source identity does not match the selected refine operation".into()));
+    }
+    if operation == OP_REFINE && input.get("trajectory").is_some() {
+        let trajectory = &input["trajectory"];
+        if input.get("selection").is_some() || trajectory["trajectoryDigest"] != input["freeze"]["selectionDigest"] {
+            return Some(("/trajectory", "精修轨迹与已确认版本不一致".into()));
+        }
+        let params = &input["freeze"]["userParams"];
+        if params["samEnabled"] == true && params["samModel"].as_str().is_none_or(str::is_empty) {
+            return Some(("/freeze/userParams/samModel", "启用脸形遮罩时请选择 SAM 模型".into()));
+        }
+        return None;
     }
     let analysis = match operation {
         OP_PREVIEW => &input["analysis"],
@@ -858,6 +1001,8 @@ impl Adapter for H3FaceRefine {
                     Err(invalid(&format!("{field}: {message}")))
                 } else {
                     match op_id {
+                        OP_TRAJECTORY => run_trajectory(host, &payload, &mut phase),
+                        OP_SEED => run_seed(host, &payload, &mut phase),
                         OP_ANALYZE => run_analyze(host, &payload, &mut phase),
                         OP_PREVIEW => run_preview(host, &payload, &mut phase),
                         OP_REFINE => run_refine(host, &payload, &mut phase),
@@ -1029,13 +1174,14 @@ mod tests {
     fn frozen_input_keeps_operation_roles_and_rejects_stale_source_or_sam() {
         let declared = capabilities();
         let ops = declared["capabilityContracts"][0]["operations"].as_array().unwrap();
-        assert_eq!(ops.len(), 3);
-        assert_eq!(ops.iter().map(|op| op["id"].as_str().unwrap()).collect::<Vec<_>>(), [OP_ANALYZE, OP_PREVIEW, OP_REFINE]);
-        assert!(ops.iter().all(|op| op["version"] == 1 && op["inputProfile"] == "operation-input-v1"));
-        assert_eq!(ops[1]["uiSchema"]["controls"], json!([]));
-        assert_eq!(ops[2]["mediaSlots"].as_array().unwrap().iter().map(|slot| slot["role"].as_str().unwrap()).collect::<Vec<_>>(),
-            ["source_video", "appearance_ref", "identity_ref"]);
-        let digest = &ops[2]["inputSchema"]["digest"];
+        assert_eq!(ops.len(), 5);
+        assert_eq!(ops.iter().map(|op| op["id"].as_str().unwrap()).collect::<Vec<_>>(), [OP_TRAJECTORY, OP_SEED, OP_ANALYZE, OP_PREVIEW, OP_REFINE]);
+        assert!(ops.iter().all(|op| op["inputProfile"] == "operation-input-v1"));
+        assert_eq!(ops[4]["version"], 2);
+        assert_eq!(ops[3]["uiSchema"]["controls"], json!([]));
+        assert_eq!(ops[4]["mediaSlots"].as_array().unwrap().iter().map(|slot| slot["role"].as_str().unwrap()).collect::<Vec<_>>(),
+            ["source_video", "trajectory", "appearance_ref", "identity_ref"]);
+        let digest = &ops[4]["inputSchema"]["digest"];
         let source = json!({"packageId":PLUGIN,"operationId":OP_REFINE,"schemaDigest":digest});
         let mut input = json!({
             "freeze":{"source":source,"packageVersion":env!("CARGO_PKG_VERSION"),"operationId":OP_REFINE,

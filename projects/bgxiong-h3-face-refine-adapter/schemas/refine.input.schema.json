@@ -244,7 +244,6 @@
       },
       "required": [
         "source",
-        "analysis",
         "selectionDigest",
         "packageVersion",
         "dependencyVersions",
@@ -261,11 +260,79 @@
     },
     "tracking": {
       "$ref": "read-only-tracking-receipt.schema.json"
+    },
+    "trajectory": {
+      "type": "object",
+      "properties": {
+        "mediaId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trajectoryDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "mediaId",
+        "revision",
+        "trajectoryDigest"
+      ],
+      "additionalProperties": false,
+      "readOnly": true
     }
   },
   "required": [
-    "freeze",
-    "selection"
+    "freeze"
   ],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "oneOf": [
+    {
+      "required": [
+        "selection"
+      ],
+      "properties": {
+        "freeze": {
+          "required": [
+            "analysis"
+          ]
+        }
+      },
+      "not": {
+        "required": [
+          "trajectory"
+        ]
+      }
+    },
+    {
+      "required": [
+        "trajectory"
+      ],
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "selection"
+            ]
+          },
+          {
+            "required": [
+              "tracking"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "x-mediaTargetRangeRepair": {
+    "profileId": "media-target-range-repair-v1",
+    "revision": 1,
+    "seedOperationId": "local.thirdparty.h3-face-refine/subjects.seed",
+    "trajectoryOperationId": "local.thirdparty.h3-face-refine/subjects.trajectory",
+    "patchOperationId": "local.thirdparty.h3-face-refine/subjects.trajectory"
+  }
 }

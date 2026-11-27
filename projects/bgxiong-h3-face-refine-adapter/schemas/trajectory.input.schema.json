@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "trajectory.input.schema.json",
+  "type": "object",
+  "properties": {
+    "sourceMediaId": {
+      "type": "string",
+      "minLength": 1,
+      "readOnly": true
+    },
+    "identityMediaId": {
+      "type": "string",
+      "minLength": 1,
+      "readOnly": true
+    },
+    "frames": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "pts": {
+            "type": "integer"
+          },
+          "timeBaseNumerator": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "timeBaseDenominator": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "ordinal": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "timeUs": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "pts",
+          "timeBaseNumerator",
+          "timeBaseDenominator",
+          "ordinal",
+          "timeUs"
+        ],
+        "additionalProperties": false
+      },
+      "readOnly": true
+    },
+    "anchorIndex": {
+      "type": "integer",
+      "minimum": 0,
+      "readOnly": true
+    },
+    "anchorBox": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "y": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "width": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "height": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "additionalProperties": false,
+      "readOnly": true
+    },
+    "layout": {
+      "type": "object",
+      "properties": {
+        "canvas": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "sourceSize": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "cropFactor": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "canvas",
+        "sourceSize",
+        "cropFactor"
+      ],
+      "additionalProperties": false,
+      "readOnly": true
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0.05,
+      "maximum": 0.95
+    },
+    "cutDetection": {
+      "enum": [
+        "none",
+        "auto"
+      ]
+    },
+    "cutThreshold": {
+      "type": "number",
+      "minimum": 0.5,
+      "maximum": 20
+    }
+  },
+  "required": [
+    "sourceMediaId",
+    "frames",
+    "anchorIndex",
+    "anchorBox"
+  ],
+  "additionalProperties": false
+}

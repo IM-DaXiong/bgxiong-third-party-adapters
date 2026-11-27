@@ -1,6 +1,6 @@
 {
   "pluginId": "local.thirdparty.h3-face-refine",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "laneACommit": "3b6a7e738",
   "digests": {
     "analyze.input.schema.json": "e9c9e68e8d384227dbbfa7a9b30f1c87ac37fc69f6b728a5122e624e77c3fe53",
@@ -8,9 +8,13 @@
     "configuration.schema.json": "22d4b06042fce6b97b2269886c9a81642cd5eb937320526d53d0904b1a58caa1",
     "preview.input.schema.json": "185d51f5dbea52a1782987ef2827f70e54a2cc8efb596e143e2504ae50af9c50",
     "preview.output.schema.json": "c0cd2855f542b93f6867e4ce8bd40d64bb2fbef0829e18f4b74c70bb038fbc3b",
-    "refine.input.schema.json": "e857c9dbe12722d2bdd99c29ec5d53aef6c0c76c42388e5b7066e9b504e3dd28",
+    "refine.input.schema.json": "22b31b76bcc049f01f9ec85e1348cbc338c5c4897290878adda8b225320db326",
     "refine.output.schema.json": "de18e916d82f262db4e077acff4059f33d4c8cfd5576224a0eaabbcbae9134b0",
-    "resume.schema.json": "02c79d4a6b00271398c39b8966d9f06ceda0e66be070391558c2fbf3d3d74541"
+    "resume.schema.json": "02c79d4a6b00271398c39b8966d9f06ceda0e66be070391558c2fbf3d3d74541",
+    "seed.input.schema.json": "68064b944947ec8f61d14ede9ed0c2764d864c7e75dc1d6465a72c7b955db363",
+    "seed.output.schema.json": "5ffe309353bec7e0cc93bfc150f900cb9915dc8759cd7de17cb2fdb303253e04",
+    "trajectory.input.schema.json": "11487adf893dbb99be1b581039f327e2f1c52807298e8ec243a4509cbeece62f",
+    "trajectory.output.schema.json": "7b7fe831ac419ea895c94bb3d9622ce742635e19c7337429faaa6fb2d6a1abe9"
   },
   "note": "Media-target-selection-v1 with read-only frozen host facts and operation-input-v1 preflight on UTF-8 LF schemas.",
   "generatedReadOnlyDigests": {
