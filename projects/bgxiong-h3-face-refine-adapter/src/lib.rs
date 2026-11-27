@@ -390,6 +390,13 @@ fn run_analyze(h: &mut dyn Host, payload: &Value, phase: &mut Phase) -> Result<V
         failure
     })?;
     if let Some(err) = raw.get("error").and_then(Value::as_str) {
+        if raw["busy"] == true {
+            *phase = Phase::ServiceRejected;
+            let mut failure = fail("RATE_LIMITED", "ComfyUI 正在渲染，请在队列空闲后重新分析目标");
+            failure.retryable = true;
+            failure.service_rejected = true;
+            return Err(failure);
+        }
         return Err(fail("UPSTREAM_ERROR", err));
     }
     // Map upstream shot cards → media-target-selection analysis receipt (package-local profile).
@@ -1203,7 +1210,7 @@ mod tests {
     }
     #[test]
     fn analysis_missing_nodes_never_uploads_and_http_router_rejection_is_terminal() {
-        struct UnreadyOrRejected { ready: bool, inner: TestHost }
+        struct UnreadyOrRejected { ready: bool, scan_error: Option<Value>, inner: TestHost }
         impl Host for UnreadyOrRejected {
             fn call(&mut self, call: bgx_adapter_v2_sdk::HostPortCallV2) -> core::result::Result<Value, host::HostError> {
                 let value = serde_json::to_value(&call).unwrap();
@@ -1213,13 +1220,16 @@ mod tests {
                     return Ok(json!({"status":404,"payload":{"bytes":b"404: Not Found".to_vec()}}));
                 }
                 if value["args"]["plan"]["url"] == "http://localhost/h3_facerefine/scan" {
+                    if let Some(body) = &self.scan_error {
+                        return Ok(json!({"status":200,"payload":{"bytes":serde_json::to_vec(body).unwrap()}}));
+                    }
                     return Ok(json!({"status":405,"payload":{"bytes":b"405: Method Not Allowed".to_vec()}}));
                 }
                 self.inner.call(call)
             }
         }
         let payload = json!({"configuration":{"endpointBaseUrl":"http://localhost"},"input":{"source":{"mediaId":"source"}},"media":[{"id":"source","handle":"managed-clip","kind":"video","mime":"video/mp4","fileName":"clip.mp4","byteLength":"123"}]});
-        let mut host = UnreadyOrRejected { ready: false, inner: TestHost { calls: 0 } };
+        let mut host = UnreadyOrRejected { ready: false, scan_error: None, inner: TestHost { calls: 0 } };
         let mut phase = Phase::BeforeSubmission;
         let failure = run_analyze(&mut host, &payload, &mut phase).unwrap_err();
         assert_eq!(failure.code, "RESOURCE_UNAVAILABLE");
@@ -1231,6 +1241,15 @@ mod tests {
         assert_eq!(failure.code, "RESOURCE_UNAVAILABLE");
         assert!(matches!(phase, Phase::ServiceRejected));
         assert!(failure.service_rejected);
+        for busy in [true, false] {
+            host.inner.calls = 0;
+            host.scan_error = Some(json!({"busy":busy,"error":"scan failed"}));
+            let failure = run_analyze(&mut host, &payload, &mut phase).unwrap_err();
+            assert_eq!(failure.code, if busy { "RATE_LIMITED" } else { "UPSTREAM_ERROR" });
+            assert_eq!(failure.retryable, busy);
+            assert_eq!(matches!(phase, Phase::ServiceRejected), busy);
+            assert_eq!(matches!(phase, Phase::Unknown), !busy);
+        }
     }
     #[test]
     fn analysis_uses_managed_upload_and_preserves_source_identity() {
