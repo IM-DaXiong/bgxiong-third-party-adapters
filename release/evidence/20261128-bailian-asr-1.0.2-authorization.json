@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "kind": "ownerAuthorizedWithoutFirstInstall",
+  "authorization": "2026-11-28 用户要求将三个无 API Key 的百炼适配器一起归集至公网在线更新目录，并确认两个异步模型使用通过实测的正式百炼文件 API。独立 SDK Wasm 真网通过。桌面整合的首次在线安装仍待验。",
+  "packages": [
+    {
+      "pluginId": "local.bgx.bailian-paraformer-v2",
+      "version": "1.0.2",
+      "hostVersionRange": ">=0.6.1129",
+      "targetZipBytes": 207695,
+      "targetZipSha256": "0bbe0f2038dfef0b0587cb444c4b85a128eae4c96d98df9b9f3090901b8b09f3"
+    },
+    {
+      "pluginId": "local.bgx.bailian-fun-asr",
+      "version": "1.0.2",
+      "hostVersionRange": ">=0.6.1129",
+      "targetZipBytes": 207665,
+      "targetZipSha256": "f1a92fd076d45a7d898c60d7d721a889c98bdf712052f4cb0de7a88581e60ed3"
+    },
+    {
+      "pluginId": "local.bgx.bailian-qwen3-asr-flash",
+      "version": "1.0.2",
+      "hostVersionRange": ">=0.6.1129",
+      "targetZipBytes": 207610,
+      "targetZipSha256": "cd3aaaa30a998670932039374b88979b13915641ba3eca417d9cce74227a782e"
+    }
+  ]
+}
