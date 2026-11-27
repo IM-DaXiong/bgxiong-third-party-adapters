@@ -93,13 +93,13 @@ M3 文本生成与对话，需要自己的平台 API Key。 连接：**MiniMax �
 
 包内：WASM、manifest 与摘要、许可及说明。完整文件名见发行清单。
 
-### H3 人脸精修 · 1.0.0-a31
+### MiniMax-H3 人脸精修 · 1.0.7
 
-视频人脸精修；附 H3-FaceRefine、BGXFaceRefineContract 节点及许可说明。 连接：**本地或局域网 ComfyUI**。
+在视频里选择要精修的人脸，预览跟踪效果，再提交精修。连接本地或局域网 ComfyUI。分析目标时若已有渲染占用 GPU，工作台会提示等待队列空闲，之后可再次点击「分析目标」。
 
-[下载页面](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/installable-adapters-20261111-h3-101) · [直接下载 ZIP](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/installable-adapters-20261111-h3-101/local.thirdparty.h3-face-refine-1.0.0-a31.zip)
+适用于比格熊 0.6.1128 及以上版本，在线更新索引支持从 1.0.1、1.0.3 升级。手动安装时解压 ZIP，在适配器设置中选择含 `adapter-install.json` 的目录。包内包含配套 ComfyUI 节点及许可说明。
 
-包内：WASM、manifest 与摘要、许可及说明；另含 自定义 ComfyUI 节点及配套文件。完整文件名见发行清单。
+[下载 1.0.7 安装包](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/h3-face-refine-v1.0.7/local.thirdparty.h3-face-refine-1.0.7.zip) · [SHA-256 校验表](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/h3-face-refine-v1.0.7/SHA256SUMS-h3-face-refine-1.0.7.txt) · [发行记录](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/h3-face-refine-v1.0.7)
 
 ### FLUX.2 有序参考图 · 1.0.2
 

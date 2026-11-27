@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "kind": "isolatedHostPackageInstall",
+  "exitCode": 0,
+  "newInstallQualified": true,
+  "hostVersion": "0.6.1128",
+  "test": "Isolated Windows development host installed the exact target envelope through the settings Creator kernel. One video.edit registration, zero setup issues. SDK checked the WASM and the complete target ZIP was compared to this envelope.",
+  "hostExeSha256": "6e54de9a01b6d5b31937be5c0175ab599fcf9f0f0add4a7af1f64b528a8a494b",
+  "sourceLock": "release/evidence/20261127-h3-face-refine-upgrade-sources.json",
+  "upgradeFrom": [
+    {
+      "version": "1.0.1",
+      "manifestSha256": "b78b182d7cac9ae3246948378ac4dcaa14ac04ad576220276a66d9bbf6b08893"
+    },
+    {
+      "version": "1.0.3",
+      "manifestSha256": "5b611030bd6f598acc12c98954b99fd47f42c64a35c1069086a243e992b216c7"
+    }
+  ],
+  "sdkSourceCommit": "f1c38dd1f5231c8e2c2e70f5ba7b980ef313817c",
+  "pluginId": "local.thirdparty.h3-face-refine",
+  "version": "1.0.7",
+  "targetZipSha256": "2bcbe474cbae108ddbf57cd0ae1c9c49ed83fec972a44752c4927394ba7ad6a8",
+  "targetZipBytes": 590401
+}
