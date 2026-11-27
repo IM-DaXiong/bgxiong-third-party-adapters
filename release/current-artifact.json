@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "lockSha256": "90e0cc150a3abb5b7641f6d24d2089fc264dae8908d4a7dff4267554b2acbd2e",
-  "archiveSha256": "8b4f2cbeadcd8e03633d7844c2a843376b3aff5d598fdb837bf3b28698eeddb1",
-  "archiveBytes": 7792999,
-  "fileCount": 279,
-  "files": 279,
-  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/h3-face-refine-v1.0.7/third-party-frozen-resources-90e0cc150a3a.zip"
+  "lockSha256": "46de66cac116641d64820005c4d4defa320c8e16c93272363257f39ac1a31c9e",
+  "archiveSha256": "019a6898af118c6cfeaa792681d47410a8eb13c8a105805782ecb1f96d0503e1",
+  "archiveBytes": 8426592,
+  "fileCount": 300,
+  "files": 300,
+  "downloadUrl": "https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/h3-face-refine-v1.0.8/third-party-frozen-resources-46de66cac116.zip"
 }

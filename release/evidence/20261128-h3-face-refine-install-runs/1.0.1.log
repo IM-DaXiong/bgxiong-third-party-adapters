@@ -1,0 +1,7 @@
+
+running 1 test
+test comfyui::workflow::adapter_online_update::apply::state_machine_tests::real_installable_upgrade_preserves_current_model_selection ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 11088 filtered out; finished in 20.77s
+
+{"kind":"installedSourceOnlineUpgrade","pluginId":"local.thirdparty.h3-face-refine","sourceVersion":"1.0.1","sourceManifestSha256":"b78b182d7cac9ae3246948378ac4dcaa14ac04ad576220276a66d9bbf6b08893","targetVersion":"1.0.8","targetZipSha256":"efb1c5b42cbd5b79574bdff899f8901e1244819011139ff7e8c7eb3c6430c02b","targetZipBytes":598794,"hostVersion":"0.6.1130","phase":"done","currentSelectionMigrated":true,"indexSequence":1}

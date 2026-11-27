@@ -49,12 +49,9 @@ def host_public_trust() -> tuple[str, str]:
 
 
 def load_lock_zips() -> dict[str, tuple[int, str]]:
-    lock = json.loads((ROOT / "release" / "current.json").read_text(encoding="utf-8-sig"))
+    packer = importlib.import_module("pack-cdn-directory")
     names = {}
-    for package in lock.get("packages", []):
-        if package.get("kind") != "installable":
-            continue
-        name = "%s-%s.zip" % (package["pluginId"], package["version"])
+    for name, _ in packer.locked_packages():
         path = CDN / name
         if not path.is_file():
             raise StageError("Missing CDN ZIP: %s" % name)

@@ -8,6 +8,7 @@
 *.wit text eol=lf
 # The install envelope hashes the exact bytes of this bundled guide.
 projects/bgxiong-h3-face-refine-adapter/README.zh-CN.md -text whitespace=cr-at-eol
+release/evidence/20261128-h3-face-refine-install-runs/*.log text eol=lf
 
 # Frozen release files must reproduce the checked-in SHA256 bytes on every platform.
 artifacts/releases/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

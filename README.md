@@ -95,11 +95,15 @@ M3 文本生成与对话，需要自己的平台 API Key。 连接：**MiniMax �
 
 ### MiniMax-H3 人脸精修
 
-**1.0.8 开发验收版适用于比格熊 0.6.1130 及以上版本。** 开启「SAM 脸形遮罩」可沿脸部轮廓合成精修区域。工作台从当前配置的 ComfyUI 读取模型列表。若模型已移走，需重新选择。未构建列表时可关闭遮罩继续精修。旧草稿已开启遮罩却没有模型名时，适配器会在提交时选择当前加载器提供的兼容模型。普通选脸和已确认轨迹共用该规则。
+**1.0.8 适用于比格熊 0.6.1130 及以上版本。** 开启「SAM 脸形遮罩」可沿脸部轮廓合成精修区域。工作台从当前配置的 ComfyUI 读取模型列表。若模型已移走，需重新选择。缺少 SAM 时可关闭遮罩继续精修。旧草稿已开启遮罩却没有模型名时，适配器会在提交时选择当前加载器提供的兼容模型。普通选脸和已确认轨迹共用该规则。
 
 启用遮罩需要 ComfyUI-Impact-Pack 的 `SAMLoader`、人脸精修配套节点 `H3FaceMaskSAM` 和可选模型。模型列表为空时，将对应权重放入 ComfyUI 的 `models/sams` 并刷新列表。加载器已提供 ESAM 时也可选用。
 
-**1.0.7 公开下载**
+已在比格熊 0.6.1130 验证从 1.0.1、1.0.3 和 1.0.7 升级。在线渠道发布新索引后，可在适配器设置检查更新。手动安装请解压完整 ZIP，再选择包含 `adapter-install.json` 的目录。
+
+[下载 1.0.8 安装包](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/h3-face-refine-v1.0.8/local.thirdparty.h3-face-refine-1.0.8.zip) · [SHA-256 校验表](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/download/h3-face-refine-v1.0.8/SHA256SUMS-h3-face-refine-1.0.8.txt) · [发行记录](https://github.com/IM-DaXiong/bgxiong-third-party-adapters/releases/tag/h3-face-refine-v1.0.8)
+
+**使用比格熊 0.6.1128 或 0.6.1129 的用户可下载 1.0.7**
 
 在视频里选择要精修的人脸，预览跟踪效果，再提交精修。连接本地或局域网 ComfyUI。分析目标时若已有渲染占用 GPU，工作台会提示等待队列空闲，之后可再次点击「分析目标」。
 
