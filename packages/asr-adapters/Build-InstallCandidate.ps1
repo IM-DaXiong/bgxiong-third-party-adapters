@@ -16,7 +16,7 @@ if ($LASTEXITCODE -ne 0 -or $pendingSdk) { throw 'SDK source must be clean.' }
 
 $manifest = Get-Content -LiteralPath (Join-Path $projectRoot 'manifest.json') -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable
 $async = $manifest.pluginId -ne 'local.bgx.bailian-qwen3-asr-flash'
-if ($async -and $OssOrigins.Count -lt 2) { throw 'Supply the exact approved OSS upload and result origins.' }
+if ($async -and ($OssOrigins.Count -ne 1 -or $OssOrigins[0] -cne 'https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com')) { throw 'Supply the exact Beijing transcription result origin.' }
 if (-not $async -and $OssOrigins.Count) { throw 'The synchronous Qwen package does not use OSS.' }
 foreach ($origin in $OssOrigins) {
     if ($origin -cnotmatch '^https://dashscope-[a-z0-9-]+\.oss-cn-beijing\.aliyuncs\.com$') {

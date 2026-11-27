@@ -174,6 +174,9 @@ pub(crate) fn exchange(
             Failure::new("UPSTREAM_ERROR", "百炼响应缺少 HTTP 状态")
         }
     })?;
+    if method == "DELETE" && status == 404 {
+        return Ok(Value::Null);
+    }
     if !((200..300).contains(&status)) {
         return Err(Failure::new(
             rejection_code(status, None, submission),

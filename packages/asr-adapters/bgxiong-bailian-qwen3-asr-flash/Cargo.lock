@@ -36,7 +36,7 @@ dependencies = [
 
 [[package]]
 name = "bgxiong-bailian-qwen3-asr-flash"
-version = "1.0.1"
+version = "1.0.2"
 dependencies = [
  "bailian-asr-client",
 ]

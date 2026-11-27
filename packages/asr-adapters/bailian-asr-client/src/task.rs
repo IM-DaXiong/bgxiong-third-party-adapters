@@ -20,31 +20,43 @@ pub(super) fn submit(
     budget: u64,
 ) -> Result<Value, Failure> {
     let (origin, key) = http::origin(&payload["configuration"])?;
-    let url = upload::temporary(host, origin, key, model.id(), wav, budget)?;
-    let body = http::json_body(
-        host,
-        &submission(model, &url, payload["input"]["language"].as_str()),
-        4096,
-    )?;
-    let reply = http::exchange(
-        host,
-        "POST",
-        &format!("{origin}/api/v1/services/audio/asr/transcription"),
-        Some(key),
-        json!([{"name":"Content-Type","value":JSON},{"name":"X-DashScope-Async","value":"enable"},
-        {"name":"X-DashScope-OssResourceResolve","value":"enable"}]),
-        body,
-        budget,
-        true,
-    )?;
-    let id = vendor_id(&reply["output"]["task_id"])
-        .ok_or_else(|| Failure::new("ACCEPTANCE_UNKNOWN", "百炼识别已提交但缺少可验证任务号"))?;
-    // Carry the measured source length inside the opaque resume identity. The separate
-    // vendorTaskId remains the exact upstream ID and is checked on every query.
-    Ok(
-        json!({"kind":"accepted","vendorTaskId":id,"resumeToken":{"schemaVersion":1,
-        "jobId":format!("{id}:{duration}")},"appliedParams":null,"usage":null}),
-    )
+    let file = upload::create(host, origin, key, wav, budget)?;
+    let submitted = (|| {
+        let url = upload::signed_source_url(host, origin, key, &file, budget)?;
+        let body = http::json_body(
+            host,
+            &submission(model, &url, payload["input"]["language"].as_str()),
+            4096,
+        )?;
+        let reply = http::exchange(
+            host,
+            "POST",
+            &format!("{origin}/api/v1/services/audio/asr/transcription"),
+            Some(key),
+            json!([{"name":"Content-Type","value":JSON},{"name":"X-DashScope-Async","value":"enable"}]),
+            body,
+            budget,
+            true,
+        )?;
+        let id = vendor_id(&reply["output"]["task_id"]).ok_or_else(|| {
+            Failure::new("ACCEPTANCE_UNKNOWN", "百炼识别已提交但缺少可验证任务号")
+        })?;
+        let resume = format!("{id}:{duration}:{file}");
+        if resume.len() > 128 {
+            return Err(Failure::new(
+                "ACCEPTANCE_UNKNOWN",
+                "百炼任务身份超出续办合同",
+            ));
+        }
+        Ok(
+            json!({"kind":"accepted","vendorTaskId":id,"resumeToken":{"schemaVersion":1,"jobId":resume},
+            "appliedParams":null,"usage":null}),
+        )
+    })();
+    if submitted.is_err() {
+        let _ = upload::delete(host, origin, key, &file, budget);
+    }
+    submitted
 }
 
 pub(super) fn submission(model: Model, url: &str, language: Option<&str>) -> Value {
@@ -58,23 +70,44 @@ pub(super) fn submission(model: Model, url: &str, language: Option<&str>) -> Val
     body
 }
 
-pub(super) fn query(host: &mut dyn Host, payload: &Value, budget: u64) -> Result<Value, Failure> {
-    let (origin, key) = http::origin(&payload["configuration"])?;
+fn frozen(payload: &Value) -> Result<(&str, u64, &str), Failure> {
     let invalid = || Failure::new("INVALID_INPUT", "百炼续办任务身份不符");
     let id = vendor_id(&payload["vendorTaskId"]).ok_or_else(invalid)?;
     let resume = &payload["resumeToken"];
-    let (frozen, duration) = resume["jobId"]
+    let (job, rest) = resume["jobId"]
         .as_str()
         .and_then(|value| value.split_once(':'))
         .ok_or_else(invalid)?;
-    let duration: u64 = duration
+    let (duration, file) = rest.split_once(':').ok_or_else(invalid)?;
+    let duration = duration
         .parse()
         .ok()
         .filter(|d| (1..=300000).contains(d))
         .ok_or_else(invalid)?;
-    if frozen != id || resume["schemaVersion"] != 1 {
+    if job != id
+        || resume["schemaVersion"] != 1
+        || !file.starts_with("file-fe-")
+        || file.len() > 64
+        || !file
+            .bytes()
+            .all(|b| b.is_ascii_alphanumeric() || b == b'-' || b == b'_')
+    {
         return Err(invalid());
     }
+    Ok((id, duration, file))
+}
+
+pub(super) fn cancel(host: &mut dyn Host, payload: &Value, budget: u64) -> Result<Value, Failure> {
+    let (origin, key) = http::origin(&payload["configuration"])?;
+    let (_, _, file) = frozen(payload)?;
+    upload::delete(host, origin, key, file, budget)?;
+    Ok(json!({"outcome":"local_only"}))
+}
+
+pub(super) fn query(host: &mut dyn Host, payload: &Value, budget: u64) -> Result<Value, Failure> {
+    let (origin, key) = http::origin(&payload["configuration"])?;
+    let (id, duration, file) = frozen(payload)?;
+    let resume = &payload["resumeToken"];
     let reply = http::exchange(
         host,
         "GET",
@@ -88,6 +121,12 @@ pub(super) fn query(host: &mut dyn Host, payload: &Value, budget: u64) -> Result
     let out = &reply["output"];
     if vendor_id(&out["task_id"]) != Some(id) {
         return Err(Failure::new("UPSTREAM_ERROR", "百炼查询返回另一条任务"));
+    }
+    if matches!(
+        out["task_status"].as_str(),
+        Some("SUCCEEDED" | "FAILED" | "CANCELED")
+    ) {
+        upload::delete(host, origin, key, file, budget)?;
     }
     let mut data = Value::Null;
     let mut failure = Value::Null;

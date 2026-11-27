@@ -1,106 +1,114 @@
 use super::*;
 
-fn storage_origin(url: &str) -> Option<&str> {
-    let rest = url.strip_prefix("https://")?;
-    let end = rest.find(['/', '?']).unwrap_or(rest.len());
-    let host = &rest[..end];
-    let bucket = host.strip_suffix(".oss-cn-beijing.aliyuncs.com")?;
-    (!bucket.is_empty()
-        && bucket.starts_with("dashscope-")
-        && bucket
-            .bytes()
-            .all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'-'))
-    .then_some(&url[..8 + end])
+const FILES: &str = "/compatible-mode/v1/files";
+const FILE_ORIGIN: &str = "dashscope-file-mgr.oss-cn-beijing.aliyuncs.com";
+
+pub(super) fn file_id(value: &Value) -> Option<&str> {
+    value.as_str().filter(|id| {
+        id.starts_with("file-fe-")
+            && id.len() <= 64
+            && id
+                .bytes()
+                .all(|b| b.is_ascii_alphanumeric() || b == b'-' || b == b'_')
+    })
 }
 
 pub(super) fn result_url(url: &str) -> bool {
-    storage_origin(url).is_some_and(|origin| url.as_bytes().get(origin.len()) == Some(&b'/'))
+    let Some((_, path)) = url
+        .strip_prefix("https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com")
+        .and_then(|rest| rest.split_once('/').filter(|(before, _)| before.is_empty()))
+    else {
+        return false;
+    };
+    !path.is_empty()
+        && !url
+            .bytes()
+            .any(|byte| byte.is_ascii_control() || byte == b' ' || byte == b'\\')
 }
 
-pub(super) fn temporary(
+pub(super) fn create(
     host: &mut dyn Host,
     origin: &str,
     key: &str,
-    model: &str,
     wav: &[u8],
+    budget: u64,
+) -> Result<String, Failure> {
+    let form = multipart(wav, &[("purpose", "file-extract")])?;
+    let boundary = boundary(wav);
+    let handle = http::put_media(host, "file", "application/octet-stream", &form)?;
+    let reply = http::exchange(
+        host,
+        "POST",
+        &format!("{origin}{FILES}"),
+        Some(key),
+        json!([{"name":"Content-Type","value":format!("multipart/form-data; boundary={boundary}")}]),
+        json!({"kind":"media","handle":handle}),
+        budget,
+        false,
+    )?;
+    file_id(&reply["id"])
+        .map(String::from)
+        .ok_or_else(|| Failure::new("UPSTREAM_ERROR", "百炼文件上传缺少文件编号"))
+}
+
+pub(super) fn signed_source_url(
+    host: &mut dyn Host,
+    origin: &str,
+    key: &str,
+    id: &str,
     budget: u64,
 ) -> Result<String, Failure> {
     let reply = http::exchange(
         host,
         "GET",
-        &format!("{origin}/api/v1/uploads?action=getPolicy&model={model}"),
+        &format!("{origin}/api/v1/files/{id}"),
         Some(key),
         json!([]),
         json!({"kind":"none"}),
         budget,
         false,
     )?;
-    let policy = &reply["data"];
-    let invalid = || Failure::new("UPSTREAM_ERROR", "百炼上传策略无效");
-    let upload = policy["upload_host"]
-        .as_str()
-        .filter(|url| storage_origin(url) == Some(*url))
-        .ok_or_else(invalid)?;
-    let directory = policy["upload_dir"]
-        .as_str()
-        .filter(|value| {
-            !value.starts_with('/')
-                && value
-                    .split('/')
-                    .all(|part| !part.is_empty() && part != "." && part != "..")
-                && value
-                    .bytes()
-                    .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'-' | b'_' | b'/' | b'.'))
-        })
-        .ok_or_else(invalid)?;
-    let max = policy["max_file_size_mb"]
-        .as_u64()
-        .and_then(|mb| mb.checked_mul(1_000_000))
-        .ok_or_else(invalid)?;
-    if wav.len() as u64 > max {
-        return Err(Failure::new("INVALID_INPUT", "百炼上传策略音频超限"));
+    let rejected = || Failure::new("UPSTREAM_ERROR", "百炼文件缺少有效签名下载地址");
+    let url = reply["data"]["url"].as_str().ok_or_else(rejected)?;
+    let tail = url
+        .strip_prefix("https://")
+        .or_else(|| url.strip_prefix("http://"))
+        .ok_or_else(rejected)?;
+    let (hostname, path) = tail.split_once('/').ok_or_else(rejected)?;
+    if hostname != FILE_ORIGIN
+        || !path.contains('?')
+        || path
+            .bytes()
+            .any(|byte| byte.is_ascii_control() || matches!(byte, b' ' | b'\\' | b'#'))
+    {
+        return Err(rejected());
     }
-    // The policy's directory is per upload. Use the file digest as a safe file name.
-    let object = format!("{directory}/{:x}.wav", Sha256::digest(wav));
-    let fields = [
-        ("key", object.as_str()),
-        ("policy", policy["policy"].as_str().ok_or_else(invalid)?),
-        (
-            "Signature",
-            policy["signature"].as_str().ok_or_else(invalid)?,
-        ),
-        (
-            "OSSAccessKeyId",
-            policy["oss_access_key_id"].as_str().ok_or_else(invalid)?,
-        ),
-        (
-            "x-oss-object-acl",
-            policy["x_oss_object_acl"].as_str().ok_or_else(invalid)?,
-        ),
-        (
-            "x-oss-forbid-overwrite",
-            policy["x_oss_forbid_overwrite"]
-                .as_str()
-                .ok_or_else(invalid)?,
-        ),
-        ("success_action_status", "200"),
-    ];
-    let form = multipart(wav, &fields)?;
-    let boundary = boundary(wav);
-    let handle = http::put_media(host, "file", "application/octet-stream", &form)?;
-    // Host must authorize the exact OSS origin independently of the API credential.
-    let response = http::port(
+    // The file metadata API can spell the signed link with HTTP. OSS signs the
+    // object and query parameters, and the same address is available over HTTPS.
+    Ok(format!("https://{hostname}/{path}"))
+}
+
+pub(super) fn delete(
+    host: &mut dyn Host,
+    origin: &str,
+    key: &str,
+    id: &str,
+    budget: u64,
+) -> Result<(), Failure> {
+    let reply = http::exchange(
         host,
-        "host-http.execute",
-        json!({"plan":{
-        "method":"POST","url":upload,"headers":[{"name":"Content-Type","value":format!("multipart/form-data; boundary={boundary}")}],
-        "generatedHeaders":[],"body":{"kind":"media","handle":handle},"sink":{"kind":"media"},"timeoutMs":budget
-    },"credential":null}),
+        "DELETE",
+        &format!("{origin}{FILES}/{id}"),
+        Some(key),
+        json!([]),
+        json!({"kind":"none"}),
+        budget,
+        false,
     )?;
-    if !matches!(response["status"].as_u64(), Some(200 | 204)) {
-        return Err(Failure::new("UPSTREAM_ERROR", "百炼临时音频上传失败"));
+    if reply.is_null() || (reply["deleted"] == true && reply["id"] == id) {
+        return Ok(());
     }
-    Ok(format!("oss://{object}"))
+    Err(Failure::new("UPSTREAM_ERROR", "百炼已上传音频删除未确认"))
 }
 
 fn boundary(wav: &[u8]) -> String {

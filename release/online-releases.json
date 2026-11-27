@@ -182,6 +182,30 @@
       "hostVersionRange": ">=0.6.1126",
       "upgradeFrom": [],
       "evidence": "release/evidence/20261123-breeze-1.0.4-production-acceptance-authorization.json"
+    },
+    {
+      "pluginId": "local.bgx.bailian-paraformer-v2",
+      "version": "1.0.2",
+      "newInstall": true,
+      "hostVersionRange": ">=0.6.1129",
+      "upgradeFrom": [],
+      "evidence": "release/evidence/20261128-bailian-asr-1.0.2-authorization.json"
+    },
+    {
+      "pluginId": "local.bgx.bailian-fun-asr",
+      "version": "1.0.2",
+      "newInstall": true,
+      "hostVersionRange": ">=0.6.1129",
+      "upgradeFrom": [],
+      "evidence": "release/evidence/20261128-bailian-asr-1.0.2-authorization.json"
+    },
+    {
+      "pluginId": "local.bgx.bailian-qwen3-asr-flash",
+      "version": "1.0.2",
+      "newInstall": true,
+      "hostVersionRange": ">=0.6.1129",
+      "upgradeFrom": [],
+      "evidence": "release/evidence/20261128-bailian-asr-1.0.2-authorization.json"
     }
   ]
 }

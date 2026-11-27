@@ -1,5 +1,5 @@
 {
-  "artifactSha256": "4018c8b30f2f8971478f2ca7192e46def412855082a2528a00f3e1bcc5a4dd01",
+  "artifactSha256": "920e5df06f81eb277e53d8d78c215b4e949bf2e4d16aacab052c6727bcfc22e3",
   "displayName": "百炼 Qwen3-ASR-Flash",
   "entry": "adapter.wasm",
   "language": "rust",
@@ -35,5 +35,5 @@
   },
   "requiredFeatures": [],
   "schemaVersion": 2,
-  "version": "1.0.1"
+  "version": "1.0.2"
 }

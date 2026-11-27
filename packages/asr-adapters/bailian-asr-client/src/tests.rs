@@ -144,28 +144,31 @@ fn qwen_never_retries_a_rejected_or_uncertain_submit() {
 }
 
 #[test]
-fn async_result_failures_only_query_the_original_task() {
+fn async_result_failures_reuse_the_job_and_delete_the_source_file() {
     let payload = json!({"configuration":account(),"vendorTaskId":"job-123",
-        "resumeToken":{"schemaVersion":1,"jobId":"job-123:10"}});
+        "resumeToken":{"schemaVersion":1,"jobId":"job-123:10:file-fe-fixture"}});
     let failed = json!({"output":{"task_id":"job-123","task_status":"SUCCEEDED",
         "results":[{"subtask_status":"FAILED"}]}});
     let mut host = FakeHost {
-        replies: [Reply::Json(failed)].into(),
+        replies: [Reply::Json(failed), Reply::Status(404)].into(),
         ..FakeHost::default()
     };
     assert_eq!(
         task::query(&mut host, &payload, 10000).unwrap()["status"],
         "failed"
     );
-    assert_eq!(host.exchanges.len(), 1);
+    assert_eq!(host.exchanges.len(), 2);
+    assert_eq!(host.exchanges[1]["plan"]["method"], "DELETE");
 
     let result = json!({"output":{"task_id":"job-123","task_status":"SUCCEEDED",
         "results":[{"subtask_status":"SUCCEEDED","transcription_url":"https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/out"}]}});
     let mut host = FakeHost {
         replies: [
             Reply::Json(result.clone()),
+            Reply::Status(204),
             Reply::Status(503),
             Reply::Json(result),
+            Reply::Status(404),
             Reply::Json(json!({"transcripts":[{"text":"test speech"}]})),
         ]
         .into(),
@@ -180,9 +183,49 @@ fn async_result_failures_only_query_the_original_task() {
     assert!(host
         .exchanges
         .iter()
-        .all(|exchange| exchange["plan"]["method"] == "GET"));
-    for exchange in host.exchanges.iter().skip(1).step_by(2) {
+        .all(|exchange| exchange["plan"]["method"] != "POST"));
+    for exchange in [&host.exchanges[2], &host.exchanges[5]] {
         assert!(exchange["credential"].is_null());
         assert_eq!(exchange["plan"]["generatedHeaders"], json!([]));
     }
+}
+
+#[test]
+fn signed_file_api_link_uses_https_and_failed_submission_deletes_only_its_own_file() {
+    let mut host = FakeHost {
+        replies: [
+            Reply::Json(json!({"id":"file-fe-fixture"})),
+            Reply::Json(json!({"data":{"url":"http://dashscope-file-mgr.oss-cn-beijing.aliyuncs.com/sample.wav?Signature=fixture"}})),
+            Reply::Timeout,
+            Reply::Json(json!({"deleted":true,"id":"file-fe-fixture"})),
+        ].into(), ..FakeHost::default()
+    };
+    let payload = json!({"configuration":account(),"input":{"language":"en"}});
+    let error =
+        task::submit(&mut host, Model::Paraformer, &payload, &wav(), 10, 10000).unwrap_err();
+    assert_eq!(error.code, "ACCEPTANCE_UNKNOWN");
+    let methods: Vec<_> = host
+        .exchanges
+        .iter()
+        .map(|call| call["plan"]["method"].as_str().unwrap())
+        .collect();
+    assert_eq!(methods, ["POST", "GET", "POST", "DELETE"]);
+    assert!(host.exchanges[3]["plan"]["url"]
+        .as_str()
+        .unwrap()
+        .ends_with("/files/file-fe-fixture"));
+}
+
+#[test]
+fn qwen_refuses_oversize_encoded_audio_before_http() {
+    let mut host = FakeHost::default();
+    let payload = json!({"configuration":account()});
+    let wav = vec![1; 7_500_001];
+    assert_eq!(
+        qwen::submit(&mut host, &payload, &wav, 10, 10000)
+            .unwrap_err()
+            .code,
+        "INVALID_INPUT"
+    );
+    assert!(host.exchanges.is_empty());
 }

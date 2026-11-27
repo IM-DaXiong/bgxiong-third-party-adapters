@@ -22,11 +22,18 @@ pub(super) fn submit(
     duration: u64,
     budget: u64,
 ) -> Result<Value, Failure> {
+    const ENCODED_REQUEST_LIMIT: usize = 10_000_000;
+    if wav.len().div_ceil(3) * 4 + "data:audio/wav;base64,".len() > ENCODED_REQUEST_LIMIT {
+        return Err(Failure::new(
+            "INVALID_INPUT",
+            "千问识别的 Base64 音频超出 10 MB",
+        ));
+    }
     let (origin, key) = http::origin(&payload["configuration"])?;
     let body = http::json_body(
         host,
         &request(wav, &payload["input"]["language"]),
-        14_000_000,
+        ENCODED_REQUEST_LIMIT,
     )?;
     let reply = http::exchange(
         host,

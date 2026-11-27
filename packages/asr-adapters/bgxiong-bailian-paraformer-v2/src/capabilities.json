@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "pluginId": "local.bgx.bailian-paraformer-v2",
-  "pluginVersion": "1.0.1",
+  "pluginVersion": "1.0.2",
   "capabilityContracts": [
     {
       "schemaVersion": 2,
@@ -31,7 +31,7 @@
           "execution": {
             "mode": "asynchronous",
             "streaming": false,
-            "cancellation": "unsupported",
+            "cancellation": "local_only",
             "resumable": true,
             "remoteIdempotency": false
           },

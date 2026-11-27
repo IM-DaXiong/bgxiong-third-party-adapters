@@ -1648,6 +1648,138 @@
           "sha256": "ce3b85c42614df72a4fb747b9fd7a0c04a5b91e0e7968a0587d9652ffa7e520f"
         }
       ]
+    },
+    {
+      "pluginId": "local.bgx.bailian-paraformer-v2",
+      "version": "1.0.2",
+      "kind": "installable",
+      "validation": "sdk_package_validated",
+      "sourceManifest": "packages/asr-adapters/bgxiong-bailian-paraformer-v2/manifest.json",
+      "files": [
+        {
+          "path": "LICENSE",
+          "source": "artifacts/current/local.bgx.bailian-paraformer-v2/1.0.2/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "README.md",
+          "source": "artifacts/current/local.bgx.bailian-paraformer-v2/1.0.2/README.md",
+          "sha256": "1cb18d3b9022e828b7a5868e3137ba4021981d70c0c515a3c4b1d1b291f4958e"
+        },
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/current/local.bgx.bailian-paraformer-v2/1.0.2/adapter-install.json",
+          "sha256": "4be5f692c32e0df76efad1a1b236f8943c9652dbab00d6bbeeb4030159920893"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/current/local.bgx.bailian-paraformer-v2/1.0.2/package/adapter.wasm",
+          "sha256": "a0f66b1aafed079f26faeee4815e3da122f7b37493dffd2f4f9f240dc054f297"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/current/local.bgx.bailian-paraformer-v2/1.0.2/package/manifest.json",
+          "sha256": "9b0b1c4a8e788a5f59c38f945d386c3a4c7e1c9726b9fb7469940c785ed5cec5"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/current/local.bgx.bailian-paraformer-v2/1.0.2/package/manifest.sha256",
+          "sha256": "13db763b9fae037781b75db73ab2b41f3fd20b558201fabe51a4908c34cf52cf"
+        },
+        {
+          "path": "sdk-source-lock.json",
+          "source": "artifacts/current/local.bgx.bailian-paraformer-v2/1.0.2/sdk-source-lock.json",
+          "sha256": "b29b229b3a47b1dfc62c7e1aacaaa434ce6b1aebcf6e97190b30f26999fd998c"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.bgx.bailian-fun-asr",
+      "version": "1.0.2",
+      "kind": "installable",
+      "validation": "sdk_package_validated",
+      "sourceManifest": "packages/asr-adapters/bgxiong-bailian-fun-asr/manifest.json",
+      "files": [
+        {
+          "path": "LICENSE",
+          "source": "artifacts/current/local.bgx.bailian-fun-asr/1.0.2/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "README.md",
+          "source": "artifacts/current/local.bgx.bailian-fun-asr/1.0.2/README.md",
+          "sha256": "d5dd06b3ff1fe8313c06203940f28ce17f79ed02360f28714252d8d95685d6f1"
+        },
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/current/local.bgx.bailian-fun-asr/1.0.2/adapter-install.json",
+          "sha256": "3a88786eb2bf8526eab88a69ce9850e8bcf8762054c42a01475811825ed51f95"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/current/local.bgx.bailian-fun-asr/1.0.2/package/adapter.wasm",
+          "sha256": "898cd7f9fc2714fede2e6f3308aa1df87d69296388a7042b7bceffbf51a7d859"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/current/local.bgx.bailian-fun-asr/1.0.2/package/manifest.json",
+          "sha256": "dfe64676d808d9f9b411a5a9c70d0721482f3c82d1f1fd374306b82efa69ad88"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/current/local.bgx.bailian-fun-asr/1.0.2/package/manifest.sha256",
+          "sha256": "72b2bc661d7b593b7a97bb4faf4328e0f024b2051978228390f2ac273cfe37c2"
+        },
+        {
+          "path": "sdk-source-lock.json",
+          "source": "artifacts/current/local.bgx.bailian-fun-asr/1.0.2/sdk-source-lock.json",
+          "sha256": "b29b229b3a47b1dfc62c7e1aacaaa434ce6b1aebcf6e97190b30f26999fd998c"
+        }
+      ]
+    },
+    {
+      "pluginId": "local.bgx.bailian-qwen3-asr-flash",
+      "version": "1.0.2",
+      "kind": "installable",
+      "validation": "sdk_package_validated",
+      "sourceManifest": "packages/asr-adapters/bgxiong-bailian-qwen3-asr-flash/manifest.json",
+      "files": [
+        {
+          "path": "LICENSE",
+          "source": "artifacts/current/local.bgx.bailian-qwen3-asr-flash/1.0.2/LICENSE",
+          "sha256": "167618679a782bcde34af87d1f7c45afa2d11677d8c5d9f3ff540d4e5935a504"
+        },
+        {
+          "path": "README.md",
+          "source": "artifacts/current/local.bgx.bailian-qwen3-asr-flash/1.0.2/README.md",
+          "sha256": "86e703c66ad5329a69396690455cb28caea1058386e35fde4a1263f95eded35a"
+        },
+        {
+          "path": "adapter-install.json",
+          "source": "artifacts/current/local.bgx.bailian-qwen3-asr-flash/1.0.2/adapter-install.json",
+          "sha256": "b8d97364dcedeb027e5110fe93ec479ab90ad80cfc637bed7eb9d5e78adcdc22"
+        },
+        {
+          "path": "package/adapter.wasm",
+          "source": "artifacts/current/local.bgx.bailian-qwen3-asr-flash/1.0.2/package/adapter.wasm",
+          "sha256": "920e5df06f81eb277e53d8d78c215b4e949bf2e4d16aacab052c6727bcfc22e3"
+        },
+        {
+          "path": "package/manifest.json",
+          "source": "artifacts/current/local.bgx.bailian-qwen3-asr-flash/1.0.2/package/manifest.json",
+          "sha256": "cdc31c86d9b4bd16862b52a8074a5c14bc4b9f1d8af1999d1a01b25d63400a86"
+        },
+        {
+          "path": "package/manifest.sha256",
+          "source": "artifacts/current/local.bgx.bailian-qwen3-asr-flash/1.0.2/package/manifest.sha256",
+          "sha256": "39bca41ae1ae135245e3bcc53c816c699a07e9cf5e5432151c5b7848679f8243"
+        },
+        {
+          "path": "sdk-source-lock.json",
+          "source": "artifacts/current/local.bgx.bailian-qwen3-asr-flash/1.0.2/sdk-source-lock.json",
+          "sha256": "b29b229b3a47b1dfc62c7e1aacaaa434ce6b1aebcf6e97190b30f26999fd998c"
+        }
+      ]
     }
   ],
   "unpublishable": [

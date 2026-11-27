@@ -36,7 +36,7 @@ dependencies = [
 
 [[package]]
 name = "bgxiong-bailian-fun-asr"
-version = "1.0.1"
+version = "1.0.2"
 dependencies = [
  "bailian-asr-client",
 ]

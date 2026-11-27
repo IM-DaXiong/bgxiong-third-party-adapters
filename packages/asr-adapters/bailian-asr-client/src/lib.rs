@@ -157,6 +157,7 @@ fn dispatch(
                 task::submit(host, model, &payload, &wav, duration, request.r#budget_ms)
             }
         }
+        Op::V5 if model != Model::Qwen => task::cancel(host, &payload, request.r#budget_ms),
         Op::V4 if model != Model::Qwen => task::query(host, &payload, request.r#budget_ms),
         _ => Err(Failure::new("UNSUPPORTED_FEATURE", "此百炼识别操作不可用")),
     }
