@@ -68,3 +68,121 @@ fn async_requests_keep_model_specific_parameters_and_exact_multipart_wav() {
         "http://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/output.json"
     ));
 }
+use std::collections::VecDeque;
+
+enum Reply {
+    Status(u64),
+    Json(Value),
+    Timeout,
+}
+
+#[derive(Default)]
+struct FakeHost {
+    replies: VecDeque<Reply>,
+    exchanges: Vec<Value>,
+    inbound: Vec<u8>,
+}
+
+impl Host for FakeHost {
+    fn call(&mut self, call: sdk::HostPortCallV2) -> Result<Value, sdk::host::HostError> {
+        let call = serde_json::to_value(call).unwrap();
+        let args = &call["args"];
+        match call["method"].as_str().unwrap() {
+            "host-media.create" => Ok(json!("request-media")),
+            "host-media.write" | "host-media.finish" | "host-media.release" => Ok(Value::Null),
+            "host-media.info" => Ok(json!({"byteLength":self.inbound.len().to_string()})),
+            "host-media.read" => {
+                let start: usize = args["offset"].as_str().unwrap().parse().unwrap();
+                let end =
+                    (start + args["maxBytes"].as_u64().unwrap() as usize).min(self.inbound.len());
+                Ok(json!(&self.inbound[start..end]))
+            }
+            "host-http.execute" => {
+                self.exchanges.push(args.clone());
+                match self.replies.pop_front().expect("unexpected HTTP call") {
+                    Reply::Status(status) => Ok(json!({"status":status})),
+                    Reply::Json(value) => {
+                        self.inbound = serde_json::to_vec(&value).unwrap();
+                        Ok(json!({"status":200,"payload":{"handle":"response-media"}}))
+                    }
+                    Reply::Timeout => Err(serde_json::from_value(
+                        json!({"code":"TIMEOUT","message":"fixture timeout"}),
+                    )
+                    .unwrap()),
+                }
+            }
+            method => panic!("unexpected host method {method}"),
+        }
+    }
+}
+
+fn account() -> Value {
+    json!({"endpointBaseUrl":"https://fixture.cn-beijing.maas.aliyuncs.com","credentialRef":"account"})
+}
+
+#[test]
+fn qwen_never_retries_a_rejected_or_uncertain_submit() {
+    for (reply, code) in [
+        (Reply::Status(401), "UNAUTHORIZED"),
+        (Reply::Timeout, "ACCEPTANCE_UNKNOWN"),
+    ] {
+        let mut host = FakeHost {
+            replies: [reply].into(),
+            ..FakeHost::default()
+        };
+        let payload = json!({"configuration":account(),"input":{"language":"en"}});
+        assert_eq!(
+            qwen::submit(&mut host, &payload, &wav(), 10, 60000)
+                .unwrap_err()
+                .code,
+            code
+        );
+        assert_eq!(host.exchanges.len(), 1);
+        assert_eq!(host.exchanges[0]["plan"]["method"], "POST");
+        assert_eq!(host.exchanges[0]["credential"], "account");
+    }
+}
+
+#[test]
+fn async_result_failures_only_query_the_original_task() {
+    let payload = json!({"configuration":account(),"vendorTaskId":"job-123",
+        "resumeToken":{"schemaVersion":1,"jobId":"job-123:10"}});
+    let failed = json!({"output":{"task_id":"job-123","task_status":"SUCCEEDED",
+        "results":[{"subtask_status":"FAILED"}]}});
+    let mut host = FakeHost {
+        replies: [Reply::Json(failed)].into(),
+        ..FakeHost::default()
+    };
+    assert_eq!(
+        task::query(&mut host, &payload, 10000).unwrap()["status"],
+        "failed"
+    );
+    assert_eq!(host.exchanges.len(), 1);
+
+    let result = json!({"output":{"task_id":"job-123","task_status":"SUCCEEDED",
+        "results":[{"subtask_status":"SUCCEEDED","transcription_url":"https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/out"}]}});
+    let mut host = FakeHost {
+        replies: [
+            Reply::Json(result.clone()),
+            Reply::Status(503),
+            Reply::Json(result),
+            Reply::Json(json!({"transcripts":[{"text":"test speech"}]})),
+        ]
+        .into(),
+        ..FakeHost::default()
+    };
+    assert_eq!(
+        task::query(&mut host, &payload, 10000).unwrap_err().code,
+        "UPSTREAM_ERROR"
+    );
+    let value = task::query(&mut host, &payload, 10000).unwrap();
+    assert_eq!(value["data"]["text"], "test speech");
+    assert!(host
+        .exchanges
+        .iter()
+        .all(|exchange| exchange["plan"]["method"] == "GET"));
+    for exchange in host.exchanges.iter().skip(1).step_by(2) {
+        assert!(exchange["credential"].is_null());
+        assert_eq!(exchange["plan"]["generatedHeaders"], json!([]));
+    }
+}
