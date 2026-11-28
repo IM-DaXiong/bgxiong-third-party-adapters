@@ -30,7 +30,7 @@ dependencies = [
 
 [[package]]
 name = "bgx-comfy-workflow-adapter"
-version = "0.1.7"
+version = "0.1.8"
 dependencies = [
  "bgx-adapter-v2-sdk",
  "bgx-comfy-workflow",

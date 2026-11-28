@@ -36,6 +36,15 @@ pub fn is_metadata_only_probe(payload: &serde_json::Value) -> bool {
     payload["kind"] == OPERATION_INPUT_PREFLIGHT_KIND || payload["kind"] == "operation_preflight"
 }
 
+/// A form lookup has no task, media or state authority. Credentials can be attached
+/// by the HTTP broker under normal binding and origin restrictions.
+pub fn form_options_port_allowed(call: &serde_json::Value) -> bool {
+    if call["method"] == "host-log.log" { return true; }
+    let plan = &call["args"]["plan"];
+    call["method"] == "host-http.execute" && plan["method"] == "GET" && plan["body"]["kind"] == "none"
+        && plan["sink"]["kind"] == "buffer" && plan["sink"]["maxBytes"].as_u64().is_some_and(|n| n <= 4_194_304)
+}
+
 /// Required nullable fields must be present even when their value is null.
 fn required_nullable<'de, D, T>(deserializer: D) -> Result<Option<T>, D::Error>
 where
