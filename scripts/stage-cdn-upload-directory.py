@@ -48,10 +48,9 @@ def host_public_trust() -> tuple[str, str]:
     return key_id.group(1), pubkey.group(1)
 
 
-def load_lock_zips() -> dict[str, tuple[int, str]]:
-    packer = importlib.import_module("pack-cdn-directory")
+def load_lock_zips(packages) -> dict[str, tuple[int, str]]:
     names = {}
-    for name, _ in packer.locked_packages():
+    for name, _files in packages:
         path = CDN / name
         if not path.is_file():
             raise StageError("Missing CDN ZIP: %s" % name)
@@ -205,9 +204,10 @@ def main() -> int:
     parser.add_argument("--source-lock", type=Path, action="append", default=[])
     args = parser.parse_args()
     try:
+        packer = importlib.import_module("pack-cdn-directory")
+        packages = packer.locked_packages()
         if not args.check:
-            packer = importlib.import_module("pack-cdn-directory")
-            packer.publish(packer.locked_packages(), local_only=args.local_only,
+            packer.publish(packages, local_only=args.local_only,
                            required=args.require_new_install, source_locks=args.source_lock)
             return 0
         mod = load_publisher()
@@ -216,7 +216,7 @@ def main() -> int:
         if not latest_path.is_file():
             raise StageError("Upload directory is incomplete: missing production-signed latest.json")
         latest = latest_path.read_bytes()
-        zips = load_lock_zips()
+        zips = load_lock_zips(packages)
         verify_sums(zips)
         expected = mod.validated_packages(SimpleNamespace(source_lock=args.source_lock), CDN)
         report = inspect_index(mod, latest, zips, required, local_only=args.local_only,

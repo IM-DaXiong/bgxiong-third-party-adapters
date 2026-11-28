@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 PLUGIN = "local.bgx.cloud-asr"
-VERSION = "0.1.1"
+VERSION = "0.1.2"
 ORIGIN = "https://www.bgxiong.com"
 
 

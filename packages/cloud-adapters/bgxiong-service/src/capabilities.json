@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "pluginId": "local.bgx.cloud-asr",
-  "pluginVersion": "0.1.1",
+  "pluginVersion": "0.1.2",
   "capabilityContracts": [
     {
       "schemaVersion": 2,
@@ -74,6 +74,80 @@
           "id": "bgx-asr-configuration",
           "digest": "00413ab871d6100f30d7db1896f014e97fefa9af043e5891f204ea2b30c008e4",
           "schemaJson": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"properties\":{\"endpointBaseUrl\":{\"type\":\"string\",\"minLength\":1},\"credentialRef\":{\"const\":\"bgx-asr-task-grant\"},\"submission\":{\"type\":\"object\",\"properties\":{\"recordingSessionId\":{\"type\":\"string\",\"minLength\":36,\"maxLength\":36},\"segmentIndex\":{\"type\":\"integer\",\"minimum\":0,\"maximum\":4095},\"clientRequestId\":{\"type\":\"string\",\"minLength\":36,\"maxLength\":36},\"modelId\":{\"const\":\"bgxiong-asr-standard\"},\"operation\":{\"const\":\"speech.transcribe\"},\"quoteId\":{\"type\":\"string\",\"minLength\":36,\"maxLength\":36},\"requestDigest\":{\"type\":\"string\",\"minLength\":64,\"maxLength\":64},\"params\":{\"type\":\"object\",\"properties\":{\"assetRef\":{\"type\":\"string\",\"minLength\":36,\"maxLength\":36},\"assetVersion\":{\"type\":\"string\",\"minLength\":64,\"maxLength\":64},\"language\":{\"type\":[\"string\",\"null\"],\"maxLength\":35}},\"required\":[\"assetRef\",\"assetVersion\"],\"additionalProperties\":false}},\"required\":[\"recordingSessionId\",\"segmentIndex\",\"clientRequestId\",\"modelId\",\"operation\",\"quoteId\",\"requestDigest\",\"params\"],\"additionalProperties\":false}},\"required\":[\"endpointBaseUrl\",\"credentialRef\"],\"additionalProperties\":false}"
+        }
+      ]
+    },
+    {
+      "schemaVersion": 2,
+      "localId": "subtitle",
+      "capabilityKey": "speech.subtitle",
+      "transportSlot": "generic",
+      "modelIds": [
+        "bgxiong-asr-subtitle"
+      ],
+      "configurationSchema": {
+        "id": "bgx-asr-subtitle-configuration",
+        "digest": "efc487de31e705fd39bd2215d9b5ba488c4ab30e44a43a0f13d3c066c39b115f"
+      },
+      "operations": [
+        {
+          "id": "std/speech.subtitle",
+          "version": 1,
+          "label": "比格熊云端字幕",
+          "inputSchema": {
+            "id": "https://bgxiong.local/vendor-adapter/v2/profiles/speech-analysis-v1/subtitle.input.schema.json",
+            "digest": "2aaaa586a8298ca72668cec2537d731ec80918f7ef71d269ec948565687b9211"
+          },
+          "outputSchema": {
+            "id": "https://bgxiong.local/vendor-adapter/v2/profiles/speech-analysis-v1/subtitle.output.schema.json",
+            "digest": "3b7f80f34b552b119c7264557249adbffdc6f4ecc50d9d6ddcea46e67cdb119e"
+          },
+          "resumeSchema": {
+            "id": "https://bgxiong.local/vendor-adapter/v2/profiles/speech-analysis-v1/transcribe.resume.schema.json",
+            "digest": "3e85938eefb1467f21e84f156115c1ba0c53638e7b2b544ac6f93be9d11593bd"
+          },
+          "uiSchema": {
+            "controls": []
+          },
+          "mediaSlots": [
+            {
+              "role": "audio",
+              "inputPointer": "/audio",
+              "mediaKind": "audio",
+              "minCount": 1,
+              "maxCount": 1
+            }
+          ],
+          "execution": {
+            "mode": "asynchronous",
+            "streaming": false,
+            "cancellation": "best_effort",
+            "resumable": true,
+            "remoteIdempotency": true
+          },
+          "outputSlots": []
+        }
+      ],
+      "schemas": [
+        {
+          "id": "https://bgxiong.local/vendor-adapter/v2/profiles/speech-analysis-v1/subtitle.input.schema.json",
+          "digest": "2aaaa586a8298ca72668cec2537d731ec80918f7ef71d269ec948565687b9211",
+          "schemaJson": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"$id\": \"https://bgxiong.local/vendor-adapter/v2/profiles/speech-analysis-v1/subtitle.input.schema.json\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"schemaVersion\": {\n      \"const\": 1\n    },\n    \"audio\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"mediaId\": {\n          \"type\": \"string\",\n          \"minLength\": 1\n        }\n      },\n      \"required\": [\n        \"mediaId\"\n      ],\n      \"additionalProperties\": false\n    },\n    \"timing\": {\n      \"const\": \"segmentTimed\"\n    },\n    \"language\": {\n      \"type\": \"string\",\n      \"minLength\": 1,\n      \"maxLength\": 35,\n      \"pattern\": \"^[a-zA-Z]{2,8}(-[a-zA-Z0-9]{1,8})*$\"\n    }\n  },\n  \"required\": [\n    \"schemaVersion\",\n    \"audio\",\n    \"timing\"\n  ],\n  \"additionalProperties\": false\n}\n"
+        },
+        {
+          "id": "https://bgxiong.local/vendor-adapter/v2/profiles/speech-analysis-v1/subtitle.output.schema.json",
+          "digest": "3b7f80f34b552b119c7264557249adbffdc6f4ecc50d9d6ddcea46e67cdb119e",
+          "schemaJson": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"$id\": \"https://bgxiong.local/vendor-adapter/v2/profiles/speech-analysis-v1/subtitle.output.schema.json\",\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"required\": [\n    \"schemaVersion\",\n    \"speechState\",\n    \"sampleRate\",\n    \"originalFrames\",\n    \"cues\"\n  ],\n  \"properties\": {\n    \"schemaVersion\": {\n      \"const\": 1\n    },\n    \"speechState\": {\n      \"enum\": [\n        \"speech\",\n        \"no_speech\"\n      ]\n    },\n    \"sampleRate\": {\n      \"const\": 16000\n    },\n    \"originalFrames\": {\n      \"type\": \"integer\",\n      \"minimum\": 1,\n      \"maximum\": 480000\n    },\n    \"cues\": {\n      \"type\": \"array\",\n      \"maxItems\": 4096,\n      \"items\": {\n        \"type\": \"object\",\n        \"additionalProperties\": false,\n        \"required\": [\n          \"startSample\",\n          \"endSample\",\n          \"text\"\n        ],\n        \"properties\": {\n          \"startSample\": {\n            \"type\": \"integer\",\n            \"minimum\": 0,\n            \"maximum\": 480000\n          },\n          \"endSample\": {\n            \"type\": \"integer\",\n            \"minimum\": 1,\n            \"maximum\": 480000\n          },\n          \"text\": {\n            \"type\": \"string\",\n            \"maxLength\": 65536,\n            \"pattern\": \"\\\\S\"\n          }\n        }\n      }\n    }\n  },\n  \"oneOf\": [\n    {\n      \"properties\": {\n        \"speechState\": {\n          \"const\": \"speech\"\n        },\n        \"cues\": {\n          \"minItems\": 1\n        }\n      }\n    },\n    {\n      \"properties\": {\n        \"speechState\": {\n          \"const\": \"no_speech\"\n        },\n        \"cues\": {\n          \"maxItems\": 0\n        }\n      }\n    }\n  ]\n}\n"
+        },
+        {
+          "id": "https://bgxiong.local/vendor-adapter/v2/profiles/speech-analysis-v1/transcribe.resume.schema.json",
+          "digest": "3e85938eefb1467f21e84f156115c1ba0c53638e7b2b544ac6f93be9d11593bd",
+          "schemaJson": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"$id\": \"https://bgxiong.local/vendor-adapter/v2/profiles/speech-analysis-v1/transcribe.resume.schema.json\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"schemaVersion\": {\n      \"const\": 1\n    },\n    \"jobId\": {\n      \"type\": \"string\",\n      \"minLength\": 1,\n      \"maxLength\": 128\n    }\n  },\n  \"required\": [\n    \"schemaVersion\",\n    \"jobId\"\n  ],\n  \"additionalProperties\": false\n}\n"
+        },
+        {
+          "id": "bgx-asr-subtitle-configuration",
+          "digest": "efc487de31e705fd39bd2215d9b5ba488c4ab30e44a43a0f13d3c066c39b115f",
+          "schemaJson": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"endpointBaseUrl\": {\n      \"type\": \"string\",\n      \"minLength\": 1\n    },\n    \"credentialRef\": {\n      \"const\": \"bgx-asr-task-grant\"\n    },\n    \"submission\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"recordingSessionId\": {\n          \"type\": \"string\",\n          \"minLength\": 36,\n          \"maxLength\": 36\n        },\n        \"segmentIndex\": {\n          \"type\": \"integer\",\n          \"minimum\": 0,\n          \"maximum\": 4095\n        },\n        \"clientRequestId\": {\n          \"type\": \"string\",\n          \"minLength\": 36,\n          \"maxLength\": 36\n        },\n        \"modelId\": {\n          \"const\": \"bgxiong-asr-subtitle\"\n        },\n        \"operation\": {\n          \"const\": \"speech.subtitle\"\n        },\n        \"quoteId\": {\n          \"type\": \"string\",\n          \"minLength\": 36,\n          \"maxLength\": 36\n        },\n        \"requestDigest\": {\n          \"type\": \"string\",\n          \"minLength\": 64,\n          \"maxLength\": 64\n        },\n        \"params\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"assetRef\": {\n              \"type\": \"string\",\n              \"minLength\": 36,\n              \"maxLength\": 36\n            },\n            \"assetVersion\": {\n              \"type\": \"string\",\n              \"minLength\": 64,\n              \"maxLength\": 64\n            },\n            \"language\": {\n              \"type\": [\n                \"string\",\n                \"null\"\n              ],\n              \"maxLength\": 35\n            }\n          },\n          \"required\": [\n            \"assetRef\",\n            \"assetVersion\"\n          ],\n          \"additionalProperties\": false\n        }\n      },\n      \"required\": [\n        \"recordingSessionId\",\n        \"segmentIndex\",\n        \"clientRequestId\",\n        \"modelId\",\n        \"operation\",\n        \"quoteId\",\n        \"requestDigest\",\n        \"params\"\n      ],\n      \"additionalProperties\": false\n    }\n  },\n  \"required\": [\n    \"endpointBaseUrl\",\n    \"credentialRef\"\n  ],\n  \"additionalProperties\": false,\n  \"$id\": \"bgx-asr-subtitle-configuration\"\n}\n"
         }
       ]
     }

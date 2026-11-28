@@ -58,14 +58,18 @@ fn invoke(request_value: &Invocation, host: &mut dyn Host) -> Result<Value, &'st
         return Ok(json!({"packageValid":true,"connection":"not_checked","authentication":"not_checked","resources":"ready","issues":[]}));
     }
     let payload: Value = serde_json::from_str(&request_value.r#payload_json).map_err(|_| "INVALID_INPUT")?;
-    if payload["modelId"] != MODEL || payload["operationId"] != "std/speech.transcribe"
-        || payload["operationVersion"] != 1 {
+    let (model, operation) = match payload["operationId"].as_str() {
+        Some("std/speech.transcribe") => (MODEL, "speech.transcribe"),
+        Some("std/speech.subtitle") => ("bgxiong-asr-subtitle", "speech.subtitle"),
+        _ => return Err("INVALID_INPUT"),
+    };
+    if payload["modelId"] != model || payload["operationVersion"] != 1 {
         return Err("INVALID_INPUT");
     }
     let config = &payload["configuration"];
     if op == "submit" {
         let submitted = &config["submission"];
-        if submitted["modelId"] != MODEL || submitted["operation"] != "speech.transcribe"
+        if submitted["modelId"] != model || submitted["operation"] != operation
             || submitted["clientRequestId"] != request_value.r#request_id {
             return Err("INVALID_INPUT");
         }
@@ -91,8 +95,13 @@ fn invoke(request_value: &Invocation, host: &mut dyn Host) -> Result<Value, &'st
         let state = task["executionState"].as_str().ok_or("INVALID_RESPONSE")?;
         let data = if state == "succeeded" {
             let content = request(host, config, "GET", &format!("/tasks/{id}/content"), None)?;
-            json!({"schemaVersion":1,"text":content["text"],"speechState":content["speechState"],
-                "durationMs":content["durationMs"],"language":content["language"]})
+            if operation == "speech.subtitle" {
+                json!({"schemaVersion":1,"speechState":content["speechState"],"sampleRate":content["sampleRate"],
+                    "originalFrames":content["originalFrames"],"cues":content["cues"]})
+            } else {
+                json!({"schemaVersion":1,"text":content["text"],"speechState":content["speechState"],
+                    "durationMs":content["durationMs"],"language":content["language"]})
+            }
         } else { Value::Null };
         let status = match state {
             "queued" | "running" | "succeeded" | "failed" | "cancelled" => state,
